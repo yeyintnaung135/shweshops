@@ -17,11 +17,11 @@ use Illuminate\Support\Facades\Route;
 use Intervention\Image\Facades\Image;
 use App\Http\Controllers\traid\ykimage;
 use App\Http\Controllers\FrontController;
-use App\Http\Controllers\FrontfordiscountController;
+use App\Http\Controllers\FrontForDiscountController;
 use App\Http\Controllers\SupportFrontController;
 use App\Http\Controllers\Shwe_News;
 
-use App\Http\Controllers\FrontforcatController;
+use App\Http\Controllers\FrontForCatController;
 
 
 use Illuminate\Support\Facades\Artisan;
@@ -48,15 +48,15 @@ Route::group(
 
         //for chat
 
-        Route::get('getuserchatlistsfromserver', [message\UsermessageController::class,'getuserchatlistsfromserver']);
-        Route::get('gettotalchatcountforuser', [message\UsermessageController::class,'gettotalchatcountforuser']);
-        Route::get('getspecificchatcountforuser/{shop_id}', [message\UsermessageController::class,'getspecificchatcountforuser']);
-        Route::post('/getcurrentchatshops', [message\UsermessageController::class,'getcurrentchatshops']);
-        Route::post('/setreadbyuser', [message\UsermessageController::class,'setreadbyuser']);
-        Route::post('/sendwhatuserisactive', [message\UsermessageController::class,'sendwhatuserisactive']);
-        Route::post('/sendwhatuserisoffline', [message\UsermessageController::class,'sendwhatuserisoffline']);
-        Route::get('/getpostbyproductid/{item_id}', [message\UsermessageController::class,'getpostbyproductid']);
-        Route::post('/getitemdata', [message\UsermessageController::class,'getitemdata']);
+        Route::get('getuserchatlistsfromserver', [message\UserMessageController::class,'getuserchatlistsfromserver']);
+        Route::get('gettotalchatcountforuser', [message\UserMessageController::class,'gettotalchatcountforuser']);
+        Route::get('getspecificchatcountforuser/{shop_id}', [message\UserMessageController::class,'getspecificchatcountforuser']);
+        Route::post('/getcurrentchatshops', [message\UserMessageController::class,'getcurrentchatshops']);
+        Route::post('/setreadbyuser', [message\UserMessageController::class,'setreadbyuser']);
+        Route::post('/sendwhatuserisactive', [message\UserMessageController::class,'sendwhatuserisactive']);
+        Route::post('/sendwhatuserisoffline', [message\UserMessageController::class,'sendwhatuserisoffline']);
+        Route::get('/getpostbyproductid/{item_id}', [message\UserMessageController::class,'getpostbyproductid']);
+        Route::post('/getitemdata', [message\UserMessageController::class,'getitemdata']);
 
         Route::get('/directory/all', [FrontController::class,'directory']);
         Route::get('/directory/detail/{shop_name}', [FrontController::class,'directdetail']);
@@ -106,11 +106,11 @@ Route::group(
         Route::get('/get_popitems_forshop_ajax/{latest}/{shop_id}', [FrontShopController::class,'get_popitems_forshop_ajax']);
         Route::get('/get_newitems_forshop_ajax/{limit}/{shop_id}', [FrontShopController::class,'get_newitems_forshop_ajax']);
         Route::get('/get_popitems_ajax/{latest}/{limit}', [FrontController::class,'get_popitems_ajax']);
-        Route::get('/get_discount_ajax/{limit}/{shop_id?}', [FrontfordiscountController::class,'get_discount_ajax']);
-        Route::get('/get_discount_forshop_ajax/{limit}/{shop_id?}', [FrontfordiscountController::class,'get_discount_forshop_ajax']);
+        Route::get('/get_discount_ajax/{limit}/{shop_id?}', [FrontForDiscountController::class,'get_discount_ajax']);
+        Route::get('/get_discount_forshop_ajax/{limit}/{shop_id?}', [FrontForDiscountController::class,'get_discount_forshop_ajax']);
         Route::get('/get_shop_ajax/{limit}', [FrontShopController::class,'view_more_ajax']);
-        Route::get('/see_all_discount/{shop_id}', [FrontfordiscountController::class,'see_all']);
-        Route::get('/see_all_discount_for_shop/{shop_id}', [FrontfordiscountController::class,'see_all']);
+        Route::get('/see_all_discount/{shop_id}', [FrontForDiscountController::class,'see_all']);
+        Route::get('/see_all_discount_for_shop/{shop_id}', [FrontForDiscountController::class,'see_all']);
 
         Route::post('/search_by_type', [FrontController::class,'search_by_type']);
         Route::get('/ajax_search_result/{searchtext?}', [FrontController::class,'ajax_search_result']);
@@ -121,18 +121,18 @@ Route::group(
         Route::get('/see_all_for_shop/{neworpop}/{shop_id}', [FrontController::class,'see_all_for_shop']);
         Route::get('/get_newitems_forshop_ajax/{shop_id}', [FrontController::class,'get_newitems_forshop_ajax']);
         Route::get('/see_all_pop', [FrontController::class,'see_all_pop']);
-        Route::get('/see_by_categories/{id}', [FrontforcatController::class,'see_all']);
+        Route::get('/see_by_categories/{id}', [FrontForCatController::class,'see_all']);
         //for search page
-        Route::get('/see_by_categories', [FrontforcatController::class,'search_items']);
+        Route::get('/see_by_categories', [FrontForCatController::class,'search_items']);
         //for search page
         //all 404 error page is not show by this link (need to repair later)
         Route::get('/{shop_name}/{cat_name}/{shop_id}', [FrontShopController::class,'see_all']);
         //all 404 error page is not show by this link (need to repair later)
 
-        Route::post('/get_items_cat_ajax/{id}', [FrontforcatController::class,'get_items_cat_ajax']);
-        Route::post('/catfilter', [FrontforcatController::class,'catfilter']);
+        Route::post('/get_items_cat_ajax/{id}', [FrontForCatController::class,'get_items_cat_ajax']);
+        Route::post('/catfilter', [FrontForCatController::class,'catfilter']);
 
-        Route::get('/seeallforyou', [FrontforcatController::class,'seeall_foryou']);
+        Route::get('/seeallforyou', [FrontForCatController::class,'seeall_foryou']);
 
         Route::get('/tags/{name}', [TagsController::class,'index']);
         Route::post('/tags_items', [TagsController::class,'get_tags_items']);

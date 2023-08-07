@@ -34,12 +34,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 class ShopownerRegisterController extends Controller
 {
 
-<<<<<<< HEAD
-    use RegistersUsers;
-    use ykimage;
-=======
     use RegistersUsers;use ykimage; 
->>>>>>> 6eeb033ee5b5f9354931773d3a1fd7f920c7f6a7
 
     public function __construct()
     {
@@ -96,14 +91,9 @@ class ShopownerRegisterController extends Controller
             }
         }
 
-<<<<<<< HEAD
-        $valid = $this->validator($request->except('_token'));
-        if ($valid->fails()) {
-=======
         $valid=$this->validator($request->except('_token'));
         if( $valid->fails())
         {
->>>>>>> 6eeb033ee5b5f9354931773d3a1fd7f920c7f6a7
             return redirect()->back()->withErrors($valid)->withInput();
         }
 
