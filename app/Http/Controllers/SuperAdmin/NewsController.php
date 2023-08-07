@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\super_admin;
+namespace App\Http\Controllers\SuperAdmin;
 
-use App\Event;
-use App\Shopowner;
 use App\Facade\Repair;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\News;
+use Illuminate\Http\Request;
 
-class EventsController extends Controller
+class NewsController extends Controller
 {
     public function __construct()
     {
@@ -32,8 +30,8 @@ class EventsController extends Controller
      */
     public function create()
     {
-        $events = Event::where('shop_id', 0)->latest()->paginate(5);
-        return view('backend.super_admin.news_&_events.events.create', compact('events'));
+        $news_all = News::where('shop_id', 0)->latest()->paginate(5);
+        return view('backend.super_admin.news_&_events.news.create', compact('news_all'));
     }
 
     /**
@@ -46,23 +44,21 @@ class EventsController extends Controller
     {
         $request->validate([
             'title' => 'required',
-            // 'start' => 'required',
             'description' => 'required',
             'file_upload' => 'required|mimes:jpeg,bmp,png,jpg',
         ]);
 
-        $file =  $request->file('file_upload');
-        $dir = "images/news_&_events/event";
-        $event = new Event();
-        $event->title = $request->title;
-        $event->description = $request->description;
-        $event->photo = Repair::fileStore($file, $dir);
+        $file = $request->file('file_upload');
+        $dir = "images/news_&_events/news";
+        $news = new News();
+        $news->title = $request->title;
+        // $news->slug = Str::slug($request->title) . '-' . uniqid();
+        $news->description = $request->description;
+        $news->image = Repair::fileStore($file, $dir);
 
-        $event->save();
-        // $event->shop_id = $request->shop_id;
-        // $event->slug = Str::slug($request->title) . "-" . uniqid();
+        $news->save();
 
-        return redirect()->back()->with('success', 'Events Create Successfully');
+        return redirect()->back()->with('success', 'News Create Successfully');
     }
 
     /**
@@ -84,9 +80,9 @@ class EventsController extends Controller
      */
     public function edit($id)
     {
-        $events = Event::where('shop_id', 0)->latest()->paginate(5);
-        $event = Event::findOrFail($id);
-        return view('backend.super_admin.news_&_events.events.edit', compact('event', 'events'));
+        $news = News::findOrFail($id);
+        $news_all = News::where('shop_id', 0)->latest()->paginate(5);
+        return view('backend.super_admin.news_&_events.news.edit', compact('news', 'news_all'));
     }
 
     /**
@@ -102,19 +98,18 @@ class EventsController extends Controller
             'file_upload' => 'mimes:jpeg,bmp,png,jpg',
         ]);
 
-        $file =  $request->file('file_upload');
-        $dir = "images/news_&_events/event";
-        $event = Event::findOrFail($id);
-        $event->title = $request->title;
-        $event->description = $request->description;
+        $file = $request->file('file_upload');
+        $dir = "images/news_&_events/news";
+        $news = News::findOrFail($id);
+        $news->title = $request->title;
+        // $news->slug = Str::slug($request->title) . '-' . uniqid();
+        $news->description = $request->description;
         if ($request->hasFile('file_upload')) {
-            $event->photo = Repair::fileStore($file, $dir);
+            $news->image = Repair::fileStore($file, $dir);
         }
-        $event->update();
+        $news->update();
 
-        // $event->shop_id = $request->shop_id;
-
-        return redirect()->back()->with('success', 'Events Update Successfully');
+        return redirect()->back()->with('success', 'News Update Successfully');
     }
 
     /**
@@ -125,7 +120,7 @@ class EventsController extends Controller
      */
     public function destroy($id)
     {
-        Event::findOrFail($id)->delete();
-        return redirect('backside/super_admin/events/create')->with('success', 'Event Delete Successfully');
+        News::findOrFail($id)->delete();
+        return redirect('backside/super_admin/news/create')->with('success', 'News Delete Successfully');
     }
 }

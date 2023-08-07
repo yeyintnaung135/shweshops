@@ -2,45 +2,31 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Ads;
-use App\Item;
-use App\Shopowner;
-use App\Shopdirectory;
-use App\State;
-use App\Collection;
-use App\ShopBanner;
-use App\Superadmin;
-use App\ItemLogActivity;
-use App\Percent_template;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use App\SuperadminLogActivity;
-use Illuminate\Support\Carbon;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-
+use App\Http\Controllers\traid\ykimage;
+use App\Percent_template;
+use App\PremiumTemplate;
+use App\ShopBanner;
+use App\Shopdirectory;
+use App\Shopowner;
+use App\State;
+use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Controllers\traid\ykimage;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\traid\ShopDelete;
-use App\PremiumTemplate;
-use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Validation\Rule;
 
 class ShopownerRegisterController extends Controller
 {
 
-    use RegistersUsers;use ykimage; 
+    use RegistersUsers;use ykimage;
 
     public function __construct()
     {
         $this->middleware(['auth:super_admin', 'admin']);
     }
-
 
     public function activity_index()
     {
@@ -53,12 +39,12 @@ class ShopownerRegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:50'],
             'shop_name_url' => ['required', 'alpha_num', 'string', 'max:50', 'unique:shop_owners'],
-            'shop_logo' =>  ['required', 'mimes:jpeg,bmp,png,jpg'],
+            'shop_logo' => ['required', 'mimes:jpeg,bmp,png,jpg'],
             'banner.*' => 'mimes:jpeg,bmp,png,jpg',
             'email' => ['required', 'string', 'email', 'max:50', 'unique:shop_owners'],
             'password' => ['required', 'string', 'max:6', 'confirmed'],
-            'shop_name' =>  ['required', 'string', 'max:50', 'unique:shop_owners,shop_name'],
-            'main_phone' =>  ['required', 'string', 'max:11', 'unique:manager,phone', 'unique:users,phone', 'unique:shop_owners,main_phone'],
+            'shop_name' => ['required', 'string', 'max:50', 'unique:shop_owners,shop_name'],
+            'main_phone' => ['required', 'string', 'max:11', 'unique:manager,phone', 'unique:users,phone', 'unique:shop_owners,main_phone'],
             'description' => ['string', 'max:1255555'],
             'page_link' => ['required', 'string', 'max:1111'],
             // 'အထည်မပျက်_ပြန်သွင်း' => ['numeric'],
@@ -73,8 +59,6 @@ class ShopownerRegisterController extends Controller
             'premium_template_id' => 'sometimes|required|exists:premium_templates,id',
         ]);
     }
-
-    
 
     protected function create()
     {
@@ -91,9 +75,8 @@ class ShopownerRegisterController extends Controller
             }
         }
 
-        $valid=$this->validator($request->except('_token'));
-        if( $valid->fails())
-        {
+        $valid = $this->validator($request->except('_token'));
+        if ($valid->fails()) {
             return redirect()->back()->withErrors($valid)->withInput();
         }
 
@@ -117,7 +100,6 @@ class ShopownerRegisterController extends Controller
 
         $lpath = $shop_logo->move(public_path('images/logo/'), $imageNameone);
         $this->setthumbslogo($lpath, $imageNameone);
-
 
         //store database
         $filepath_logo = $imageNameone;
@@ -154,11 +136,7 @@ class ShopownerRegisterController extends Controller
             $banner->save();
         }
 
-
-
         \SuperadminLogActivity::SuperadminShopCreateLog($shopdata);
-
-
 
         if ($shopdata) {
             $shop_id = $shopdata->id;
@@ -294,7 +272,6 @@ class ShopownerRegisterController extends Controller
                 $banner->save();
             }
         }
-
 
         if ($updateSuccess) {
             \SuperadminLogActivity::SuperadminShopEditLog($input);

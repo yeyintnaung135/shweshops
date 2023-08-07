@@ -1,23 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\super_admin;
-
+namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use App\ShopBanner;
-use App\Shopdirectory;
-use App\State;
-use App\Township;
-use App\Shopowner;
-use App\Superadmin;
-use App\Tooltips;
+use App\Models\Shopdirectory;
+use App\Models\State;
+use App\Models\Tooltips;
+use App\Models\Township;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-
 
 class DirectoryController extends Controller
 {
@@ -25,10 +19,12 @@ class DirectoryController extends Controller
     {
         $this->middleware(['auth:super_admin', 'admin']);
     }
-    public function alltable(){
+    public function alltable()
+    {
         return view('backend.super_admin.directory.list');
     }
-    public function alldirectory(Request $request) {
+    public function alldirectory(Request $request)
+    {
         $draw = $request->get('draw');
         $start = $request->get("start");
         $rowperpage = $request->get("length"); // total number of rows per page
@@ -46,30 +42,30 @@ class DirectoryController extends Controller
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
 
-        if($searchByFromdate == null) {
+        if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
         }
-        if($searchByTodate == null) {
+        if ($searchByTodate == null) {
             $searchByTodate = Carbon::now();
         }
 
         $totalRecords = Shopdirectory::select('count(*) as allcount')
-            ->where('shop_name','!=', '')
-            ->where(function ($query) use($searchValue) {
+            ->where('shop_name', '!=', '')
+            ->where(function ($query) use ($searchValue) {
                 $query->orWhere('shop_name', 'like', '%' . $searchValue . '%')
-                ->orWhere('main_phone', 'like', '%' . $searchValue . '%')
-                ->orWhere('address', 'like', '%' . $searchValue . '%');
+                    ->orWhere('main_phone', 'like', '%' . $searchValue . '%')
+                    ->orWhere('address', 'like', '%' . $searchValue . '%');
             })
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->count();
         $totalRecordswithFilter = $totalRecords;
 
         $records = Shopdirectory::orderBy($columnName, $columnSortOrder)
             ->orderBy('created_at', 'desc')
-            ->where('shop_id', '=' ,'0')
-            ->where(function ($query) use($searchValue) {
+            ->where('shop_id', '=', '0')
+            ->where(function ($query) use ($searchValue) {
                 $query->orWhere('shop_name', 'like', '%' . $searchValue . '%')
-                      ->orWhere('main_phone', 'like', '%' . $searchValue . '%')
-                      ->orWhere('address', 'like', '%' . $searchValue . '%');
+                    ->orWhere('main_phone', 'like', '%' . $searchValue . '%')
+                    ->orWhere('address', 'like', '%' . $searchValue . '%');
             })
 
             ->select('shop_directory.*')
@@ -90,7 +86,7 @@ class DirectoryController extends Controller
 
                 "main_phone" => $record->main_phone,
                 "action" => $record->id,
-                "created_at" => date('F d, Y ( h:i A )',strtotime($record->created_at)),
+                "created_at" => date('F d, Y ( h:i A )', strtotime($record->created_at)),
             );
         }
 
@@ -103,95 +99,96 @@ class DirectoryController extends Controller
         echo json_encode($response);
     }
 
-    public function gettownship(Request $request) {
-      if(is_array($request->id)) {
-        $townships = Township::select('id', 'name', 'myan_name')->whereIn('state_id', $request->id)->get();
-      } else {
-        $townships = Township::select('id', 'name', 'myan_name')->where('state_id', $request->id)->get();
-      }
-      return response()->json($townships);
+    public function gettownship(Request $request)
+    {
+        if (is_array($request->id)) {
+            $townships = Township::select('id', 'name', 'myan_name')->whereIn('state_id', $request->id)->get();
+        } else {
+            $townships = Township::select('id', 'name', 'myan_name')->where('state_id', $request->id)->get();
+        }
+        return response()->json($townships);
     }
 
-    public function check_shop_directory_name(Request $request) {
-      if (Shopdirectory::where('shop_name', '=', $request->shopName)->exists()) {
-        $isExit = true;
-      } else {
-        $isExit = false;
-      }
-      return response()->json([
-        'isExit' => $isExit
-      ]);
+    public function check_shop_directory_name(Request $request)
+    {
+        if (Shopdirectory::where('shop_name', '=', $request->shopName)->exists()) {
+            $isExit = true;
+        } else {
+            $isExit = false;
+        }
+        return response()->json([
+            'isExit' => $isExit,
+        ]);
     }
 
     public function createform()
     {
-      $states = State::get();
-      return view('backend.super_admin.directory.create',['states' => $states]);
+        $states = State::get();
+        return view('backend.super_admin.directory.create', ['states' => $states]);
     }
     public function validator(array $data)
     {
         return Validator::make($data, [
 
             'shop_logo' => ['mimes:jpeg,bmp,png,jpg'],
-            'shop_name' =>  ['required', 'string', 'max:50'],
-            'shop_name_url' =>  ['required', 'string', 'max:50','unique:shop_directory,shop_name_url'],
-            'main_phone' =>  ['string', 'max:11','unique:shop_directory,main_phone'],
-            'address' => ['required','string'],
-            'state' => ['required','string','min:3'],
-            'township' => ['required','string','min:3']
+            'shop_name' => ['required', 'string', 'max:50'],
+            'shop_name_url' => ['required', 'string', 'max:50', 'unique:shop_directory,shop_name_url'],
+            'main_phone' => ['string', 'max:11', 'unique:shop_directory,main_phone'],
+            'address' => ['required', 'string'],
+            'state' => ['required', 'string', 'min:3'],
+            'township' => ['required', 'string', 'min:3'],
 
         ],
-        [
-          'state.min' => 'State field is required',
-          'township.min' => 'Township field is required'
-        ]);
+            [
+                'state.min' => 'State field is required',
+                'township.min' => 'Township field is required',
+            ]);
     }
     public function evalidator(array $data)
     {
         return Validator::make($data, [
 
             'shop_logo' => ['mimes:jpeg,bmp,png,jpg'],
-            'shop_name' =>  ['required', 'string', 'max:50'],
-            'shop_name_url' =>  ['required', 'string', 'max:50'],
-            'main_phone' =>  ['string', 'max:11'],
-            'address' => ['required','string'],
-            'state' => ['required','string','min:3'],
-            'township' => ['required','string','min:3']
+            'shop_name' => ['required', 'string', 'max:50'],
+            'shop_name_url' => ['required', 'string', 'max:50'],
+            'main_phone' => ['string', 'max:11'],
+            'address' => ['required', 'string'],
+            'state' => ['required', 'string', 'min:3'],
+            'township' => ['required', 'string', 'min:3'],
 
         ],
-        [
-          'state.array' => 'State field is required',
-          'township.array' => 'Township field is required'
-        ]);
+            [
+                'state.array' => 'State field is required',
+                'township.array' => 'Township field is required',
+            ]);
     }
     public function store(Request $request)
     {
-      // dd($request);
+        // dd($request);
         $data = $request->except("_token");
-        $valid=$this->validator($data);
+        $valid = $this->validator($data);
 
-        if( $valid->fails())
-        {
+        if ($valid->fails()) {
             return redirect()->back()->withErrors($valid)->withInput();
         }
-        if($request->hasFile('shop_logo')) {
-          $shop_logo = $data['shop_logo'];
+        if ($request->hasFile('shop_logo')) {
+            $shop_logo = $data['shop_logo'];
 
-          //file upload
-          $imageNameone = time().'logo'.'.'.$shop_logo->getClientOriginalExtension();
+            //file upload
+            $imageNameone = time() . 'logo' . '.' . $shop_logo->getClientOriginalExtension();
 
-          $lpath=$shop_logo->move(public_path('images/directory/'),$imageNameone);
-          $data['shop_logo']=$imageNameone;
+            $lpath = $shop_logo->move(public_path('images/directory/'), $imageNameone);
+            $data['shop_logo'] = $imageNameone;
         }
         $add_ph = json_decode($request->additional_phones);
         $add_ph_array = [];
 
-        if(json_decode($request->additional_phones)!== null){
-            foreach($add_ph as $k=>$v){
-                if(count($add_ph) != 0){
+        if (json_decode($request->additional_phones) !== null) {
+            foreach ($add_ph as $k => $v) {
+                if (count($add_ph) != 0) {
                     $ph = json_decode(json_encode($v), true);
-                    foreach ($ph as $k2=>$v2) {
-                    array_push($add_ph_array,$v2 );
+                    foreach ($ph as $k2 => $v2) {
+                        array_push($add_ph_array, $v2);
                     }
                 }
             }
@@ -209,40 +206,39 @@ class DirectoryController extends Controller
         //   }
         // }
 
-        $data['additional_phones']=json_encode($add_ph_array);
+        $data['additional_phones'] = json_encode($add_ph_array);
         Shopdirectory::create($data);
         Session::flash('message', 'Your Shop Directory was successfully Created');
 
-       return redirect('backside/super_admin/directory/all');
+        return redirect('backside/super_admin/directory/all');
     }
     public function detail($id)
     {
-        $ttdata=Shopdirectory::where('id',$id)->first();
-        return view('backend.super_admin.directory.detail',['ttdata'=>$ttdata]);
+        $ttdata = Shopdirectory::where('id', $id)->first();
+        return view('backend.super_admin.directory.detail', ['ttdata' => $ttdata]);
 
     }
     public function editform($id)
     {
-      $states = State::get();
-      $ttdata=Shopdirectory::where('id',$id)->first();
-      return view('backend.super_admin.directory.edit',['ttdata'=>$ttdata, 'states'=>$states]);
+        $states = State::get();
+        $ttdata = Shopdirectory::where('id', $id)->first();
+        return view('backend.super_admin.directory.edit', ['ttdata' => $ttdata, 'states' => $states]);
 
     }
     public function update(Request $request)
     {
-        $sd = Shopdirectory::where('id',$request->id)->first();
+        $sd = Shopdirectory::where('id', $request->id)->first();
         $data = $request->except("_token");
-        $valid=$this->evalidator($data);
+        $valid = $this->evalidator($data);
 
-        if( $valid->fails())
-        {
+        if ($valid->fails()) {
             return redirect()->back()->withErrors($valid)->withInput();
         }
 
         if ($request->file('shop_logo')) {
 
-            if (File::exists(public_path('image/directory/'.$sd->shop_logo))) {
-                File::delete(public_path('image/directory/'.$sd->shop_logo));
+            if (File::exists(public_path('image/directory/' . $sd->shop_logo))) {
+                File::delete(public_path('image/directory/' . $sd->shop_logo));
             }
 
             $shop_logo = time() . '1.' . $request->file('shop_logo')->getClientOriginalExtension();
@@ -254,19 +250,18 @@ class DirectoryController extends Controller
         $add_ph = json_decode($request->additional_phones);
         $add_ph_array = [];
 
-        if(json_decode($request->additional_phones)!== null){
-            foreach($add_ph as $k=>$v){
-                if(count($add_ph) != 0){
+        if (json_decode($request->additional_phones) !== null) {
+            foreach ($add_ph as $k => $v) {
+                if (count($add_ph) != 0) {
                     $ph = json_decode(json_encode($v), true);
-                    foreach ($ph as $k2=>$v2) {
-                    array_push($add_ph_array,$v2 );
+                    foreach ($ph as $k2 => $v2) {
+                        array_push($add_ph_array, $v2);
                     }
                 }
             }
         }
-        $data['additional_phones']=json_encode($add_ph_array);
-        Shopdirectory::where('id',$request->id)->update($data);
-
+        $data['additional_phones'] = json_encode($add_ph_array);
+        Shopdirectory::where('id', $request->id)->update($data);
 
         Session::flash('message', 'Your Shop Directory was successfully Edited');
 
@@ -275,24 +270,21 @@ class DirectoryController extends Controller
     }
     public function delete(Request $request)
     {
-       $sd= Shopdirectory::where('id',$request->id)->first();
+        $sd = Shopdirectory::where('id', $request->id)->first();
 
+        if (File::exists(public_path('image/directory/' . $sd->shop_logo))) {
+            File::delete(public_path('image/directory/' . $sd->shop_logo));
+        }
 
-            if (File::exists(public_path('image/directory/'.$sd->shop_logo))) {
-                File::delete(public_path('image/directory/'.$sd->shop_logo));
-            }
-
-
-
-        Shopdirectory::where('id',$request->id)->delete();
+        Shopdirectory::where('id', $request->id)->delete();
         Session::flash('message', 'Your Tooltips was successfully deleted');
 
         return redirect('backside/super_admin/directory/all');
 
     }
-    public function list(){
-        $alltt=Tooltips::all();
-        return view('backend.super_admin.tooltips.list',['alltt'=>$alltt]);
+    function list() {
+        $alltt = Tooltips::all();
+        return view('backend.super_admin.tooltips.list', ['alltt' => $alltt]);
     }
 
     public function all(Request $request)
@@ -334,7 +326,7 @@ class DirectoryController extends Controller
                 "url" => $record->name,
                 "info" => $record->email,
                 "id" => $record->id,
-                "created_at" => $record->created_at
+                "created_at" => $record->created_at,
             );
         }
 

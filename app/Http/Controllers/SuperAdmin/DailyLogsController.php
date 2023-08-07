@@ -1,16 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\super_admin;
-
+namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use App\ShopownerLogActivity;
-use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
-
 
 class DailyLogsController extends Controller
 {
@@ -44,7 +40,6 @@ class DailyLogsController extends Controller
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
 
-
         if ($searchByFromdate == null) {
             $searchByFromdate = Carbon::now();
         }
@@ -52,21 +47,20 @@ class DailyLogsController extends Controller
             $searchByTodate = Carbon::now();
         }
 
-
         $totalRecords = DB::table('shopowner_log_activities')
-                        ->where('action', 'Create')
-                        ->where(function ($query) use ($searchValue) {
-                            $query->where('shop_name', 'like', '%' . $searchValue . '%')
-                                ->orWhere('user_name', 'like', '%' . $searchValue . '%');
-                        })
-                        ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-                        ->groupBy('shop_id')->get();
+            ->where('action', 'Create')
+            ->where(function ($query) use ($searchValue) {
+                $query->where('shop_name', 'like', '%' . $searchValue . '%')
+                    ->orWhere('user_name', 'like', '%' . $searchValue . '%');
+            })
+            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
+            ->groupBy('shop_id')->get();
         $totalRecordswithFilter = $totalRecords;
 
         $getshopcreatecountbydateraw = DB::table('shopowner_log_activities')
-            //if u want to use both count use this query ex (create count and edit count and delete count)
-      //            ->select(['*',DB::raw("COUNT(CASE action WHEN 'Create' THEN 1 ELSE NULL END) as ctotal"),DB::raw("COUNT(CASE action WHEN 'Edit' THEN 1 ELSE NULL END) as etotal")])
-            //end
+        //if u want to use both count use this query ex (create count and edit count and delete count)
+        //            ->select(['*',DB::raw("COUNT(CASE action WHEN 'Create' THEN 1 ELSE NULL END) as ctotal"),DB::raw("COUNT(CASE action WHEN 'Edit' THEN 1 ELSE NULL END) as etotal")])
+        //end
             ->select('*', DB::raw("count('*') as total"))
             ->where(function ($query) use ($searchValue) {
                 $query->where('shop_name', 'like', '%' . $searchValue . '%')
@@ -77,9 +71,7 @@ class DailyLogsController extends Controller
             ->groupBy('shop_id')
             ->orderBy($columnName, $columnSortOrder);
 
-
         $getshopcreatecountbydate = $getshopcreatecountbydateraw->skip($start)->take($rowperpage)->get();
-
 
         $data_arr_for_datatable = array();
 
@@ -101,7 +93,7 @@ class DailyLogsController extends Controller
         return json_encode($response);
     }
 
-    function daily_shop_create_delselected(Request $request)
+    public function daily_shop_create_delselected(Request $request)
     {
         $shopids = explode(',', $request->delshopids);
 
@@ -111,29 +103,25 @@ class DailyLogsController extends Controller
         return redirect()->back();
     }
 
-    function daily_shop_create_delall(Request $request)
+    public function daily_shop_create_delall(Request $request)
     {
 
-
-       $checkcount=DB::table('shopowner_log_activities')->where('action', 'Create')->whereBetween('created_at', [$request->cafromdate, $request->catodate]);
-       if(count($checkcount->get()) == 0){
-           Session::flash('message', 'Empty lOGS');
-           return redirect()->back();
-       }else{
-           $checkcount->delete();
-           Session::flash('message', 'Shop Create Logs was successfully deleted');
-           return redirect()->back();
-       }
-
+        $checkcount = DB::table('shopowner_log_activities')->where('action', 'Create')->whereBetween('created_at', [$request->cafromdate, $request->catodate]);
+        if (count($checkcount->get()) == 0) {
+            Session::flash('message', 'Empty lOGS');
+            return redirect()->back();
+        } else {
+            $checkcount->delete();
+            Session::flash('message', 'Shop Create Logs was successfully deleted');
+            return redirect()->back();
+        }
 
     }
-    function total_create_count(Request $request)
+    public function total_create_count(Request $request)
     {
 
-
-        $checkcount=DB::table('shopowner_log_activities')->where('action', 'Create')->whereBetween('created_at', [$request->from, $request->to]);
+        $checkcount = DB::table('shopowner_log_activities')->where('action', 'Create')->whereBetween('created_at', [$request->from, $request->to]);
         return json_encode($checkcount->count());
-
 
     }
 }

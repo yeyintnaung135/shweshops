@@ -1,17 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\super_admin;
-
+namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use App\Superadmin;
-use App\Tooltips;
+use App\Models\Tooltips;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
-
-class tooltipsController extends Controller
+class TooltipsController extends Controller
 {
     public function __construct()
     {
@@ -20,13 +17,12 @@ class tooltipsController extends Controller
 
     public function createform()
     {
-      return view('backend.super_admin.tooltips.create');
+        return view('backend.super_admin.tooltips.create');
     }
     public function store(Request $request)
     {
-        $val=Validator::make($request->all(),['endpoint'=>['string','required','max:222'],'info'=>['string','required','max:22222']]);
-        if( $val->fails())
-        {
+        $val = Validator::make($request->all(), ['endpoint' => ['string', 'required', 'max:222'], 'info' => ['string', 'required', 'max:22222']]);
+        if ($val->fails()) {
             return redirect()->back()->withErrors($val)->withInput();
         }
         Tooltips::create($request->except('_token'));
@@ -36,22 +32,22 @@ class tooltipsController extends Controller
     }
     public function detail($id)
     {
-        $ttdata=Tooltips::where('id',$id)->first();
-        return view('backend.super_admin.tooltips.detail',['ttdata'=>$ttdata]);
+        $ttdata = Tooltips::where('id', $id)->first();
+        return view('backend.super_admin.tooltips.detail', ['ttdata' => $ttdata]);
 
     }
     public function delete($id)
     {
         Tooltips::findOrFail($id)->delete();
-       
+
         Session::flash('message', 'Your Tooltips was successfully deleted');
 
         return redirect('backside/super_admin/tooltips/list');
 
     }
-    public function list(){
-        $alltt=Tooltips::all();
-        return view('backend.super_admin.tooltips.list',['alltt'=>$alltt]);
+    function list() {
+        $alltt = Tooltips::all();
+        return view('backend.super_admin.tooltips.list', ['alltt' => $alltt]);
     }
 
     public function all(Request $request)
@@ -69,8 +65,8 @@ class tooltipsController extends Controller
         $columnName = $columnName_arr[$columnIndex]['data']; // Column name
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
-        if($columnName == 'url'){
-            $columnName='endpoint';    
+        if ($columnName == 'url') {
+            $columnName = 'endpoint';
         }
         $totalRecords = Tooltips::select('count(*) as allcount')
             ->where('endpoint', 'like', '%' . $searchValue . '%')
@@ -91,11 +87,11 @@ class tooltipsController extends Controller
         $id = 1;
         foreach ($records as $record) {
             $data_arr[] = array(
-                "id" =>$id++,
+                "id" => $id++,
                 "url" => $record->endpoint,
                 "info" => $record->info,
                 "action" => $record->id,
-                "created_at" => $record->created_at
+                "created_at" => $record->created_at,
             );
         }
 
@@ -111,14 +107,14 @@ class tooltipsController extends Controller
     public function edit($id)
     {
         $tooltip = Tooltips::findOrFail($id);
-        return view('backend.super_admin.tooltips.edit',compact('tooltip'));
+        return view('backend.super_admin.tooltips.edit', compact('tooltip'));
     }
 
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'endpoint'=>['string','required','max:222'],
-            'info'=>['string','required','max:22222']
+            'endpoint' => ['string', 'required', 'max:222'],
+            'info' => ['string', 'required', 'max:22222'],
         ]);
         $tooltip = Tooltips::findOrFail($id);
 

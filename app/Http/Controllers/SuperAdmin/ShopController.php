@@ -1,39 +1,34 @@
 <?php
 
-namespace App\Http\Controllers\super_admin;
+namespace App\Http\Controllers\SuperAdmin;
 
-use App\Ads;
-use App\Featuresforshops;
-use App\Item;
-use App\Manager;
-use App\discount;
-use App\Messages;
-use App\Posonoffforshops;
-use App\Shopowner;
-use App\Shopdirectory;
-use App\ShopBanner;
-use App\State;
-use App\CountSetting;
-use App\frontuserlogs;
-use App\Guestoruserid;
-use App\BuyNowClickLog;
-use App\ItemLogActivity;
-use App\ShopLogActivity;
-use App\WhislistClickLog;
-use App\AddToCartClickLog;
-use Illuminate\Support\Str;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\traid\ShopDelete;
+use App\Models\AddToCartClickLog;
+use App\Models\BuyNowClickLog;
+use App\Models\CountSetting;
+use App\Models\Featuresforshops;
+use App\Models\frontuserlogs;
+use App\Models\Guestoruserid;
+use App\Models\Item;
+use App\Models\Manager;
+use App\Models\Messages;
+use App\Models\PremiumTemplate;
+use App\Models\ShopBanner;
+use App\Models\Shopdirectory;
+use App\Models\Shopowner;
+use App\Models\State;
+use App\Models\SuperadminLogActivity;
+use App\Models\User;
+use App\Models\WhislistClickLog;
 use Illuminate\Http\Request;
-use App\SuperadminLogActivity;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\File;
-use App\Http\Controllers\traid\ShopDelete;
-use App\PremiumTemplate;
-use App\User;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Str;
 
 class ShopController extends Controller
 {
@@ -83,7 +78,7 @@ class ShopController extends Controller
             $totalRecords = Messages::groupBy('message_shop_id')
                 ->whereBetween('created_at', array(
                     Carbon::createFromDate($searchByFromdate),
-                    Carbon::createFromDate($searchByTodate)->addDays(1)
+                    Carbon::createFromDate($searchByTodate)->addDays(1),
                 ))
                 ->get();
 
@@ -93,7 +88,7 @@ class ShopController extends Controller
                 ->groupBy('message_shop_id')
                 ->whereBetween('created_at', array(
                     Carbon::createFromDate($searchByFromdate),
-                    Carbon::createFromDate($searchByTodate)->addDays(1)
+                    Carbon::createFromDate($searchByTodate)->addDays(1),
                 ))
                 ->get(['message_shop_id', 'created_at']);
         } else {
@@ -109,15 +104,14 @@ class ShopController extends Controller
                 ->get(['message_shop_id', 'created_at']);
         }
 
-
         $data_arr = array();
 
         foreach ($records as $record) {
             foreach ($record->ShopName as $shop_name) {
-                $owner_chat_count = Messages::where('message_shop_id', (int)$shop_name->id)->where('from_role', 'shopowner')
+                $owner_chat_count = Messages::where('message_shop_id', (int) $shop_name->id)->where('from_role', 'shopowner')
                     ->groupBy('message_user_id')
                     ->get();
-                $user_chat_count = Messages::where('message_shop_id', (int)$shop_name->id)->where('from_role', 'user')
+                $user_chat_count = Messages::where('message_shop_id', (int) $shop_name->id)->where('from_role', 'user')
                     ->groupBy('message_user_id')
                     ->get();
                 $data_arr[] = array(
@@ -126,7 +120,7 @@ class ShopController extends Controller
                     "created_at" => $record->created_at,
                     "owner_chat_count" => count($owner_chat_count),
                     "user_chat_count" => count($user_chat_count),
-                    "action" => $shop_name->id
+                    "action" => $shop_name->id,
                 );
             }
         }
@@ -142,24 +136,24 @@ class ShopController extends Controller
 
     public function showowner_using_chat_detail($id)
     {
-        $get_message_shops = Messages::where('message_shop_id', (int)$id)
+        $get_message_shops = Messages::where('message_shop_id', (int) $id)
             ->groupBy('message_user_id')
             ->get();
 
         $messages_all_users = $this->paginate($get_message_shops);
 
-        $messages = Messages::where('message_shop_id', (int)$id)->get();
-        $shop_owner = Messages::where('message_shop_id', (int)$id)->first();
+        $messages = Messages::where('message_shop_id', (int) $id)->get();
+        $shop_owner = Messages::where('message_shop_id', (int) $id)->first();
         $shop_id = Shopowner::where('id', $id)->first();
 
-        $chat_count = Messages::where('message_shop_id', (int)$id)->groupBy('message_user_id')->get();
+        $chat_count = Messages::where('message_shop_id', (int) $id)->groupBy('message_user_id')->get();
 
         return view('backend.super_admin.shops.shopowner_chat_using_detail', [
             'messages_all_users' => $messages_all_users,
             'messages' => $messages,
             'shop_owner' => $shop_owner,
             'shop_id' => $shop_id,
-            'counts' => $chat_count
+            'counts' => $chat_count,
         ]);
     }
 
@@ -183,10 +177,10 @@ class ShopController extends Controller
             $q->find([
                 '$and' => [
 
-                    ['message' => ['$gt' => $search, '$lt' => $search]]
-                ]
+                    ['message' => ['$gt' => $search, '$lt' => $search]],
+                ],
             ]);
-        })->where('message_shop_id', (int)request()->id)->groupBy('message_user_id')->get();
+        })->where('message_shop_id', (int) request()->id)->groupBy('message_user_id')->get();
         return DB::select(DB::raw("SELECT * FROM messages WHERE JSON_EXTRACT(message, '$.product_code') = '123'"));
 
         // $messages_all_users  = Messages::where('message_shop_id',(int)$request->id)
@@ -197,16 +191,15 @@ class ShopController extends Controller
         //      ->groupBy('message_user_id')
         //      ->get();
 
-        $messages = Messages::where('message_shop_id', (int)$request->id)->get();
-        $shop_owner = Messages::where('message_shop_id', (int)$request->id)->first();
+        $messages = Messages::where('message_shop_id', (int) $request->id)->get();
+        $shop_owner = Messages::where('message_shop_id', (int) $request->id)->first();
         $shop_id = Shopowner::where('id', $request->id)->first();
-
 
         return view('backend.super_admin.shops.shop_date_filter', [
             'messages_all_users' => $messages_all_users,
             'messages' => $messages,
             'shop_owner' => $shop_owner,
-            'shop_id' => $shop_id
+            'shop_id' => $shop_id,
         ]);
     }
 
@@ -255,7 +248,6 @@ class ShopController extends Controller
 
         //   ->orderBy('created_at', 'desc')
 
-
         $data_arr = array();
 
         foreach ($records as $record) {
@@ -271,7 +263,7 @@ class ShopController extends Controller
                 "email" => $record->email,
                 "expired" => $record->deleted_at < Carbon::now()->subMonths(3) ? 'expired' : $diff,
                 "action" => $record->id,
-                "created_at" => $record->created_at
+                "created_at" => $record->created_at,
             );
         }
 
@@ -308,7 +300,6 @@ class ShopController extends Controller
         if ($searchByTodate == null) {
             $searchByTodate = Carbon::now();
         }
-
 
         $state = State::where('name', 'like', '%' . $searchValue . '%')->value('id');
 
@@ -386,7 +377,7 @@ class ShopController extends Controller
                 "main_phone" => $record->main_phone,
                 "state" => $state,
                 "action" => $record->id,
-                "created_at" => $record->created_at
+                "created_at" => $record->created_at,
             );
         }
 
@@ -419,7 +410,6 @@ class ShopController extends Controller
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
 
-
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
         }
@@ -437,7 +427,7 @@ class ShopController extends Controller
                     ->orWhere('status', 'like', '%' . $searchValue . '%');
             })
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->where('type','shop')
+            ->where('type', 'shop')
             ->count();
         $totalRecordswithFilter = $totalRecords;
         $ads = SuperadminLogActivity::where('type', ['shop'])->orderBy('created_at', 'desc')->get();
@@ -452,11 +442,10 @@ class ShopController extends Controller
             })
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
             ->select('superadmin_log_activities.*')
-            ->where('type','shop')
+            ->where('type', 'shop')
             ->skip($start)
             ->take($rowperpage)
             ->get();
-
 
         $data_arr = array();
 
@@ -679,7 +668,6 @@ class ShopController extends Controller
         return response()->json(['status' => $request->action]);
     }
 
-
     //Shop Owner Monthly Report
 
     public function report($id)
@@ -691,17 +679,14 @@ class ShopController extends Controller
         $off_counts = CountSetting::where('shop_id', $id)->get();
         $shop_counts = Shopowner::all();
 
-
         $items = Item::where('shop_id', $id)->orderBy('created_at', 'desc')->get();
         $products_count_setting = CountSetting::where('shop_id', $id)->where('name', 'item')->get();
-
 
         $shopview = frontuserlogs::join('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->where('guestoruserid.user_agent', '!=', 'bot')->where('front_user_logs.shop_id', $id)->where('front_user_logs.status', 'shopdetail')->get();
         $shops_view_count_setting = CountSetting::where('shop_id', $id)->where('name', 'shop_view')->get();
 
-        $user_inquiry = Messages::where('message_shop_id', (int)$id)->where('from_role', 'user')->get();
+        $user_inquiry = Messages::where('message_shop_id', (int) $id)->where('from_role', 'user')->get();
         $user_inquiry_count_setting = CountSetting::where('shop_id', $id)->where('name', 'inquiry')->get();
-
 
         $productclick = frontuserlogs::leftjoin('items', 'front_user_logs.product_id', '=', 'items.id')->where('front_user_logs.status', 'product_detail')->where('items.shop_id', $id)->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->get();
         $items_view_count_setting = CountSetting::where('shop_id', $id)->where('name', 'items_view')->get();
@@ -719,7 +704,6 @@ class ShopController extends Controller
         $whislistclick_count_setting = CountSetting::where('shop_id', $id)->where('name', 'whislistclick')->get();
         $discountview = frontuserlogs::join('discount', 'discount.item_id', '=', 'front_user_logs.product_id')->where('front_user_logs.shop_id', $id)->where('front_user_logs.product_id', '!=', 0)->where('front_user_logs.product_id', '!=', null)->where('front_user_logs.status', 'product_detail')->groupBy('front_user_logs.product_id')->get();
 
-
         $discountview_count_setting = CountSetting::where('shop_id', $id)->where('name', 'discountview')->get();
 
         $adsview = frontuserlogs::join('guestoruserid', 'guestoruserid.id', '=', 'front_user_logs.userorguestid')->where('front_user_logs.status', 'homepage')->where('guestoruserid.user_agent', '!=', 'bot')->groupBy('front_user_logs.userorguestid')->get();
@@ -732,11 +716,9 @@ class ShopController extends Controller
 
         //New Users
 
-
         // $newusers=Guestoruserid::whereBetween('created_at', [Carbon::createFromDate($start_date), Carbon::createFromDate($last_date)])->get();
 
         $newusers = Guestoruserid::whereBetween('created_at', [$start_date, $last_date])->where('user_agent', '!=', 'bot')->groupBy('ip')->get();
-
 
         $total_users = Guestoruserid::where('user_agent', '!=', 'bot')->groupBy('ip')->get();
         if (count($items) == 0) {
@@ -748,7 +730,6 @@ class ShopController extends Controller
             $productclick = [];
         }
 
-
         return view('backend.super_admin.shops.report', [
             'off_count' => count($off_counts),
             'total_products_count' => count($total_products),
@@ -756,7 +737,6 @@ class ShopController extends Controller
             'new_users' => count($newusers),
 
             'shop_counts' => count($shop_counts),
-
 
             'inquiry' => count($user_inquiry),
             'inquiry_count_setting' => $user_inquiry_count_setting,
@@ -812,11 +792,10 @@ class ShopController extends Controller
         $users = Manager::where('shop_id', $id)->get();
 
         $productview = frontuserlogs::where('shop_id', $id)->whereBetween('created_at', [$from, $to])->groupBy('userorguestid')->groupBy('visited_link')->get();
-        $user_inquiry = Messages::where('message_shop_id', (int)$id)->where('from_role', 'user')->whereBetween('created_at', array(
+        $user_inquiry = Messages::where('message_shop_id', (int) $id)->where('from_role', 'user')->whereBetween('created_at', array(
             Carbon::createFromDate($from),
-            Carbon::createFromDate($to)->addDays(1)
+            Carbon::createFromDate($to)->addDays(1),
         ))->get();
-
 
         // $productview = frontuserlogs::leftjoin('items','front_user_logs.product_id','=','items.id')->where('front_user_logs.status','product_detail')->where('items.shop_id',$id)->get();
 
@@ -870,12 +849,10 @@ class ShopController extends Controller
             'discount' => count($discountview),
             'inquiry' => count($user_inquiry),
             'for_date_shop' => Carbon::createFromDate($from)->isoFormat('MMM') . ' ' . Carbon::createFromDate($from)->isoFormat('D') . ' မှ ' .
-                Carbon::createFromDate($to)->isoFormat('MMM') . ' ' . Carbon::createFromDate($to)->isoFormat('D') . ' အတွင်း ',
-
+            Carbon::createFromDate($to)->isoFormat('MMM') . ' ' . Carbon::createFromDate($to)->isoFormat('D') . ' အတွင်း ',
 
         ]);
     }
-
 
     //    public function report($id){
     //        $start_date = Carbon::now()->firstOfMonth();
@@ -1046,7 +1023,6 @@ class ShopController extends Controller
     //
     //    }
 
-
     /** shop delete section */
 
     public function trash($id)
@@ -1071,13 +1047,10 @@ class ShopController extends Controller
         return view('backend.super_admin.shops.trash', compact('shop_owners'));
     }
 
-
-
     public function restore($id)
     {
         $shop_owner = ShopBanner::where('shop_owner_id', $id)->withTrashed()->pluck("id");
         Shopowner::onlyTrashed()->where('id', $id)->restore();
-
 
         if ($shop_owner) {
             foreach ($shop_owner as $i) {

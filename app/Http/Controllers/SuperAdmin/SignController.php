@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\super_admin;
+namespace App\Http\Controllers\SuperAdmin;
 
-use App\Sign;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
+use App\Models\Sign;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
 
 class SignController extends Controller
 {
@@ -19,14 +18,14 @@ class SignController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['auth:super_admin','admin']);
+        $this->middleware(['auth:super_admin', 'admin']);
     }
 
     public function index()
     {
         //
         $signs = Sign::all();
-        return view('backend.super_admin.sign.list',compact('signs'));
+        return view('backend.super_admin.sign.list', compact('signs'));
     }
 
     /**
@@ -48,47 +47,45 @@ class SignController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'title' => 'required',
             'description' => 'required',
             'photo' => 'required',
             'sign_logo' => 'required',
-            'credit' => 'required'
+            'credit' => 'required',
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return redirect('baydins/create')->withErrors($validator)->withInput();
         }
         // return dd($request);
-        if($request->hasfile('photo'))
-        {
-          // dd("okok");
-          $photo = $request->photo;
-          $name = uniqid().'_baydin'.'.'.$photo->getClientOriginalName();
-          $photo->move(public_path() . '/images/baydin/', $name);
-          $photo = $name;
-          
+        if ($request->hasfile('photo')) {
+            // dd("okok");
+            $photo = $request->photo;
+            $name = uniqid() . '_baydin' . '.' . $photo->getClientOriginalName();
+            $photo->move(public_path() . '/images/baydin/', $name);
+            $photo = $name;
+
         }
 
-        if($request->hasfile('sign_logo'))
-        {
-          // dd("okok");
-          $sign_logo = $request->sign_logo;
-          $name = uniqid().'_sign_logo'.'.'.$sign_logo->getClientOriginalName();
-          $sign_logo->move(public_path() . '/images/baydin/sign', $name);
-          $sign_logo = $name;
-          
+        if ($request->hasfile('sign_logo')) {
+            // dd("okok");
+            $sign_logo = $request->sign_logo;
+            $name = uniqid() . '_sign_logo' . '.' . $sign_logo->getClientOriginalName();
+            $sign_logo->move(public_path() . '/images/baydin/sign', $name);
+            $sign_logo = $name;
+
         }
-       
+
         Sign::create([
             'name' => $request->name,
             'title' => $request->title,
             'description' => $request->description,
             'photo' => $photo,
             'sign_logo' => $sign_logo,
-            'credit' => $request->credit
+            'credit' => $request->credit,
         ]);
-        return redirect()->route('baydins.index')->with('success','Your Sign is successfully Created');
+        return redirect()->route('baydins.index')->with('success', 'Your Sign is successfully Created');
         //
     }
 
@@ -102,7 +99,7 @@ class SignController extends Controller
     {
         //
         $sign = Sign::findOrFail($id);
-        return view('backend.super_admin.sign.detail',compact('sign'));
+        return view('backend.super_admin.sign.detail', compact('sign'));
     }
 
     /**
@@ -115,7 +112,7 @@ class SignController extends Controller
     {
         //
         $sign = Sign::findOrFail($id);
-        return view('backend.super_admin.sign.edit',compact('sign'));
+        return view('backend.super_admin.sign.edit', compact('sign'));
     }
 
     /**
@@ -129,9 +126,9 @@ class SignController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:50'],
-            'description' => ['required','string'],
-            'credit' => ['required','string', 'max:255'],
-            'title' => ['required','string', 'max:255'],
+            'description' => ['required', 'string'],
+            'credit' => ['required', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:255'],
             // 'photo' => ['required', 'string', 'max:50'],
         ]);
     }
@@ -139,9 +136,8 @@ class SignController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $valid=$this->updatevalidator($request->except('_token'));
-        if( $valid->fails())
-        {
+        $valid = $this->updatevalidator($request->except('_token'));
+        if ($valid->fails()) {
             return redirect()->back()->withErrors($valid)->withInput();
         }
         $update_sign = Sign::findOrFail($id);
@@ -162,7 +158,7 @@ class SignController extends Controller
 
             $photo = time() . '1.' . $request->file('photo')->getClientOriginalExtension();
             $get_path = $request->file('photo')->move(public_path('/images/baydin/'), $photo);
-             $update_sign->photo = $photo;
+            $update_sign->photo = $photo;
 
         }
         if ($request->file('sign_logo')) {
@@ -173,11 +169,11 @@ class SignController extends Controller
 
             $sign_logo = time() . '1.' . $request->file('sign_logo')->getClientOriginalExtension();
             $get_path = $request->file('sign_logo')->move(public_path('/images/baydin/sign'), $sign_logo);
-             $update_sign->sign_logo = $sign_logo;
+            $update_sign->sign_logo = $sign_logo;
 
         }
-       $result = $update_sign->update();
-        return redirect()->route('baydins.index')->with('success','Your Baydin is successfully Updated');
+        $result = $update_sign->update();
+        return redirect()->route('baydins.index')->with('success', 'Your Baydin is successfully Updated');
     }
 
     /**
@@ -190,7 +186,7 @@ class SignController extends Controller
     {
         $delete_sign = Sign::findOrFail($id);
         $delete_sign->delete();
-        return redirect()->route('baydins.index')->with('delete_baydin','Your Baydin is successfully Updated');
+        return redirect()->route('baydins.index')->with('delete_baydin', 'Your Baydin is successfully Updated');
         //
     }
 

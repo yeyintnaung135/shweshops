@@ -1,35 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\super_admin;
+namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use App\Dangerzone;
-use App\AddToCartClickLog;
-use App\Facade\Repair;
-use App\frontuserlogs;
-use App\Guestoruserid;
-use App\Contactus;
-use App\ShopLogActivity;
-use App\Shopowner;
-use App\Ads;
-use App\Item;
-use App\Category;
-use App\Superadmin;
-use App\BuyNowClickLog;
-use App\User;
-use App\GoldPrice;
-use Illuminate\Support\Carbon;
-use App\ShopownerLogActivity;
-use App\VisitorLogActivity;
-use App\ItemLogActivity;
-use App\WhislistClickLog;
+use App\Models\AddToCartClickLog;
+use App\Models\BuyNowClickLog;
+use App\Models\frontuserlogs;
+use App\Models\Guestoruserid;
+use App\Models\Shopowner;
+use App\Models\User;
+use App\Models\WhislistClickLog;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Session;
 
-class DangerzoneController extends Controller
+class DangerZoneController extends Controller
 {
     public function __construct()
     {
@@ -39,18 +24,14 @@ class DangerzoneController extends Controller
     public function showdeletelogs()
     {
 
-
-        
         //base on day count
         $registered = User::all();
-        $alllogscount=frontuserlogs::select(DB::raw('count(*) as total'))->first()->total;
-
+        $alllogscount = frontuserlogs::select(DB::raw('count(*) as total'))->first()->total;
 
         $viewer = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
             ->groupBy('front_user_logs.userorguestid')->groupBy(DB::raw('date(front_user_logs.created_at)'))->whereBetween('front_user_logs.created_at', [Carbon::now()->subDays(3), Carbon::now()])->get();
         $adsview = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
             ->where('status', 'adsclick')->groupBy('front_user_logs.userorguestid')->groupBy(DB::raw('date(front_user_logs.created_at)'))->groupBy('front_user_logs.visited_link')->whereBetween('front_user_logs.created_at', [Carbon::now()->subDays(3), Carbon::now()])->get();
-
 
         $shop = Shopowner::all();
         $shopview = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
@@ -59,17 +40,14 @@ class DangerzoneController extends Controller
         $buynow = BuyNowClickLog::leftjoin('guestoruserid', 'buy_now_click_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
             ->groupBy(DB::raw('case when guestoruserid.user_id = 0 then guestoruserid.guest_id else guestoruserid.user_id end'))->groupBy(DB::raw('date(buy_now_click_logs.created_at)'))->groupBy('buy_now_click_logs.item_id')->whereBetween('buy_now_click_logs.created_at', [Carbon::now()->subDays(3), Carbon::now()])->get();
 
-
         $addtocart = AddToCartClickLog::whereBetween('created_at', [Carbon::now()->subDays(3), Carbon::now()])->get();
         $whishlist = WhislistClickLog::whereBetween('created_at', [Carbon::now()->subDays(3), Carbon::now()])->get();
         //base on day count
-
 
         $uqviewer = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
             ->groupBy('front_user_logs.userorguestid')->whereBetween('front_user_logs.created_at', [Carbon::now()->subDays(3), Carbon::now()])->get();
         $uqadsview = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
             ->where('status', 'adsclick')->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->whereBetween('front_user_logs.created_at', [Carbon::now()->subDays(3), Carbon::now()])->get();
-
 
         $shop = Shopowner::all();
         $uqshopview = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
@@ -77,14 +55,12 @@ class DangerzoneController extends Controller
         $uqbuynow = BuyNowClickLog::leftjoin('guestoruserid', 'buy_now_click_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
             ->groupBy(DB::raw('case when guestoruserid.user_id = 0 then guestoruserid.guest_id else guestoruserid.user_id end'))->groupBy('buy_now_click_logs.item_id')->whereBetween('buy_now_click_logs.created_at', [Carbon::now()->subDays(3), Carbon::now()])->get();
 
-
         //all logs count
         $allviewers = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->whereBetween('front_user_logs.created_at', [Carbon::now()->subDays(3), Carbon::now()])->get();
 
         $alladsviewers = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select(DB::raw("count('*') as total"))->where('front_user_logs.status', 'adsclick')->groupBy('guestoruserid.ip')->whereBetween('front_user_logs.created_at', [Carbon::now()->subDays(3), Carbon::now()])->get();
         $allshopviewers = frontuserlogs::select(DB::raw("count('*') as total"))->where('status', 'shopdetail')->whereBetween('front_user_logs.created_at', [Carbon::now()->subDays(3), Carbon::now()])->first()->total;
         $allbuynow = BuyNowClickLog::select(DB::raw("count('*') as total"))->whereBetween('created_at', [Carbon::now()->subDays(3), Carbon::now()])->first()->total;
-
 
         $newusers = Guestoruserid::where('user_agent', '!=', 'bot')->whereDate('created_at', '=', Carbon::today()->toDateString())->groupBy('ip')->get();
 
@@ -103,7 +79,7 @@ class DangerzoneController extends Controller
         }
         return view('backend.super_admin.dangerzone.deletelogs', ['register' => $registered,
             'newusers' => $countnu,
-            'alllogscount'=>$alllogscount,
+            'alllogscount' => $alllogscount,
             'allbuynow' => $allbuynow,
             'allshopviewers' => $allshopviewers,
             'alladsviewers' => count($alladsviewers),
@@ -124,10 +100,8 @@ class DangerzoneController extends Controller
         $atcdeletelogs = AddToCartClickLog::whereBetween('created_at', [$request->from, $request->to])->delete();
         $userdeletelogs = Guestoruserid::whereBetween('created_at', [$request->from, $request->to])->delete();
         $buynowclicklogs = BuyNowClickLog::whereBetween('created_at', [$request->from, $request->to])->delete();
-        $deletedcount=$request->currenttotal - frontuserlogs::select(DB::raw('count(*) as total'))->first()->total;
+        $deletedcount = $request->currenttotal - frontuserlogs::select(DB::raw('count(*) as total'))->first()->total;
 
-        return response()->json(['success' => true, 'data' => $request->all(),'deleted_count'=>$deletedcount]);
+        return response()->json(['success' => true, 'data' => $request->all(), 'deleted_count' => $deletedcount]);
     }
 }
-
-

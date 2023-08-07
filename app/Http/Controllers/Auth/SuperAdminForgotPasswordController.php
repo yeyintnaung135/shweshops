@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
+use App\Mail\SuperAdminResetEmail;
+use App\Models\Superadmin;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
-use App\Http\Controllers\Controller;
-use App\Superadmin;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\SuperAdminResetEmail;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 
 class SuperAdminForgotPasswordController extends Controller
 {

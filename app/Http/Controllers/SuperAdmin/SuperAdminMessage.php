@@ -1,18 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\super_admin;
-
+namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-
-use App\Messages;
-
+use App\Models\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class SuperadminMessage extends Controller
+class SuperAdminMessage extends Controller
 {
     public function __construct()
     {
@@ -48,8 +44,8 @@ class SuperadminMessage extends Controller
         $totalRecords = Messages::where('messages.created_at', '<', Carbon::now()->subMinute())->count();
         $totalRecordswithFilter = Messages::where('messages.created_at', '<', Carbon::now()->subMinute())->count();
 
-        if($columnName == 'expired_in'){
-            $columnName='message_created_at';
+        if ($columnName == 'expired_in') {
+            $columnName = 'message_created_at';
         }
 
         $records = Messages::leftjoin('users', 'users.id', '=', 'message_user_id')->leftjoin('shop_owners', 'shop_owners.id', '=', 'message_shop_id')
@@ -62,10 +58,10 @@ class SuperadminMessage extends Controller
             ->get();
         $data_arr = array();
         foreach ($records as $record) {
-            if(Str::contains($record->message, 'image')){
-                $checkedstr=$record->message;
-            }else{
-                $checkedstr=Str::limit($record->message, 50);
+            if (Str::contains($record->message, 'image')) {
+                $checkedstr = $record->message;
+            } else {
+                $checkedstr = Str::limit($record->message, 50);
             }
             $cd = Carbon::parse($record->message_created_at);
             $expiredMonth = Carbon::now()->subMinute();
@@ -78,7 +74,7 @@ class SuperadminMessage extends Controller
                 "message" => $checkedstr,
                 "expired_in" => $diff,
                 "action" => $record->mid,
-                "message_created_at" =>  date('F d, Y ( h:i A )',strtotime($record->message_created_at))
+                "message_created_at" => date('F d, Y ( h:i A )', strtotime($record->message_created_at)),
             );
         }
         $response = array(

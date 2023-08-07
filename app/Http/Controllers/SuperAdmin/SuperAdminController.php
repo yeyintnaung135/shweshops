@@ -1,43 +1,34 @@
 <?php
 
-namespace App\Http\Controllers\super_admin;
+namespace App\Http\Controllers\SuperAdmin;
 
-
-use App\AddToCartClickLog;
-use App\Facade\Repair;
-use App\frontuserlogs;
-use App\Guestoruserid;
 use App\Http\Controllers\Controller;
-use App\Contactus;
-use App\ShopLogActivity;
-use App\Shopowner;
-use App\Ads;
-use App\Item;
-use App\Category;
-use App\Superadmin;
-use App\BuyNowClickLog;
-use App\User;
-use App\GoldPrice;
-use Illuminate\Support\Carbon;
-use App\ShopownerLogActivity;
-use App\VisitorLogActivity;
-use App\ItemLogActivity;
-use App\WhislistClickLog;
+use App\Http\Controllers\traid\calculatecat;
+use App\Models\AddToCartClickLog;
+use App\Models\BuyNowClickLog;
+use App\Models\Category;
+use App\Models\Contactus;
+use App\Models\frontuserlogs;
+use App\Models\GoldPrice;
+use App\Models\Guestoruserid;
+use App\Models\Item;
+use App\Models\Shopowner;
+use App\Models\ShopownerLogActivity;
+use App\Models\Superadmin;
+use App\Models\User;
+use App\Models\WhislistClickLog;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\traid\calculatecat;
-use Illuminate\Support\Facades\Cache;
-
 
 class SuperAdminController extends Controller
 {
     use calculatecat;
     public function __construct()
     {
-        $this->middleware(['auth:super_admin', 'admin']);
+        $this->middleware(['auth:super_admin']);
     }
 
     /**
@@ -130,85 +121,77 @@ class SuperAdminController extends Controller
     public function index()
     {
 
-        $storecattocache=Cache::put('cat',$this->getallcatcount());
+        $storecattocache = Cache::put('cat', $this->getallcatcount());
 
         // return redirect(url('backside/super_admin/customers'));
-       //base on day count
-       $registered = User::all();
+        //base on day count
+        $registered = User::all();
 
+        $viewer = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
+            ->groupBy('front_user_logs.userorguestid')->groupBy(DB::raw('date(front_user_logs.created_at)'))->get();
+        $adsview = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
+            ->where('status', 'adsclick')->groupBy('front_user_logs.userorguestid')->groupBy(DB::raw('date(front_user_logs.created_at)'))->groupBy('front_user_logs.visited_link')->get();
 
-       $viewer = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
-           ->groupBy('front_user_logs.userorguestid')->groupBy(DB::raw('date(front_user_logs.created_at)'))->get();
-       $adsview = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
-           ->where('status', 'adsclick')->groupBy('front_user_logs.userorguestid')->groupBy(DB::raw('date(front_user_logs.created_at)'))->groupBy('front_user_logs.visited_link')->get();
+        $shop = Shopowner::all();
+        $shopview = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
+            ->where('status', 'shopdetail')->groupBy('front_user_logs.userorguestid')->groupBy(DB::raw('date(front_user_logs.created_at)'))->groupBy('front_user_logs.visited_link')->get();
 
+        $buynow = BuyNowClickLog::leftjoin('guestoruserid', 'buy_now_click_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
+            ->groupBy(DB::raw('case when guestoruserid.user_id = 0 then guestoruserid.guest_id else guestoruserid.user_id end'))->groupBy(DB::raw('date(buy_now_click_logs.created_at)'))->groupBy('buy_now_click_logs.item_id')->get();
 
-       $shop = Shopowner::all();
-       $shopview = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
-           ->where('status', 'shopdetail')->groupBy('front_user_logs.userorguestid')->groupBy(DB::raw('date(front_user_logs.created_at)'))->groupBy('front_user_logs.visited_link')->get();
+        $addtocart = AddToCartClickLog::all();
+        $whishlist = WhislistClickLog::all();
+        //base on day count
 
-       $buynow = BuyNowClickLog::leftjoin('guestoruserid', 'buy_now_click_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
-           ->groupBy(DB::raw('case when guestoruserid.user_id = 0 then guestoruserid.guest_id else guestoruserid.user_id end'))->groupBy(DB::raw('date(buy_now_click_logs.created_at)'))->groupBy('buy_now_click_logs.item_id')->get();
+        $uqviewer = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
+            ->groupBy('front_user_logs.userorguestid')->get();
+        $uqadsview = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
+            ->where('status', 'adsclick')->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->get();
 
+        $shop = Shopowner::all();
+        $uqshopview = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
+            ->where('status', 'shopdetail')->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->get();
+        $uqbuynow = BuyNowClickLog::leftjoin('guestoruserid', 'buy_now_click_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
+            ->groupBy(DB::raw('case when guestoruserid.user_id = 0 then guestoruserid.guest_id else guestoruserid.user_id end'))->groupBy('buy_now_click_logs.item_id')->get();
 
-       $addtocart = AddToCartClickLog::all();
-       $whishlist = WhislistClickLog::all();
-       //base on day count
+        //all logs count
+        $allviewers = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->get();
 
+        $alladsviewers = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select(DB::raw("count('*') as total"))->where('front_user_logs.status', 'adsclick')->groupBy('guestoruserid.ip')->get();
+        $allshopviewers = frontuserlogs::select(DB::raw("count('*') as total"))->where('status', 'shopdetail')->first()->total;
+        $allbuynow = BuyNowClickLog::select(DB::raw("count('*') as total"))->first()->total;
 
-       $uqviewer = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
-           ->groupBy('front_user_logs.userorguestid')->get();
-       $uqadsview = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
-           ->where('status', 'adsclick')->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->get();
+        $newusers = Guestoruserid::where('user_agent', '!=', 'bot')->whereDate('created_at', '=', Carbon::today()->toDateString())->groupBy('ip')->get();
 
+        $countnu = 0;
+        foreach ($newusers as $nu) {
+            $checkhnucount = frontuserlogs::where('userorguestid', $nu->id)->first();
 
-       $shop = Shopowner::all();
-       $uqshopview = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
-           ->where('status', 'shopdetail')->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->get();
-       $uqbuynow = BuyNowClickLog::leftjoin('guestoruserid', 'buy_now_click_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
-           ->groupBy(DB::raw('case when guestoruserid.user_id = 0 then guestoruserid.guest_id else guestoruserid.user_id end'))->groupBy('buy_now_click_logs.item_id')->get();
+            $checkhnu = frontuserlogs::where('userorguestid', $nu->id)->whereDate('created_at', '<', Carbon::now()->toDate())->get();
 
+            if (count($checkhnu) > 0 or empty($checkhnucount)) {
+                continue;
+            } else {
+                $countnu += 1;
+            }
 
-       //all logs count
-       $allviewers = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->get();
+        }
+        Cache::put('cat', 'value');
 
-       $alladsviewers = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select(DB::raw("count('*') as total"))->where('front_user_logs.status', 'adsclick')->groupBy('guestoruserid.ip')->get();
-       $allshopviewers = frontuserlogs::select(DB::raw("count('*') as total"))->where('status', 'shopdetail')->first()->total;
-       $allbuynow = BuyNowClickLog::select(DB::raw("count('*') as total"))->first()->total;
+        return view('backend.super_admin.dashboard', ['register' => $registered,
+            'newusers' => $countnu,
+            'allbuynow' => $allbuynow,
+            'allshopviewers' => $allshopviewers,
+            'alladsviewers' => count($alladsviewers),
+            'allviewers' => count($allviewers),
+            'uqbuynow' => $uqbuynow,
+            'uqshopview' => $uqshopview,
+            'uqadsview' => $uqadsview,
+            'uqviewer' => $uqviewer,
+            'whishlist' => $whishlist,
+            'addtocart' => $addtocart, 'buynow' => $buynow, 'shopview' => $shopview, 'shop' => $shop, 'adsview' => $adsview, 'viewer' => $viewer]);
 
-
-       $newusers = Guestoruserid::where('user_agent','!=','bot')->whereDate('created_at', '=', Carbon::today()->toDateString())->groupBy('ip')->get();
-
-       $countnu = 0;
-       foreach ($newusers as $nu) {
-           $checkhnucount=frontuserlogs::where('userorguestid', $nu->id)->first();
-
-           $checkhnu = frontuserlogs::where('userorguestid', $nu->id)->whereDate('created_at', '<', Carbon::now()->toDate())->get();
-
-           if (count($checkhnu) > 0 or empty($checkhnucount)) {
-               continue;
-           } else {
-               $countnu += 1;
-           }
-
-       }
-       Cache::put('cat', 'value');
-
-
-       return view('backend.super_admin.dashboard', ['register' => $registered,
-           'newusers' => $countnu,
-           'allbuynow' => $allbuynow,
-           'allshopviewers' => $allshopviewers,
-           'alladsviewers' => count($alladsviewers),
-           'allviewers' => count($allviewers),
-           'uqbuynow' => $uqbuynow,
-           'uqshopview' => $uqshopview,
-           'uqadsview' => $uqadsview,
-           'uqviewer' => $uqviewer,
-           'whishlist' => $whishlist,
-           'addtocart' => $addtocart, 'buynow' => $buynow, 'shopview' => $shopview, 'shop' => $shop, 'adsview' => $adsview, 'viewer' => $viewer]);
-
- }
+    }
     public function all_counts(Request $request)
     {
         //base on day count
@@ -219,8 +202,7 @@ class SuperAdminController extends Controller
             ->whereBetween('front_user_logs.created_at', [$request->from, $request->to])
             ->groupBy('front_user_logs.userorguestid')->groupBy(DB::raw('date(front_user_logs.created_at)'))->get();
         $adsview = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
-            ->where('status', 'adsclick')->whereBetween('front_user_logs.created_at', [$request->from, $request->to]) ->groupBy('front_user_logs.userorguestid')->groupBy(DB::raw('date(front_user_logs.created_at)'))->get();
-
+            ->where('status', 'adsclick')->whereBetween('front_user_logs.created_at', [$request->from, $request->to])->groupBy('front_user_logs.userorguestid')->groupBy(DB::raw('date(front_user_logs.created_at)'))->get();
 
         $shop = Shopowner::all();
         $shopview = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
@@ -229,17 +211,14 @@ class SuperAdminController extends Controller
         $buynow = BuyNowClickLog::leftjoin('guestoruserid', 'buy_now_click_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
             ->whereBetween('buy_now_click_logs.created_at', [$request->from, $request->to])->groupBy(DB::raw('case when guestoruserid.user_id = 0 then guestoruserid.guest_id else guestoruserid.user_id end'))->groupBy(DB::raw('date(buy_now_click_logs.created_at)'))->groupBy('buy_now_click_logs.item_id')->get();
 
-
         $addtocart = AddToCartClickLog::whereBetween('created_at', [$request->from, $request->to])->get();
         $whishlist = WhislistClickLog::whereBetween('created_at', [$request->from, $request->to])->get();
         //base on day count
-
 
         $uqviewer = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
             ->whereBetween('front_user_logs.created_at', [$request->from, $request->to])->groupBy('front_user_logs.userorguestid')->get();
         $uqadsview = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
             ->where('status', 'adsclick')->whereBetween('front_user_logs.created_at', [$request->from, $request->to])->groupBy('front_user_logs.userorguestid')->get();
-
 
         $shop = Shopowner::whereBetween('created_at', [$request->from, $request->to])->get();
         $uqshopview = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
@@ -247,22 +226,19 @@ class SuperAdminController extends Controller
         $uqbuynow = BuyNowClickLog::leftjoin('guestoruserid', 'buy_now_click_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
             ->whereBetween('buy_now_click_logs.created_at', [$request->from, $request->to])->groupBy(DB::raw('case when guestoruserid.user_id = 0 then guestoruserid.guest_id else guestoruserid.user_id end'))->groupBy('buy_now_click_logs.item_id')->get();
 
-
         //all logs count
         $allviewers = frontuserlogs::select(DB::raw("count('*') as total"))->whereBetween('created_at', [$request->from, $request->to])->first()->total;
         $alladsviewers = frontuserlogs::select(DB::raw("count('*') as total"))->whereBetween('created_at', [$request->from, $request->to])->where('status', 'adsclick')->first()->total;
         $allshopviewers = frontuserlogs::select(DB::raw("count('*') as total"))->whereBetween('created_at', [$request->from, $request->to])->where('status', 'shopdetail')->first()->total;
         $allbuynow = BuyNowClickLog::select(DB::raw("count('*') as total"))->whereBetween('created_at', [$request->from, $request->to])->first()->total;
 
-
-        $newusers = Guestoruserid::where('user_agent','!=','bot')->whereBetween('created_at', [Carbon::createFromDate($request->from), Carbon::createFromDate($request->to)])->groupBy('ip')->get();
-
+        $newusers = Guestoruserid::where('user_agent', '!=', 'bot')->whereBetween('created_at', [Carbon::createFromDate($request->from), Carbon::createFromDate($request->to)])->groupBy('ip')->get();
 
         $countnu = 0;
         foreach ($newusers as $nu) {
-            $checkhnucount=frontuserlogs::where('userorguestid', $nu->id)->first();
+            $checkhnucount = frontuserlogs::where('userorguestid', $nu->id)->first();
 
-            $checkhnu = frontuserlogs::where('userorguestid', $nu->id)->whereDate('created_at', '<',Carbon::createFromDate($request->from))->get();
+            $checkhnu = frontuserlogs::where('userorguestid', $nu->id)->whereDate('created_at', '<', Carbon::createFromDate($request->from))->get();
 
             if (count($checkhnu) > 0 or empty($checkhnucount)) {
                 continue;
@@ -299,7 +275,6 @@ class SuperAdminController extends Controller
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
 
-
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
         }
@@ -330,22 +305,22 @@ class SuperAdminController extends Controller
             $columnName = 'front_user_logs.status';
         }
         $records = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
-        ->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')
-        ->leftjoin('items', 'front_user_logs.product_id', '=', 'items.id')
+            ->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')
+            ->leftjoin('items', 'front_user_logs.product_id', '=', 'items.id')
 
-        ->orderBy($columnName, $columnSortOrder)
+            ->orderBy($columnName, $columnSortOrder)
             ->orderBy('front_user_logs.created_at', 'desc')
             ->where(function ($query) use ($searchValue) {
                 $query->where('front_user_logs.id', 'like', '%' . $searchValue . '%')
-                      ->orWhere('front_user_logs.userorguestid', 'like', '%' . $searchValue . '%')
-                      ->orWhere('users.username', 'like', '%' . $searchValue . '%')
-                      ->orWhere('items.name', 'like', '%' . $searchValue . '%')
-                      ->orWhere('items.product_code', 'like', '%' . $searchValue . '%')
-                      ->orWhere('front_user_logs.status', 'like', '%' . $searchValue . '%')
-                      ;
+                    ->orWhere('front_user_logs.userorguestid', 'like', '%' . $searchValue . '%')
+                    ->orWhere('users.username', 'like', '%' . $searchValue . '%')
+                    ->orWhere('items.name', 'like', '%' . $searchValue . '%')
+                    ->orWhere('items.product_code', 'like', '%' . $searchValue . '%')
+                    ->orWhere('front_user_logs.status', 'like', '%' . $searchValue . '%')
+                ;
             })
             ->whereBetween('front_user_logs.created_at', [$searchByFromdate, $searchByTodate])
-            ->select('*', 'front_user_logs.created_at as fulct', 'front_user_logs.id as fulid','guestoruserid.user_id as gouid')
+            ->select('*', 'front_user_logs.created_at as fulct', 'front_user_logs.id as fulid', 'guestoruserid.user_id as gouid')
             ->skip($start)
             ->take($rowperpage)
             ->get();
@@ -361,29 +336,28 @@ class SuperAdminController extends Controller
                 $id = $record->gouid;
 
             }
-            $togetproductdata=Item::where('id',$record->product_id)->first();
-            if($record->product_id != 0){
-                $productname=$togetproductdata->name.' (P)';
-                $productcode=$togetproductdata->product_code;
+            $togetproductdata = Item::where('id', $record->product_id)->first();
+            if ($record->product_id != 0) {
+                $productname = $togetproductdata->name . ' (P)';
+                $productcode = $togetproductdata->product_code;
 
-            }else{
-                $productcode=0;
-                if($record->shop_id != 0){
-                    $getshopdata=Shopowner::where('id',$record->shop_id)->first();
-                    $productname=$getshopdata->shop_name.' (S)';
+            } else {
+                $productcode = 0;
+                if ($record->shop_id != 0) {
+                    $getshopdata = Shopowner::where('id', $record->shop_id)->first();
+                    $productname = $getshopdata->shop_name . ' (S)';
 
-                }else{
-                    $productname=strtoupper($record->status);
+                } else {
+                    $productname = strtoupper($record->status);
 
                 }
-
 
             }
 
             $data_arr[] = array(
                 "id" => $record->fulid,
-                'status'=>$productname,
-                'product_code'=>$productcode,
+                'status' => $productname,
+                'product_code' => $productcode,
                 "user_name" => $getuser,
                 "user_id" => $id,
                 "created_at" => date('F d, Y ( h:i A )', strtotime($record->fulct)),
@@ -422,7 +396,6 @@ class SuperAdminController extends Controller
 
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
-
 
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
@@ -470,7 +443,6 @@ class SuperAdminController extends Controller
 
         $data_arr = array();
 
-
         foreach ($records as $record) {
             if ($record->user_id == 0) {
                 $getuser = 'guest';
@@ -504,7 +476,6 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.count_detail_list.shopviewercountlist');
     }
 
-
     public function getAllShopviewerCount(Request $request)
     {
         $draw = $request->get('draw');
@@ -523,7 +494,6 @@ class SuperAdminController extends Controller
 
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
-
 
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
@@ -567,7 +537,6 @@ class SuperAdminController extends Controller
             ->get();
 
         $data_arr = array();
-
 
         foreach ($records as $record) {
             if ($record->user_id == 0) {
@@ -621,7 +590,6 @@ class SuperAdminController extends Controller
 
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
-
 
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
@@ -729,7 +697,6 @@ class SuperAdminController extends Controller
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
 
-
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
         }
@@ -816,7 +783,6 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.count_detail_list.wishlistcountlist');
     }
 
-
     public function getAllWishlistCount(Request $request)
     {
         $draw = $request->get('draw');
@@ -835,7 +801,6 @@ class SuperAdminController extends Controller
 
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
-
 
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
@@ -918,10 +883,8 @@ class SuperAdminController extends Controller
         echo json_encode($response);
     }
 
-
     public function productdailycount()
     {
-
 
         $itemlog = ShopownerLogActivity::where(['action' => 'create'])->get();
         $item = Item::all();
@@ -947,10 +910,8 @@ class SuperAdminController extends Controller
             })
             ->sortBy('created_at');
 
-
         return view('backend.super_admin.dailycount.productdailycount', ['itemcategory' => $itemcategory, 'item' => $item, 'itemlog' => $itemlog, 'itemtotal' => $itemtotal, 'itemdate' => $itemdate]);
     }
-
 
     public function shopdailycount()
     {
@@ -970,10 +931,8 @@ class SuperAdminController extends Controller
             })
             ->sortBy('created_at');
 
-
         return view('backend.super_admin.dailycount.shopdailycount', ['itemlog' => $itemlog, 'itemtotal' => $itemtotal, 'itemdate' => $itemdate]);
     }
-
 
     public function productdailycount_clear()
     {
@@ -1005,9 +964,10 @@ class SuperAdminController extends Controller
         return redirect()->back();
     }
 
-    public function delete(Request $request) {
-      Superadmin::where('id',$request->id)->delete();
-      return redirect()->back();
+    public function delete(Request $request)
+    {
+        Superadmin::where('id', $request->id)->delete();
+        return redirect()->back();
     }
 
     public function contactus_get()
@@ -1056,34 +1016,36 @@ class SuperAdminController extends Controller
         }
     }
 
-    public function gold_price_get() {
-      $gold_price = GoldPrice::first();
-      return view('backend.super_admin.gold_price.edit', ['gold_price' => $gold_price]);
+    public function gold_price_get()
+    {
+        $gold_price = GoldPrice::first();
+        return view('backend.super_admin.gold_price.edit', ['gold_price' => $gold_price]);
     }
 
-    public function gold_price_update(Request $request) {
-      $input = $request->except('_token', '_method');
-      $gold_price = GoldPrice::first();
-      $rules = [
-          'sell_price' => ['required', 'max:30'],
-          'buy_price' => ['required', 'max:30'],
-      ];
-      $validate = Validator::make($input, $rules);
+    public function gold_price_update(Request $request)
+    {
+        $input = $request->except('_token', '_method');
+        $gold_price = GoldPrice::first();
+        $rules = [
+            'sell_price' => ['required', 'max:30'],
+            'buy_price' => ['required', 'max:30'],
+        ];
+        $validate = Validator::make($input, $rules);
 
-      if ($validate->fails()) {
-          return redirect()->back()->withErrors($validate)->withInput();
-      }
+        if ($validate->fails()) {
+            return redirect()->back()->withErrors($validate)->withInput();
+        }
 
-      if($gold_price) {
-        $result = GoldPrice::find($gold_price['id'])->update($input);
-      } else {
-        $result = GoldPrice::create($input);
-      }
+        if ($gold_price) {
+            $result = GoldPrice::find($gold_price['id'])->update($input);
+        } else {
+            $result = GoldPrice::create($input);
+        }
 
-      if ($result) {
+        if ($result) {
 
-          return redirect()->route('superAdmin.gold_price_get')->with(['status' => 'success', 'message' => 'Gold price was successfully Edited']);
-      }
+            return redirect()->route('superAdmin.gold_price_get')->with(['status' => 'success', 'message' => 'Gold price was successfully Edited']);
+        }
     }
 
 }

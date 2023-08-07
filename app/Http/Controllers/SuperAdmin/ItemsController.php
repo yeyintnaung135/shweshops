@@ -1,19 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\super_admin;
+namespace App\Http\Controllers\SuperAdmin;
 
-use App\Item;
-use App\Shopowner;
-use App\ShopBanner;
-use App\CountSetting;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use App\SuperadminLogActivity;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\File;
-use App\Http\Controllers\traid\ShopDelete;
+use App\Models\Item;
+use App\Models\ShopBanner;
+use App\Models\Shopowner;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ItemsController extends Controller
 {
@@ -21,19 +16,19 @@ class ItemsController extends Controller
     {
         $this->middleware(['auth:super_admin', 'admin']);
     }
-    public function total_create_count(Request $request){
-        $allcount=Item::all();
-        $allcountbydate=Item::whereBetween('created_at',[$request->from,$request->to])->get();
-        return response()->json(['all'=>count($allcount),'alld'=>count($allcountbydate)]);
+    public function total_create_count(Request $request)
+    {
+        $allcount = Item::all();
+        $allcountbydate = Item::whereBetween('created_at', [$request->from, $request->to])->get();
+        return response()->json(['all' => count($allcount), 'alld' => count($allcountbydate)]);
     }
 
     public function all()
     {
         $shopowner = Shopowner::all();
-        return view('backend.super_admin.items.all',['shopowner'=>$shopowner]);
+        return view('backend.super_admin.items.all', ['shopowner' => $shopowner]);
 
     }
-
 
     public function getitemsajax(Request $request)
     {
@@ -55,14 +50,13 @@ class ItemsController extends Controller
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
 
-
-        $totalRecords = Item::leftjoin('shop_owners','items.shop_id','=','shop_owners.id')
-            ->where(function ($query) use($searchValue) {
-                if (strtolower($searchValue) == "premium"){
+        $totalRecords = Item::leftjoin('shop_owners', 'items.shop_id', '=', 'shop_owners.id')
+            ->where(function ($query) use ($searchValue) {
+                if (strtolower($searchValue) == "premium") {
                     $premium = '%' . "yes" . '%';
-                }elseif(strtolower($searchValue) == "normal"){
+                } elseif (strtolower($searchValue) == "normal") {
                     $premium = '%' . "no" . '%';
-                }else{
+                } else {
                     $premium = $searchValue;
                 }
                 $query->where('shop_owners.premium', 'like', $premium)->orWhere('shop_owners.name', 'like', '%' . $searchValue . '%')
@@ -76,20 +70,20 @@ class ItemsController extends Controller
 
             ->whereBetween('items.created_at', [$searchByFromdate, $searchByTodate])->get();
         $totalRecordswithFilter = $totalRecords;
-        if($columnName == 'name'){
-            $columnName='shop_owners.shop_name';
+        if ($columnName == 'name') {
+            $columnName = 'shop_owners.shop_name';
         }
-        if($columnName == 'created_at'){
-            $columnName='items.created_at';
+        if ($columnName == 'created_at') {
+            $columnName = 'items.created_at';
         }
-        $records = Item::leftjoin('shop_owners','items.shop_id','=','shop_owners.id')->select('shop_owners.*',DB::raw("count('*') as total"),'items.created_at as ica')
-        ->orderBy($columnName,$columnSortOrder)
-        ->where(function ($query) use($searchValue) {
-                if (strtolower($searchValue) == "premium"){
+        $records = Item::leftjoin('shop_owners', 'items.shop_id', '=', 'shop_owners.id')->select('shop_owners.*', DB::raw("count('*') as total"), 'items.created_at as ica')
+            ->orderBy($columnName, $columnSortOrder)
+            ->where(function ($query) use ($searchValue) {
+                if (strtolower($searchValue) == "premium") {
                     $premium = '%' . "yes" . '%';
-                }elseif(strtolower($searchValue) == "normal"){
+                } elseif (strtolower($searchValue) == "normal") {
                     $premium = '%' . "no" . '%';
-                }else{
+                } else {
                     $premium = $searchValue;
                 }
                 $query->where('shop_owners.premium', 'like', $premium)->orWhere('shop_owners.name', 'like', '%' . $searchValue . '%')
@@ -108,14 +102,14 @@ class ItemsController extends Controller
         $data_arr = array();
 
         foreach ($records as $record) {
-            $checkbanner=ShopBanner::where('shop_owner_id',$record->id)->first();
-            if(empty($checkbanner)){
+            $checkbanner = ShopBanner::where('shop_owner_id', $record->id)->first();
+            if (empty($checkbanner)) {
 
-            }else{
-                $record->shop_banner=ShopBanner::where('shop_owner_id',$record->id)->first()->location;
+            } else {
+                $record->shop_banner = ShopBanner::where('shop_owner_id', $record->id)->first()->location;
 
             }
-            $shopname=Shopowner::where('id',$record->id)->first()->shop_name;
+            $shopname = Shopowner::where('id', $record->id)->first()->shop_name;
             $data_arr[] = array(
                 "id" => $record->id,
                 "name" => $shopname,
@@ -133,7 +127,7 @@ class ItemsController extends Controller
                 "address" => $record->address,
                 "main_phone" => $record->main_phone,
                 "action" => $record->id,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->ica))
+                "created_at" => date('F d, Y ( h:i A )', strtotime($record->ica)),
             );
         }
 

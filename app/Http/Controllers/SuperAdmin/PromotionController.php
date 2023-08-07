@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\super_admin;
+namespace App\Http\Controllers\SuperAdmin;
 
-use App\Shopowner;
-use App\Promotions;
 use App\Facade\Repair;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use GuzzleHttp\Promise\Promise;
 use App\Http\Controllers\Controller;
+use App\Models\Promotions;
+use App\Models\Shopowner;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PromotionController extends Controller
 {
@@ -31,7 +30,7 @@ class PromotionController extends Controller
     {
         $shopowners = Shopowner::all();
         $promotions = Promotions::latest()->paginate(5);
-        return view('backend.super_admin.news_&_events.promotions.create',compact('shopowners','promotions'));
+        return view('backend.super_admin.news_&_events.promotions.create', compact('shopowners', 'promotions'));
     }
 
     /**
@@ -48,22 +47,22 @@ class PromotionController extends Controller
             'file_upload' => 'required|mimes:jpeg,bmp,png,jpg',
         ]);
 
-        $file =  $request->file('file_upload');
+        $file = $request->file('file_upload');
         $dir = "images/news_&_events/promotion";
         $promotion = new Promotions();
         $promotion->title = $request->title;
-        if($request->slug){
+        if ($request->slug) {
             $promotion->slug = Str::slug($request->slug);
-        }else{
+        } else {
             $promotion->slug = Str::slug($request->title) . "-" . uniqid();
         }
         $promotion->description = $request->description;
-        $promotion->photo = Repair::fileStore($file,$dir);
+        $promotion->photo = Repair::fileStore($file, $dir);
         $promotion->shop_id = $request->shop_id;
 
         $promotion->save();
 
-       return redirect()->back()->with('success','Promotion Create Successfully');
+        return redirect()->back()->with('success', 'Promotion Create Successfully');
     }
 
     /**
@@ -84,11 +83,11 @@ class PromotionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {  
+    {
         $promotion = Promotions::findOrFail($id);
         $shopowners = Shopowner::all();
         $promotions = Promotions::latest()->paginate(5);
-        return view('backend.super_admin.news_&_events.promotions.edit',compact('shopowners','promotion','promotions'));
+        return view('backend.super_admin.news_&_events.promotions.edit', compact('shopowners', 'promotion', 'promotions'));
     }
 
     /**
@@ -104,7 +103,7 @@ class PromotionController extends Controller
             'file_upload' => 'mimes:jpeg,bmp,png,jpg',
         ]);
 
-        $file =  $request->file('file_upload');
+        $file = $request->file('file_upload');
         $dir = "images/news_&_events/promotion";
         $promotion = Promotions::findOrFail($id);
         $promotion->shop_id = $request->shop_id;
@@ -115,12 +114,12 @@ class PromotionController extends Controller
         //     $promotion->slug = Str::slug($request->title) . "-" . uniqid();
         // }
         $promotion->description = $request->description;
-        if($request->hasFile('file_upload')){
-            $promotion->photo = Repair::fileStore($file,$dir);
+        if ($request->hasFile('file_upload')) {
+            $promotion->photo = Repair::fileStore($file, $dir);
         }
         $promotion->update();
 
-       return redirect()->back()->with('success','Promotion Update Successfully');
+        return redirect()->back()->with('success', 'Promotion Update Successfully');
     }
 
     /**
@@ -132,6 +131,6 @@ class PromotionController extends Controller
     public function destroy($id)
     {
         Promotions::findOrFail($id)->delete();
-        return redirect('backside/super_admin/promotion/create')->with('success','Promotion Delete Successfully');
+        return redirect('backside/super_admin/promotion/create')->with('success', 'Promotion Delete Successfully');
     }
 }

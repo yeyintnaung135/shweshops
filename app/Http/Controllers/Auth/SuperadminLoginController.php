@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Superadmin;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class SuperadminLoginController extends Controller
 {
@@ -33,47 +32,47 @@ class SuperadminLoginController extends Controller
     //if user emial and password is correct loginned
     public function login(Request $request)
     {
-        
+
         $data = $request->except('_token');
-        $validator= Validator::make($data, [
+        $validator = Validator::make($data, [
             'email' => ['required', 'string', 'email', 'max:50'],
             'password' => ['required', 'string', 'min:8'],
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
 
         }
 
-        if(Auth::guard('super_admin')->attempt(['email' => $data['email'], 'password' => $data['password']])) {
-            
-             if(Auth::guard('super_admin')->check()){
-                if( Auth::guard('super_admin')->user()->role == 0 || Auth::guard('super_admin')->user()->role == 1 || Auth::guard('super_admin')->user()->role == 4){
-                    return redirect(RouteServiceProvider::SUPERADMIN); 
-                }else{
-                    return redirect()->back()->with('message','Login Fail');
+        if (Auth::guard('super_admin')->attempt(['email' => $data['email'], 'password' => $data['password']])) {
+
+            if (Auth::guard('super_admin')->check()) {
+                if (Auth::guard('super_admin')->user()->role == 0 || Auth::guard('super_admin')->user()->role == 1 || Auth::guard('super_admin')->user()->role == 4) {
+                    return redirect(RouteServiceProvider::SUPERADMIN);
+                } else {
+                    return redirect()->back()->with('message', 'Login Fail');
                 }
-             }
-        }else{
-            return redirect()->back()->with('message','Login Fail');
+            }
+        } else {
+            return redirect()->back()->with('message', 'Login Fail');
         }
 
     }
     //if user emial and password is correct loginned
 
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
 
         //custom code by yk
-        $guest=Session::get('guest_id');
+        $guest = Session::get('guest_id');
         //custom code by yk
         $request->session()->invalidate();
- 
+
         $request->session()->regenerateToken();
         Auth::guard('super_admin')->logout();
-             //custom code by yk
-             Session::put('guest_id',$guest);
-             //custom code by yk
+        //custom code by yk
+        Session::put('guest_id', $guest);
+        //custom code by yk
         return redirect(RouteServiceProvider::HOME);
     }
-      
 
 }
