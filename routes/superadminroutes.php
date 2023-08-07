@@ -1,6 +1,8 @@
 <?php
-use App\Http\Controllers;
+//for superadmin
+use App\Http\Controllers\Auth;
 
+Route::group(['prefix' => 'backside/super_admin', 'as' => 'backside.super_admin.'], function () {
 
     //superadmin forgot password
     Route::get('/password/reset', [Auth\SuperAdminForgotPasswordController::class,'showLinkRequestForm'])->name('password.request');
@@ -77,7 +79,7 @@ use App\Http\Controllers;
     Route::post('delete',  [super_admin\SuperAdminController::class,'delete']);
     //    auth
     Route::get('login',[Auth\SuperadminLoginController::class,'loginform']);
-    Route::post('login', [Auth\SuperadminLoginController::class,'login']);
+    Route::post('login', [Auth\SuperadminLoginController::class,'login'])->name('login');
 
     Route::post('logout',  [Auth\SuperadminLoginController::class,'logout']);
     Route::get('items/getitemsajax', [super_admin\ItemsController::class,'getitemsajax']);
@@ -99,7 +101,7 @@ use App\Http\Controllers;
         Route::delete('deletebyone/{id}', [super_admin\SuperadminMessage::class,'deletebyone'])->name('delete');
         Route::post('deletemultiple', [super_admin\SuperadminMessage::class,'deletebyone']);
     });
-
+});
 //gold price
 Route::get('backside/super_admin/gold_price', [super_admin\SuperAdminController::class,'gold_price_get'])->name('superAdmin.gold_price_get');
 Route::put('backside/super_admin/gold_price', [super_admin\SuperAdminController::class,'gold_price_update'])->name('superAdmin.gold_price_update');

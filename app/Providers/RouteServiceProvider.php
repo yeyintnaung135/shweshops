@@ -22,7 +22,6 @@ class RouteServiceProvider extends ServiceProvider
      * @var string
      */
     public const HOME = '/';
-    public const SUPERADMIN = 'backside/super_admin';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -45,6 +44,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapApiRoutes();
 
         $this->mapWebRoutes();
+        $this->mapSuperAdminRoutes();
 
         //
     }
@@ -62,8 +62,14 @@ class RouteServiceProvider extends ServiceProvider
             ->namespace($this->namespace)
             ->group(base_path('routes/web.php'));
 
+    }
+
+    protected function mapSuperAdminRoutes()
+    {
+        
+
         Route::middleware('web')
-            ->namespace($this->namespace)
+            ->namespace('App\Http\Controllers\super_admin')
             ->group(base_path('routes/superadminroutes.php'));
     }
 
