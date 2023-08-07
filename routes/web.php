@@ -19,6 +19,8 @@ use App\Http\Controllers\traid\ykimage;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\FrontForDiscountController;
 use App\Http\Controllers\SupportFrontController;
+use App\Http\Controllers\FrontShopController;
+
 use App\Http\Controllers\Shwe_News;
 
 use App\Http\Controllers\FrontForCatController;

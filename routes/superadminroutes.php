@@ -1,7 +1,6 @@
 <?php
-//for superadmin
+use App\Http\Controllers;
 
-Route::group(['prefix' => 'backside/super_admin', 'as' => 'backside.super_admin.'], function () {
 
     //superadmin forgot password
     Route::get('/password/reset', [Auth\SuperAdminForgotPasswordController::class,'showLinkRequestForm'])->name('password.request');
@@ -100,7 +99,7 @@ Route::group(['prefix' => 'backside/super_admin', 'as' => 'backside.super_admin.
         Route::delete('deletebyone/{id}', [super_admin\SuperadminMessage::class,'deletebyone'])->name('delete');
         Route::post('deletemultiple', [super_admin\SuperadminMessage::class,'deletebyone']);
     });
-});
+
 //gold price
 Route::get('backside/super_admin/gold_price', [super_admin\SuperAdminController::class,'gold_price_get'])->name('superAdmin.gold_price_get');
 Route::put('backside/super_admin/gold_price', [super_admin\SuperAdminController::class,'gold_price_update'])->name('superAdmin.gold_price_update');
