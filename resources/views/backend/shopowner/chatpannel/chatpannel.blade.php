@@ -1,0 +1,56 @@
+@extends('layouts.backend.backend')
+@section('content')
+    <div class="wrapper">
+        <!-- Navbar -->
+        @include('layouts.backend.navbar')
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        @include('layouts.backend.sidebar')
+        @php
+            use App\Shopowner;
+            use App\Manager;
+
+            if (isset(Auth::guard('shop_owner')->user()->id)) {
+                $current_shop = Shopowner::where('id', Auth::guard('shop_owner')->user()->id)->first();
+            } else {
+                $manager = Manager::where('id', Auth::guard('shop_role')->user()->id)->pluck('shop_id');
+                $current_shop = Shopowner::where('id', $manager)->first();
+            }
+        @endphp
+        <div class="content-wrapper sn-background-light-blue">
+            <div class="sn-admin-wrapper">
+
+            </div>
+        </div>
+        <!-- Content Wrapper. Contains page content -->
+    </div>
+    {{-- <!-- /.card -->
+    </div>
+    <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    @include('components.searchbyproductcode')
+    </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    @include('layouts.backend.footer')
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+    </div> --}}
+@endsection
+
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+
+        });
+    </script>
+@endpush
