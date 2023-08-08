@@ -122,7 +122,7 @@ class SignController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updatevalidator(array $data)
+    public function update_validator(array $data)
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:50'],
@@ -136,7 +136,7 @@ class SignController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $valid = $this->updatevalidator($request->except('_token'));
+        $valid = $this->update_validator($request->except('_token'));
         if ($valid->fails()) {
             return redirect()->back()->withErrors($valid)->withInput();
         }

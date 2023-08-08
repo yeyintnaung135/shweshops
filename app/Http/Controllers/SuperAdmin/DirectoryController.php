@@ -19,11 +19,13 @@ class DirectoryController extends Controller
     {
         $this->middleware(['auth:super_admin', 'admin']);
     }
-    public function alltable()
+
+    public function all_table()
     {
         return view('backend.super_admin.directory.list');
     }
-    public function alldirectory(Request $request)
+
+    public function all_directory(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -99,7 +101,7 @@ class DirectoryController extends Controller
         echo json_encode($response);
     }
 
-    public function gettownship(Request $request)
+    public function get_township(Request $request)
     {
         if (is_array($request->id)) {
             $townships = Township::select('id', 'name', 'myan_name')->whereIn('state_id', $request->id)->get();
@@ -121,7 +123,7 @@ class DirectoryController extends Controller
         ]);
     }
 
-    public function createform()
+    public function create_form()
     {
         $states = State::get();
         return view('backend.super_admin.directory.create', ['states' => $states]);
@@ -144,7 +146,7 @@ class DirectoryController extends Controller
                 'township.min' => 'Township field is required',
             ]);
     }
-    public function evalidator(array $data)
+    public function e_validator(array $data)
     {
         return Validator::make($data, [
 
@@ -218,7 +220,7 @@ class DirectoryController extends Controller
         return view('backend.super_admin.directory.detail', ['ttdata' => $ttdata]);
 
     }
-    public function editform($id)
+    public function edit_form($id)
     {
         $states = State::get();
         $ttdata = Shopdirectory::where('id', $id)->first();
@@ -229,7 +231,7 @@ class DirectoryController extends Controller
     {
         $sd = Shopdirectory::where('id', $request->id)->first();
         $data = $request->except("_token");
-        $valid = $this->evalidator($data);
+        $valid = $this->e_validator($data);
 
         if ($valid->fails()) {
             return redirect()->back()->withErrors($valid)->withInput();

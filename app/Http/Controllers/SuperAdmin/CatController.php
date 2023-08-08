@@ -12,10 +12,11 @@ use Illuminate\Support\Facades\Validator;
 class CatController extends Controller
 {
     //
-    public function createform()
+    public function create_form()
     {
         return view('backend.super_admin.support.category.create');
     }
+
     public function store(Request $request)
     {
         $val = Validator::make($request->all(), ['title' => ['string', 'required', 'max:222']]);
@@ -31,6 +32,7 @@ class CatController extends Controller
         $catall = Catsupport::all();
         return view('backend.super_admin.support.category.list', ['cats' => $catall]);
     }
+
     public function delete(Request $request)
     {
         Catsupport::findOrFail($request->id)->delete();
@@ -41,11 +43,13 @@ class CatController extends Controller
         return redirect('backside/super_admin/support/cat/list');
 
     }
+
     public function edit($id)
     {
         $tooltip = Catsupport::findOrFail($id);
         return view('backend.super_admin.support.category.edit', compact('tooltip'));
     }
+
     public function update(Request $request, $id)
     {
         $request->validate([

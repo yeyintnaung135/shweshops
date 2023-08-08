@@ -38,17 +38,18 @@ Route::group(['prefix' => 'backside/super_admin', 'as' => 'backside.super_admin.
 
     //for facebook data
     Route::get('fbdata/messenger/list', [FacebookDataController::class, 'list']);
-    Route::get('fbdata/messenger/getall', [FacebookDataController::class, 'getall']);
-    Route::post('fbdata/messenger/getcount', [FacebookDataController::class, 'getcount']);
-    Route::post('fbdata/messenger/getmsglogcount', [FacebookDataController::class, 'getmsglogcount']);
-    Route::get('fbdata/messenger/log', [FacebookDataController::class, 'getmsglog']);
-    Route::get('fbdata/messenger/log/detail', [FacebookDataController::class, 'getmsglogdetail']);
-    Route::get('activity_logs/messenger/detail/{shopid}', [FacebookDataController::class, 'messengerlogdetail']);
-    Route::get('activity_logs/messenger', [FacebookDataController::class, 'messengerlog'])->name('activity.messenger');
-    Route::get('showdeletelogs', [DangerZoneController::class, 'showdeletelogs']);
-    Route::post('deletelogs', [DangerZoneController::class, 'deletelogs']);
+    Route::get('fbdata/messenger/getall', [FacebookDataController::class, 'get_all']);
+    Route::post('fbdata/messenger/getcount', [FacebookDataController::class, 'get_count']);
+    Route::post('fbdata/messenger/getmsglogcount', [FacebookDataController::class, 'get_msg_log_count']);
+    Route::get('fbdata/messenger/log', [FacebookDataController::class, 'get_msg_log']);
+    Route::get('fbdata/messenger/log/detail', [FacebookDataController::class, 'get_msg_log_detail']);
+    Route::get('activity_logs/messenger/detail/{shopid}', [FacebookDataController::class, 'messenger_log_detail']);
+    Route::get('activity_logs/messenger', [FacebookDataController::class, 'messenger_log'])->name('activity.messenger');
 
-    Route::get('support/cat/create', [CatController::class, 'createform']);
+    Route::get('showdeletelogs', [DangerZoneController::class, 'show_delete_logs']);
+    Route::post('deletelogs', [DangerZoneController::class, 'delete_logs']);
+
+    Route::get('support/cat/create', [CatController::class, 'create_form']);
     Route::post('support/cat/create', [CatController::class, 'store']);
     Route::get('support/cat/list', [CatController::class, 'list']);
     Route::post('support/cat/delete', [CatController::class, 'delete']);
@@ -59,7 +60,7 @@ Route::group(['prefix' => 'backside/super_admin', 'as' => 'backside.super_admin.
     Route::resource('app-files', AppFileController::class)->except(['show', 'edit', 'update']);
 
     //help and support
-    Route::get('support/create', [SupportController::class, 'createform']);
+    Route::get('support/create', [SupportController::class, 'create_form']);
     Route::post('support/create', [SupportController::class, 'store']);
     Route::get('support/list', [SupportController::class, 'list']);
     Route::get('support/all', [SupportController::class, 'all']);
@@ -69,7 +70,7 @@ Route::group(['prefix' => 'backside/super_admin', 'as' => 'backside.super_admin.
     Route::post('support/update/{id}', [SupportController::class, 'update']);
 
     //help and support::clas's,'
-    Route::get('tooltips/create', [TooltipsController::class, 'createform']);
+    Route::get('tooltips/create', [TooltipsController::class, 'create_form']);
     Route::post('tooltips/create', [TooltipsController::class, 'store']);
     Route::get('tooltips/list', [TooltipsController::class, 'list']);
     Route::get('tooltips/all', [TooltipsController::class, 'all']);
@@ -80,15 +81,15 @@ Route::group(['prefix' => 'backside/super_admin', 'as' => 'backside.super_admin.
 
     Route::post('all_counts', [SuperAdminController::class, 'all_counts']);
 
-    Route::get('directory/create', [DirectoryController::class, 'createform']);
+    Route::get('directory/create', [DirectoryController::class, 'create_form']);
     Route::post('directory/create', [DirectoryController::class, 'store']);
-    Route::get('directory/alldirect', [DirectoryController::class, 'alldirectory']);
+    Route::get('directory/alldirect', [DirectoryController::class, 'all_directory']);
     Route::get('directory/detail/{id}', [DirectoryController::class, 'detail']);
-    Route::get('directory/edit/{id}', [DirectoryController::class, 'editform']);
+    Route::get('directory/edit/{id}', [DirectoryController::class, 'edit_form']);
     Route::post('directory/edit', [DirectoryController::class, 'update']);
     Route::post('directory/delete', [DirectoryController::class, 'delete']);
-    Route::get('directory/all', [DirectoryController::class, 'alltable']);
-    Route::get('directory/get_township', [DirectoryController::class, 'gettownship']);
+    Route::get('directory/all', [DirectoryController::class, 'all_table']);
+    Route::get('directory/get_township', [DirectoryController::class, 'get_township']);
     Route::get('directory/check_shop_directory_name', [DirectoryController::class, 'check_shop_directory_name']);
 
     // Route::get('register', ['as' => 'register', 'uses' => 'Auth\SuperadminRegisterController@create']);
@@ -104,7 +105,7 @@ Route::group(['prefix' => 'backside/super_admin', 'as' => 'backside.super_admin.
     Route::post('login', [SuperadminLoginController::class, 'login'])->name('login');
 
     Route::post('logout', [SuperadminLoginController::class, 'logout']);
-    Route::get('items/getitemsajax', [ItemsController::class, 'getitemsajax']);
+    Route::get('items/getitemsajax', [ItemsController::class, 'get_items_ajax']);
     Route::post('items/total_create_count', [ItemsController::class, 'total_create_count']);
     Route::get('items/all', [ItemsController::class, 'all']);
 
@@ -118,10 +119,10 @@ Route::group(['prefix' => 'backside/super_admin', 'as' => 'backside.super_admin.
 
     //for message
     Route::prefix('messages')->group(function () {
-        Route::get('showexpire', [SuperAdminMessage::class, 'showallexpire']);
-        Route::get('getexpire', [SuperAdminMessage::class, 'getexpire']);
-        Route::delete('deletebyone/{id}', [SuperAdminMessage::class, 'deletebyone'])->name('delete');
-        Route::post('deletemultiple', [SuperAdminMessage::class, 'deletebyone']);
+        Route::get('showexpire', [SuperAdminMessage::class, 'show_all_expire']);
+        Route::get('getexpire', [SuperAdminMessage::class, 'get_expire']);
+        Route::delete('deletebyone/{id}', [SuperAdminMessage::class, 'delete_by_one'])->name('delete');
+        Route::post('deletemultiple', [SuperAdminMessage::class, 'delete_by_one']);
     });
 });
 //gold price
@@ -141,40 +142,40 @@ Route::get('backside/super_admin/shops/edit/{id}', [ShopownerRegisterController:
 Route::put('backside/super_admin/shops/edit/{id}', [ShopownerRegisterController::class, 'update'])->name('shops.update');
 
 // for website viewer
-Route::get('backside/super_admin/visitorcount/all', [SuperAdminController::class, 'visitorcount'])->name('visitorcount.all');
+Route::get('backside/super_admin/visitorcount/all', [SuperAdminController::class, 'visitor_count'])->name('visitorcount.all');
 Route::get('backside/super_admin/visitorcount/get_all_visitor', [SuperAdminController::class, 'getAllVisitor'])->name('visitorcount.getAllVisitor');
 
 // for ads view
-Route::get('backside/super_admin/adscount/all', [SuperAdminController::class, 'adscount'])->name('adscount.all');
+Route::get('backside/super_admin/adscount/all', [SuperAdminController::class, 'ads_count'])->name('adscount.all');
 Route::get('backside/super_admin/adscount/get_all_adscount', [SuperAdminController::class, 'getAllAdsCount'])->name('adscount.getAllAdsCount');
 
 // for shops viewer
-Route::get('backside/super_admin/shopviewercount/all', [SuperAdminController::class, 'shopviewercount'])->name('shopviewercount.all');
-Route::get('backside/super_admin/shopviewercount/get_all_shopviewercount', [SuperAdminController::class, 'getAllShopviewerCount'])->name('shopviewercount.getAllShopviewerCount');
+Route::get('backside/super_admin/shopviewercount/all', [SuperAdminController::class, 'shop_viewer_count'])->name('shopviewercount.all');
+Route::get('backside/super_admin/shopviewercount/get_all_shopviewercount', [SuperAdminController::class, 'getAllShopViewerCount'])->name('shopviewercount.getAllShopviewerCount');
 
 // for buy now count
-Route::get('backside/super_admin/buynowcount/all', [SuperAdminController::class, 'buynowcount'])->name('buynowcount.all');
+Route::get('backside/super_admin/buynowcount/all', [SuperAdminController::class, 'buy_now_count'])->name('buynowcount.all');
 Route::get('backside/super_admin/buynowcount/get_all_buynowcount', [SuperAdminController::class, 'getAllBuyNowCount'])->name('buynowcount.getAllBuyNowCount');
 
 // for add to cart count
-Route::get('backside/super_admin/addtocartcount/all', [SuperAdminController::class, 'addtocartcount'])->name('addtocartcount.all');
-Route::get('backside/super_admin/addtocartcount/get_all_addtocartcount', [SuperAdminController::class, 'getAllAddtocartCount'])->name('addtocartcount.getAllAddtocartCount');
+Route::get('backside/super_admin/addtocartcount/all', [SuperAdminController::class, 'add_to_cart_count'])->name('addtocartcount.all');
+Route::get('backside/super_admin/addtocartcount/get_all_addtocartcount', [SuperAdminController::class, 'getAllAddToCartCount'])->name('addtocartcount.getAllAddtocartCount');
 
 // for wish list count
-Route::get('backside/super_admin/wishlistcount/all', [SuperAdminController::class, 'wishlistcount'])->name('wishlistcount.all');
+Route::get('backside/super_admin/wishlistcount/all', [SuperAdminController::class, 'wishlist_count'])->name('wishlistcount.all');
 Route::get('backside/super_admin/wishlistcount/get_all_wishlistcount', [SuperAdminController::class, 'getAllWishlistCount'])->name('wishlistcount.getAllWishlistCount');
 
 // zh for dailycount
-Route::get('backside/super_admin/productdailycount/all', [SuperAdminController::class, 'productdailycount'])->name('productdailycount.all');
-Route::delete('backside/super_admin/productdailycount/clear', [SuperAdminController::class, 'productdailycount_clear'])->name('productdailycount.clear');
-Route::get('backside/super_admin/shopdailycount/all', [SuperAdminController::class, 'shopdailycount'])->name('shopdailycount.all');
-Route::delete('backside/super_admin/shopdailycount/clear', [SuperAdminController::class, 'shopdailycount_clear'])->name('shopdailycount.clear');
+Route::get('backside/super_admin/productdailycount/all', [SuperAdminController::class, 'product_daily_count'])->name('productdailycount.all');
+Route::delete('backside/super_admin/productdailycount/clear', [SuperAdminController::class, 'product_daily_count_clear'])->name('productdailycount.clear');
+Route::get('backside/super_admin/shopdailycount/all', [SuperAdminController::class, 'shop_daily_count'])->name('shopdailycount.all');
+Route::delete('backside/super_admin/shopdailycount/clear', [SuperAdminController::class, 'shop_daily_count_clear'])->name('shopdailycount.clear');
 Route::get('backside/super_admin/daily_shop_create_log', [DailyLogsController::class, 'daily_shop_create_log']);
-Route::post('backside/super_admin/daily_shop_create_delselected', [DailyLogsController::class, 'daily_shop_create_delselected']);
-Route::post('backside/super_admin/daily_shop_create_delall', [DailyLogsController::class, 'daily_shop_create_delall']);
+Route::post('backside/super_admin/daily_shop_create_delselected', [DailyLogsController::class, 'daily_shop_create_del_selected']);
+Route::post('backside/super_admin/daily_shop_create_delall', [DailyLogsController::class, 'daily_shop_create_del_all']);
 Route::post('backside/super_admin/total_create_count', [DailyLogsController::class, 'total_create_count']);
 
-Route::get('backside/super_admin/getalldailyshopcreatecounts', [DailyLogsController::class, 'getalldailyshopcreatecounts']);
+Route::get('backside/super_admin/getalldailyshopcreatecounts', [DailyLogsController::class, 'get_all_daily_shop_create_counts']);
 
 //shop delete section
 
@@ -210,7 +211,7 @@ Route::delete('backside/super_admin/adminss/delete/{id}', [SuperAdminRoleControl
 
 // Sidebar Activities
 Route::get('backside/super_admin/daily_shop_create_log', [DailyLogsController::class, 'daily_shop_create_log']);
-Route::get('backside/super_admin/getalldailyshopcreatecounts', [DailyLogsController::class, 'getalldailyshopcreatecounts']);
+Route::get('backside/super_admin/getalldailyshopcreatecounts', [DailyLogsController::class, 'get_all_daily_shop_create_counts']);
 
 Route::get('backside/super_admin/activity_logs/customers', [CustomerController::class, 'activity_index'])->name('activity.customer');
 Route::get('backside/super_admin/activity_logs/ads', [AdsController::class, 'activity_index'])->name('activity.ads');
@@ -222,19 +223,19 @@ Route::get('backside/super_admin/customers', [CustomerController::class, 'index'
 Route::get('backside/super_admin/get_customers', [CustomerController::class, 'getCustomers'])->name('customers.getCustomers');
 Route::get('backside/super_admin/get_customer_activity', [CustomerController::class, 'getCustomerActivity'])->name('customers.getCustomerActivity');
 //contact us
-Route::get('backside/super_admin/Contact-us/edit', [SuperAdminController::class, 'contactus_get'])->name('superAdmin.contactus_get');
-Route::put('backside/super_admin/Contact-us/edit', [SuperAdminController::class, 'contactus_update'])->name('superAdmin.contactus_update');
+Route::get('backside/super_admin/Contact-us/edit', [SuperAdminController::class, 'contact_us_get'])->name('superAdmin.contactus_get');
+Route::put('backside/super_admin/Contact-us/edit', [SuperAdminController::class, 'contact_us_update'])->name('superAdmin.contactus_update');
 
 //site setting
 Route::get('backside/super_admin/sitesetting', [SiteSettingController::class, 'index'])->name('superadmin.sitesetting');
 Route::get('backside/super_admin/sitesetting/edit', [SiteSettingController::class, 'updateAction'])->name('superadmin.update_action');
 
 //shop_owner_using chat
-Route::get('backside/super_admin/shop_owner_using_chat', [ShopController::class, 'showowner_using_chat']);
-Route::get('backside/super_admin/showowner_using_chat_detail/{id}', [ShopController::class, 'showowner_using_chat_detail'])->name('showowner_using_chat_detail');
-Route::get('backside/super_admin/shopowner_chat_count_detail/{id}', [ShopController::class, 'shopowner_chat_count_detail'])->name('shopowner_chat_count_detail');
-Route::get('backside/super_admin/shops/get_all_using_chat', [ShopController::class, 'showowner_using_chat_all'])->name('shops.showowner_using_chat_all');
-Route::get('backside/super_admin/shops/product_code_search', [ShopController::class, 'shopowner_chat_product_code_search'])->name('shops.shopowner_using_chat_search');
+Route::get('backside/super_admin/shop_owner_using_chat', [ShopController::class, 'show_owner_using_chat']);
+Route::get('backside/super_admin/showowner_using_chat_detail/{id}', [ShopController::class, 'show_owner_using_chat_detail'])->name('showowner_using_chat_detail');
+Route::get('backside/super_admin/shopowner_chat_count_detail/{id}', [ShopController::class, 'shop_owner_chat_count_detail'])->name('shopowner_chat_count_detail');
+Route::get('backside/super_admin/shops/get_all_using_chat', [ShopController::class, 'show_owner_using_chat_all'])->name('shops.showowner_using_chat_all');
+Route::get('backside/super_admin/shops/product_code_search', [ShopController::class, 'shop_owner_chat_product_code_search'])->name('shops.shopowner_using_chat_search');
 //for superadmin
 
 //points

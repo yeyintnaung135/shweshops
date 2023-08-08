@@ -17,12 +17,12 @@ class SupportController extends Controller
     {
         $this->middleware(['auth:super_admin', 'admin']);
     }
-    public function createform()
+    public function create_form()
     {
         $cats = Catsupport::all();
         return view('backend.super_admin.support.create', ['cats' => $cats]);
     }
-    function list() {
+    public function list() {
         return view('backend.super_admin.support.list');
     }
     public function all(Request $request)

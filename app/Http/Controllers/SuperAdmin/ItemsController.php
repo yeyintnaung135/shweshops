@@ -16,6 +16,7 @@ class ItemsController extends Controller
     {
         $this->middleware(['auth:super_admin', 'admin']);
     }
+
     public function total_create_count(Request $request)
     {
         $allcount = Item::all();
@@ -30,7 +31,7 @@ class ItemsController extends Controller
 
     }
 
-    public function getitemsajax(Request $request)
+    public function get_items_ajax(Request $request)
     {
         //
         $draw = $request->get('draw');

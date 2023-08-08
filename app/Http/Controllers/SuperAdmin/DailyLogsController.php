@@ -21,7 +21,7 @@ class DailyLogsController extends Controller
 
     }
 
-    public function getalldailyshopcreatecounts(Request $request)
+    public function get_all_daily_shop_create_counts(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -93,7 +93,7 @@ class DailyLogsController extends Controller
         return json_encode($response);
     }
 
-    public function daily_shop_create_delselected(Request $request)
+    public function daily_shop_create_del_selected(Request $request)
     {
         $shopids = explode(',', $request->delshopids);
 
@@ -103,7 +103,7 @@ class DailyLogsController extends Controller
         return redirect()->back();
     }
 
-    public function daily_shop_create_delall(Request $request)
+    public function daily_shop_create_del_all(Request $request)
     {
 
         $checkcount = DB::table('shopowner_log_activities')->where('action', 'Create')->whereBetween('created_at', [$request->cafromdate, $request->catodate]);

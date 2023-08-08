@@ -46,14 +46,14 @@ class ShopController extends Controller
      * @var array
      */
 
-    public function showowner_using_chat()
+    public function show_owner_using_chat()
     {
 
         $shopowner_only_count = Messages::where('from_role', 'shopowner')->groupBy('message_shop_id')->get();
         return view('backend.super_admin.shops.shopowner_chat_using', compact('shopowner_only_count'));
     }
 
-    public function showowner_using_chat_all(Request $request)
+    public function show_owner_using_chat_all(Request $request)
     {
         $id = 1;
 
@@ -134,7 +134,7 @@ class ShopController extends Controller
         echo json_encode($response);
     }
 
-    public function showowner_using_chat_detail($id)
+    public function show_owner_using_chat_detail($id)
     {
         $get_message_shops = Messages::where('message_shop_id', (int) $id)
             ->groupBy('message_user_id')
@@ -167,7 +167,7 @@ class ShopController extends Controller
         return new LengthAwarePaginator($messages->forPage($page, $perPage), $messages->count(), $perPage, $page, ['path' => Paginator::resolveCurrentPath()]);
     }
 
-    public function shopowner_chat_product_code_search(Request $request)
+    public function shop_owner_chat_product_code_search(Request $request)
     {
         // return $request;
         // return Messages::where('message_shop_id',(int)$request->id)->get();

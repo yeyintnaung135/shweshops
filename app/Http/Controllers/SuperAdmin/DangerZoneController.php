@@ -21,7 +21,7 @@ class DangerZoneController extends Controller
         $this->middleware(['auth:super_admin', 'admin']);
     }
 
-    public function showdeletelogs()
+    public function show_delete_logs()
     {
 
         //base on day count
@@ -93,7 +93,7 @@ class DangerZoneController extends Controller
 
     }
 
-    public function deletelogs(Request $request)
+    public function delete_logs(Request $request)
     {
         $deletelogs = frontuserlogs::whereBetween('created_at', [$request->from, $request->to])->delete();
         $wdeletelogs = WhislistClickLog::whereBetween('created_at', [$request->from, $request->to])->delete();

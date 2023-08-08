@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\traid\calculatecat;
+use App\Http\Controllers\trait\CalculateCat;
 use App\Models\AddToCartClickLog;
 use App\Models\BuyNowClickLog;
 use App\Models\Category;
@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Validator;
 
 class SuperAdminController extends Controller
 {
-    use calculatecat;
+    use CalculateCat;
     public function __construct()
     {
         $this->middleware(['auth:super_admin']);
@@ -250,7 +250,7 @@ class SuperAdminController extends Controller
         return response()->json(['register' => count($registered), 'newusers' => $countnu, 'allbuynow' => $allbuynow, 'allshopviewers' => $allshopviewers, 'alladsviewers' => $alladsviewers, 'allviewers' => $allviewers, 'uqbuynow' => count($uqbuynow), 'uqshopview' => count($uqshopview), 'uqadsview' => count($uqadsview), 'uqviewer' => count($uqviewer), 'whishlist' => count($whishlist), 'addtocart' => count($addtocart), 'buynow' => count($buynow), 'shopview' => count($shopview), 'shop' => count($shop), 'adsview' => count($adsview), 'viewer' => count($viewer)]);
     }
 
-    public function visitorcount()
+    public function visitor_count()
     {
         return view('backend.super_admin.activity_logs.customer');
     }
@@ -373,7 +373,7 @@ class SuperAdminController extends Controller
         echo json_encode($response);
     }
 
-    public function adscount()
+    public function ads_count()
     {
         return view('backend.super_admin.count_detail_list.adscountlist');
     }
@@ -471,12 +471,12 @@ class SuperAdminController extends Controller
         echo json_encode($response);
     }
 
-    public function shopviewercount()
+    public function shop_viewer_count()
     {
         return view('backend.super_admin.count_detail_list.shopviewercountlist');
     }
 
-    public function getAllShopviewerCount(Request $request)
+    public function getAllShopViewerCount(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -566,7 +566,7 @@ class SuperAdminController extends Controller
         echo json_encode($response);
     }
 
-    public function buynowcount()
+    public function buy_now_count()
     {
         return view('backend.super_admin.count_detail_list.buynowcountlist');
     }
@@ -673,12 +673,12 @@ class SuperAdminController extends Controller
         echo json_encode($response);
     }
 
-    public function addtocartcount()
+    public function add_to_cart_count()
     {
         return view('backend.super_admin.count_detail_list.addtocartcountlist');
     }
 
-    public function getAllAddtocartCount(Request $request)
+    public function getAllAddToCartCount(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -778,7 +778,7 @@ class SuperAdminController extends Controller
         echo json_encode($response);
     }
 
-    public function wishlistcount()
+    public function wishlist_count()
     {
         return view('backend.super_admin.count_detail_list.wishlistcountlist');
     }
@@ -883,7 +883,7 @@ class SuperAdminController extends Controller
         echo json_encode($response);
     }
 
-    public function productdailycount()
+    public function product_daily_count()
     {
 
         $itemlog = ShopownerLogActivity::where(['action' => 'create'])->get();
@@ -913,7 +913,7 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.dailycount.productdailycount', ['itemcategory' => $itemcategory, 'item' => $item, 'itemlog' => $itemlog, 'itemtotal' => $itemtotal, 'itemdate' => $itemdate]);
     }
 
-    public function shopdailycount()
+    public function shop_daily_count()
     {
 
         $itemlog = ShopownerLogActivity::where(['action' => 'create'])->get();
@@ -934,14 +934,14 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.dailycount.shopdailycount', ['itemlog' => $itemlog, 'itemtotal' => $itemtotal, 'itemdate' => $itemdate]);
     }
 
-    public function productdailycount_clear()
+    public function product_daily_count_clear()
     {
         //
         ShopownerLogActivity::where(['action' => 'create'])->forceDelete();
         return redirect('backside/super_admin/productdailycount/all');
     }
 
-    public function shopdailycount_clear()
+    public function shop_daily_count_clear()
     {
         //
         ShopownerLogActivity::where(['action' => 'create'])->forceDelete();
@@ -970,13 +970,13 @@ class SuperAdminController extends Controller
         return redirect()->back();
     }
 
-    public function contactus_get()
+    public function contact_us_get()
     {
         $contact = Contactus::where('active', 1)->first();
         return view('backend.super_admin.contactus.edit', ['contact' => $contact]);
     }
 
-    public function contactus_update(Request $request)
+    public function contact_us_update(Request $request)
     {
         $input = $request->except('_token', '_method');
         $folderPath = 'images/contactus/';

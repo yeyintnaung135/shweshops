@@ -20,7 +20,8 @@ class FacebookDataController extends Controller
     function list() {
         return view('backend.super_admin.fbdata.list');
     }
-    public function getall(Request $request)
+
+    public function get_all(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -115,27 +116,27 @@ class FacebookDataController extends Controller
         echo json_encode($response);
     }
 
-    public function getcount(Request $request)
+    public function get_count(Request $request)
     {
         $allcount = facebooktable::all();
         $allcountbydate = facebooktable::whereBetween('created_at', [$request->from, $request->to])->get();
         return response()->json(['all' => count($allcount), 'alld' => count($allcountbydate)]);
     }
-    public function getmsglogcount(Request $request)
+    public function get_msg_log_count(Request $request)
     {
         $allcount = facebookmessage::all();
         $allcountbydate = facebookmessage::whereBetween('created_at', [$request->from, $request->to])->get();
         return response()->json(['all' => count($allcount), 'alld' => count($allcountbydate)]);
     }
-    public function messengerlog()
+    public function messenger_log()
     {
         return view('backend.super_admin.fbdata.msglog');
     }
-    public function messengerlogdetail($shopid)
+    public function messenger_log_detail($shopid)
     {
         return view('backend.super_admin.fbdata.msglogdetail', ['shop_id' => $shopid]);
     }
-    public function getmsglogdetail(Request $request)
+    public function get_msg_log_detail(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -238,7 +239,7 @@ class FacebookDataController extends Controller
         echo json_encode($response);
     }
 
-    public function getmsglog(Request $request)
+    public function get_msg_log(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
