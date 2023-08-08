@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\traid;
+namespace App\Http\Controllers\Trait;
 
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 
 
-trait ykimage
+trait YKImage
 {
     function base64_to_image($base64_string, $output_file)
     {

@@ -1,10 +1,10 @@
 <?php
-namespace App\Http\Controllers\traid;
+namespace App\Http\Controllers\Trait;
 
 
 use App\Models\sitesettings;
 
-trait forsitesetting
+trait ForSiteSetting
 {
    public function is_chat_on(){
        $check_chat=sitesettings::where('name','ownchat')->first();

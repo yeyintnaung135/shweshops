@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\traid;
+namespace App\Http\Controllers\Trait;
 
 use App\Models\Ads;
 use App\Models\Ajax;
@@ -36,17 +36,17 @@ use App\Http\Controllers\traid\category;
 use App\Http\Controllers\traid\similarlogic;
 
 
-trait foryoulogic{
+trait ForYouLogic{
 
- 
+
     public function getlogsuserid(){
         $checklogin=Auth::guard('web')->check();
         // if($checklogin){
         //     $idofcurrentuser=Guestoruserid::where('user_id',Auth::guard('web')->user()->id)->first()->id;
-    
+
         // }else{
         //     $idofcurrentuser=Guestoruserid::where('guest_id',Session::get('guest_id'))->first()->id;
-    
+
         // }
         // return $idofcurrentuser;
 
@@ -58,9 +58,9 @@ trait foryoulogic{
 
             }else{
                 return 'random';
- 
+
             }
-    
+
         }else{
             if(!empty(Guestoruserid::where('guest_id',Session::get('guest_id'))->first())){
                 $idofcurrentuser=Guestoruserid::where('guest_id',Session::get('guest_id'))->first()->id;
@@ -70,9 +70,9 @@ trait foryoulogic{
                 return 'random';
 
             }
-    
+
         }
-    
+
     }
     public function getuserviewlogs(){
         $getdatafromlogs=frontuserlogs::where('userorguestid',$this->getlogsuserid())->whereDate('created_at','>',Carbon::now()->subMonth())->where([['status','!=','homepage'],['status','!=','adsclick']])->get();
@@ -88,21 +88,21 @@ trait foryoulogic{
              $min=$getitem->min_price;
          }else{
              $min=$getitem->price;
-     
+
          }
         }else{
          if($to_check_dis_first->first()->discount_price == 0){
             $min=$to_check_dis_first->first()->discount_min;
 
-     
+
          }else{
             $min=$to_check_dis_first->first()->discount_price;
 
          }
-     
+
         }
         return $min;
-     
+
     }
     public function getmaxprice($itemid){
         $getitem=Item::where('id',$itemid)->first();
@@ -112,21 +112,21 @@ trait foryoulogic{
              $max=$getitem->max_price;
          }else{
              $max=$getitem->price;
-     
+
          }
         }else{
          if($to_check_dis_first->first()->discount_price == 0){
             $max=$to_check_dis_first->first()->discount_max;
 
-     
+
          }else{
             $max=$to_check_dis_first->first()->discount_price;
 
          }
-     
+
         }
         return $max;
-     
+
     }
     public function getgender(){
         $getmostgenderlist=frontuserlogs::leftjoin('items','items.id','=','front_user_logs.product_id')
@@ -149,10 +149,10 @@ trait foryoulogic{
             if(count($getitemdatafromtable) == 1){
                 $min=$this->getminprice($getitemdatafromtable[0]->id);
                 $max=$this->getmaxprice($getitemdatafromtable[0]->id);
-              
+
                 $min=ceil($min - (($min * 20)/100));
                 $max=ceil($max + (($max * 20)/100));
-             
+
                 return ['min'=>$min,'max'=>$max];
 
             }else{
@@ -244,17 +244,17 @@ trait foryoulogic{
         $catonlyname=[];
         foreach($catlistarraywithtotal as $clawt){
          $catonlyname[]=$clawt->category_id;
-         
+
         }
         $genderlist=[];
         foreach($this->getgender() as $ge){
             $genderlist[]=$ge->gender;
-            
+
            }
            $allshoplist=[];
            foreach($this->getshopsforforyou() as $gs){
                $allshoplist[]=$gs->shop_id;
-               
+
               }
         if($pricemin == 'Any'){
          $pricemin=0;
@@ -262,7 +262,7 @@ trait foryoulogic{
         if($pricemax == 'Any'){
          $pricemax=1000000000000000000;
         }
-     
+
         $resultdata=Item::leftjoin('discount', 'items.id', '=', 'discount.item_id')
         ->leftjoin('shop_owners','shop_owners.id','=','items.shop_id')->select('items.*','items.id as item_id')
         ->whereIn('items.category_id',$catonlyname)
@@ -272,7 +272,7 @@ trait foryoulogic{
          ->orWhere([['items.price', '>', $pricemin], ['items.price', '<', $pricemax]])
          ->orWhere([['discount.discount_price', '>', $pricemin], ['discount.discount_price', '<', $pricemax]])
          ->orWhere([['discount.discount_min', '>', $pricemin], ['discount.discount_max', '<', $pricemax]]);
-     
+
         })
         ->whereIn('gender',$genderlist)
         // ->whereIn('items.shop_id',$allshoplist)
@@ -293,17 +293,17 @@ trait foryoulogic{
             $random='yes';
 
         }
-        
+
     }else{
         $resultdata=Item::orderBy('id','desc')->limit('20')->get();
         $random='yes';
 
     }
- 
+
 
 
    return [$resultdata,$random];
-    
+
    }
 
 }

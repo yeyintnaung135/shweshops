@@ -1,12 +1,12 @@
 <?php
-namespace App\Http\Controllers\traid;
+namespace App\Http\Controllers\Trait;
 
 use App\Models\discount;
 use App\Models\Item;
 use App\Models\Shopowner;
 use Illuminate\Support\Facades\DB;
 
-trait category
+trait Category
 {
 public function getallcatlistbycount(){
     $all_cat=DB::table('categories')->leftjoin('items', 'categories.name', '=', 'items.category_id')->select('items.category_id','categories.mm_name',DB::raw('count(items.category_id) as catcount'))->where('items.deleted_at','=',NULL)->groupBy('categories.name')->orderByRaw("CASE

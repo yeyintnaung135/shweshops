@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\traid;
+namespace App\Http\Controllers\Trait;
 
 use App\Models\Ads;
 use App\Models\Item;
@@ -53,12 +53,12 @@ trait ShopDelete
     }
     private function model_accept_delete($model,$id)
     {
-        $get_id = $model::where('shop_id',$id)->pluck('id'); 
+        $get_id = $model::where('shop_id',$id)->pluck('id');
         $model::destroy($get_id);
     }
     private function model_accept_delete2($model,$id)
     {
-        $get_id = $model::where('shop',$id)->pluck('id'); 
+        $get_id = $model::where('shop',$id)->pluck('id');
         return $model::destroy($get_id);
     }
 
@@ -123,14 +123,14 @@ trait ShopDelete
 
     private function model_accept_force_delete($model,$id)
     {
-        $get_id = $model::where('shop_id',$id)->onlyTrashed()->pluck('id'); 
+        $get_id = $model::where('shop_id',$id)->onlyTrashed()->pluck('id');
         foreach($get_id as $i){
             $model::onlyTrashed()->findOrFail($i)->forceDelete();
         }
     }
     private function model_accept_force_delete2($model,$id)
     {
-        $get_id = $model::where('shop',$id)->onlyTrashed()->pluck('id'); 
+        $get_id = $model::where('shop',$id)->onlyTrashed()->pluck('id');
         foreach($get_id as $i){
              $model::onlyTrashed()->findOrFail($i)->forceDelete();
         }

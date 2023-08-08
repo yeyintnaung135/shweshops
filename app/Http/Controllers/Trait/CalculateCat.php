@@ -1,9 +1,9 @@
 <?php
-namespace App\Http\Controllers\traid;
+namespace App\Http\Controllers\Trait;
 use Illuminate\Support\Facades\Cache;
 use DB;
 
-trait calculatecat{
+trait CalculateCat{
     public function getallcatcount(){
         $catlist = DB::table('categories')->leftjoin('items', 'categories.name', '=', 'items.category_id')->select('categories.*')->where('items.deleted_at', '=', NULL)->groupBy('categories.name')->orderByRaw("CASE
         WHEN count(items.category_id) = 0 THEN categories.id END ASC,

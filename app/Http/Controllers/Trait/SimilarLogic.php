@@ -1,10 +1,10 @@
 <?php
-namespace App\Http\Controllers\traid;
+namespace App\Http\Controllers\Trait;
 
 use App\Models\discount;
 use App\Models\Item;
 
-trait similarlogic{
+trait SimilarLogic{
   public function getsimilarsqlcode($item_id){
       $item=Item::where('id',$item_id)->first();
       $to_check_dis=discount::where('item_id',$item_id);

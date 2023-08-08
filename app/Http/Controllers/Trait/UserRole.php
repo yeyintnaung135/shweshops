@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\traid;
+namespace App\Http\Controllers\Trait;
 
 use App\Models\Item;
 use App\Models\Manager;

@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\traid;
+namespace App\Http\Controllers\Trait;
 
 use App\Models\discount;
 use App\Models\Forfirebase;
@@ -7,7 +7,7 @@ use App\Models\Item;
 use App\Models\Shopowner;
 use Illuminate\Support\Facades\Http;
 
-trait firebase
+trait Firebase
 {
     public static function send($itemid, $title, $body, $link, $logo, $image)
     {

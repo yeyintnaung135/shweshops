@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\traid;
+namespace App\Http\Controllers\Trait;
 
 use App\Models\UserPoint;
 use Illuminate\Support\Carbon;
@@ -28,20 +28,20 @@ trait LoginPoint{
         return UserPoint::where('user_id',Auth::guard('web')->id())->where('point_id',4)->delete();
     }
 
-    /** 
+    /**
      *  @check Login or Register insert Point
-     * 
-     * 
+     *
+     *
      */
 
      public function check_login_or_register_point()
      {
-      
+
         $user_point = new UserPoint();
         if($this->is_user_register_point >= 0){
             if($this->is_user_register_time <= 0 || $this->is_user_login_time <= 0){
                 $this->delete_login_expired_point();
-                
+
                 $user_point->user_id = Auth::guard('web')->id();
                 $user_point->login_expired = Carbon::now()->addDay(1);
                 $user_point->point_id = 4;
