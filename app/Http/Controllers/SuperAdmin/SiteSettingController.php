@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use App\Models\sitesettings;
+use App\Models\SiteSettings;
 use Illuminate\Http\Request;
 
 class SiteSettingController extends Controller
@@ -19,14 +19,14 @@ class SiteSettingController extends Controller
     }
     public function index()
     {
-        $sitesettings = sitesettings::All();
+        $sitesettings = SiteSettings::All();
         return view('backend.super_admin.sitesetting.all', compact('sitesettings'));
     }
 
     public function updateAction(Request $request)
     {
-        sitesettings::where('id', $request->id)->update(['action' => $request->action]);
-        $action = sitesettings::where('id', $request->id)->first()->action;
+        SiteSettings::where('id', $request->id)->update(['action' => $request->action]);
+        $action = SiteSettings::where('id', $request->id)->first()->action;
         return response()->json(['status' => 'success', 'action' => $action]);
     }
 

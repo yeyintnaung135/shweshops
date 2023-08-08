@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
-use App\Catsupport;
 use App\Http\Controllers\Controller;
+use App\Models\CatSupport;
 use App\Models\Support;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -19,7 +19,7 @@ class SupportController extends Controller
     }
     public function create_form()
     {
-        $cats = Catsupport::all();
+        $cats = CatSupport::all();
         return view('backend.super_admin.support.create', ['cats' => $cats]);
     }
     public function list() {
@@ -60,7 +60,7 @@ class SupportController extends Controller
         $data_arr = array();
         $id = 1;
         foreach ($records as $record) {
-            $cat = Catsupport::where('id', $record->cat_id)->first()->title;
+            $cat = CatSupport::where('id', $record->cat_id)->first()->title;
 
             $data_arr[] = array(
                 "id" => $record->id,
@@ -98,7 +98,7 @@ class SupportController extends Controller
     }
     public function edit($id)
     {
-        $cats = Catsupport::all();
+        $cats = CatSupport::all();
 
         $tooltip = Support::findOrFail($id);
         return view('backend.super_admin.support.edit', ['tooltip' => $tooltip, 'cats' => $cats]);

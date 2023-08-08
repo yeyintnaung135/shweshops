@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Catsupport;
+use App\Models\CatSupport;
 use App\Models\Support;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -23,19 +23,19 @@ class CatController extends Controller
         if ($val->fails()) {
             return redirect()->back()->withErrors($val)->withInput();
         }
-        Catsupport::create($request->except('_token'));
+        CatSupport::create($request->except('_token'));
         Session::flash('message', 'Your Category was successfully Created');
 
         return redirect('backside/super_admin/support/cat/list');
     }
-    function list() {
-        $catall = Catsupport::all();
+    public function list() {
+        $catall = CatSupport::all();
         return view('backend.super_admin.support.category.list', ['cats' => $catall]);
     }
 
     public function delete(Request $request)
     {
-        Catsupport::findOrFail($request->id)->delete();
+        CatSupport::findOrFail($request->id)->delete();
         Support::where('cat_id', $request->id)->update(['cat_id' => '1']);
 
         Session::flash('message', 'Your Category was successfully deleted');
@@ -46,7 +46,7 @@ class CatController extends Controller
 
     public function edit($id)
     {
-        $tooltip = Catsupport::findOrFail($id);
+        $tooltip = CatSupport::findOrFail($id);
         return view('backend.super_admin.support.category.edit', compact('tooltip'));
     }
 
@@ -55,7 +55,7 @@ class CatController extends Controller
         $request->validate([
             'title' => ['string', 'required', 'max:22222'],
         ]);
-        $tooltip = Catsupport::findOrFail($id);
+        $tooltip = CatSupport::findOrFail($id);
 
         $tooltip->title = $request->title;
         $tooltip->update();
