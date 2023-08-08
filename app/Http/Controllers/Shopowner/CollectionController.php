@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Shopowner;
+namespace App\Http\Controllers\ShopOwner;
 
-use App\Collection;
+use App\Models\Collection;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShopOwner\StoreCollectionRequest;
 use App\Http\Requests\ShopOwner\UpdateCollectionRequest;
-use App\Item;
-use App\Shopowner;
-use App\ShopRole;
+use App\Models\Item;
+use App\Models\Shopowner;
+use App\Models\ShopRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\traid\ShopTrait;
+use App\Http\Controllers\Trait\ShopTrait;
 use Yajra\DataTables\DataTables;
 
 class CollectionController extends Controller

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Shopowner;
+namespace App\Http\Controllers\ShopOwner;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -12,22 +12,22 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
-use App\PosSuperAdmin;
-use App\Featuresforshops;
-use App\Shopowner;
-use App\State;
-use App\Township;
-use App\CountSetting;
-use App\Percent_template;
-use App\Shopdirectory;
-use App\ShopBanner;
+use App\Models\PosSuperAdmin;
+use App\Models\Featuresforshops;
+use App\Models\Shopowner;
+use App\Models\State;
+use App\Models\Township;
+use App\Models\CountSetting;
+use App\Models\Percent_template;
+use App\Models\Shopdirectory;
+use App\Models\ShopBanner;
 use App\Rules\MatchOldPassword;
 use Illuminate\Support\Facades\Hash;
 
 class PosSuperAdminController extends Controller
 {
     //use default auth class
-    use AuthenticatesUsers; 
+    use AuthenticatesUsers;
     public function loginform(Request $request)
     {
         return view('auth.pos_super_admin_login');
@@ -47,7 +47,7 @@ class PosSuperAdminController extends Controller
 
         if(Auth::guard('pos_super_admin')->attempt(['email' => $data['email'], 'password' => $data['password']])) {
              if(Auth::guard('pos_super_admin')->check()){
-                    return redirect()->route('backside.pos_super_admin.dashboard'); 
+                    return redirect()->route('backside.pos_super_admin.dashboard');
              }
         }else{
             return redirect()->back()->with('message','Login Fail');
@@ -59,7 +59,7 @@ class PosSuperAdminController extends Controller
         $guest=Session::get('guest_id');
         //custom code by yk
         $request->session()->invalidate();
- 
+
         $request->session()->regenerateToken();
         Auth::guard('pos_super_admin')->logout();
              //custom code by yk
@@ -71,7 +71,7 @@ class PosSuperAdminController extends Controller
 
     //Shops
     public function all()
-    {   
+    {
         $shopowner = Shopowner::all();
         // dd($shopowner);
         $features = Featuresforshops::all();
@@ -90,7 +90,7 @@ class PosSuperAdminController extends Controller
         $shopowner = Shopowner::whereDate('created_at','<=', $searchByFromdate)
         ->whereDate('created_at','>=', $searchByTodate)
         ->get();
-    
+
         $features = Featuresforshops::all();
         return response()->json([
             'shopowner' => $shopowner,
@@ -376,7 +376,7 @@ class PosSuperAdminController extends Controller
         return view('backend.pos_super_admin.create');
     }
     public function store(Request $request){
-        
+
         $data = $request->except('_token');
         $valid= Validator::make($data, [
             'email' => ['required', 'string', 'email', 'max:50'],
@@ -401,19 +401,19 @@ class PosSuperAdminController extends Controller
 
         $super_admin = PosSuperAdmin::findOrFail($id);
         return view('backend.pos_super_admin.edit',['super_admin'=>$super_admin]);
-      
+
     }
     public function update(Request $request,$id){
 
             $admin = PosSuperAdmin::findOrFail($id);
-      
+
         if($request->current_password || $request->new_password || $request->new_confirm_password){
-        
+
             $request->validate([
                 'current_password' => ['required','min:8', new MatchOldPassword],
 
                 'new_password' => ['required','min:8'],
-    
+
                 'new_confirm_password' => ['same:new_password'],
             ]);
             $admin->password = Hash::make($request->new_password);
@@ -423,9 +423,9 @@ class PosSuperAdminController extends Controller
                 'name' => ['required', 'string', 'max:255'],
             ]);
         }
-      
+
         $input = $request->except('_token', '_method');
-      
+
         $admin->name = $request->name;
         $admin->email = $request->email;
         $result = $admin->update();

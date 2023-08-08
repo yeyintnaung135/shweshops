@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Shopowner;
+namespace App\Http\Controllers\ShopOwner;
 
-use App\Item;
+use App\Models\Item;
 use App\Facade\TzGate;
-use App\Percent_template;
+use App\Models\Percent_template;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\traid\UserRole;
+use App\Http\Controllers\Trait\UserRole;
 use App\Http\Requests\ItemsRecapRequest;
 use Illuminate\Support\Facades\Response;
 

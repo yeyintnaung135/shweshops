@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Shopowner;
+namespace App\Http\Controllers\ShopOwner;
 
 use File;
-use App\MainPopup;
-use App\Shopowner;
+use App\Models\MainPopup;
+use App\Models\Shopowner;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;

@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 
-use App\Ads;
+use App\Models\Ads;
 use App\Http\Controllers\traid\ykimage;
 use Illuminate\Support\Carbon;
 

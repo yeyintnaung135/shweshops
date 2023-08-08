@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Shopowner;
+namespace App\Http\Controllers\ShopOwner;
 
 use File;
 use App\OpeningTimes;
-use App\Shopowner;
+use App\Models\Shopowner;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +36,7 @@ class OpeningTimesController extends Controller
             'opening_time' => $request->opening_time,
             'shop_id' => $request->shopId,
         ]);
-    
+
         return back()->with('success','Opening time updated!');
     }
 

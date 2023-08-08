@@ -1,42 +1,42 @@
 <?php
 
-namespace App\Http\Controllers\Shopowner;
+namespace App\Http\Controllers\ShopOwner;
 
 use App\Ads;
 
-use App\frontuserlogs;
-use App\Item;
-use App\GoldPoint;
-use App\discount;
-use App\Shopowner;
-use App\ShopBanner;
-use App\BuyNowClickLog;
-use App\ItemLogActivity;
-use App\ShopLogActivity;
-use App\User;
-use App\WhislistClickLog;
-use App\AddToCartClickLog;
-use App\CountSetting;
+use App\Models\frontuserlogs;
+use App\Models\Item;
+use App\Models\GoldPoint;
+use App\Models\discount;
+use App\Models\Shopowner;
+use App\Models\ShopBanner;
+use App\Models\BuyNowClickLog;
+use App\Models\ItemLogActivity;
+use App\Models\ShopLogActivity;
+use App\Models\User;
+use App\Models\WhislistClickLog;
+use App\Models\AddToCartClickLog;
+use App\Models\CountSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\traid\CountSettingCheck;
+use App\Http\Controllers\Trait\CountSettingCheck;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use App\Http\Controllers\traid\ykimage;
-use App\Http\Controllers\traid\UserRole;
-use App\ShopOwnerGoldPoint;
+use App\Http\Controllers\Trait\YKImage;
+use App\Http\Controllers\Trait\UserRole;
+use App\Models\ShopOwnerGoldPoint;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\traid\calculatecat;
+use App\Http\Controllers\Trait\CalculateCat;
 use Illuminate\Support\Facades\Cache;
 
-class ShopownerController extends Controller
+class ShopOwnerController extends Controller
 {
-    use ykimage;
+    use YKImage;
     use UserRole;
     use CountSettingCheck;
-    use calculatecat;
+    use CalculateCat;
 
     public function __construct()
     {

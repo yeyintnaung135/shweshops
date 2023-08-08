@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Shopowner;
+use App\Models\Shopowner;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 

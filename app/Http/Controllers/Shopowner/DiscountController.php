@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Shopowner;
+namespace App\Http\Controllers\ShopOwner;
 
 use App\Events\Shopownermessage;
 use App\Forfirebase;
-use App\Http\Controllers\traid\firebase;
-use App\Item;
-use App\discount;
+use App\Http\Controllers\Trait\Firebase;
+use App\Models\Item;
+use App\Models\discount;
 use App\Facade\TzGate;
-use App\Shopowner;
-use App\Usernoti;
+use App\Models\Shopowner;
+use App\Models\Usernoti;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\traid\UserRole;
+use App\Http\Controllers\Trait\UserRole;
 use FG\ASN1\Universal\Integer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -312,7 +312,7 @@ class DiscountController extends Controller
             }
             $takecheckphoto = Item::where('id', $item_id)->first();
             $link = url($takecheckphoto->withoutspace_shopname . '/product_detail/' . $item_id);
-            firebase::send($item_id, 'Discount Product', $message, $link, 'logo', url($takecheckphoto->check_photo));
+            Firebase::send($item_id, 'Discount Product', $message, $link, 'logo', url($takecheckphoto->check_photo));
             //noti end
 
 
@@ -439,7 +439,7 @@ class DiscountController extends Controller
         //noti end
         $takecheckphoto = Item::where('id', $item_id)->first();
         $link = url($takecheckphoto->withoutspace_shopname . '/product_detail/' . $item_id);
-        $test = firebase::send($request->item_id, 'Discount Product', $message, $link, 'logo', url($takecheckphoto->check_photo));
+        $test = Firebase::send($request->item_id, 'Discount Product', $message, $link, 'logo', url($takecheckphoto->check_photo));
         if (isset(Auth::guard('shop_role')->user()->id)) {
             $input = $request->except('_token');
 
