@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\traid\ShopDelete;
+use App\Http\Controllers\Trait\ShopDelete;
+use App\Http\Controllers\Trait\UserRole;
 use App\Models\AddToCartClickLog;
 use App\Models\BuyNowClickLog;
 use App\Models\CountSetting;
@@ -33,7 +34,7 @@ use Illuminate\Support\Str;
 class ShopController extends Controller
 {
     use ShopDelete;
-    use \App\Http\Controllers\traid\UserRole;
+    use UserRole;
 
     public function __construct()
     {
