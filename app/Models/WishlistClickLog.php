@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WhislistClickLog extends Model
+class WishlistClickLog extends Model
 {
     //
     protected $fillable = [
-        'userorguestid','item_id'
+        'userorguestid', 'item_id',
     ];
 
     protected $casts = [

@@ -8,5 +8,5 @@ class MainCategory extends Model
 {
     //
 
-    public $table='main_category';
+    public $table = 'main_category';
 }

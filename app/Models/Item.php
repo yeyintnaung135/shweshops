@@ -2,18 +2,16 @@
 
 namespace App\Models;
 
-use App\Category;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Item extends Model
 {
     //
-    use \Conner\Tagging\Taggable, SoftDeletes;
-
+    use \Conner\Tagging\Taggable , SoftDeletes;
 
     protected $fillable = ['id', 'main_category', 'diamond', 'gender', 'size', 'handmade', 'charge', 'carat', 'yati', 'pwint', 'd_gram', 'stock_count', 'product_code', 'photo_one', 'collection_id', 'min_price', 'max_price', 'weight_unit', 'photo_two', 'photo_three', 'photo_four', 'photo_five', 'photo_five', 'photo_six', 'default_photo', 'view_count', 'photo_seven', 'photo_eight', 'photo_nine', 'photo_ten', 'name', 'price', 'description', 'shop_id', 'gold_quality', 'gold_colour', 'sizing_guide', 'အထည်မပျက်_ပြန်သွင်း', 'တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ', 'အထည်ပျက်စီးချို့ယွင်း', 'weight', 'review', 'stock', 'category_id', 'user_id'];
 
@@ -120,7 +118,7 @@ class Item extends Model
     public function getCheckPhotothumbsAttribute()
     {
         $photo_column = ['photo_one', 'photo_two', 'photo_three', 'photo_four', 'photo_five', 'photo_six', 'photo_seven', 'photo_eight', 'photo_nine', 'photo_ten'];
-        if ($this->default_photo == ''  or !dofile_exists('/items/thumbs/' . $this->default_photo)) {
+        if ($this->default_photo == '' or !dofile_exists('/items/thumbs/' . $this->default_photo)) {
             foreach ($photo_column as $pc) {
                 if ($this[$pc] != '') {
                     $show_photo = $this[$pc];
@@ -160,7 +158,6 @@ class Item extends Model
             return '/items/' . $this->default_photo;
         }
     }
-
 
     public function getYkbeautyCatAttribute()
     {
@@ -219,7 +216,6 @@ class Item extends Model
         }
     }
 
-
     //mutators
     public function getYkViewAttribute()
     {
@@ -250,7 +246,6 @@ class Item extends Model
         }
     }
 
-
     public function getCheckDiscountAttribute()
     {
         $check = discount::where('item_id', $this->id);
@@ -272,7 +267,6 @@ class Item extends Model
             return 0;
         }
     }
-
 
     public function getUserNameAttribute()
     {
@@ -322,7 +316,6 @@ class Item extends Model
                     }
                 }
 
-
                 return $mmpricelakh . '' . $tempthaung;
             } else {
                 if ($this->price > 9999) {
@@ -369,7 +362,6 @@ class Item extends Model
                 }
             }
             //            for min
-
 
             $max_pricethaung = '';
             $max_pricethousand = '';

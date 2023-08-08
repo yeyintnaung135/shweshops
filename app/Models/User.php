@@ -3,22 +3,16 @@
 namespace App\Models;
 
 use App\Events\Activeusers;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use NotificationChannels\WebPush\HasPushSubscriptions;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     use Notifiable;
-    use HasRoles;
     use HasPushSubscriptions;
 
-
     protected $table = 'users';
-
-
 
     /**
      * The attributes that are mass assignable.
@@ -26,7 +20,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'id','username','phone','gender','birth_day','password','otp','active','photo','send_baydin'
+        'id', 'username', 'phone', 'gender', 'birth_day', 'password', 'otp', 'active', 'photo', 'send_baydin',
     ];
 
     /**
@@ -46,7 +40,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    protected $appends = ['favIds','selectionIds','notification'];
+    protected $appends = ['favIds', 'selectionIds', 'notification'];
 
     public function getFavIdsAttribute()
     {
@@ -65,6 +59,6 @@ class User extends Authenticatable
     }
     public function isonline()
     {
-        return $this->hasOne(Activeusers::class,'users_id');
+        return $this->hasOne(Activeusers::class, 'users_id');
     }
 }

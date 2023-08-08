@@ -2,13 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
- use Illuminate\Foundation\Auth\User as Authenticatable;
-
-
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 
 class PosSuperAdmin extends Authenticatable
 {
@@ -21,11 +16,10 @@ class PosSuperAdmin extends Authenticatable
      * @var array
      */
 
-
     protected $table = 'pos_super_admins';
 
     protected $fillable = [
-        'name','email', 'password','active'
+        'name', 'email', 'password', 'active',
     ];
 
     /**

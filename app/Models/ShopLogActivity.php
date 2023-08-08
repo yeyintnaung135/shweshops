@@ -10,7 +10,7 @@ class ShopLogActivity extends Model
     //
     use SoftDeletes;
     protected $fillable = [
-        'shop','shop_name','user_id','user_name','deleted_at'
+        'shop', 'shop_name', 'user_id', 'user_name', 'deleted_at',
     ];
 
     protected $casts = [

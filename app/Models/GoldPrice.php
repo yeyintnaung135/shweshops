@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class GoldPrice extends Model
 {
     //
-    protected $fillable=['sell_price','buy_price'];
-    public $table='gold_price';
+    protected $fillable = ['sell_price', 'buy_price'];
+    public $table = 'gold_price';
 }

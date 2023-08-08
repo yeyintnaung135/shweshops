@@ -2,27 +2,24 @@
 
 namespace App\Models;
 
-use App\Models\Manager;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 
-class Shopowner extends Authenticatable
+class ShopOwner extends Authenticatable
 {
     //
     use Notifiable, SoftDeletes;
 
-
     protected $table = 'shop_owners';
 
     protected $fillable = [
-        'other_address','messenger_link','page_link','main_phone','premium',
-        'name','shop_name_url','shop_logo','password','active',
-        'email','shop_name','shop_name_myan','description','active',
-        'အထည်မပျက်_ပြန်သွင်း','တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ','အထည်ပျက်စီးချို့ယွင်း','address','map',
-        'additional_phones', 'state', 'township','deleted_at','pos_only','premium_template_id'
+        'other_address', 'messenger_link', 'page_link', 'main_phone', 'premium',
+        'name', 'shop_name_url', 'shop_logo', 'password', 'active',
+        'email', 'shop_name', 'shop_name_myan', 'description', 'active',
+        'အထည်မပျက်_ပြန်သွင်း', 'တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ', 'အထည်ပျက်စီးချို့ယွင်း', 'address', 'map',
+        'additional_phones', 'state', 'township', 'deleted_at', 'pos_only', 'premium_template_id',
     ];
     protected $appends = ['ConnectedwithFacebook', 'WithoutspaceShopname', 'Ykmessengerlink', 'favIds', 'selectionIds', 'notification'];
 
@@ -44,7 +41,6 @@ class Shopowner extends Authenticatable
     {
         return $this->hasMany(ShopBanner::class, 'shop_owner_id');
     }
-
 
     public function getWithoutspaceShopnameAttribute()
     {
