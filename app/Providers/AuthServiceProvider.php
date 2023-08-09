@@ -3,15 +3,15 @@
 namespace App\Providers;
 
 use App\Featuresforshops;
-use App\Http\Controllers\traid\UserRole;
+use App\Http\Controllers\Trait\UserRole;
 use App\Policies\ItemYkPolicy;
 
-use App\Item;
-use App\Role;
+use App\Models\Item;
+use App\Models\Role;
 use App\sitesettings;
-use App\User;
-use App\Manager;
-use App\Shopowner;
+use App\Models\User;
+use App\Models\Manager;
+use App\Models\Shopowner;
 use App\ShweNews\Post;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;

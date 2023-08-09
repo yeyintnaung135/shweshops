@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Event;
-use App\Http\Controllers\traid\category;
+use App\Http\Controllers\Trait\Category;
 use App\Models\News;
 use App\Models\Promotions;
 use App\Models\Shopowner;
