@@ -33,6 +33,18 @@ use App\Models\VisitorLogActivity;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+<<<<<<< HEAD
+use App\Http\Controllers\Trait\Logs;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Trait\AllShops;
+use App\Http\Controllers\Controller;
+
+use App\Http\Controllers\Trait\Category;
+use App\Http\Controllers\Trait\ForYouLogic;
+use App\Http\Controllers\Trait\SimilarLogic;
+=======
 use App\Http\Controllers\Trait\logs;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -43,14 +55,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\category;
 use App\Http\Controllers\Trait\foryoulogic;
 use App\Http\Controllers\Trait\similarlogic;
+>>>>>>> c127b1566be7122c565719718ac60f06891577f9
 
 class FrontController extends Controller
 {
-    use foryoulogic;
-    use allshops;
-    use similarlogic;
-    use category;
-    use logs;
+    use ForYouLogic;
+    use AllShops;
+    use SimilarLogic;
+    use Category;
+    use Logs;
     public function getstates(){
         $states=State::all();
         return response()->json(['data'=>$states]);
@@ -197,7 +210,7 @@ class FrontController extends Controller
 
     public function index()
     {
-      
+
         //Ads
         Ads::where('end', '<=', Carbon::now()->format('Y-m-d H:i:s A'))->delete();
         $collection = Ads::where('start', '<=', Carbon::now()->format('Y-m-d H:i:s A'))->get();
@@ -288,7 +301,7 @@ class FrontController extends Controller
                                         ->orderBy('s_count', 'desc')
                                         ->limit(20)
                                         ->get();
-                              
+
 
         return view('front.index', ['ads' => $ads,'catlist' => $catlist, 'new_items' => $remove_discount_new, 'current_shop_count' => $current_shop_count, 'premium' => $premiumshops, 'popular_shops' => $popular_shops, 'recommendedProducts' => $this->caculateforyouforcurrentuser()[0]]);
 
@@ -628,7 +641,7 @@ class FrontController extends Controller
             $n['type'] = 'news';
             return $n;
         });
-        
+
         $events = Event::where('shop_id',$id)->get();
         $events->map(function ($e) {
             $e['type'] = 'events';
@@ -645,9 +658,9 @@ class FrontController extends Controller
                             ->first();
         // dd($premium_status->name);
         // dd($popup);
-        if($shop->premium == "no"){ 
+        if($shop->premium == "no"){
         return view('front.shop_detail', ['premium' => $premiumshops, 'othersellers' => $othersellers, 'shop_data' => $shop, 'forcheck_count' => $forcheck_count, 'get_pop_items' => $get_pop_items, 'items' => $remove_discount_item, 'shops' => $shops, 'allcatcount' => $allcatcount, 'discount' => $discount]);
-        } 
+        }
         else if($shop->premium == "yes"){
             if($premium_type->id == '1'){
                 return view('front.shop_detail_gold', ['premium' => $premiumshops, 'premium_type' => $premium_type->id, 'othersellers' => $othersellers, 'shop_data' => $shop, 'favcount'=>$fav_count,'forcheck_count' => $forcheck_count, 'get_pop_items' => $get_pop_items, 'items' => $remove_discount_item, 'shops' => $shops, 'allcatcount' => $allcatcount, 'discount' => $discount, 'view_count' => $visitor_view_count, 'popup' => $popup, 'opening' => $openingTime, 'newsNevents' => $news_and_events, 'collections' => $collections]);
@@ -950,7 +963,7 @@ class FrontController extends Controller
                                 ->orderBy('total', 'DESC')
                                 ->take('20')
                                 ->get();
-        return view('front.shops', ['shops' => $shops, 'active' => 'popular']);               
+        return view('front.shops', ['shops' => $shops, 'active' => 'popular']);
     }
 
     public function get_shops_byfilter(Request $request) {

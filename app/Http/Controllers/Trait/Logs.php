@@ -4,7 +4,11 @@ namespace App\Http\Controllers\Trait;
 use App\Models\Bots;
 use App\Models\frontuserlogs;
 use App\Models\Guestoruserid;
+<<<<<<< HEAD
+use App\Http\Controllers\Trait\YKCheckbot;
+=======
 use App\Http\Controllers\Trait\ykcheckbot;
+>>>>>>> c127b1566be7122c565719718ac60f06891577f9
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -14,7 +18,7 @@ use Illuminate\Support\Str;
 trait Logs
 {
     //for logs
-    use ykcheckbot;
+    use YKCheckbot;
 
     public function getidoftable_userorguestid()
     {

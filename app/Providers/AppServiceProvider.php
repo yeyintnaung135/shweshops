@@ -3,7 +3,11 @@
 namespace App\Providers;
 
 use App\Models\Event;
+<<<<<<< HEAD
+use App\Http\Controllers\Trait\Category;
+=======
 use App\Http\Controllers\Trait\category;
+>>>>>>> c127b1566be7122c565719718ac60f06891577f9
 use App\Models\News;
 use App\Models\Promotions;
 use App\Models\Shops;
