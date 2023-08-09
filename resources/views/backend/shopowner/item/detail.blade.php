@@ -36,7 +36,7 @@
                             class="row product type-product post-553 status-publish first instock product_cat-accessories product_cat-bracelet product_cat-brand product_cat-earrings product_cat-fragrances product_cat-gift-for-men has-post-thumbnail shipping-taxable purchasable product-type-simple ">
                             @if ($item->check_discount != 'no')
                                 <?php
-                                $get_dis = \App\discount::where('id', $item->check_discount)->first();
+                                $get_dis = \App\Models\discount::where('id', $item->check_discount)->first();
                                 ?>
                                 {{-- <h3 class="product_title entry-title yk-jello-horizontal sn-discount-badge">
                                     {{$get_dis->percent}}% <span class="sn-off-text">OFF</span></h3> --}}
@@ -779,7 +779,7 @@
 
                         <div class="row justify-content-between mt-4 px-2 px-lg-3">
                             <div class="">
-                                @isset(Auth::guard('shop_owner')->user()->id)
+                                @isRole('shopowner')
                                     <a class="btn btn-md btn-danger" onclick="Delete()"><span
                                             class="fa fa-trash"></span>&nbsp;&nbsp;Delete</a>
                                     <form id="delete_form"
@@ -789,7 +789,7 @@
                                         {{ method_field('DELETE') }}
                                         <input type="hidden" name="id" value="{{ $item->id }}" />
                                     </form>
-                                @endisset
+                                @endisRole
                             </div>
                             <div class="row">
                                 @if ($item->check_discount == '0')

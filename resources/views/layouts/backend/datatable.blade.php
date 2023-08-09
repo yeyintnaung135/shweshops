@@ -196,24 +196,26 @@
     @stack('css')
 </head>
 <body onbeforeunload="useroffline()" class="hold-transition sidebar-mini">
-@php
+    @php
     use App\Models\Shops;
+    use App\Models\Manager;
     if($is_chat_on){
-    if(Auth::guard('shop_owners_and_staffs')->check() ){
 
+   
            $current_shop=Shops::where('id',Auth::guard('shop_owners_and_staffs')->user()->shop_id)->first();
-      
-      if(Auth::guard('shop_owners_and_staffs')->user()->role_id == 4) {
+           $roleid=Auth::guard('shop_owners_and_staffs')->user()->role->id;
+       
+
+      if($roleid == 4) {
         $shop_role = Auth::guard('shop_owners_and_staffs')->user()->name . ' (Owner)';
-      } else if(Auth::guard('shop_owners_and_staffs')->user()->role->id == 1) {
+      } else if($roleid == 1) {
         $shop_role = Auth::guard('shop_owners_and_staffs')->user()->name . ' (Admin)';
-      } else if(Auth::guard('shop_owners_and_staffs')->user()->role->id== 2) {
+      } else if($roleid == 2) {
         $shop_role = Auth::guard('shop_owners_and_staffs')->user()->name . ' (Manager)';
-      } else if(Auth::guard('shop_owners_and_staffs')->user()->role->id== 3) {
+      } else if($roleid == 3) {
         $shop_role = Auth::guard('shop_owners_and_staffs')->user()->name . ' (Staff)';
       }
-    }
-    }
+  }
 
 @endphp
 <div class="wrapper" id="backend" style="height: 100%;">

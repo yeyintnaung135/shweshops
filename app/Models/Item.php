@@ -41,7 +41,7 @@ class Item extends Model
 
     public function getWithoutspaceShopnameAttribute()
     {
-        $shop_name_for_space = Shopowner::where('id', $this->shop_id)->first();
+        $shop_name_for_space = Shops::where('id', $this->shop_id)->first();
         if (empty($shop_name_for_space)) {
             return 'noshop' . $this->shop_id;
         } else {
@@ -68,7 +68,7 @@ class Item extends Model
 
     public function getShopNameAttribute()
     {
-        $shop_name = Shopowner::where('id', $this->shop_id)->first();
+        $shop_name = Shops::where('id', $this->shop_id)->first();
         return $shop_name;
     }
 
