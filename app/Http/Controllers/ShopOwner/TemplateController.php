@@ -28,10 +28,10 @@ class TemplateController extends Controller
 
         if (Auth::guard("shop_role")->check()) {
             $this->role('shop_role');
-            $templates = Percent_template::where('shop_id', $this->role_shop_id)->orderBy('created_at', 'desc')->get();
+            $templates = PercentTemplate::where('shop_id', $this->role_shop_id)->orderBy('created_at', 'desc')->get();
         } else {
             $this->role('shop_owner');
-            $templates = Percent_template::where('shop_id', $this->role)->orderBy('created_at', 'desc')->get();
+            $templates = PercentTemplate::where('shop_id', $this->role)->orderBy('created_at', 'desc')->get();
         }
         return view('backend.shopowner.template.list', ['templates' => $templates, 'shopowner' => $this->shop_owner]);
     }
@@ -63,13 +63,13 @@ class TemplateController extends Controller
         }
 
 
-        $totalRecords = Percent_template::select('count(*) as allcount')
+        $totalRecords = PercentTemplate::select('count(*) as allcount')
                         ->where('shop_id', $shop_id)
                         ->where('name', 'like', '%' . $searchValue . '%')
                         ->count();
         $totalRecordswithFilter = $totalRecords;
 
-          $records = Percent_template::orderBy($columnName, $columnSortOrder)
+          $records = PercentTemplate::orderBy($columnName, $columnSortOrder)
               ->where('shop_id', $shop_id)->orderBy('created_at', 'desc')
               ->where('name', 'like', '%' . $searchValue . '%')
               ->select('percent_template.*')
@@ -114,11 +114,11 @@ class TemplateController extends Controller
 
     public function edit($id)
     {
-        $template_id = Percent_template::findOrFail($id)->shop_id;
+        $template_id = PercentTemplate::findOrFail($id)->shop_id;
         if (isset(Auth::guard('shop_role')->user()->id)) {
             $this->role('shop_role');
             if (TzGate::allows($this->role_shop_id == $template_id)) {
-                $tempalte = Percent_template::where('id', $id)->first();
+                $tempalte = PercentTemplate::where('id', $id)->first();
             }
         } else {
 
@@ -129,7 +129,7 @@ class TemplateController extends Controller
 
             $user_id = $this->role;
             if (TzGate::allows($user_id == $template_id)) {
-                $tempalte = Percent_template::where('id', $id)->first();
+                $tempalte = PercentTemplate::where('id', $id)->first();
 
 
             }
@@ -147,7 +147,7 @@ class TemplateController extends Controller
         $this->role('shop_owner');
          $shop_id = $this->role;
        }
-       Percent_template::create([
+       PercentTemplate::create([
             'shop_id' => $shop_id,
             'name' => $request->input('name'),
             'undamage_product' => $request->input('undamage'),
@@ -173,7 +173,7 @@ class TemplateController extends Controller
            $this->role('shop_owner');
             $shop_id = $this->role;
           }
-            $template =  Percent_template::find($id);
+            $template =  PercentTemplate::find($id);
             $template->shop_id = $shop_id;
             $template->name = $request->name;
             $template->undamage_product = $request->အထည်မပျက်ပြန်သွင်း;
@@ -192,8 +192,8 @@ class TemplateController extends Controller
 
     public function destroy($id)
     {
-        $item_id = Percent_template::findOrFail($id)->shop_id;
-        $template = Percent_template::find($id);
+        $item_id = PercentTemplate::findOrFail($id)->shop_id;
+        $template = PercentTemplate::find($id);
         if (Auth::guard('shop_role')->check()) {
             $this->role('shop_role');
             if (TzGate::allows($item_id == $this->role_shop_id)) {

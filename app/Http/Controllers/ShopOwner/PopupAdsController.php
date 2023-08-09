@@ -7,6 +7,7 @@ use App\Models\MainPopup;
 use App\Models\ShopOwner;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Manager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 

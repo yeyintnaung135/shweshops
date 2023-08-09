@@ -54,7 +54,7 @@ class ShopOwnerController extends Controller
 
     public function detail()
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
 
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $products_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'item')->get();
@@ -144,7 +144,7 @@ class ShopOwnerController extends Controller
     public function product_view()
     {
 
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.count.product_view', ['shopowner' => $shopowner]);
     }
 
@@ -152,7 +152,7 @@ class ShopOwnerController extends Controller
     {
 
         if (count($this->uniqueProductViewCheck($this->get_shopid())) != 0) {
-            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.uniqueproduct_view', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -162,7 +162,7 @@ class ShopOwnerController extends Controller
     public function buy_now_click()
     {
         if (count($this->buyNowClickViewCheck($this->get_shopid())) != 0) {
-            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.buy_now_click', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -172,7 +172,7 @@ class ShopOwnerController extends Controller
     public function unique_add_to_cart_click()
     {
         if (count($this->uniqueAddToCartViewCheck($this->get_shopid())) != 0) {
-            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.unique_add_to_cart_click', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -182,7 +182,7 @@ class ShopOwnerController extends Controller
     public function unique_whishlist_click()
     {
         if (count($this->uniqueWhishlistViewCheck($this->get_shopid())) != 0) {
-            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.unique_whishlist_click', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -202,7 +202,7 @@ class ShopOwnerController extends Controller
     public function discount_product_view()
     {
         if (count($this->uniqueDiscountCheck($this->get_shopid())) != 0) {
-            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.discount_product_view', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -258,7 +258,7 @@ class ShopOwnerController extends Controller
         if ($columnName == 'shop') {
             $columnName = 'front_user_logs.shop_id';
         }
-        $records = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->leftjoin('shop_owners', 'shop_owners.id', '=', 'front_user_logs.shop_id')->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')->orderBy($columnName, $columnSortOrder)
+        $records = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->leftjoin('shop_owners', 'shop_owners.id', '=', 'front_user_logs.shop_id')->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')->orderBy($columnName, $columnSortOrder)
             ->orderBy('front_user_logs.created_at', 'desc')->where('front_user_logs.status', 'shopdetail')->where('front_user_logs.shop_id', $this->get_shopid())
             ->where(function ($query) use ($searchValue) {
                 $query->where('front_user_logs.id', 'like', '%' . $searchValue . '%')
@@ -644,7 +644,7 @@ class ShopOwnerController extends Controller
         if ($columnName == 'shop') {
             $columnName = 'front_user_logs.shop_id';
         }
-        $totalRecords = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('count(*) as allcount')->leftjoin('ads', 'front_user_logs.ads_id', '=', 'ads.id')
+        $totalRecords = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('count(*) as allcount')->leftjoin('ads', 'front_user_logs.ads_id', '=', 'ads.id')
             ->leftjoin('shop_owners', 'shop_owners.id', '=', 'ads.shop_id')
 
             ->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')->where('status', 'adsclick')
@@ -655,7 +655,7 @@ class ShopOwnerController extends Controller
             ->whereBetween('front_user_logs.created_at', [$searchByFromdate, $searchByTodate])->count();
         $totalRecordswithFilter = $totalRecords;
 
-        $records = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')
+        $records = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')
             ->leftjoin('ads', 'front_user_logs.ads_id', '=', 'ads.id')
             ->leftjoin('shop_owners', 'shop_owners.id', '=', 'ads.shop_id')
 
@@ -775,9 +775,9 @@ class ShopOwnerController extends Controller
             $shop_id = Auth::guard('shop_role')->user()->shop_id;
         }
 
-        $totalRecords = Itemlogactivity::select('count(*) as allcount')->where('shop_id', $shop_id)->count();
+        $totalRecords = ItemLogActivity::select('count(*) as allcount')->where('shop_id', $shop_id)->count();
         // $totalRecords = ItemLogActivity::select('count(*) as allcount')->count();
-        $totalRecordswithFilter = Itemlogactivity::select('count(*) as allcount')->where('shop_id', $shop_id)->count();
+        $totalRecordswithFilter = ItemLogActivity::select('count(*) as allcount')->where('shop_id', $shop_id)->count();
         // $totalRecordswithFilter = ItemLogActivity::select('count(*) as allcount')->count();
 
         $records = ItemLogActivity::orderBy($columnName, $columnSortOrder)
@@ -817,7 +817,7 @@ class ShopOwnerController extends Controller
     {
 
         $users_list = $this->getuserlistbyrolelevel();
-        $result = Shops::where('id', $this->get_shopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
+        $result = Shop::where('id', $this->get_shopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.shop', ['shopowner' => $result, 'items' => $items, 'managers' => $users_list]);
     }
@@ -827,7 +827,7 @@ class ShopOwnerController extends Controller
         if ($this->isstaff()) {
             return $this->unauthorize();
         }
-        $shopowner = Shops::where('id', $this->get_shopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
+        $shopowner = Shop::where('id', $this->get_shopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.edit', ['shopowner' => $shopowner]);
     }
 
