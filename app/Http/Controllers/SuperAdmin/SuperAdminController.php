@@ -255,7 +255,7 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.activity_logs.customer');
     }
 
-    public function getAllVisitor(Request $request)
+    public function get_all_visitor(Request $request)
     {
 
         $draw = $request->get('draw');
@@ -378,7 +378,7 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.count_detail_list.adscountlist');
     }
 
-    public function getAllAdsCount(Request $request)
+    public function get_all_ads_count(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -476,7 +476,7 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.count_detail_list.shopviewercountlist');
     }
 
-    public function getAllShopViewerCount(Request $request)
+    public function get_all_shop_viewer_count(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -571,7 +571,7 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.count_detail_list.buynowcountlist');
     }
 
-    public function getAllBuyNowCount(Request $request)
+    public function get_all_buy_now_count(Request $request)
     {
 
         $draw = $request->get('draw');
@@ -678,7 +678,7 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.count_detail_list.addtocartcountlist');
     }
 
-    public function getAllAddToCartCount(Request $request)
+    public function get_all_add_to_cart_count(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -783,7 +783,7 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.count_detail_list.wishlistcountlist');
     }
 
-    public function getAllWishlistCount(Request $request)
+    public function get_all_wishlist_count(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -956,7 +956,7 @@ class SuperAdminController extends Controller
         return redirect()->back();
     }
 
-    public function isBanned($id)
+    public function is_banned($id)
     {
         $admin = SuperAdmin::findOrFail($id);
         $admin->role = '3';

@@ -276,7 +276,7 @@ class ShopController extends Controller
         );
         echo json_encode($response);
     }
-    public function getAllShops(Request $request)
+    public function get_all_shops(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -392,7 +392,7 @@ class ShopController extends Controller
     }
 
     // datable for shop log activity
-    public function getShopActivity(Request $request)
+    public function get_shop_activity(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
