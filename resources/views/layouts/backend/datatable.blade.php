@@ -30,14 +30,10 @@
     {{--    </script>--}}
     @if(Auth::check())
         <?php
-        if (Auth::guard('shop_owner')->check()) {
-            $shopid = Auth::guard('shop_owner')->user()->id;
+      
+            $shopid = Auth::guard('shop_owners_and_staffs')->user()->shop_id;
 
-
-        } else if (Auth::guard('shop_role')->check()) {
-            $shopid = Auth::guard('shop_role')->user()->shop_id;
-
-        }
+   
         ?>
         <script>
             window.userid = {{$shopid}};
@@ -200,38 +196,32 @@
     @stack('css')
 </head>
 <body onbeforeunload="useroffline()" class="hold-transition sidebar-mini">
-@php
-    use App\Shopowner;
-    use App\Manager;
-if($is_chat_on){
-    if(Auth::guard('shop_owner')->check() or Auth::guard('shop_role')->check()){
+    @php
+    use App\Models\Shops;
+    use App\Models\Manager;
+    if($is_chat_on){
 
-       if(isset(Auth::guard('shop_owner')->user()->id)){
-          $current_shop=Shopowner::where('id',Auth::guard('shop_owner')->user()->id)->first();
-       }else{
-           if(isset(Auth::guard('shop_role')->user()->id)){
-           $manager= Manager::where('id', Auth::guard('shop_role')->user()->id)->pluck('shop_id');
-           $current_shop=Shopowner::where('id',$manager)->first();
-           }
+   
+           $current_shop=Shops::where('id',Auth::guard('shop_owners_and_staffs')->user()->shop_id)->first();
+           $roleid=Auth::guard('shop_owners_and_staffs')->user()->role->id;
+       
 
-       }
-      if(isset(Auth::guard('shop_owner')->user()->id)) {
-        $shop_role = Auth::guard('shop_owner')->user()->name . ' (Owner)';
-      } else if(Auth::guard('shop_role')->user()->role_id == 1) {
-        $shop_role = Auth::guard('shop_role')->user()->name . ' (Admin)';
-      } else if(Auth::guard('shop_role')->user()->role_id == 2) {
-        $shop_role = Auth::guard('shop_role')->user()->name . ' (Manager)';
-      } else if(Auth::guard('shop_role')->user()->role_id == 3) {
-        $shop_role = Auth::guard('shop_role')->user()->name . ' (Staff)';
+      if($roleid == 4) {
+        $shop_role = Auth::guard('shop_owners_and_staffs')->user()->name . ' (Owner)';
+      } else if($roleid == 1) {
+        $shop_role = Auth::guard('shop_owners_and_staffs')->user()->name . ' (Admin)';
+      } else if($roleid == 2) {
+        $shop_role = Auth::guard('shop_owners_and_staffs')->user()->name . ' (Manager)';
+      } else if($roleid == 3) {
+        $shop_role = Auth::guard('shop_owners_and_staffs')->user()->name . ' (Staff)';
       }
-         }
-}
+  }
 
 @endphp
 <div class="wrapper" id="backend" style="height: 100%;">
     @if($is_chat_on='on')
 
-        @if(isset(Auth::guard('shop_owner')->user()->id) or isset(Auth::guard('shop_role')->user()->id))
+        @if(isset(Auth::guard('shop_owners_and_staffs')->user()->id))
 
             <shopownerchatwrapper
                 ref="chatwrapper"

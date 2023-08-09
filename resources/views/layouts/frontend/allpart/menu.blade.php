@@ -15,7 +15,7 @@
             </div>
 
             {{-- <div class="elementor-widget-container is-mobile d-flex"> --}}
-                @if(isset(Auth::guard('web')->user()->id)|| isset(Auth::guard('shop_owner')->user()->id) || isset(Auth::guard('shop_role')->user()->id))
+                @if(isset(Auth::guard('web')->user()->id)|| isset(Auth::guard('shop_owners_and_staffs')->user()->id)))
                 <div class="ftc-cart-element is-mobile mt-1 me-4">
 
                     <div class="ftc-tini-cart">

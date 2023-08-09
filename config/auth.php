@@ -54,14 +54,11 @@ return [
             'driver' => 'session',
             'provider' => 'pos_super_admins',
         ],
-        'shop_owner' => [
+        'shop_owners_and_staffs' => [
             'driver' => 'session',
-            'provider' => 'shop_owners',
+            'provider' => 'shop_owner_and_staff',
         ],
-        'shop_role' => [
-            'driver' => 'session',
-            'provider' => 'shop_role',
-        ],
+        
 
     ],
 
@@ -95,14 +92,11 @@ return [
             'driver' => 'eloquent',
             'model' => App\PosSuperAdmin::class,
         ],
-        'shop_owners' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Shopowner::class,
-        ],
+    
 
-        'shop_role' => [
+        'shop_owner_and_staff' => [
             'driver' => 'eloquent',
-            'model' => App\Models\ShopRole::class,
+            'model' => App\Models\ShopOwnersAndStaffs::class,
         ],
 
     ],

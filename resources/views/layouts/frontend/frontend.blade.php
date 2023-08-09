@@ -62,10 +62,10 @@ header('X-Content-Type-Options: nosniff');
         </script>
     @endif
     <?php
-    if(Auth::guard('shop_owner')->check()){
-        $userid= Auth::guard('shop_owner')->user()->id;
-    }else if(Auth::guard('shop_role')->check()){
-        $userid= Auth::guard('shop_role')->user()->shop_id;
+    if(Auth::guard('shop_owners_and_staffs')->check()){
+        $userid= Auth::guard('shop_owners_and_staffs')->user()->id;
+    }else if(Auth::guard('shop_owners_and_staffs')->check()){
+        $userid= Auth::guard('shop_owners_and_staffs')->user()->shop_id;
     } else {
         $userid=0;
     }

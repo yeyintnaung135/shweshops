@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\ShopOwner;
 
-use App\Ads;
+use App\Models\Ads;
 
 use App\Models\frontuserlogs;
 use App\Models\Item;
 use App\Models\GoldPoint;
 use App\Models\discount;
-use App\Models\Shopowner;
+use App\Models\Shops;
 use App\Models\ShopBanner;
 use App\Models\BuyNowClickLog;
 use App\Models\ItemLogActivity;
 use App\Models\ShopLogActivity;
 use App\Models\User;
-use App\Models\WhislistClickLog;
+use App\Models\WishlistClickLog;
 use App\Models\AddToCartClickLog;
 use App\Models\CountSetting;
 use Illuminate\Http\Request;
@@ -41,55 +41,55 @@ class ShopOwnerController extends Controller
     public function __construct()
     {
         //tz
-        $this->middleware('auth:shop_owner,shop_role');
+        $this->middleware('auth:shop_owners_and_staffs');
     }
 
     public function index()
     {
         $storecattocache = Cache::put('cat', $this->getallcatcount());
 
-        $items = Item::where('shop_id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.list', ['items' => $items]);
     }
 
     public function detail()
     {
-        $shopowner = Shopowner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
 
-        $items = Item::where('shop_id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $products_count_setting = CountSetting::where('shop_id', $this->getshopid())->where('name', 'item')->get();
-
-
-        $shopview = frontuserlogs::where('shop_id', $this->getshopid())->where('status', 'shopdetail')->orderBy('created_at', 'desc')->get()->unique('guest_id');
-        $shops_view_count_setting = CountSetting::where('shop_id', $this->getshopid())->where('name', 'shop_view')->get();
+        $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $products_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'item')->get();
 
 
-        $productclick = frontuserlogs::leftjoin('items', 'front_user_logs.product_id', '=', 'items.id')->where('front_user_logs.status', 'product_detail')->where('items.shop_id', $this->getshopid())->orderBy('front_user_logs.created_at', 'desc')->get();
-        $items_view_count_setting = CountSetting::where('shop_id', $this->getshopid())->where('name', 'items_view')->get();
+        $shopview = frontuserlogs::where('shop_id', $this->get_shopid())->where('status', 'shopdetail')->orderBy('created_at', 'desc')->get()->unique('guest_id');
+        $shops_view_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'shop_view')->get();
 
-        $unique_productclick = ItemLogActivity::where('shop_id', $this->getshopid())->orderBy('created_at', 'desc')->get()->unique('user_id', 'guest_id');
-        $unique_product_click_count_setting = CountSetting::where('shop_id', $this->getshopid())->where('name', 'item_unique_view')->get();
 
-        $buynowclick = BuyNowClickLog::leftjoin('items', 'items.id', 'buy_now_click_logs.item_id')->where('items.shop_id', $this->getshopid())->orderBy('buy_now_click_logs.created_at', 'desc')->get();
-        $buy_now_count_setting = CountSetting::where('shop_id', $this->getshopid())->where('name', 'buyNowClick')->get();
+        $productclick = frontuserlogs::leftjoin('items', 'front_user_logs.product_id', '=', 'items.id')->where('front_user_logs.status', 'product_detail')->where('items.shop_id', $this->get_shopid())->orderBy('front_user_logs.created_at', 'desc')->get();
+        $items_view_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'items_view')->get();
 
-        $addtocartclick = AddToCartClickLog::leftjoin('items', 'items.id', 'add_to_cart_click_logs.item_id')->where('items.shop_id', $this->getshopid())->orderBy('add_to_cart_click_logs.created_at', 'desc')->get()->unique('guest_id', 'user_id');
-        $addtocartclick_count_setting = CountSetting::where('shop_id', $this->getshopid())->where('name', 'addToCartClick')->get();
+        $unique_productclick = ItemLogActivity::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get()->unique('user_id', 'guest_id');
+        $unique_product_click_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'item_unique_view')->get();
 
-        $whislistclick = WhislistClickLog::leftjoin('items', 'items.id', 'whislist_click_logs.item_id')->where('items.shop_id', $this->getshopid())->orderBy('whislist_click_logs.created_at', 'desc')->get();
-        $whislistclick_count_setting = CountSetting::where('shop_id', $this->getshopid())->where('name', 'whislistclick')->get();
+        $buynowclick = BuyNowClickLog::leftjoin('items', 'items.id', 'buy_now_click_logs.item_id')->where('items.shop_id', $this->get_shopid())->orderBy('buy_now_click_logs.created_at', 'desc')->get();
+        $buy_now_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'buyNowClick')->get();
 
-        $discountview = ItemLogActivity::where('shop_id', $this->getshopid())->whereIn('item_id', Discount::pluck('item_id'))->get();
-        $discountview_count_setting = CountSetting::where('shop_id', $this->getshopid())->where('name', 'discountview')->get();
+        $addtocartclick = AddToCartClickLog::leftjoin('items', 'items.id', 'add_to_cart_click_logs.item_id')->where('items.shop_id', $this->get_shopid())->orderBy('add_to_cart_click_logs.created_at', 'desc')->get()->unique('guest_id', 'user_id');
+        $addtocartclick_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'addToCartClick')->get();
 
-        $adsview = ShopLogActivity::where('shop', $this->getshopid())->whereIn('shop', Ads::pluck('shop_id'))->get();
-        $adsview_count_setting = CountSetting::where('shop_id', $this->getshopid())->where('name', 'adsview')->get();
+        $whislistclick = WishlistClickLog::leftjoin('items', 'items.id', 'wishlist_click_logs.item_id')->where('items.shop_id', $this->get_shopid())->orderBy('wishlist_click_logs.created_at', 'desc')->get();
+        $whislistclick_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'whislistclick')->get();
 
-        // if($this->checkUserCount($this->getshopid())){
+        $discountview = ItemLogActivity::where('shop_id', $this->get_shopid())->whereIn('item_id', Discount::pluck('item_id'))->get();
+        $discountview_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'discountview')->get();
+
+        $adsview = ShopLogActivity::where('shop', $this->get_shopid())->whereIn('shop', Ads::pluck('shop_id'))->get();
+        $adsview_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'adsview')->get();
+
+        // if($this->checkUserCount($this->get_shopid())){
 
         // }
         $users = $this->getuserlistbyrolelevel();
-        $users_count_setting = CountSetting::where('shop_id', $this->getshopid())->where('name', 'users')->get();
+        $users_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'users')->get();
 
 
         //  return $buynowclick;
@@ -132,9 +132,9 @@ class ShopOwnerController extends Controller
 
     public function shopview()
     {
-        if (count($this->shopViewCheck($this->getshopid())) != 0) {
+        if (count($this->shopViewCheck($this->get_shopid())) != 0) {
 
-            $shopowner = Shopowner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.shop_view', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -144,15 +144,15 @@ class ShopOwnerController extends Controller
     public function productview()
     {
 
-        $shopowner = Shopowner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.count.product_view', ['shopowner' => $shopowner]);
     }
 
     public function uniqueproductview()
     {
 
-        if (count($this->uniqueProductViewCheck($this->getshopid())) != 0) {
-            $shopowner = Shopowner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        if (count($this->uniqueProductViewCheck($this->get_shopid())) != 0) {
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.uniqueproduct_view', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -161,8 +161,8 @@ class ShopOwnerController extends Controller
 
     public function buynowclick()
     {
-        if (count($this->buyNowClickViewCheck($this->getshopid())) != 0) {
-            $shopowner = Shopowner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        if (count($this->buyNowClickViewCheck($this->get_shopid())) != 0) {
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.buy_now_click', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -171,8 +171,8 @@ class ShopOwnerController extends Controller
 
     public function uniqueaddtocartclick()
     {
-        if (count($this->uniqueAddToCartViewCheck($this->getshopid())) != 0) {
-            $shopowner = Shopowner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        if (count($this->uniqueAddToCartViewCheck($this->get_shopid())) != 0) {
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.unique_add_to_cart_click', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -181,8 +181,8 @@ class ShopOwnerController extends Controller
 
     public function uniquewhishlistclick()
     {
-        if (count($this->uniqueWhishlistViewCheck($this->getshopid())) != 0) {
-            $shopowner = Shopowner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        if (count($this->uniqueWhishlistViewCheck($this->get_shopid())) != 0) {
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.unique_whishlist_click', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -191,8 +191,8 @@ class ShopOwnerController extends Controller
 
     public function uniqueadsview()
     {
-        if (count($this->uniqueAdsViewCheck($this->getshopid())) != 0) {
-            $shopowner = Shopowner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        if (count($this->uniqueAdsViewCheck($this->get_shopid())) != 0) {
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.unique_ads_view', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -201,8 +201,8 @@ class ShopOwnerController extends Controller
 
     public function discountproductview()
     {
-        if (count($this->uniqueDiscountCheck($this->getshopid())) != 0) {
-            $shopowner = Shopowner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        if (count($this->uniqueDiscountCheck($this->get_shopid())) != 0) {
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.discount_product_view', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -236,7 +236,7 @@ class ShopOwnerController extends Controller
             $searchByTodate = Carbon::now();
         }
 
-        $totalRecords = frontuserlogs::select('count(*) as allcount')->where('status', 'shopdetail')->where('shop_id', $this->getshopid())
+        $totalRecords = frontuserlogs::select('count(*) as allcount')->where('status', 'shopdetail')->where('shop_id', $this->get_shopid())
             ->where(function ($query) use ($searchValue) {
                 $query->where('id', 'like', '%' . $searchValue . '%')
                     ->orWhere('userorguestid', 'like', '%' . $searchValue . '%');
@@ -259,7 +259,7 @@ class ShopOwnerController extends Controller
             $columnName = 'front_user_logs.shop_id';
         }
         $records = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->leftjoin('shop_owners', 'shop_owners.id', '=', 'front_user_logs.shop_id')->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')->orderBy($columnName, $columnSortOrder)
-            ->orderBy('front_user_logs.created_at', 'desc')->where('front_user_logs.status', 'shopdetail')->where('front_user_logs.shop_id', $this->getshopid())
+            ->orderBy('front_user_logs.created_at', 'desc')->where('front_user_logs.status', 'shopdetail')->where('front_user_logs.shop_id', $this->get_shopid())
             ->where(function ($query) use ($searchValue) {
                 $query->where('front_user_logs.id', 'like', '%' . $searchValue . '%')
                     ->orWhere('front_user_logs.userorguestid', 'like', '%' . $searchValue . '%');
@@ -347,7 +347,7 @@ class ShopOwnerController extends Controller
 
             ->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')
             ->leftjoin('items', 'items.id', '=', 'buy_now_click_logs.item_id')
-            ->leftjoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')->where('items.shop_id', $this->getshopid())
+            ->leftjoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')->where('items.shop_id', $this->get_shopid())
             ->where(function ($query) use ($searchValue) {
                 $query->where('buy_now_click_logs.id', 'like', '%' . $searchValue . '%')
                     ->orWhere('users.username', 'like', '%' . $searchValue . '%')
@@ -370,7 +370,7 @@ class ShopOwnerController extends Controller
                     ->orWhere('users.username', 'like', '%' . $searchValue . '%')
                     ->orWhere('guestoruserid.user_id', 'like', '%' . $searchValue . '%')
                     ->orWhere('items.shop_id', 'like', '%' . $searchValue . '%');
-            })->where('items.shop_id', $this->getshopid())
+            })->where('items.shop_id', $this->get_shopid())
             ->whereBetween('buy_now_click_logs.created_at', [$searchByFromdate, $searchByTodate])
             ->skip($start)
             ->take($rowperpage)
@@ -454,7 +454,7 @@ class ShopOwnerController extends Controller
                     ->orWhere('users.username', 'like', '%' . $searchValue . '%')
                     ->orWhere('guestoruserid.user_id', 'like', '%' . $searchValue . '%')
                     ->orWhere('items.shop_id', 'like', '%' . $searchValue . '%');
-            })->where('items.shop_id', $this->getshopid())
+            })->where('items.shop_id', $this->get_shopid())
             ->whereBetween('add_to_cart_click_logs.created_at', [$searchByFromdate, $searchByTodate])->count();
         $totalRecordswithFilter = $totalRecords;
         $records = AddToCartClickLog::leftjoin('items', 'items.id', '=', 'add_to_cart_click_logs.item_id')
@@ -468,7 +468,7 @@ class ShopOwnerController extends Controller
                     ->orWhere('users.username', 'like', '%' . $searchValue . '%')
                     ->orWhere('users.id', 'like', '%' . $searchValue . '%')
                     ->orWhere('items.shop_id', 'like', '%' . $searchValue . '%');
-            })->where('items.shop_id', $this->getshopid())
+            })->where('items.shop_id', $this->get_shopid())
             ->whereBetween('add_to_cart_click_logs.created_at', [$searchByFromdate, $searchByTodate])
             ->select('*', 'add_to_cart_click_logs.created_at as fulct', 'add_to_cart_click_logs.id as fulid')
             ->skip($start)
@@ -545,7 +545,7 @@ class ShopOwnerController extends Controller
         if ($columnName == 'shop') {
             $columnName = 'items.shop_id';
         }
-        $totalRecords = WhislistClickLog::leftjoin('items', 'items.id', '=', 'whislist_click_logs.item_id')
+        $totalRecords = h::leftjoin('items', 'items.id', '=', 'whislist_click_logs.item_id')
             ->leftjoin('guestoruserid', 'whislist_click_logs.userorguestid', '=', 'guestoruserid.id')
             ->leftjoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
             ->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')->select('count(*) as allcount')
@@ -554,10 +554,10 @@ class ShopOwnerController extends Controller
                     ->orWhere('users.username', 'like', '%' . $searchValue . '%')
                     ->orWhere('guestoruserid.user_id', 'like', '%' . $searchValue . '%')
                     ->orWhere('items.shop_id', 'like', '%' . $searchValue . '%');
-            })->where('items.shop_id', $this->getshopid())
+            })->where('items.shop_id', $this->get_shopid())
             ->whereBetween('whislist_click_logs.created_at', [$searchByFromdate, $searchByTodate])->count();
         $totalRecordswithFilter = $totalRecords;
-        $records = WhislistClickLog::leftjoin('items', 'items.id', '=', 'whislist_click_logs.item_id')
+        $records = h::leftjoin('items', 'items.id', '=', 'whislist_click_logs.item_id')
             ->leftjoin('guestoruserid', 'whislist_click_logs.userorguestid', '=', 'guestoruserid.id')
             ->leftjoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
             ->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')
@@ -568,7 +568,7 @@ class ShopOwnerController extends Controller
                     ->orWhere('users.username', 'like', '%' . $searchValue . '%')
                     ->orWhere('users.id', 'like', '%' . $searchValue . '%')
                     ->orWhere('items.shop_id', 'like', '%' . $searchValue . '%');
-            })->where('items.shop_id', $this->getshopid())
+            })->where('items.shop_id', $this->get_shopid())
             ->whereBetween('whislist_click_logs.created_at', [$searchByFromdate, $searchByTodate])
             ->select('*', 'whislist_click_logs.created_at as fulct', 'whislist_click_logs.id as fulid')
             ->skip($start)
@@ -651,7 +651,7 @@ class ShopOwnerController extends Controller
             ->where(function ($query) use ($searchValue) {
                 $query->where('front_user_logs.id', 'like', '%' . $searchValue . '%')
                     ->orWhere('front_user_logs.userorguestid', 'like', '%' . $searchValue . '%');
-            })->where('ads.shop_id', $this->getshopid())
+            })->where('ads.shop_id', $this->get_shopid())
             ->whereBetween('front_user_logs.created_at', [$searchByFromdate, $searchByTodate])->count();
         $totalRecordswithFilter = $totalRecords;
 
@@ -664,7 +664,7 @@ class ShopOwnerController extends Controller
             ->where(function ($query) use ($searchValue) {
                 $query->where('front_user_logs.id', 'like', '%' . $searchValue . '%')
                     ->orWhere('front_user_logs.userorguestid', 'like', '%' . $searchValue . '%');
-            })->where('ads.shop_id', $this->getshopid())
+            })->where('ads.shop_id', $this->get_shopid())
             ->whereBetween('front_user_logs.created_at', [$searchByFromdate, $searchByTodate])
             ->select('*', 'front_user_logs.created_at as fulct', 'front_user_logs.id as fulid')
             ->skip($start)
@@ -718,11 +718,11 @@ class ShopOwnerController extends Controller
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
 
-        $totalRecords = ItemLogActivity::select('count(*) as allcount')->where('shop_id', $this->getshopid())->count();
-        $totalRecordswithFilter = ItemLogActivity::select('count(*) as allcount')->where('shop_id', $this->getshopid())->count();
+        $totalRecords = ItemLogActivity::select('count(*) as allcount')->where('shop_id', $this->get_shopid())->count();
+        $totalRecordswithFilter = ItemLogActivity::select('count(*) as allcount')->where('shop_id', $this->get_shopid())->count();
 
         $users = ItemLogActivity::orderBy($columnName, $columnSortOrder)
-            ->where('shop_id', $this->getshopid())
+            ->where('shop_id', $this->get_shopid())
             ->whereIn('item_id', Discount::pluck('item_id'))
             ->orderBy('created_at', 'desc')
             ->select('item_log_activities.*')
@@ -817,8 +817,8 @@ class ShopOwnerController extends Controller
     {
 
         $users_list = $this->getuserlistbyrolelevel();
-        $result = Shopowner::where('id', $this->getshopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
-        $items = Item::where('shop_id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $result = Shops::where('id', $this->get_shopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
+        $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.shop', ['shopowner' => $result, 'items' => $items, 'managers' => $users_list]);
     }
 
@@ -827,7 +827,7 @@ class ShopOwnerController extends Controller
         if ($this->isstaff()) {
             return $this->unauthorize();
         }
-        $shopowner = Shopowner::where('id', $this->getshopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.edit', ['shopowner' => $shopowner]);
     }
 
@@ -841,7 +841,7 @@ class ShopOwnerController extends Controller
 
 
         // $input = $request->except('_token', '_method');
-        $shopowner = Shopowner::findOrFail($id);
+        $shopowner = Shops::findOrFail($id);
         $request->validate(
             [
                 'name' => ['required', 'string', 'max:255'],

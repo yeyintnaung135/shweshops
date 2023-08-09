@@ -109,12 +109,12 @@
                 </div>
             </div>`);
         }
-        @if (isset(Auth::guard('shop_owner')->user()->id) )
-            var noti = {!! Auth::guard('shop_owner')->user() !!}.notification
+        @if (isset(Auth::guard('shop_owners_and_staffs')->user()->id) )
+            var noti = {!! Auth::guard('shop_owners_and_staffs')->user() !!}.notification
         @elseif (isset(Auth::guard('web')->user()->id) )
             var noti = {!! Auth::guard('web')->user() !!}.notification
-        @elseif (isset(Auth::guard('shop_role')->user()->id) )
-            var noti = {!! Auth::guard('shop_role')->user() !!}.notification
+        @elseif (isset(Auth::guard('shop_owners_and_staffs')->user()->id) )
+            var noti = {!! Auth::guard('shop_owners_and_staffs')->user() !!}.notification
         @endif
 
         console.log('noti',noti.length)
@@ -153,7 +153,7 @@
             });
     }
     $( document ).ready(function() {
-        @if (isset(Auth::guard('web')->user()->id) || isset(Auth::guard('shop_owner')->user()->id) || isset(Auth::guard('shop_role')->user()->id))
+        @if (isset(Auth::guard('web')->user()->id) || isset(Auth::guard('shop_owners_and_staffs')->user()->id) || isset(Auth::guard('shop_owners_and_staffs')->user()->id))
         pushDiscount();
 
         @endif

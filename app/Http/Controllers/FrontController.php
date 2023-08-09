@@ -33,6 +33,7 @@ use App\Models\VisitorLogActivity;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+<<<<<<< HEAD
 use App\Http\Controllers\Trait\Logs;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -43,6 +44,18 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\Category;
 use App\Http\Controllers\Trait\ForYouLogic;
 use App\Http\Controllers\Trait\SimilarLogic;
+=======
+use App\Http\Controllers\Trait\logs;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Trait\allshops;
+use App\Http\Controllers\Controller;
+
+use App\Http\Controllers\Trait\category;
+use App\Http\Controllers\Trait\foryoulogic;
+use App\Http\Controllers\Trait\similarlogic;
+>>>>>>> c127b1566be7122c565719718ac60f06891577f9
 
 class FrontController extends Controller
 {

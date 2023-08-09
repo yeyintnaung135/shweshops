@@ -2,19 +2,33 @@
 
 namespace App\Providers;
 
+<<<<<<< HEAD
 use App\Featuresforshops;
+=======
+use App\Models\Featuresforshops;
+>>>>>>> c127b1566be7122c565719718ac60f06891577f9
 use App\Http\Controllers\Trait\UserRole;
 use App\Policies\ItemYkPolicy;
 
 use App\Models\Item;
 use App\Models\Role;
+<<<<<<< HEAD
 use App\sitesettings;
 use App\Models\User;
 use App\Models\Manager;
 use App\Models\Shopowner;
 use App\ShweNews\Post;
+=======
+use App\Models\sitesettings;
+use App\Models\User;
+use App\Models\Manager;
+use App\Models\Shops;
+use App\Models\ShweNews\Post;
+>>>>>>> c127b1566be7122c565719718ac60f06891577f9
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
+
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -27,7 +41,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         // 'App\Model' => 'App\Policies\ModelPolicy',
         // Item::class => ItemPolicy::class,
-        // Shopowner::class => ShopownerPolicy::class,
+        // Shops::class => ShopownerPolicy::class,
         // 'App\Manager' => 'App\Policies\ManagerPolicy'
 
     ];
@@ -40,9 +54,15 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
+        Gate::define('can_show_dashboard', function () {
+            return 
+            Auth::guard('shop_owners_and_staffs')->user()->role_id == 1 ||
+            Auth::guard('shop_owners_and_staffs')->user()->role_id == 2  ||
+            Auth::guard('shop_owners_and_staffs')->user()->role_id == 4;
+        });
+      
         Gate::define('can_use_pos', function () {
-            $checkpos = Featuresforshops::where([['shop_id', '=', $this->getshopid()], ['feature', '=', 'pos']])->first();
+            $checkpos = Featuresforshops::where([['shop_id', '=', $this->get_shopid()], ['feature', '=', 'pos']])->first();
             $sitesetting = sitesettings::where('name', 'pos')->first();
             if ($sitesetting->action == 'on' && !empty($checkpos)) {
                 return true;
@@ -63,7 +83,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('access-shop-role-premium', function ($user) {
-            $shopRole = Shopowner::where('id', $user->shop_id)->first();
+            $shopRole = Shops::where('id', $user->shop_id)->first();
 
             if ($shopRole && $shopRole->premium === 'yes') {
                 return true;

@@ -26,8 +26,7 @@ class ShopownerLoginController extends Controller
     public function __construct()
     {
         //tz
-        $this->middleware('guest:shop_owner')->except('logout');
-        $this->middleware('guest:shop_role')->except('logout');
+        $this->middleware('guest:shop_owners_and_staffs')->except('logout');
         $this->middleware('guest')->except('logout');
     }
     //    for redirect to dashboard if loginned
@@ -60,9 +59,8 @@ class ShopownerLoginController extends Controller
 
         }
 
-        $ownerCheck = Auth::guard('shop_owner')->attempt(['main_phone' => $request->value, 'password' => $request->password]);
-        $roleCheck = Auth::guard('shop_role')->attempt(['phone' => $request->value, 'password' => $request->password, 'deleted_at' => null]);
-            if ($roleCheck || $ownerCheck) {
+        $roleCheck = Auth::guard('shop_owners_and_staffs')->attempt(['phone' => $request->value, 'password' => $request->password, 'deleted_at' => null]);
+            if ($roleCheck) {
                 // if(Auth::guard('shop_owner')->user()->pos_only == 'yes'){
                 //     return redirect()->route('backside.shop_owner.pos.dashboard');
                 // }

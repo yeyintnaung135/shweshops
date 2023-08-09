@@ -13,21 +13,12 @@
     <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
         @php
-            use App\Shopowner;
-            use App\Manager;
+            use App\Models\Shops;
 
-            if (isset(Auth::guard('shop_owner')->user()->id)) {
-                $current_shop = Shopowner::where('id', Auth::guard('shop_owner')->user()->id)->first();
-                $premium_status = Shopowner::select('premium')
-                    ->where('id', Auth::guard('shop_owner')->user()->id)
-                    ->first();
-            } else {
-                $manager = Manager::where('id', Auth::guard('shop_role')->user()->id)->pluck('shop_id');
-                $current_shop = Shopowner::where('id', $manager)->first();
-                $premium_status = Shopowner::select('premium')
-                    ->where('id', $manager)
-                    ->first();
-            }
+            if (isset(Auth::guard('shop_owners_and_staffs')->user()->id)) {
+                $current_shop = Shops::where('id', Auth::guard('shop_owners_and_staffs')->user()->shop_id)->first();
+                $premium_status = $current_shop->preminum;
+            } 
 
         @endphp
 
@@ -43,28 +34,14 @@
         </a>
 
 
-        <!-- SidebarSearch Form -->
-        {{-- <div class="form-inline">
-        <div class="input-group" data-widget="sidebar-search">
-            <input class="form-control form-control-sidebar" type="search" placeholder="Search"
-                   aria-label="Search">
-            <div class="input-group-append">
-                <button class="btn btn-sidebar">
-                    <i class="fas fa-search fa-fw"></i>
-                </button>
-            </div>
-        </div>
-    </div> --}}
-        <!-- Sidebar Menu -->
+
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar  flex-column nav-flat sop-sidebar" data-widget="treeview"
                 role="menu" data-accordion="false" style="margin-bottom: 40px">
 
                 <!-- Add icons to the links using the .nav-icon class
                      with font-awesome or any other icon font library -->
-                @if (isset(Auth::guard('shop_owner')->user()->id) ||
-                        Auth::guard('shop_role')->user()->role_id == 1 ||
-                        Auth::guard('shop_role')->user()->role_id == 2)
+                @can ('can_show_dashboard')
                     <li class="nav-item py-1">
                         <a href="{{ url('backside/shop_owner/detail') }}" class="nav-link">
                             <i class="fi fi-rr-home nav-icon"></i>
@@ -77,8 +54,8 @@
                     </li>
                 @endif
 
-                @isset(Auth::guard('shop_role')->user()->id)
-                    @if (Auth::guard('shop_role')->user()->role_id == 1)
+               @isRole('staff')
+               @else
                         <li class="nav-item py-1">
                             <a href="#" class="nav-link">
                                 <i class="fi fi-rr-user nav-icon"></i>
@@ -100,80 +77,23 @@
                                         <p class="ml-3">Add User</p>
                                     </a>
                                 </li>
-                                {{--    <li class="nav-item py-1">
-                                            <a href="{{url('/backside/shop_owner/users/trash')}}" class="nav-link border-0">
-                                                <i class="fa fa-circle pl-5"></i>
-                                                <p class="ml-3">Trash</p>
-                                            </a>
-                                        </li> --}}
-
-                            </ul>
-                        </li>
-                    @elseif(Auth::guard('shop_role')->user()->role_id == 2)
-                        <li class="nav-item py-1">
-                            <a href="#" class="nav-link">
-                                <i class="fi fi-rr-user nav-icon"></i>
-                                <p>
-                                    Users
-                                    <i class="right fas fa-angle-right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
+                                @isRole('admin')
+                                @else
                                 <li class="nav-item py-1">
-                                    <a href="{{ url('backside/shop_owner/users') }}" class="nav-link border-0">
-                                        <i class="fa fa-circle pl-5"></i>
-                                        <p class="ml-3">List</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item py-1">
-                                    <a href="{{ url('/backside/shop_owner/users/create') }}" class="nav-link border-0">
-                                        <i class="fa fa-circle pl-5"></i>
-                                        <p class="ml-3">Add User</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item py-1">
-                                    <a href="{{ url('/backside/shop_owner/users/trash') }}" class="nav-link border-0">
+                                    <a href="{{url('/backside/shop_owner/users/trash')}}" class="nav-link border-0">
                                         <i class="fa fa-circle pl-5"></i>
                                         <p class="ml-3">Trash</p>
                                     </a>
-                                </li>
+                                 </li> 
+                                @endisRole
+
+                              
 
                             </ul>
                         </li>
-                    @endif
-                @endisset
-                @isset(Auth::guard('shop_owner')->user()->id)
-                    <li class="nav-item py-1">
-                        <a href="#" class="nav-link">
-                            <i class="fi fi-rr-user nav-icon"></i>
-                            <p>
-                                Users
-                                <i class="right fas fa-angle-right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item py-1">
-                                <a href="{{ url('backside/shop_owner/users') }}" class="nav-link border-0">
-                                    <i class="fa fa-circle pl-5"></i>
-                                    <p class="ml-3">List</p>
-                                </a>
-                            </li>
-                            <li class="nav-item py-1">
-                                <a href="{{ url('/backside/shop_owner/users/create') }}" class="nav-link border-0">
-                                    <i class="fa fa-circle pl-5"></i>
-                                    <p class="ml-3">Add User</p>
-                                </a>
-                            </li>
-                            <li class="nav-item py-1">
-                                <a href="{{ url('/backside/shop_owner/users/trash') }}" class="nav-link border-0">
-                                    <i class="fa fa-circle pl-5"></i>
-                                    <p class="ml-3">Trash</p>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </li>
-                @endisset
+                   @endisRole
+                  
+           
                 <li class="nav-item py-1">
                     <a href="#" class="nav-link">
                         <i class="fi fi-rs-gift nav-icon"></i>
@@ -195,18 +115,7 @@
                                 <p class="ml-3">Add</p>
                             </a>
                         </li>
-                        {{--                        <li class="nav-item py-1"> --}}
-                        {{--                            <a href="{{url('backside/shop_owner/items/exportexcel')}}" class="nav-link border-0"> --}}
-                        {{--                                <i class="fa fa-circle pl-5"></i> --}}
-                        {{--                                <p class="ml-3">Export Excel</p> --}}
-                        {{--                            </a> --}}
-                        {{--                        </li> --}}
-                        {{-- <li class="nav-item py-1">
-                            <a href="{{url('backside/shop_owner/items/updateexcel')}}" class="nav-link border-0">
-                                <i class="fa fa-circle pl-5"></i>
-                                <p class="ml-3">Update With Excel</p>
-                            </a>
-                        </li> --}}
+                 
                         <li class="nav-item py-1">
                             <a href="{{ route('backside.shop_owner.items.trash') }}" class="nav-link border-0">
                                 <i class="fa fa-circle pl-5"></i>
@@ -252,18 +161,18 @@
                         </p>
                     </a>
                 </li>
-                @if (isset(Auth::guard('shop_owner')->user()->id) ||
-                        Auth::guard('shop_role')->user()->role_id == 2 ||
-                        Auth::guard('shop_role')->user()->role_id == 1)
-                    <li class="nav-item py-1">
-                        <a href="{{ url('backside/shop_owner/edit') }}" class="nav-link">
-                            <i class="nav-icon fi fi-rr-edit"></i>
-                            <p>
-                                Edit Shop
-                            </p>
-                        </a>
-                    </li>
-                @endif
+               @isRole('staff')
+               @else
+               <li class="nav-item py-1">
+                <a href="{{ url('backside/shop_owner/edit') }}" class="nav-link">
+                    <i class="nav-icon fi fi-rr-edit"></i>
+                    <p>
+                        Edit Shop
+                    </p>
+                </a>
+               </li>
+               @endisRole
+                  
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fi fi-rr-document-signed"></i>
