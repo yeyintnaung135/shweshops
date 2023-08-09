@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\ShopOwner;
+
 use App\Models\CatSupport;
 use App\Http\Controllers\Controller;
 use App\Models\Support;

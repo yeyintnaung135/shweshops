@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ShopOwner;
 
 use App\Models\Ads;
 
+
 use App\Models\FrontUserLogs;
 use App\Models\Item;
 use App\Models\GoldPoint;
@@ -545,7 +546,7 @@ class ShopOwnerController extends Controller
         if ($columnName == 'shop') {
             $columnName = 'items.shop_id';
         }
-        $totalRecords = h::leftjoin('items', 'items.id', '=', 'whislist_click_logs.item_id')
+        $totalRecords = WhislistClickLog::leftjoin('items', 'items.id', '=', 'whislist_click_logs.item_id')
             ->leftjoin('guestoruserid', 'whislist_click_logs.userorguestid', '=', 'guestoruserid.id')
             ->leftjoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
             ->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')->select('count(*) as allcount')
@@ -557,7 +558,7 @@ class ShopOwnerController extends Controller
             })->where('items.shop_id', $this->get_shopid())
             ->whereBetween('whislist_click_logs.created_at', [$searchByFromdate, $searchByTodate])->count();
         $totalRecordswithFilter = $totalRecords;
-        $records = h::leftjoin('items', 'items.id', '=', 'whislist_click_logs.item_id')
+        $records = WhislistClickLog::leftjoin('items', 'items.id', '=', 'whislist_click_logs.item_id')
             ->leftjoin('guestoruserid', 'whislist_click_logs.userorguestid', '=', 'guestoruserid.id')
             ->leftjoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
             ->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')
