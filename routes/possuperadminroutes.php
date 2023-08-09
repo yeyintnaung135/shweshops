@@ -1,33 +1,57 @@
 <?php
 //for superadmin
 
-Route::group(['prefix' => 'backside/pos_super_admin', 'as' => 'backside.pos_super_admin.'], function () {
-   
-//    auth
-Route::get('login', ['as' => 'login', 'uses' => 'Shopowner\PosSuperAdminController@loginform']);
-Route::post('login', ['as' => 'logined', 'uses' => 'Shopowner\PosSuperAdminController@login']);
-Route::post('logout', ['as' => 'logout', 'uses' => 'Shopowner\PosSuperAdminController@logout']);
-// Dashboard
-Route::get('dashboard', ['as' => 'dashboard', 'uses' => 'Shopowner\PosSuperAdminController@getdashboard']);
+use App\Http\Controllers\ShopOwner\PosSuperAdminController;
 
+Route::prefix('backside/pos_super_admin')->name('backside.pos_super_admin.')->group(function () {
+    // Auth
+    Route::get('login', [PosSuperAdminController::class, 'login_form'])->name('login');
+    Route::post('login', [PosSuperAdminController::class, 'login'])->name('logined');
+    Route::post('logout', [PosSuperAdminController::class, 'logout'])->name('logout');
+
+    // Dashboard
+    Route::get('dashboard', [PosSuperAdminController::class, 'get_dashboard'])->name('dashboard');
 });
 
-//for shweshops_pos & pos_only shops 
-Route::get('backside/pos_super_admin/shops/all','Shopowner\PosSuperAdminController@all')->name('pos_super_admin_shops.all');
-Route::post('backside/pos_super_admin/shops/get_all_shops', 'Shopowner\PosSuperAdminController@getAllShops')->name('pos_super_admin_shops.dateFilterShops');
-Route::get('backside/pos_super_admin/shops/create','Shopowner\PosSuperAdminController@shopcreate')->name('pos_super_admin_shops.create');
-Route::post('backside/pos_super_admin/shops/register', 'Shopowner\PosSuperAdminController@shopstore')->name('pos_super_admin_shops.store');
-Route::get('backside/pos_super_admin/shops/edit/{id}','Shopowner\PosSuperAdminController@shopedit')->name('pos_super_admin_shops.edit');
-Route::put('backside/pos_super_admin/shops/edit/{id}','Shopowner\PosSuperAdminController@shopupdate')->name('pos_super_admin_shops.update');
-Route::delete('backside/pos_super_admin/shops/delete/{id}','Shopowner\PosSuperAdminController@shoptrash')->name('pos_super_admin_shops.trash');
-Route::get('backside/pos_super_admin/shop_detail/{id}','Shopowner\PosSuperAdminController@shopshow')->name('pos_super_admin_shops.detail');
-Route::get('backside/pos_super_admin/get_township', 'Shopowner\PosSuperAdminController@gettownship');
+//for shweshops_pos & pos_only shops
+Route::prefix('backside/pos_super_admin')->name('pos_super_admin_shops.')->group(function () {
+
+    // All Shops
+    Route::get('shops/all', [PosSuperAdminController::class, 'all'])->name('all');
+    Route::post('shops/get_all_shops', [PosSuperAdminController::class, 'get_all_shops'])->name('date_filter_shops');
+
+    // Create Shop
+    Route::get('shops/create', [PosSuperAdminController::class, 'shop_create'])->name('create');
+    Route::post('shops/register', [PosSuperAdminController::class, 'shop_store'])->name('store');
+
+    // Edit Shop
+    Route::get('shops/edit/{id}', [PosSuperAdminController::class, 'shop_edit'])->name('edit');
+    Route::put('shops/edit/{id}', [PosSuperAdminController::class, 'shop_update'])->name('update');
+
+    // Delete Shop
+    Route::delete('shops/delete/{id}', [PosSuperAdminController::class, 'shop_trash'])->name('trash');
+
+    // Shop Detail
+    Route::get('shop_detail/{id}', [PosSuperAdminController::class, 'shop_show'])->name('detail');
+
+    // Get Township
+    Route::get('get_township', [PosSuperAdminController::class, 'get_township']);
+});
 
 //for pos_super_admin_role
-Route::get('backside/pos_super_admin/admins/all','Shopowner\PosSuperAdminController@list')->name('pos_super_admin_role.list');
-Route::get('backside/pos_super_admin/admins/create','Shopowner\PosSuperAdminController@create')->name('pos_super_admin_role.create');
-Route::post('backside/pos_super_admin/admins/create','Shopowner\PosSuperAdminController@store')->name('pos_super_admin_role.store');
-Route::get('backside/pos_super_admin/admins/edit/{id}','Shopowner\PosSuperAdminController@edit')->name('pos_super_admin_role.edit');
-Route::put('backside/pos_super_admin/admins/edit/{id}','Shopowner\PosSuperAdminController@update')->name('pos_super_admin_role.update');
-Route::delete('backside/pos_super_admin/admins/delete/{id}','Shopowner\PosSuperAdminController@delete')->name('pos_super_admin_role.delete');
-?>
+Route::prefix('backside/pos_super_admin')->name('pos_super_admin_role.')->group(function () {
+
+    // List Admins
+    Route::get('admins/all', [PosSuperAdminController::class, 'list'])->name('list');
+
+    // Create Admin
+    Route::get('admins/create', [PosSuperAdminController::class, 'create'])->name('create');
+    Route::post('admins/create', [PosSuperAdminController::class, 'store'])->name('store');
+
+    // Edit Admin
+    Route::get('admins/edit/{id}', [PosSuperAdminController::class, 'edit'])->name('edit');
+    Route::put('admins/edit/{id}', [PosSuperAdminController::class, 'update'])->name('update');
+
+    // Delete Admin
+    Route::delete('admins/delete/{id}', [PosSuperAdminController::class, 'delete'])->name('delete');
+});
