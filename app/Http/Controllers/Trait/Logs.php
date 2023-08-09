@@ -1,15 +1,12 @@
 <?php
 namespace App\Http\Controllers\Trait;
 
+use App\Http\Controllers\Trait\YKCheckbot;
 use App\Models\Bots;
 use App\Models\frontuserlogs;
 use App\Models\Guestoruserid;
-use App\Http\Controllers\Trait\YKCheckbot;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Str;
-
 
 trait Logs
 {
@@ -18,7 +15,7 @@ trait Logs
 
     public function getidoftable_userorguestid()
     {
-   $useragent = \Illuminate\Support\Facades\Request::userAgent();
+        $useragent = \Illuminate\Support\Facades\Request::userAgent();
 
         if (Session::has('guest_id')) {
             $getguestsession = Session::get('guest_id');
@@ -51,7 +48,6 @@ trait Logs
 
         }
 
-
     }
 
     public function addlog($visitedlink, $productid, $shop_id, $status, $ads_id)
@@ -66,7 +62,6 @@ trait Logs
 
                     frontuserlogs::create(['ads_id' => $ads_id, 'userorguestid' => $tableidof_userorguestid, 'visited_link' => $visitedlink, 'product_id' => $productid, 'shop_id' => $shop_id, 'status' => $status]);
 
-
                 }
             } else {
 
@@ -74,8 +69,8 @@ trait Logs
                     $this->isbacksideuserdeleterecord();
                 }
             }
-        }else{
-            Bots::create(['ip'=>\Illuminate\Support\Facades\Request::ip(),'user_agent'=>$useragent,'checklink'=>$visitedlink]);
+        } else {
+            Bots::create(['ip' => \Illuminate\Support\Facades\Request::ip(), 'user_agent' => $useragent, 'checklink' => $visitedlink]);
         }
         //get id from userorguest table
     }
@@ -95,5 +90,3 @@ trait Logs
     }
     //for logs
 }
-
-?>
