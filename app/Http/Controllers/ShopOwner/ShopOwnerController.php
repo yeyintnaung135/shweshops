@@ -8,7 +8,7 @@ use App\Models\FrontUserLogs;
 use App\Models\Item;
 use App\Models\GoldPoint;
 use App\Models\Discount;
-use App\Models\Shops;
+use App\Models\Shop;
 use App\Models\ShopBanner;
 use App\Models\BuyNowClickLog;
 use App\Models\ItemLogActivity;
@@ -130,25 +130,25 @@ class ShopOwnerController extends Controller
         ]);
     }
 
-    public function shopview()
+    public function shop_view()
     {
         if (count($this->shopViewCheck($this->get_shopid())) != 0) {
 
-            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.shop_view', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
         }
     }
 
-    public function productview()
+    public function product_view()
     {
 
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.count.product_view', ['shopowner' => $shopowner]);
     }
 
-    public function uniqueproductview()
+    public function unique_product_view()
     {
 
         if (count($this->uniqueProductViewCheck($this->get_shopid())) != 0) {
@@ -159,7 +159,7 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function buynowclick()
+    public function buy_now_click()
     {
         if (count($this->buyNowClickViewCheck($this->get_shopid())) != 0) {
             $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -169,7 +169,7 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function uniqueaddtocartclick()
+    public function unique_add_to_cart_click()
     {
         if (count($this->uniqueAddToCartViewCheck($this->get_shopid())) != 0) {
             $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -179,7 +179,7 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function uniquewhishlistclick()
+    public function unique_whishlist_click()
     {
         if (count($this->uniqueWhishlistViewCheck($this->get_shopid())) != 0) {
             $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -189,17 +189,17 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function uniqueadsview()
+    public function unique_ads_view()
     {
         if (count($this->uniqueAdsViewCheck($this->get_shopid())) != 0) {
-            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.unique_ads_view', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
         }
     }
 
-    public function discountproductview()
+    public function discount_product_view()
     {
         if (count($this->uniqueDiscountCheck($this->get_shopid())) != 0) {
             $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -209,7 +209,7 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function getshopownerview(Request $request)
+    public function get_shop_owner_view(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -300,7 +300,7 @@ class ShopOwnerController extends Controller
         echo json_encode($response);
     }
 
-    public function getbuynowclick(Request $request)
+    public function get_buy_now_click(Request $request)
     {
 
         $draw = $request->get('draw');
@@ -404,7 +404,7 @@ class ShopOwnerController extends Controller
         echo json_encode($response);
     }
 
-    public function getuniqueaddtocartclick(Request $request)
+    public function get_unique_add_to_cart_click(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -504,7 +504,7 @@ class ShopOwnerController extends Controller
         echo json_encode($response);
     }
 
-    public function getuniquewhishlistclick(Request $request)
+    public function get_unique_whishlist_click(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -603,7 +603,7 @@ class ShopOwnerController extends Controller
         echo json_encode($response);
     }
 
-    public function getuniqueadsview(Request $request)
+    public function get_unique_ads_view(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -701,7 +701,7 @@ class ShopOwnerController extends Controller
         echo json_encode($response);
     }
 
-    public function getdiscountproductview(Request $request)
+    public function get_discount_product_view(Request $request)
     {
 
         $draw = $request->get('draw');
@@ -751,7 +751,7 @@ class ShopOwnerController extends Controller
         echo json_encode($response);
     }
 
-    public function uniquegetItemActivityLog(Request $request)
+    public function unique_get_item_activity_log(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -813,7 +813,7 @@ class ShopOwnerController extends Controller
         echo json_encode($response);
     }
 
-    public function shopdetail()
+    public function shop_detail()
     {
 
         $users_list = $this->getuserlistbyrolelevel();
@@ -841,7 +841,7 @@ class ShopOwnerController extends Controller
 
 
         // $input = $request->except('_token', '_method');
-        $shopowner = Shops::findOrFail($id);
+        $shopowner = Shop::findOrFail($id);
         $request->validate(
             [
                 'name' => ['required', 'string', 'max:255'],

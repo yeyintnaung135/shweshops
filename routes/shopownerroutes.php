@@ -52,18 +52,18 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     Route::resource('/', ShopOwnerController::class);
     Route::resource('/items', ItemsController::class);
 
-    Route::get('/get_item_activity_log', [ItemsController::class, 'getItemActivityLog'])->name('items.getitems_activity_log');
+    Route::get('/get_item_activity_log', [ItemsController::class, 'get_item_activity_log'])->name('items.getitems_activity_log');
     Route::get('/unique_get_item_activity_log', [ShopOwnerController::class, 'uniquegetItemActivityLog'])->name('items.uniquegetitems_activity_log');
-    Route::get('/get_multiple_price_activity_log', [ItemsController::class, 'getMultiplePriceActivityLog'])->name('items.getmultiple_price_activity_log');
-    Route::get('/get_multiple_discount_activity_log', [ItemsController::class, 'getMultipleDiscountActivityLog'])->name('items.getmultiple_discount_activity_log');
-    Route::get('/get_multiple_damage_activity_log', [ItemsController::class, 'getMultipleDamageActivityLog'])->name('items.getmultiple_damage_activity_log');
-    Route::get('/get_items', [ItemsController::class, 'getItems'])->name('items.getItems');
-    Route::post('/getproductcodebytyping', [ItemsController::class, 'getproductcodebytyping']);
+    Route::get('/get_multiple_price_activity_log', [ItemsController::class, 'get_multiple_price_activity_log'])->name('items.getmultiple_price_activity_log');
+    Route::get('/get_multiple_discount_activity_log', [ItemsController::class, 'get_multiple_discount_activity_log'])->name('items.getmultiple_discount_activity_log');
+    Route::get('/get_multiple_damage_activity_log', [ItemsController::class, 'get_multiple_damage_activity_log'])->name('items.getmultiple_damage_activity_log');
+    Route::get('/get_items', [ItemsController::class, 'get_items'])->name('items.getItems');
+    Route::post('/getproductcodebytyping', [ItemsController::class, 'get_product_code_by_typing']);
 
     Route::get('/items_trash', [ItemsController::class, 'trash'])->name('items.trash');
     Route::get('/get_items_trash', [ItemsController::class, 'getitemsTrash'])->name('items.getitemsTrash');
     Route::get('/items_trash/{id}', [ItemsController::class, 'restore'])->name('items.restore');
-    Route::delete('/items_trash_delete/{id}', [ItemsController::class, 'forceDelete'])->name('items.forcedelete');
+    Route::delete('/items_trash_delete/{id}', [ItemsController::class, 'force_delete'])->name('items.forcedelete');
 
     // Route::get('/items_trash','Shopowner\ItemsController@trash')->name('items.trash');
     // Route::get('/items_trash/{id}','Shopowner\ItemsController@restore')->name('items.restore');
@@ -75,7 +75,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     Route::post('/multiple/minus', [ItemsController::class, 'multiple_update_minus'])->name('multiple_items.update_minus');
     Route::post('/multiple/recap', [ItemsController::class, 'multiple_update_recap'])->name('multiple_items.update_recap');
     Route::post('/multiple/stock', [ItemsController::class, 'multiple_stock'])->name('multiple.stock.items');
-    Route::post('/multiple/checkpriceafterupdateclick', [ItemsController::class, 'checkpriceafterupdateclick'])->name('multiple_items.checkpriceafterupdateclick');
+    Route::post('/multiple/checkpriceafterupdateclick', [ItemsController::class, 'check_price_after_update_click'])->name('multiple_items.checkpriceafterupdateclick');
     Route::post('/multiple/checkpriceafterdiscountclick', [DiscountController::class, 'check_price_after_discount_click'])->name('multiple_items.checkpriceafterdiscountclick');
 
     //template
@@ -122,15 +122,15 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     Route::get('/detail/get_unique_ads_view', [ShopOwnerController::class, 'getuniqueadsview'])->name('detail.get_unique_ads_view');
     Route::get('/detail/get_discount_product_view', [ShopOwnerController::class, 'getdiscountproductview'])->name('detail.get_discount_product_view');
     Route::get('/shop', [ShopOwnerController::class, 'shopdetail'])->name('shop_detail');
-    Route::put('/detail', [ItemsController::class, 'fromDetailEdit'])->name('detail.update');
+    Route::put('/detail', [ItemsController::class, 'from_detail_edit'])->name('detail.update');
 
     Route::get('/edit', [ShopOwnerController::class, 'edit'])->name('edit');
     Route::put('/edit/{id}', [ShopOwnerController::class, 'update'])->name('update');
 
-    Route::post('editajax', [ItemsController::class, 'editajax'])->name('editajax');
+    Route::post('editajax', [ItemsController::class, 'edit_ajax'])->name('editajax');
 
-    Route::post('customedit', [ItemsController::class, 'customedit'])->name('customedit');
-    Route::post('removeimage', [ItemsController::class, 'removeimage'])->name('removeimage');
+    Route::post('customedit', [ItemsController::class, 'custom_edit'])->name('customedit');
+    Route::post('removeimage', [ItemsController::class, 'remove_image'])->name('removeimage');
 
     Route::get('change-password', [ChangePasswordController::class, 'index']);
     Route::post('change-password', [ChangePasswordController::class, 'store'])->name('change.password');

@@ -65,12 +65,12 @@ class ItemsController extends Controller
         return view('backend.shopowner.item.list', ['items' => $items, 'shopowner' => $this->current_shop_data()]);
     }
 
-    public function updateexcel()
+    public function update_excel()
     {
         return view('backend.shopowner.item.updateexcel');
     }
 
-    public function postupdateexcel(Request $request)
+    public function post_update_excel(Request $request)
     {
         $data = $request->except('_token');
         $validator = Validator::make($data, [
@@ -115,7 +115,7 @@ class ItemsController extends Controller
         return view('backend.shopowner.activity.product.multipercent', ['items' => $items, 'shopowner' => $this->shop_owner]);
     }
 
-    public function getItemActivityLog(Request $request)
+    public function get_item_activity_log(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -196,7 +196,7 @@ class ItemsController extends Controller
         echo json_encode($response);
     }
 
-    public function getMultiplePriceActivityLog(Request $request)
+    public function get_multiple_price_activity_log(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -302,7 +302,7 @@ class ItemsController extends Controller
         echo json_encode($response);
     }
 
-    public function getMultipleDiscountActivityLog(Request $request)
+    public function get_multiple_discount_activity_log(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -419,7 +419,7 @@ class ItemsController extends Controller
         echo json_encode($response);
     }
 
-    public function getMultipleDamageActivityLog(Request $request)
+    public function get_multiple_damage_activity_log(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -506,7 +506,7 @@ class ItemsController extends Controller
     }
     //show create form
     //Process Ajax request
-    public function getItems(Request $request)
+    public function get_items(Request $request)
     {
 
         $draw = $request->get('draw');
@@ -592,12 +592,12 @@ class ItemsController extends Controller
 
     }
 
-    public function exportexcel()
+    public function export_excel()
     {
         return view('backend.shopowner.item.exportexcel');
     }
 
-    public function postexportexcel(Request $request)
+    public function post_export_excel(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -686,7 +686,7 @@ class ItemsController extends Controller
 
     }
 
-    public function getproductcodebytyping(Request $request)
+    public function get_product_code_by_typing(Request $request)
     {
         $result = Item::orderBy('product_code', 'asc')
             ->where('shop_id', $request->shop_id)
@@ -939,7 +939,7 @@ class ItemsController extends Controller
 
     }
 
-    public function removeimage(Request $request)
+    public function remove_image(Request $request)
     {
         if (!$this->itisowneritem($request->id)) {
             return $this->unauthorize();
@@ -968,7 +968,7 @@ class ItemsController extends Controller
     }
 
     //edit but custom upload not from dropzone
-    public function customedit(Request $request)
+    public function custom_edit(Request $request)
     {
         // if (!$this->itisowneritem($request->id)) {
         //      return $this->unauthorize();
@@ -1254,7 +1254,7 @@ class ItemsController extends Controller
     }
 
     //edit function
-    public function editajax(Request $request)
+    public function edit_ajax(Request $request)
     {
         //        if (!$this->itisowneritem($request->id)) {
         //            return $this->unauthorize();
@@ -1795,7 +1795,7 @@ class ItemsController extends Controller
         ], $message);
     }
 
-    public function checkpriceafterupdateclick(Request $request)
+    public function check_price_after_update_click(Request $request)
     {
 
         // return dd($request);
@@ -1943,7 +1943,7 @@ class ItemsController extends Controller
         return view('backend.shopowner.item.trash', ['items' => $items, 'shopowner' => $this->shop_owner]);
     }
 
-    public function getitemsTrash(Request $request)
+    public function get_items_trash(Request $request)
     {
 
         $draw = $request->get('draw');
@@ -2086,7 +2086,7 @@ class ItemsController extends Controller
         }
     }
 
-    public function forceDelete($id)
+    public function force_delete($id)
     {
         $item_id = Item::onlyTrashed()->findOrFail($id)->shop_id;
         if (Auth::guard('shop_role')->check()) {
@@ -2112,7 +2112,7 @@ class ItemsController extends Controller
         return redirect()->back();
     }
 
-    public function fromDetailEdit(Request $request)
+    public function from_detail_edit(Request $request)
     {
         $input = $request->except('_token', '_method', 'id');
         $id = $request->input('id');
