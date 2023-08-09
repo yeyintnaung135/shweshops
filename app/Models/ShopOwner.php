@@ -7,12 +7,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 
-class Shops extends Authenticatable
+class ShopOwner extends Authenticatable
 {
     //
     use Notifiable, SoftDeletes;
 
-    protected $table = 'shops';
+    protected $table = 'shop_owners';
 
     protected $fillable = [
         'other_address', 'messenger_link', 'page_link', 'main_phone', 'premium',
@@ -55,23 +55,23 @@ class Shops extends Authenticatable
 
     public function getFavIdsAttribute()
     {
-        if (isset(Auth::guard('shop_owners_and_staffs')->user()->id)) {
-            $fav_ids = ShopOwnersFav::where('user_id', $this->id)->get();
+        if (isset(Auth::guard('shop_owner')->user()->id)) {
+            $fav_ids = Shop_owners_fav::where('user_id', $this->id)->get();
             return $fav_ids;
         }
         return ('');
     }
     public function getSelectionIdsAttribute()
     {
-        if (isset(Auth::guard('shop_owners_and_staffs')->user()->id)) {
-            $selection_ids = ShopOwnersSelection::where('user_id', $this->id)->get();
+        if (isset(Auth::guard('shop_owner')->user()->id)) {
+            $selection_ids = Shop_owners_selection::where('user_id', $this->id)->get();
             return $selection_ids;
         }
         return ('');
     }
     public function getNotificationAttribute()
     {
-        if (isset(Auth::guard('shop_owners_and_staffs')->user()->id)) {
+        if (isset(Auth::guard('shop_owner')->user()->id)) {
             $noti = Usernoti::where('receiver_user_id', $this->id)->where('user_type', 'shop_owners')->where('read_by_receiver', 0)->get();
             return $noti;
         }
