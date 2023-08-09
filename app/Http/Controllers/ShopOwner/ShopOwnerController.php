@@ -4,10 +4,10 @@ namespace App\Http\Controllers\ShopOwner;
 
 use App\Models\Ads;
 
-use App\Models\frontuserlogs;
+use App\Models\FrontUserLogs;
 use App\Models\Item;
 use App\Models\GoldPoint;
-use App\Models\discount;
+use App\Models\Discount;
 use App\Models\Shops;
 use App\Models\ShopBanner;
 use App\Models\BuyNowClickLog;

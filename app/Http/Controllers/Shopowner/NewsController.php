@@ -135,7 +135,7 @@ class NewsController extends Controller
         return redirect()->route('backside.shop_owner.news.index')->with('message', 'News deleted successfully.');
     }
 
-    public function getAllNews(Request $request)
+    public function get_all_news(Request $request)
     {
         $fromDate = $request->input('fromDate');
         $toDate = $request->input('toDate');

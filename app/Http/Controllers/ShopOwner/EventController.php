@@ -136,7 +136,7 @@ class EventController extends Controller
         return redirect()->route('backside.shop_owner.events.index')->with('message', 'event deleted successfully.');
     }
 
-    public function getEvents(Request $request)
+    public function get_events(Request $request)
     {
         $fromDate = $request->input('fromDate');
         $toDate = $request->input('toDate');

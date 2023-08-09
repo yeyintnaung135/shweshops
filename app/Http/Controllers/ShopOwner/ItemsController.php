@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\ShopOwner;
 
-use App\Models\facebooktable;
+use App\Models\FacebookTable;
 use App\Models\Gems;
 use App\Http\Controllers\Trait\FacebookTraid;
 use App\Imports\ItemsImport;
@@ -12,11 +12,11 @@ use App\Models\MultiplePriceLogs;
 use App\Models\MultipleDiscountLogs;
 use App\Models\MultipleDamageLogs;
 use App\Models\Recap;
-use App\Models\discount;
+use App\Models\Discount;
 use App\Models\MainCategory;
-use App\Models\Shopowner;
-use App\Models\Percent_template;
-use App\Models\categories;
+use App\Models\ShopOwner;
+use App\Models\PercentTemplate;
+use App\Models\Categories;
 use App\Models\Collection;
 use App\Models\ItemsEditDetailLogs;
 use App\Facade\TzGate;
@@ -58,9 +58,9 @@ class ItemsController extends Controller
 
     public function index()
     {
-      
+
             $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-     
+
 
         return view('backend.shopowner.item.list', ['items' => $items, 'shopowner' => $this->current_shop_data()]);
     }
@@ -88,16 +88,16 @@ class ItemsController extends Controller
     public function item_activity_index()
     {
             $items = Item::where('shop_id', $this->get_shopid)->orderBy('created_at', 'desc')->get();
-   
-    
+
+
         return view('backend.shopowner.activity.product.item', ['items' => $items, 'shopowner' => $this->shop_owner]);
     }
 
     public function multiprice_activity_index()
     {
-   
+
             $items = Item::where('shop_id', $this->get_shopid)->orderBy('created_at', 'desc')->get();
-      
+
         return view('backend.shopowner.activity.product.multiprice', ['items' => $items, 'shopowner' => $this->shop_owner]);
     }
 
@@ -144,7 +144,7 @@ class ItemsController extends Controller
 
         $shop_id = $this->get_shopid;
 
-       
+
 
         $totalRecords = Itemlogactivity::select('count(*) as allcount')
             ->where('shop_id', $shop_id)
@@ -536,7 +536,7 @@ class ItemsController extends Controller
 
         $shop_id = $this->get_shopid();
 
-       
+
 
 
         $totalRecords = Item::select('count(*) as allcount')

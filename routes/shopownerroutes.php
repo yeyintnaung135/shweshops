@@ -76,7 +76,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     Route::post('/multiple/recap', [ItemsController::class, 'multiple_update_recap'])->name('multiple_items.update_recap');
     Route::post('/multiple/stock', [ItemsController::class, 'multiple_stock'])->name('multiple.stock.items');
     Route::post('/multiple/checkpriceafterupdateclick', [ItemsController::class, 'checkpriceafterupdateclick'])->name('multiple_items.checkpriceafterupdateclick');
-    Route::post('/multiple/checkpriceafterdiscountclick', [DiscountController::class, 'checkpriceafterdiscountclick'])->name('multiple_items.checkpriceafterdiscountclick');
+    Route::post('/multiple/checkpriceafterdiscountclick', [DiscountController::class, 'check_price_after_discount_click'])->name('multiple_items.checkpriceafterdiscountclick');
 
     //template
     Route::get('/template/create', [TemplateController::class, 'create'])->name('items.template.create');
@@ -91,18 +91,18 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     Route::get('/users', [ManagerController::class, 'list']);
 
     // for user datable
-    Route::get('/get_users_activity_log', [ManagerController::class, 'getUsersActivityLog'])->name('users.getusers_activity_Log');
-    Route::get('/get_backrole', [ManagerController::class, 'getbackroleActivity'])->name('getbackrole');
-    Route::get('/get_backrole/detail', [ManagerController::class, 'getbackroleActivityDetail'])->name('getbackrole.detail');
-    Route::get('/get_itemedit/detail', [ManagerController::class, 'getitemeditActivityDetail'])->name('getitemedit.detail');
-    Route::get('/get_backroleedit/{id}', [ManagerController::class, 'backRoleEditDetail'])->name('backroleedit');
-    Route::get('/get_users', [ManagerController::class, 'getUsers'])->name('getUsers');
+    Route::get('/get_users_activity_log', [ManagerController::class, 'get_users_activity_log'])->name('users.getusers_activity_Log');
+    Route::get('/get_backrole', [ManagerController::class, 'get_back_role_activity'])->name('getbackrole');
+    Route::get('/get_backrole/detail', [ManagerController::class, 'get_backrole_activity_detail'])->name('getbackrole.detail');
+    Route::get('/get_itemedit/detail', [ManagerController::class, 'get_item_edit_activity_detail'])->name('getitemedit.detail');
+    Route::get('/get_backroleedit/{id}', [ManagerController::class, 'back_role_edit_detail'])->name('backroleedit');
+    Route::get('/get_users', [ManagerController::class, 'get_users'])->name('getUsers');
     Route::get('/users/create', [ManagerController::class, 'create']);
     Route::post('/users/create', [ManagerController::class, 'store']);
     Route::get('/users/edit/{id}', [ManagerController::class, 'edit'])->name('managers.edit');
     Route::put('/users/edit/{id}', [ManagerController::class, 'update'])->name('managers.update');
     Route::get('/users/detail/{id}', [ManagerController::class, 'detail'])->name('managers.detail');
-    Route::delete('/users/remove_user/{id}', [ManagerController::class, 'removeuser'])->name('managers.remove_user');
+    Route::delete('/users/remove_user/{id}', [ManagerController::class, 'remove_user'])->name('managers.remove_user');
     Route::get('/users/trash', [ManagerController::class, 'trash'])->name('managers.restore_list');
     Route::get('/users/restore/{id}', [ManagerController::class, 'restore'])->name('managers.restore');
 
@@ -145,35 +145,35 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     // Route::get('/item/discount_list', 'Shopowner\DiscountController@getDiscountItems')->name('discount.getDiscountItems');
 
     Route::delete('/item/discount_remove', [DiscountController::class, 'remove']);
-    Route::get('/item/get_discount_items', [DiscountController::class, 'getDiscountItems'])->name('getDiscountItems');
+    Route::get('/item/get_discount_items', [DiscountController::class, 'get_discount_items'])->name('getDiscountItems');
 
     //Premium Features
     Route::middleware(['auth:shop_owner,shop_role'])->group(function () {
         //collection
-        Route::get('/collections/items/{collection}', [CollectionController::class, 'collectionItems'])
+        Route::get('/collections/items/{collection}', [CollectionController::class, 'collection_items'])
             ->name('collections.items');
 
-        Route::post('/collections/items/add/{collection}', [CollectionController::class, 'addItem'])->name('collections.item.add');
+        Route::post('/collections/items/add/{collection}', [CollectionController::class, 'add_item'])->name('collections.item.add');
 
-        Route::delete('/collections/remove-item', [CollectionController::class, 'removeItem'])
+        Route::delete('/collections/remove-item', [CollectionController::class, 'remove_item'])
             ->name('collections.remove.item');
 
         //collection datatable
-        Route::get('/collections/get-collections', [CollectionController::class, 'getCollections'])
+        Route::get('/collections/get-collections', [CollectionController::class, 'get_collections'])
             ->name('collections.getCollections');
 
-        Route::get('/collections/get-collection-items', [CollectionController::class, 'getCollectionItems'])
+        Route::get('/collections/get-collection-items', [CollectionController::class, 'get_collection_items'])
             ->name('collections.getCollectionItems');
 
-        Route::get('/collections/get-items', [CollectionController::class, 'getItems'])
+        Route::get('/collections/get-items', [CollectionController::class, 'get_items'])
             ->name('collections.getItems');
 
         //news datatable
-        Route::get('/news/get-all-news', [NewsController::class, 'getAllNews'])
+        Route::get('/news/get-all-news', [NewsController::class, 'get_all_news'])
         ->name('news.getAllNews');
 
         //event datatable
-        Route::get('/events/get-events', [EventController::class, 'getEvents'])
+        Route::get('/events/get-events', [EventController::class, 'get_events'])
         ->name('events.getEvents');
 
         Route::resources([

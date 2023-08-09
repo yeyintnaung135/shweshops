@@ -4,7 +4,7 @@ namespace App\Http\Controllers\ShopOwner;
 
 use File;
 use App\Models\MainPopup;
-use App\Models\Shopowner;
+use App\Models\ShopOwner;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -13,14 +13,14 @@ use Illuminate\Support\Facades\Storage;
 class PopupAdsController extends Controller
 {
     public function main_popup(){
-        $current_shop = $this->getCurrentShopId();
+        $current_shop = $this->get_current_shop_id();
 
         $popup = MainPopup::where('shop_id',$current_shop->id)->first();
         return view('backend.shopowner.ads.main_popup',["shop_id" => $current_shop->id, "popup" => $popup]);
     }
 
     public function main_popup_upload(Request $request){
-        $current_shop = $this->getCurrentShopId();
+        $current_shop = $this->get_current_shop_id();
 
         $this->validate($request, [
             'video' => 'required|file|mimetypes:video/mp4',
@@ -55,14 +55,14 @@ class PopupAdsController extends Controller
     }
 
     public function main_popup_delete(){
-        $current_shop = $this->getCurrentShopId();
+        $current_shop = $this->get_current_shop_id();
         $video = MainPopup::where('shop_id',$current_shop->id)->first();
         MainPopup::where('shop_id',$current_shop->id)->delete();
         File::delete($video->video_path);
         return back()->with('success','Video deleted successfully!');
     }
 
-    private function getCurrentShopId(){
+    private function get_current_shop_id(){
         if(isset(Auth::guard('shop_owner')->user()->id)){
             $current_shop=Shopowner::where('id',Auth::guard('shop_owner')->user()->id)->first();
         }else{

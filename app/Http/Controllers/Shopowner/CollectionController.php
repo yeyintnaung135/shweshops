@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ShopOwner\StoreCollectionRequest;
 use App\Http\Requests\ShopOwner\UpdateCollectionRequest;
 use App\Models\Item;
-use App\Models\Shopowner;
+use App\Models\ShopOwner;
 use App\Models\ShopRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -94,7 +94,7 @@ class CollectionController extends Controller
             ->with('message', 'Failed to update collection');
     }
 
-    public function collectionItems(Collection $collection)
+    public function collection_items(Collection $collection)
     {
         $collectionItems = Item::where([
             ['shop_id', $this->getShopId()],
@@ -107,7 +107,7 @@ class CollectionController extends Controller
         ]);
     }
 
-    public function addItem(Collection $collection, Request $request)
+    public function add_item(Collection $collection, Request $request)
     {
         Item::where([
             ['shop_id', $this->getShopId()],
@@ -119,7 +119,7 @@ class CollectionController extends Controller
         return redirect()->route('backside.shop_owner.collections.show', ['collection' => $collection]);
     }
 
-    public function removeItem(Request $request)
+    public function remove_item(Request $request)
     {
         $item = Item::where([
             ['shop_id', $this->getShopId()],
@@ -137,7 +137,7 @@ class CollectionController extends Controller
         }
     }
 
-    public function getCollections(Request $request)
+    public function get_collections(Request $request)
     {
         $fromDate = $request->input('fromDate');
         $toDate = $request->input('toDate');
@@ -166,7 +166,7 @@ class CollectionController extends Controller
             ->toJson();
     }
 
-    private function calculateItemCounts($collections)
+    private function calculate_item_counts($collections)
     {
         $itemCounts = [];
 
@@ -179,7 +179,7 @@ class CollectionController extends Controller
         return $itemCounts;
     }
 
-    public function getCollectionItems(Request $request)
+    public function get_collection_items(Request $request)
     {
         $collectionId = $request->input('collection');
         $collectionItems = Item::where([
@@ -201,7 +201,7 @@ class CollectionController extends Controller
             ->make(true);
     }
 
-    public function getItems(Request $request)
+    public function get_items(Request $request)
     {
         $collectionId = $request->input('collection');
         $collectionItems = Item::where([

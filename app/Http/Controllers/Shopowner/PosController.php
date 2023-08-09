@@ -13,7 +13,7 @@ use App\Models\PosGoldSale;
 use App\Models\PosPurchase;
 use App\Models\PosSupplier;
 use App\Models\PosKyoutSale;
-use App\Models\Shopowner;
+use App\Models\ShopOwner;
 use App\Models\PosQuality;
 use App\Models\PosPlatinumSale;
 use App\Models\PosKyoutPurchase;

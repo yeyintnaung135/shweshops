@@ -6,10 +6,10 @@ use App\Events\Shopownermessage;
 use App\Forfirebase;
 use App\Http\Controllers\Trait\Firebase;
 use App\Models\Item;
-use App\Models\discount;
+use App\Models\Discount;
 use App\Facade\TzGate;
-use App\Models\Shopowner;
-use App\Models\Usernoti;
+use App\Models\ShopOwner;
+use App\Models\UserNoti;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -29,7 +29,7 @@ class DiscountController extends Controller
     {
         $this->middleware('auth:shop_owner,shop_role');
     }
-    public function validatedis($data){
+    public function validate_dis($data){
         $message= [
             'percent.required' => 'Percent တန်ဖိုး ထည့်ပေးရန်',
             'percent.numeric' => 'Percent တန်ဖိုးသည် number ဖြစ်ရမည်',
@@ -41,7 +41,7 @@ class DiscountController extends Controller
         ], $message);
     }
 
-    public function checkpriceafterdiscountclick(Request $request)
+    public function check_price_after_discount_click(Request $request)
     {
         $validator = $this->validatedis($request->all());
         if ($validator->fails()) {
@@ -94,7 +94,7 @@ class DiscountController extends Controller
         }
     }
 
-    public function getDiscountItems(Request $request)
+    public function get_discount_items(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");

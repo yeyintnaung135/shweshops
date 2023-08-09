@@ -4,7 +4,7 @@ namespace App\Http\Controllers\ShopOwner;
 
 use App\Models\Item;
 use App\Facade\TzGate;
-use App\Models\Percent_template;
+use App\Models\PercentTemplate;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;

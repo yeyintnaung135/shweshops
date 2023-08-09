@@ -4,11 +4,11 @@ namespace App\Http\Controllers\ShopOwner;
 
 use App\Models\Role;
 use App\Models\Manager;
-use App\Models\Shopowner;
+use App\Models\ShopOwner;
 use App\Models\ShopownerLogActivity;
 use App\Models\ItemLogActivity;
 use App\Models\BackroleLogActivity;
-use App\Models\BackroleEditdetail;
+use App\Models\BackroleEditDetail;
 use App\Models\ItemsEditDetailLogs;
 use App\Facade\TzGate;
 use Illuminate\Http\Request;
@@ -70,7 +70,7 @@ class ManagerController extends Controller
         return view('backend.shopowner.activity.user.role',['shopowner' => $shopdata,'itemlogs'=>$itemlogs,'manager'=>$this->getuserlistbyrolelevel()]);
 
     }
-    public function getUsersActivityLog(Request $request) {
+    public function get_users_activity_log(Request $request) {
       $draw = $request->get('draw');
       $start = $request->get("start");
       $rowperpage = $request->get("length"); // total number of rows per page
@@ -155,7 +155,7 @@ class ManagerController extends Controller
     }
 
      // datable for backrole log activity
-     public function getbackroleActivity(Request $request) {
+     public function get_back_role_activity(Request $request) {
         $draw = $request->get('draw');
         $start = $request->get("start");
         $rowperpage = $request->get("length"); // total number of rows per page
@@ -245,20 +245,20 @@ class ManagerController extends Controller
         echo json_encode($response);
     }
 
-    public function getbackroleActivityDetail(Request $request) {
+    public function get_back_role_activity_detail(Request $request) {
 
       $detail = BackroleEditdetail::where("backrole_log_activities_id", $request->id)->first();
       echo json_encode($detail);
     }
 
      // for datatable
-    public function getitemeditActivityDetail(Request $request) {
+    public function get_item_edit_activity_detail(Request $request) {
 
         $detail = ItemsEditDetailLogs::where("shopownereditlogs_id", $request->id)->first();
         echo json_encode($detail);
       }
 
-    public function backRoleEditDetail($id){
+    public function back_role_edit_detail($id){
         $detail_id = BackroleEditdetail::findOrFail($id)->user_id;
         return view('backend.shopowner.manager.editdetail',['detail_id' => $detail_id]);
 
@@ -266,7 +266,7 @@ class ManagerController extends Controller
 
 
 
-    public function getUsers(Request $request) {
+    public function get_users(Request $request) {
 
       $draw = $request->get('draw');
       $start = $request->get("start");
@@ -675,7 +675,7 @@ class ManagerController extends Controller
 
     }
 
-    public function removeuser($id)
+    public function remove_user($id)
     {
         $url_id = Manager::findOrFail($id)->shop_id;
         $role_id = Manager::findOrFail($id)->role_id;
@@ -718,7 +718,7 @@ class ManagerController extends Controller
 
     }
 
-    public function getUsersTrash(Request $request) {
+    public function get_users_trash(Request $request) {
 
     }
 
@@ -745,7 +745,7 @@ class ManagerController extends Controller
         return redirect()->back();
     }
 
-    public function restoreall()
+    public function restore_all()
     {
 
         return back();
