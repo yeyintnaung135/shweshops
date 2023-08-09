@@ -2,14 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
-
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 
-class Superadmin extends Authenticatable
+class SuperAdmin extends Authenticatable
 {
     use Notifiable;
     //    use HasRoles;
@@ -20,11 +16,10 @@ class Superadmin extends Authenticatable
      * @var array
      */
 
-
     protected $table = 'super_admins';
 
     protected $fillable = [
-        'name', 'email', 'password', 'role', 'active'
+        'name', 'email', 'password', 'role', 'active',
     ];
 
     /**

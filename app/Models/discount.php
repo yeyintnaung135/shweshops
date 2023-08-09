@@ -2,19 +2,18 @@
 
 namespace App\Models;
 
-use App\Item;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-class discount extends Model
+class Discount extends Model
 {
     //
     use SoftDeletes;
-    protected $fillable = ['discount_price', 'discount_min','dec_price', 'discount_max', 'item_id', 'percent', 'shop_id','base','deleted_at'];
+    protected $fillable = ['discount_price', 'discount_min', 'dec_price', 'discount_max', 'item_id', 'percent', 'shop_id', 'base', 'deleted_at'];
 
     protected $table = 'discount';
-    protected $appends = ['MmPrice'];//this for vue if yout want to pass attribute to js json yout set this
+    protected $appends = ['MmPrice']; //this for vue if yout want to pass attribute to js json yout set this
 
 //    function items()
 //    {
@@ -61,7 +60,6 @@ class discount extends Model
                     }
                 }
 
-
                 return $mmpricelakh . '' . $tempthaung;
             } else {
                 if ($this->discount_price > 9999) {
@@ -70,7 +68,6 @@ class discount extends Model
                     if (($this->discount_price % 10000) > 999) {
 
                         $tempthousand = intval((($this->discount_price % 100000) % 10000) / 1000) . ' ထောင်';
-
 
                     }
                     return $tempthaung . '' . $tempthousand;
@@ -105,7 +102,6 @@ class discount extends Model
 
                         $tempthousand = intval((($this->discount_min % 100000) % 10000) / 1000) . ' ထောင်';
 
-
                     }
                     $minprice = $tempthaung;
                 } else {
@@ -114,7 +110,6 @@ class discount extends Model
                 }
             }
 //            for min
-
 
             $max_pricethaung = '';
             $max_pricethousand = '';
@@ -152,7 +147,6 @@ class discount extends Model
                     if (($this->discount_max % 10000) > 999) {
 
                         $max_pricethousand = intval((($this->discount_max % 100000) % 10000) / 1000) . ' ထောင်';
-
 
                     }
                     $max_price = $max_pricethaung;

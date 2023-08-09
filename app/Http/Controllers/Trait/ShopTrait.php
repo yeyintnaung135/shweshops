@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\traid;
+namespace App\Http\Controllers\Trait;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\Shopowner;

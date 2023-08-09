@@ -1,44 +1,44 @@
 <?php
 
-namespace App\Http\Controllers\Shopowner;
+namespace App\Http\Controllers\ShopOwner;
 
-use App\PosPurchaseSale;
-use App\BackroleLogActivity;
-use App\PosStaff;
-use App\State;
-use App\BackroleEditdetail;
-use App\Item;
-use App\Role;
-use App\PosDiamond;
-use App\Category;
-use App\PosGoldSale;
-use App\PosPurchase;
-use App\PosSupplier;
-use App\Township;
-use App\PosKyoutSale;
-use App\Shopowner;
-use App\PosPlatinumSale;
-use App\PosKyoutPurchase;
-use App\PosWhiteGoldSale;
-use App\PosAssignGoldPrice;
-use App\PosPlatinumPurchase;
-use App\PosWhiteGoldPurchase;
+use App\Models\PosPurchaseSale;
+use App\Models\BackroleLogActivity;
+use App\Models\PosStaff;
+use App\Models\State;
+use App\Models\BackroleEditdetail;
+use App\Models\Item;
+use App\Models\Role;
+use App\Models\PosDiamond;
+use App\Models\Category;
+use App\Models\PosGoldSale;
+use App\Models\PosPurchase;
+use App\Models\PosSupplier;
+use App\Models\Township;
+use App\Models\PosKyoutSale;
+use App\Models\Shopowner;
+use App\Models\PosPlatinumSale;
+use App\Models\PosKyoutPurchase;
+use App\Models\PosWhiteGoldSale;
+use App\Models\PosAssignGoldPrice;
+use App\Models\PosPlatinumPurchase;
+use App\Models\PosWhiteGoldPurchase;
 use Illuminate\Http\Request;
 use App\Facade\TzGate;
-use App\PosCounterShop;
+use App\Models\PosCounterShop;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use App\Http\Controllers\traid\ykimage;
+use App\Http\Controllers\Trait\YKImage;
 use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\traid\UserRole;
+use App\Http\Controllers\Trait\UserRole;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\traid\MultipleItem;
-use App\PosCreditList;
-use App\PosReturnList;
-use App\ShopBanner;
+use App\Http\Controllers\Trait\MultipleItem;
+use App\Models\PosCreditList;
+use App\Models\PosReturnList;
+use App\Models\ShopBanner;
 use App\Rules\MatchOldPassword;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -46,7 +46,7 @@ use Illuminate\Support\Facades\Storage;
 
 class PosSecondPhaseController extends Controller
 {
-    use ykimage, UserRole, MultipleItem;
+    use YKImage, UserRole, MultipleItem;
 
     public $err_data = [];
 
@@ -54,7 +54,7 @@ class PosSecondPhaseController extends Controller
     {
         $this->middleware('auth:shop_owner,shop_role');
     }
-    
+
 //Staff
     public function getStaffList(){
         $shopowner = Shopowner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
@@ -72,11 +72,11 @@ class PosSecondPhaseController extends Controller
         $data = PosStaff::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_id',$this->getshopid())->get();
         return response()->json($data);
     }
-    
+
     public function storeStaff(Request $request){
         // dd($request->all());
         //manager
-        
+
         if ($this->isstaff()) {
             return $this->unauthorize();
         }
@@ -106,7 +106,7 @@ class PosSecondPhaseController extends Controller
         $count = PosStaff::where('code_number',$request->code_number)->where('shop_id', $this->getshopid())->count();
         if($count >=1){
                 Session::flash('message', 'Must not be same Code Number!');
-                
+
                 return redirect()->route('backside.shop_owner.pos.create_staff');
         }
 
@@ -135,7 +135,7 @@ class PosSecondPhaseController extends Controller
         $role = Role::all();
         return view('backend.pos.edit_staff',['shopowner'=>$shopowner,'staff'=>$staff,'counters'=>$counters,'role'=>$role]);
     }
-    
+
     public function updateStaff(Request $request,$id){
         if(isset(Auth::guard('shop_role')->user()->id)){
             $this->role('shop_role');
@@ -390,7 +390,7 @@ class PosSecondPhaseController extends Controller
             'data'=> 'success'
         ],200);
     }
-        
+
     public function checkStaffCode(Request $request){
         // dd($request->code);
         $staff = PosStaff::where('code_number',$request->code)->where('shop_id', $this->getshopid())->count();
@@ -834,7 +834,7 @@ class PosSecondPhaseController extends Controller
         ],200);
 
     }
-    //Second Phase 
+    //Second Phase
     //Purchases
     public function getPurchaseLists(){
         $shopowner = Shopowner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
@@ -870,7 +870,7 @@ class PosSecondPhaseController extends Controller
         $ktoday_income = PosKyoutSale::where('shop_owner_id',$this->getshopid())->get();
         $ptoday_income = PosPlatinumSale::where('shop_owner_id',$this->getshopid())->get();
         $wtoday_income = PosWhiteGoldSale::where('shop_owner_id',$this->getshopid())->get();
-    
+
             $subtotal = 0;
            foreach($gtoday_income as $g){
                 $subtotal += $g->amount;
@@ -884,10 +884,10 @@ class PosSecondPhaseController extends Controller
            foreach($wtoday_income as $w){
                 $subtotal += $w->amount;
            }
-    
+
         return view('backend.pos.sale_lists',['shopowner'=>$shopowner,'arr'=>$subtotal,'tot_qty'=>$tot_qty,'qty'=>$qty,'purchases'=>$purchases,'kyoutpurchases'=>$kyoutpurchases,'platinumpurchases'=>$platinumpurchases,'whitegoldpurchases'=>$whitegoldpurchases,'type'=>1]);
         }
-    
+
         public function getFamousSaleLists(){
             $shopowner = Shopowner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
             $purchases = PosGoldSale::where('shop_owner_id',$this->getshopid())->get();
@@ -903,9 +903,9 @@ class PosSecondPhaseController extends Controller
             $ktoday_income = PosKyoutSale::where('shop_owner_id',$this->getshopid())->get();
             $ptoday_income = PosPlatinumSale::where('shop_owner_id',$this->getshopid())->get();
             $wtoday_income = PosWhiteGoldSale::where('shop_owner_id',$this->getshopid())->get();
-    
+
             $categories = Category::all();
-        
+
                 $subtotal = 0;
                foreach($gtoday_income as $g){
                     $subtotal += $g->amount;
@@ -919,11 +919,11 @@ class PosSecondPhaseController extends Controller
                foreach($wtoday_income as $w){
                     $subtotal += $w->amount;
                }
-        
+
             return view('backend.pos.famous_lists',['shopowner'=>$shopowner,'categories'=>$categories,'arr'=>$subtotal,'tot_qty'=>$tot_qty,'qty'=>$qty,'purchases'=>$purchases,'kyoutpurchases'=>$kyoutpurchases,'platinumpurchases'=>$platinumpurchases,'whitegoldpurchases'=>$whitegoldpurchases,'type'=>2]);
             }
-        
-        
+
+
         public function getIncomeLists(){
             $shopowner = Shopowner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
             $purchases = PosGoldSale::where('shop_owner_id',$this->getshopid())->get();
@@ -939,7 +939,7 @@ class PosSecondPhaseController extends Controller
             $ktoday_income = PosKyoutSale::where('shop_owner_id',$this->getshopid())->get();
             $ptoday_income = PosPlatinumSale::where('shop_owner_id',$this->getshopid())->get();
             $wtoday_income = PosWhiteGoldSale::where('shop_owner_id',$this->getshopid())->get();
-        
+
                 $subtotal = 0;
                 foreach($gtoday_income as $g){
                     $subtotal += explode('/',$g->purchase->profit)[0];
@@ -953,10 +953,10 @@ class PosSecondPhaseController extends Controller
                 foreach($wtoday_income as $w){
                     $subtotal += explode('/',$w->purchase->profit)[0];
                 }
-        
+
             return view('backend.pos.sale_lists',['shopowner'=>$shopowner,'arr'=>$subtotal,'tot_qty'=>$tot_qty,'qty'=>$qty,'purchases'=>$purchases,'kyoutpurchases'=>$kyoutpurchases,'platinumpurchases'=>$platinumpurchases,'whitegoldpurchases'=>$whitegoldpurchases,'type'=>3]);
             }
-        
+
         public function tabSaleLists(Request $request){
             $subtotal = 0;$qty=0;
             $qtyy = PosPurchaseSale::where('shop_owner_id',$this->getshopid())->where('type',$request->type)->get();
@@ -1022,7 +1022,7 @@ class PosSecondPhaseController extends Controller
                         }
                         array_push($purchase,$obj1);
                     }else{
-                        array_push($purchase,$obj1);  
+                        array_push($purchase,$obj1);
                     }
                 }
             }
@@ -1057,7 +1057,7 @@ class PosSecondPhaseController extends Controller
                         }
                         array_push($purchase,$obj2);
                     }else{
-                        array_push($purchase,$obj2);  
+                        array_push($purchase,$obj2);
                     }
                 }
             }
@@ -1081,7 +1081,7 @@ class PosSecondPhaseController extends Controller
                         }
                         array_push($purchase,$obj3);
                     }else{
-                        array_push($purchase,$obj3);  
+                        array_push($purchase,$obj3);
                     }
                 }
             }
@@ -1105,11 +1105,11 @@ class PosSecondPhaseController extends Controller
                         }
                         array_push($purchase,$obj4);
                     }else{
-                        array_push($purchase,$obj4);  
+                        array_push($purchase,$obj4);
                     }
                 }
             }
-           
+
             return response()->json(['total'=>$subtotal,'qty'=>$qty,'purchases'=>$purchase]);
         }
 
@@ -1208,12 +1208,12 @@ class PosSecondPhaseController extends Controller
                 $obj4 = ['name' => $p->whitegold_name, 'code_number' => $p->code_number,'qty'=> $p->stock_qty,'fee'=>$p->gold_fee,'weight'=>$wei4,'date'=>$p->date];
                 array_push($purchase,$obj4);
             }
-        }  
+        }
         return response()->json([
             'purchases'=>$purchase,
             'qty'=>$qty]);
     }
-  
+
     //Shop Profile
     public function getShopProfile()
     {
@@ -1333,20 +1333,20 @@ class PosSecondPhaseController extends Controller
     public function getPassword()
     {
         return view('backend.pos.changePassword');
-    } 
+    }
     public function changePassword(Request $request)
     {
         // return dd($request);
         $request->validate([
             'current_password' => ['required', new MatchOldPassword],
         ]);
-   
+
         return redirect('backside/shop_owner/pos-update-password');
     }
     public function editPassword()
     {
         return view('backend.pos.editPassword');
-    } 
+    }
     public function storeNewPassword(Request $request)
     {
         // return dd($request);
@@ -1354,11 +1354,11 @@ class PosSecondPhaseController extends Controller
             'new_password' => ['required'],
             'new_confirm_password' => ['same:new_password'],
         ]);
-   
+
         Shopowner::where('id', Auth::guard('shop_owner')->user()->id)->update(['password'=> Hash::make($request->new_password)]);
-   
+
         return redirect()->route('backside.shop_owner.pos.shop_profile')->with(['status' => 'success', 'message' => 'Your Shop Password was successfully Updated']);
     }
 
-    
+
 }

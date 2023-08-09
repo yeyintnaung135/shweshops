@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\traid;
+namespace App\Http\Controllers\Trait;
 
 
 use App\Models\discount;
@@ -8,7 +8,7 @@ use App\Models\Item;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
-trait facebooktraid
+trait FacebookTraid
 {
     use similarlogic;
 

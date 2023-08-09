@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Shopdirectory;
+use App\Models\ShopDirectory;
 use App\Models\State;
 use App\Models\Tooltips;
 use App\Models\Township;
@@ -17,13 +17,15 @@ class DirectoryController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:super_admin', 'admin']);
+        $this->middleware(['auth:super_admin']);
     }
-    public function alltable()
+
+    public function all_table()
     {
         return view('backend.super_admin.directory.list');
     }
-    public function alldirectory(Request $request)
+
+    public function all_directory(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -49,7 +51,7 @@ class DirectoryController extends Controller
             $searchByTodate = Carbon::now();
         }
 
-        $totalRecords = Shopdirectory::select('count(*) as allcount')
+        $totalRecords = ShopDirectory::select('count(*) as allcount')
             ->where('shop_name', '!=', '')
             ->where(function ($query) use ($searchValue) {
                 $query->orWhere('shop_name', 'like', '%' . $searchValue . '%')
@@ -59,7 +61,7 @@ class DirectoryController extends Controller
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->count();
         $totalRecordswithFilter = $totalRecords;
 
-        $records = Shopdirectory::orderBy($columnName, $columnSortOrder)
+        $records = ShopDirectory::orderBy($columnName, $columnSortOrder)
             ->orderBy('created_at', 'desc')
             ->where('shop_id', '=', '0')
             ->where(function ($query) use ($searchValue) {
@@ -99,7 +101,7 @@ class DirectoryController extends Controller
         echo json_encode($response);
     }
 
-    public function gettownship(Request $request)
+    public function get_township(Request $request)
     {
         if (is_array($request->id)) {
             $townships = Township::select('id', 'name', 'myan_name')->whereIn('state_id', $request->id)->get();
@@ -111,7 +113,7 @@ class DirectoryController extends Controller
 
     public function check_shop_directory_name(Request $request)
     {
-        if (Shopdirectory::where('shop_name', '=', $request->shopName)->exists()) {
+        if (ShopDirectory::where('shop_name', '=', $request->shopName)->exists()) {
             $isExit = true;
         } else {
             $isExit = false;
@@ -121,7 +123,7 @@ class DirectoryController extends Controller
         ]);
     }
 
-    public function createform()
+    public function create_form()
     {
         $states = State::get();
         return view('backend.super_admin.directory.create', ['states' => $states]);
@@ -144,7 +146,7 @@ class DirectoryController extends Controller
                 'township.min' => 'Township field is required',
             ]);
     }
-    public function evalidator(array $data)
+    public function e_validator(array $data)
     {
         return Validator::make($data, [
 
@@ -207,29 +209,29 @@ class DirectoryController extends Controller
         // }
 
         $data['additional_phones'] = json_encode($add_ph_array);
-        Shopdirectory::create($data);
+        ShopDirectory::create($data);
         Session::flash('message', 'Your Shop Directory was successfully Created');
 
         return redirect('backside/super_admin/directory/all');
     }
     public function detail($id)
     {
-        $ttdata = Shopdirectory::where('id', $id)->first();
+        $ttdata = ShopDirectory::where('id', $id)->first();
         return view('backend.super_admin.directory.detail', ['ttdata' => $ttdata]);
 
     }
-    public function editform($id)
+    public function edit_form($id)
     {
         $states = State::get();
-        $ttdata = Shopdirectory::where('id', $id)->first();
+        $ttdata = ShopDirectory::where('id', $id)->first();
         return view('backend.super_admin.directory.edit', ['ttdata' => $ttdata, 'states' => $states]);
 
     }
     public function update(Request $request)
     {
-        $sd = Shopdirectory::where('id', $request->id)->first();
+        $sd = ShopDirectory::where('id', $request->id)->first();
         $data = $request->except("_token");
-        $valid = $this->evalidator($data);
+        $valid = $this->e_validator($data);
 
         if ($valid->fails()) {
             return redirect()->back()->withErrors($valid)->withInput();
@@ -261,7 +263,7 @@ class DirectoryController extends Controller
             }
         }
         $data['additional_phones'] = json_encode($add_ph_array);
-        Shopdirectory::where('id', $request->id)->update($data);
+        ShopDirectory::where('id', $request->id)->update($data);
 
         Session::flash('message', 'Your Shop Directory was successfully Edited');
 
@@ -270,13 +272,13 @@ class DirectoryController extends Controller
     }
     public function delete(Request $request)
     {
-        $sd = Shopdirectory::where('id', $request->id)->first();
+        $sd = ShopDirectory::where('id', $request->id)->first();
 
         if (File::exists(public_path('image/directory/' . $sd->shop_logo))) {
             File::delete(public_path('image/directory/' . $sd->shop_logo));
         }
 
-        Shopdirectory::where('id', $request->id)->delete();
+        ShopDirectory::where('id', $request->id)->delete();
         Session::flash('message', 'Your Tooltips was successfully deleted');
 
         return redirect('backside/super_admin/directory/all');

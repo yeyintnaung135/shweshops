@@ -4,8 +4,8 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Facade\TzGate;
 use App\Http\Controllers\Controller;
-use App\Models\Superadmin;
-use App\Models\SuperadminLogActivity;
+use App\Models\SuperAdmin;
+use App\Models\SuperAdminLogActivity;
 use App\Rules\MatchOldPassword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -17,19 +17,19 @@ class SuperAdminRoleController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:super_admin', 'admin']);
+        $this->middleware(['auth:super_admin']);
     }
 
     function list() {
-        $super_admin = Superadmin::all();
-        $super_admin_log = SuperadminLogActivity::all();
+        $super_admin = SuperAdmin::all();
+        $super_admin_log = SuperAdminLogActivity::all();
         return view('backend.super_admin_role.list', ['super_admin' => $super_admin, 'super_admin_log' => $super_admin_log]);
 
     }
     public function activity_index()
     {
-        $super_admin = Superadmin::all();
-        $super_admin_log = SuperadminLogActivity::all();
+        $super_admin = SuperAdmin::all();
+        $super_admin_log = SuperAdminLogActivity::all();
         return view('backend.super_admin.activity_logs.admin', ['super_admin' => $super_admin, 'super_admin_log' => $super_admin_log]);
 
     }
@@ -49,14 +49,14 @@ class SuperAdminRoleController extends Controller
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
 
-        $totalRecords = Superadmin::select('count(*) as allcount')
+        $totalRecords = SuperAdmin::select('count(*) as allcount')
             ->where('name', 'like', '%' . $searchValue . '%')
             ->orWhere('email', 'like', '%' . $searchValue . '%')
             ->orWhere('role', 'like', '%' . $searchValue . '%')
             ->count();
         $totalRecordswithFilter = $totalRecords;
 
-        $records = Superadmin::orderBy($columnName, $columnSortOrder)
+        $records = SuperAdmin::orderBy($columnName, $columnSortOrder)
             ->orderBy('created_at', 'desc')
             ->where('name', 'like', '%' . $searchValue . '%')
             ->orWhere('email', 'like', '%' . $searchValue . '%')
@@ -114,7 +114,7 @@ class SuperAdminRoleController extends Controller
             $searchByTodate = Carbon::now();
         }
 
-        $totalRecords = SuperadminLogActivity::select('count(*) as allcount')
+        $totalRecords = SuperAdminLogActivity::select('count(*) as allcount')
             ->where(function ($query) use ($searchValue) {
                 $query->where('name', 'like', '%' . $searchValue . '%')
                     ->orWhere('type', 'like', '%' . $searchValue . '%')
@@ -127,7 +127,7 @@ class SuperAdminRoleController extends Controller
             ->count();
         $totalRecordswithFilter = $totalRecords;
         //   $admin = where('type',['admin'])->orWhere('type',['sub-admin'])->orderBy('created_at', 'desc')->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->get();
-        $records = SuperadminLogActivity::orderBy($columnName, $columnSortOrder)
+        $records = SuperAdminLogActivity::orderBy($columnName, $columnSortOrder)
             ->orderBy('created_at', 'desc')
             ->where(function ($query) use ($searchValue) {
                 $query->where('name', 'like', '%' . $searchValue . '%')
@@ -188,7 +188,7 @@ class SuperAdminRoleController extends Controller
             return redirect()->back()->withErrors($valid)->withInput();
         }
         $data = $request->except("_token");
-        $super_admin_data = Superadmin::create([
+        $super_admin_data = SuperAdmin::create([
             'name' => $data['name'],
             'role' => "1",
             // 'role' => '0',
@@ -199,7 +199,7 @@ class SuperAdminRoleController extends Controller
 
         if ($super_admin_data) {
 
-            \SuperadminLogActivity::SuperadminAdminCreateLog($data);
+            \SuperAdminLogActivity::SuperAdminAdminCreateLog($data);
         }
 
         return redirect()->route('super_admin_role.list')->with(['status' => 'success', 'message' => 'Sub Admin was successfully created']);
@@ -210,7 +210,7 @@ class SuperAdminRoleController extends Controller
     {
 
         if (TzGate::super_admin_allows($id)) {
-            $super_admin = Superadmin::findOrFail($id);
+            $super_admin = SuperAdmin::findOrFail($id);
             return view('backend.super_admin_role.edit', ['super_admin' => $super_admin]);
         }
 
@@ -219,7 +219,7 @@ class SuperAdminRoleController extends Controller
     public function update(Request $request, $id)
     {
         if (TzGate::super_admin_allows($id)) {
-            $admin = Superadmin::findOrFail($id);
+            $admin = SuperAdmin::findOrFail($id);
         }
 
         if ($request->current_password || $request->new_password || $request->new_confirm_password) {
@@ -246,7 +246,7 @@ class SuperAdminRoleController extends Controller
         $result = $admin->update();
 
         if ($result) {
-            \SuperadminLogActivity::SuperadminAdminEditLog($input);
+            \SuperAdminLogActivity::SuperAdminAdminEditLog($input);
             Session::flash('message', 'Your admin was successfully updated');
             return redirect('/backside/super_admin/admins/all');
         }

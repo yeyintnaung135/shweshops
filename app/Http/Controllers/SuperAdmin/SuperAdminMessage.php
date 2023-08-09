@@ -15,18 +15,18 @@ class SuperAdminMessage extends Controller
         $this->middleware(['auth:super_admin', 'admin']);
     }
 
-    public function showallexpire()
+    public function show_all_expire()
     {
         return view('backend.super_admin.message.expire');
     }
 
-    public function deletebyone(Request $request)
+    public function delete_by_one(Request $request)
     {
         Messages::destroy($request->id);
         return redirect()->back();
     }
 
-    public function getexpire(Request $request)
+    public function get_expire(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");

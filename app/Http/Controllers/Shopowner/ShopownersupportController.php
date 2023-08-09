@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Shopowner;
-use App\Catsupport;
+namespace App\Http\Controllers\ShopOwner;
+use App\Models\Catsupport;
 use App\Http\Controllers\Controller;
-use App\Support;
+use App\Models\Support;
 use Illuminate\Http\Request;
 
-class ShopownersupportController extends Controller
+class ShopOwnerSupportController extends Controller
 {
     //
     public function __construct()

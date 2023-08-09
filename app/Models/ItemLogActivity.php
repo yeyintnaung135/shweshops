@@ -10,6 +10,6 @@ class ItemLogActivity extends Model
     //
     use SoftDeletes;
     protected $fillable = [
-        'item_id','shop_id','item_code','name','user_id','user_name','deleted_at'
+        'item_id', 'shop_id', 'item_code', 'name', 'user_id', 'user_name', 'deleted_at',
     ];
 }

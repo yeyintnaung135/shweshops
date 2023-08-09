@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Shopowner;
+namespace App\Http\Controllers\ShopOwner;
 
-use App\Role;
-use App\Manager;
-use App\Shopowner;
-use App\ShopownerLogActivity;
-use App\ItemLogActivity;
-use App\BackroleLogActivity;
-use App\BackroleEditdetail;
-use App\ItemsEditDetailLogs;
+use App\Models\Role;
+use App\Models\Manager;
+use App\Models\Shopowner;
+use App\Models\ShopownerLogActivity;
+use App\Models\ItemLogActivity;
+use App\Models\BackroleLogActivity;
+use App\Models\BackroleEditdetail;
+use App\Models\ItemsEditDetailLogs;
 use App\Facade\TzGate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -18,7 +18,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\traid\UserRole;
+use App\Http\Controllers\Trait\UserRole;
 use Illuminate\Support\Facades\Validator;
 
 class ManagerController extends Controller

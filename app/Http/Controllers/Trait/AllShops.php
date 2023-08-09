@@ -1,11 +1,11 @@
 <?php
-namespace App\Http\Controllers\traid;
+namespace App\Http\Controllers\Trait;
 
 use App\Models\discount;
 use App\Models\Item;
 use App\Models\Shopowner;
 
-trait allshops
+trait AllShops
 {
     public function getallshops()
     {

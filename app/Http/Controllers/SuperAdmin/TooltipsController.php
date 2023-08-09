@@ -15,7 +15,7 @@ class TooltipsController extends Controller
         $this->middleware(['auth:super_admin', 'admin']);
     }
 
-    public function createform()
+    public function create_form()
     {
         return view('backend.super_admin.tooltips.create');
     }
@@ -45,7 +45,7 @@ class TooltipsController extends Controller
         return redirect('backside/super_admin/tooltips/list');
 
     }
-    function list() {
+    public function list() {
         $alltt = Tooltips::all();
         return view('backend.super_admin.tooltips.list', ['alltt' => $alltt]);
     }

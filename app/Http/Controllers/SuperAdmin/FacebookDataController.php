@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use App\Models\facebookmessage;
-use App\Models\facebooktable;
+use App\Models\FacebookMessage;
+use App\Models\FacebookTable;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -17,10 +17,11 @@ class FacebookDataController extends Controller
         $this->middleware(['auth:super_admin', 'admin']);
     }
 
-    function list() {
+    public function list() {
         return view('backend.super_admin.fbdata.list');
     }
-    public function getall(Request $request)
+
+    public function get_all(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -47,7 +48,7 @@ class FacebookDataController extends Controller
             $searchByTodate = Carbon::now();
         }
 
-        $totalRecords = facebooktable::leftjoin('shop_owners', 'facebook.shop_owner_id', '=', 'shop_owners.id')->select('count(facebook.*) as allcount')
+        $totalRecords = FacebookTable::leftjoin('shop_owners', 'facebook.shop_owner_id', '=', 'shop_owners.id')->select('count(facebook.*) as allcount')
             ->orWhere(function ($query) use ($searchValue) {
                 $query->where('shop_owners.name', 'like', '%' . $searchValue . '%')
                     ->orWhere('shop_owners.shop_name_myan', 'like', '%' . $searchValue . '%')
@@ -72,7 +73,7 @@ class FacebookDataController extends Controller
         if ($columnName == 'id') {
             $columnName = 'facebook.id';
         }
-        $records = facebooktable::leftjoin('shop_owners', 'facebook.shop_owner_id', '=', 'shop_owners.id')->select('*', 'facebook.created_at as ff')->orderBy($columnName, $columnSortOrder)
+        $records = FacebookTable::leftjoin('shop_owners', 'facebook.shop_owner_id', '=', 'shop_owners.id')->select('*', 'facebook.created_at as ff')->orderBy($columnName, $columnSortOrder)
             ->orderBy('facebook.created_at', 'desc')
             ->orWhere(function ($query) use ($searchValue) {
                 $query->where('shop_owners.name', 'like', '%' . $searchValue . '%')
@@ -115,27 +116,27 @@ class FacebookDataController extends Controller
         echo json_encode($response);
     }
 
-    public function getcount(Request $request)
+    public function get_count(Request $request)
     {
-        $allcount = facebooktable::all();
-        $allcountbydate = facebooktable::whereBetween('created_at', [$request->from, $request->to])->get();
+        $allcount = FacebookTable::all();
+        $allcountbydate = FacebookTable::whereBetween('created_at', [$request->from, $request->to])->get();
         return response()->json(['all' => count($allcount), 'alld' => count($allcountbydate)]);
     }
-    public function getmsglogcount(Request $request)
+    public function get_msg_log_count(Request $request)
     {
-        $allcount = facebookmessage::all();
-        $allcountbydate = facebookmessage::whereBetween('created_at', [$request->from, $request->to])->get();
+        $allcount = FacebookMessage::all();
+        $allcountbydate = FacebookMessage::whereBetween('created_at', [$request->from, $request->to])->get();
         return response()->json(['all' => count($allcount), 'alld' => count($allcountbydate)]);
     }
-    public function messengerlog()
+    public function messenger_log()
     {
         return view('backend.super_admin.fbdata.msglog');
     }
-    public function messengerlogdetail($shopid)
+    public function messenger_log_detail($shopid)
     {
         return view('backend.super_admin.fbdata.msglogdetail', ['shop_id' => $shopid]);
     }
-    public function getmsglogdetail(Request $request)
+    public function get_msg_log_detail(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -161,7 +162,7 @@ class FacebookDataController extends Controller
             $searchByTodate = Carbon::now();
         }
 
-        $totalRecords = facebookmessage::leftjoin('shop_owners', 'fb_messenger_click_log.shop_id', '=', 'shop_owners.id')
+        $totalRecords = FacebookMessage::leftjoin('shop_owners', 'fb_messenger_click_log.shop_id', '=', 'shop_owners.id')
 
             ->select('*', 'fb_messenger_click_log.created_at as ff')
             ->Where(function ($query) use ($searchValue) {
@@ -190,7 +191,7 @@ class FacebookDataController extends Controller
             $columnName = 'users.phone';
         }
 
-        $records = facebookmessage::leftjoin('shop_owners', 'fb_messenger_click_log.shop_id', '=', 'shop_owners.id')->leftjoin('items', 'fb_messenger_click_log.item_id', '=', 'items.id')->leftjoin('users', 'fb_messenger_click_log.user_id', '=', 'users.id')->orderBy($columnName, $columnSortOrder)
+        $records = FacebookMessage::leftjoin('shop_owners', 'fb_messenger_click_log.shop_id', '=', 'shop_owners.id')->leftjoin('items', 'fb_messenger_click_log.item_id', '=', 'items.id')->leftjoin('users', 'fb_messenger_click_log.user_id', '=', 'users.id')->orderBy($columnName, $columnSortOrder)
             ->orderBy('fb_messenger_click_log.created_at', 'desc')
             ->select('*', 'fb_messenger_click_log.created_at as ff')
 
@@ -238,7 +239,7 @@ class FacebookDataController extends Controller
         echo json_encode($response);
     }
 
-    public function getmsglog(Request $request)
+    public function get_msg_log(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -270,7 +271,7 @@ class FacebookDataController extends Controller
         if ($columnName == 'click_count') {
             $columnName = 'total';
         }
-        $totalRecords = facebookmessage::leftjoin('shop_owners', 'fb_messenger_click_log.shop_id', '=', 'shop_owners.id')
+        $totalRecords = FacebookMessage::leftjoin('shop_owners', 'fb_messenger_click_log.shop_id', '=', 'shop_owners.id')
             ->select('*', 'fb_messenger_click_log.created_at as ff')
 
             ->orWhere(function ($query) use ($searchValue) {
@@ -292,7 +293,7 @@ class FacebookDataController extends Controller
             $columnName = 'fb_messenger_click_log.created_at';
         }
 
-        $records = facebookmessage::leftjoin('shop_owners', 'fb_messenger_click_log.shop_id', '=', 'shop_owners.id')
+        $records = FacebookMessage::leftjoin('shop_owners', 'fb_messenger_click_log.shop_id', '=', 'shop_owners.id')
             ->select('*', 'fb_messenger_click_log.created_at as ff', DB::raw('count(*) as total'))
 
             ->orWhere(function ($query) use ($searchValue) {

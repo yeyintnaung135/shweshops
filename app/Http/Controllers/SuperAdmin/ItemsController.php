@@ -5,7 +5,7 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Models\Item;
 use App\Models\ShopBanner;
-use App\Models\Shopowner;
+use App\Models\ShopOwner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -16,6 +16,7 @@ class ItemsController extends Controller
     {
         $this->middleware(['auth:super_admin', 'admin']);
     }
+
     public function total_create_count(Request $request)
     {
         $allcount = Item::all();
@@ -25,12 +26,13 @@ class ItemsController extends Controller
 
     public function all()
     {
-        $shopowner = Shopowner::all();
-        return view('backend.super_admin.items.all', ['shopowner' => $shopowner]);
+        //TODO $shopOwner is not needed. Thus, we should remove this
+        $shopOwner = ShopOwner::all();
+        return view('backend.super_admin.items.all', ['shopOwner' => $shopOwner]);
 
     }
 
-    public function getitemsajax(Request $request)
+    public function get_items_ajax(Request $request)
     {
         //
         $draw = $request->get('draw');
@@ -109,7 +111,7 @@ class ItemsController extends Controller
                 $record->shop_banner = ShopBanner::where('shop_owner_id', $record->id)->first()->location;
 
             }
-            $shopname = Shopowner::where('id', $record->id)->first()->shop_name;
+            $shopname = ShopOwner::where('id', $record->id)->first()->shop_name;
             $data_arr[] = array(
                 "id" => $record->id,
                 "name" => $shopname,

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Shopowner;
+namespace App\Http\Controllers\ShopOwner;
 
-use App\AppFile;
+use App\Models\AppFile;
 use App\Http\Controllers\Controller;
 
 class AppDownloadController extends Controller

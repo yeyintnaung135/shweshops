@@ -3,16 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Vonage\Voice\Endpoint\App;
 
 class PosGoldSale extends Model
 {
     //
 
-    protected $fillable = ['date','shop_owner_id','purchase_id','staff_id','counter_shop','remark','customer_name','phone','address','price','total_price','selling_price','decrease_price','amount','return_price','left_price','credit','prepaid'];
-    protected $table='pos_gold_sales';
+    protected $fillable = ['date', 'shop_owner_id', 'purchase_id', 'staff_id', 'counter_shop', 'remark', 'customer_name', 'phone', 'address', 'price', 'total_price', 'selling_price', 'decrease_price', 'amount', 'return_price', 'left_price', 'credit', 'prepaid'];
+    protected $table = 'pos_gold_sales';
     protected $with = ['purchase'];
-    
 
     public function purchase()
     {
@@ -29,11 +27,13 @@ class PosGoldSale extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function quality(){
+    public function quality()
+    {
         return $this->belongsTo(PosQuality::class);
     }
 
-    public function staff(){
+    public function staff()
+    {
         return $this->belongsTo(PosStaff::class);
     }
 }

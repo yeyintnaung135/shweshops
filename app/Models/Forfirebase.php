@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Forfirebase extends Model
+class ForFirebase extends Model
 {
     //
-    public $fillable=['token','androidtoken','userid','shopid'];
-    protected $table='firebase';
+    public $fillable = ['token', 'androidtoken', 'userid', 'shopid'];
+    protected $table = 'firebase';
 }

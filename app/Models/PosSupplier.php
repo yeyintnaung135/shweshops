@@ -9,13 +9,15 @@ class PosSupplier extends Model
 {
     //
     use SoftDeletes;
-     protected $fillable = ['date','shop_owner_id','code_number','name','shop_name','shop_type','phone','other_phone','state_id','township_id','address','remark','type','count','deleted_at'];
-     protected $table='pos_suppliers';
+    protected $fillable = ['date', 'shop_owner_id', 'code_number', 'name', 'shop_name', 'shop_type', 'phone', 'other_phone', 'state_id', 'township_id', 'address', 'remark', 'type', 'count', 'deleted_at'];
+    protected $table = 'pos_suppliers';
 
-    public function state(){
+    public function state()
+    {
         return $this->belongsTo(State::class);
     }
-    public function township(){
+    public function township()
+    {
         return $this->belongsTo(Township::class);
     }
 }

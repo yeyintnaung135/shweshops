@@ -2,8 +2,8 @@
 Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.'], function () {
     //    auth
             // Route::get('register', ['as' => 'register', 'uses' => 'Auth\ShopownerRegisterController@create']);
-    Route::post('register', ['as' => 'registered', 'uses' => 'Auth\ShopownerRegisterController@store']);
-    
+Route::post('register', ['as' => 'registered', 'uses' => 'Auth\ShopownerRegisterController@store']);
+
     //    auth
     Route::get('/login/{from?}', ['as' => 'login', 'uses' => 'Auth\ShopownerLoginController@loginform']);
 
@@ -13,7 +13,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         //pos login & register form
     Route::get('/pos/login', ['as' => 'pos_login', 'uses' => 'Auth\ShopownerLoginController@pos_login_form'])->name('pos.login');
     Route::post('/pos/login', ['as' => 'pos_logined', 'uses' => 'Auth\ShopownerLoginController@pos_login']);
-   
+
     // Route::post('/pos/register', ['as' => 'pos_registered', 'uses' => 'Auth\ShopownerLoginController@pos_register']);
 
     Route::post('/price_only_update', 'Shopowner\ItemsController@only_price_update')->name('price_only_update');
@@ -345,7 +345,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     Route::post('/credit_type_filter', 'Shopowner\PosSecondPhaseController@credittypeFilter')->name('pos.credit_type_filter');
     Route::post('/delete_credit', 'Shopowner\PosSecondPhaseController@deleteCredit')->name('pos.delete_credit');
 
-    //Second Phase 
+    //Second Phase
     //Purchases
     Route::get('/purchase_lists', 'Shopowner\PosSecondPhaseController@getPurchaseLists')->name('pos.purchase_lists');
     //Sales
@@ -390,7 +390,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     // Route::get('/user_points/add_price/','Shopowner\ShopownerController@add_price')->name('add_price');
     Route::post('/user_points/add_price/', 'Shopowner\ShopownerController@add_price_create')->name('add_price.create');
 
-  
+
 
     Route::post('logout', ['as' => 'logout', 'uses' => 'Auth\ShopownerLoginController@logout']);
 

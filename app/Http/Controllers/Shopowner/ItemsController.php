@@ -1,24 +1,24 @@
 <?php
 
-namespace App\Http\Controllers\Shopowner;
+namespace App\Http\Controllers\ShopOwner;
 
-use App\facebooktable;
-use App\Gems;
-use App\Http\Controllers\traid\facebooktraid;
+use App\Models\facebooktable;
+use App\Models\Gems;
+use App\Http\Controllers\Trait\FacebookTraid;
 use App\Imports\ItemsImport;
-use App\Item;
-use App\ItemLogActivity;
-use App\MultiplePriceLogs;
-use App\MultipleDiscountLogs;
-use App\MultipleDamageLogs;
-use App\Recap;
-use App\discount;
-use App\MainCategory;
-use App\Shopowner;
-use App\Percent_template;
-use App\categories;
-use App\Collection;
-use App\ItemsEditDetailLogs;
+use App\Models\Item;
+use App\Models\ItemLogActivity;
+use App\Models\MultiplePriceLogs;
+use App\Models\MultipleDiscountLogs;
+use App\Models\MultipleDamageLogs;
+use App\Models\Recap;
+use App\Models\discount;
+use App\Models\MainCategory;
+use App\Models\Shopowner;
+use App\Models\Percent_template;
+use App\Models\categories;
+use App\Models\Collection;
+use App\Models\ItemsEditDetailLogs;
 use App\Facade\TzGate;
 use App\Productdetails;
 use Illuminate\Support\Str;
@@ -34,20 +34,20 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Intervention\Image\Facades\Image;
-use App\Http\Controllers\traid\TzRule;
-use App\Http\Controllers\traid\ykimage;
+use App\Http\Controllers\Trait\TzRule;
+use App\Http\Controllers\Trait\YKImage;
 use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\traid\UserRole;
+use App\Http\Controllers\Trait\UserRole;
 use App\Http\Requests\ItemsRecapRequest;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\traid\MultipleItem;
+use App\Http\Controllers\Trait\MultipleItem;
 use App\Http\Requests\ItemsRecapUpdateRequest;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\MultiplePriceUpdateRequest;
 
 class ItemsController extends Controller
 {
-    use ykimage, UserRole, MultipleItem,facebooktraid;
+    use YKImage, UserRole, MultipleItem,FacebookTraid;
 
     public $err_data = [];
 

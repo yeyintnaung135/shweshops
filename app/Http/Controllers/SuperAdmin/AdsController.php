@@ -6,8 +6,8 @@ use App\Facade\Repair;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdsImageRequest;
 use App\Models\Ads;
-use App\Models\Shopowner;
-use App\Models\SuperadminLogActivity;
+use App\Models\ShopOwner;
+use App\Models\SuperAdminLogActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
@@ -17,7 +17,7 @@ class AdsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:SuperAdmin', 'admin']);
+        $this->middleware(['auth:super_admin']);
     }
 
     public function index()
@@ -25,16 +25,16 @@ class AdsController extends Controller
         $now = Carbon::now()->format('Y-m-d H:i:s A');
         Ads::where('end', '<=', $now)->delete();
         $ads = Ads::withTrashed()->get();
-        // $ads_role = SuperadminLogActivity::where('type',['ads'])->orderBy('created_at', 'desc')->get();
-        return view('backend.SuperAdmin.ad.all', ['ads' => $ads]);
+        // $ads_role = SuperAdminLogActivity::where('type',['ads'])->orderBy('created_at', 'desc')->get();
+        return view('backend.super_admin.ad.all', ['ads' => $ads]);
     }
     public function activity_index()
     {
         $now = Carbon::now()->format('Y-m-d H:i:s A');
         Ads::where('end', '<=', $now)->delete();
         $ads = Ads::withTrashed()->get();
-        $ads_role = SuperadminLogActivity::where('type', 'ads')->orderBy('created_at', 'desc')->get();
-        return view('backend.SuperAdmin.activity_logs.ads', ['ads' => $ads, 'ads_role' => $ads_role]);
+        $ads_role = SuperAdminLogActivity::where('type', 'ads')->orderBy('created_at', 'desc')->get();
+        return view('backend.super_admin.activity_logs.ads', ['ads' => $ads, 'ads_role' => $ads_role]);
     }
 
     // datable for ads log activity
@@ -64,7 +64,7 @@ class AdsController extends Controller
             $searchByTodate = Carbon::now();
         }
 
-        $totalRecords = SuperadminLogActivity::select('count(*) as allcount')
+        $totalRecords = SuperAdminLogActivity::select('count(*) as allcount')
             ->where('type', 'ads')
             ->where(function ($query) use ($searchValue) {
                 $query->where('name', 'like', '%' . $searchValue . '%')
@@ -77,8 +77,8 @@ class AdsController extends Controller
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
             ->count();
         $totalRecordswithFilter = $totalRecords;
-        $ads = SuperadminLogActivity::where('type', 'ads')->orderBy('created_at', 'desc')->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->get();
-        $records = SuperadminLogActivity::orderBy($columnName, $columnSortOrder)
+        $ads = SuperAdminLogActivity::where('type', 'ads')->orderBy('created_at', 'desc')->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->get();
+        $records = SuperAdminLogActivity::orderBy($columnName, $columnSortOrder)
             ->orderBy('created_at', 'desc')
         // ->where('type',['ads'])
             ->where(function ($query) use ($searchValue) {
@@ -201,8 +201,8 @@ class AdsController extends Controller
      */
     public function create()
     {
-        $shops = Shopowner::all();
-        return view('backend.SuperAdmin.ad.create', ['shops' => $shops]);
+        $shops = ShopOwner::all();
+        return view('backend.super_admin.ad.create', ['shops' => $shops]);
     }
 
     /**
@@ -216,7 +216,7 @@ class AdsController extends Controller
 
         $folderPath = 'images/banner/';
         $mobileimgfolder = 'images/banner/thumbs/';
-        $shop_name = Shopowner::where('id', $request->shop_id)->first();
+        $shop_name = ShopOwner::where('id', $request->shop_id)->first();
         $start = Carbon::parse($request->start, 'UTC')->format('Y-m-d H:i:s A');
         $end = Carbon::parse($request->end, 'UTC')->format('Y-m-d H:i:s A');
         $ads = new Ads();
@@ -236,7 +236,7 @@ class AdsController extends Controller
         $ads->end = $end;
         $ads->save();
 
-        \SuperadminLogActivity::SuperadminAdsCreateLog($ads);
+        \SuperAdminLogActivity::SuperAdminAdsCreateLog($ads);
 
         return response()->json([
             'success' => true,
@@ -263,7 +263,7 @@ class AdsController extends Controller
         $folderPath = 'images/banner';
         $mobileimgfolder = 'images/banner/thumbs/';
 
-        $shop_name = Shopowner::where('id', $request->shop_id)->first();
+        $shop_name = ShopOwner::where('id', $request->shop_id)->first();
 
         $start = Carbon::parse($request->start, 'UTC')->format('Y-m-d H:i:s A');
         $end = Carbon::parse($request->end, 'UTC')->format('Y-m-d H:i:s A');
@@ -283,11 +283,11 @@ class AdsController extends Controller
         $ads->end = $end;
         $ads->save();
 
-        \SuperadminLogActivity::SuperadminAdsCreateLog($ads);
+        \SuperAdminLogActivity::SuperAdminAdsCreateLog($ads);
 
         Session::flash('message', 'Your ads was successfully created');
 
-        return redirect('/backside/SuperAdmin/ads');
+        return redirect('/backside/super_admin/ads');
     }
 
     /**
@@ -299,7 +299,7 @@ class AdsController extends Controller
     public function show($id)
     {
         $ad = Ads::withTrashed()->findOrFail($id);
-        $shop = Shopowner::where('shop_name', $ad->name)->first();
+        $shop = ShopOwner::where('shop_name', $ad->name)->first();
         if (empty($shop)) {
             $shop_name_myan = 'No Shop';
         } else {
@@ -307,7 +307,7 @@ class AdsController extends Controller
 
         }
 
-        return view('backend.SuperAdmin.ad.detail', ['ad' => $ad, 'shop_name_myan' => $shop_name_myan, 'id' => $id]);
+        return view('backend.super_admin.ad.detail', ['ad' => $ad, 'shop_name_myan' => $shop_name_myan, 'id' => $id]);
 
     }
 
@@ -320,8 +320,8 @@ class AdsController extends Controller
     public function edit($id)
     {
         $ad = Ads::withTrashed()->findOrFail($id);
-        $shops = Shopowner::all();
-        return view('backend.SuperAdmin.ad.edit', ['shops' => $shops, 'ad' => $ad]);
+        $shops = ShopOwner::all();
+        return view('backend.super_admin.ad.edit', ['shops' => $shops, 'ad' => $ad]);
     }
     /**
      * Update the specified resource in storage.
@@ -333,7 +333,7 @@ class AdsController extends Controller
     public function update(Request $request, $id)
     {
 //        return $request->shop_id;
-        $shop_name = Shopowner::where('id', $request->shop_id)->first();
+        $shop_name = ShopOwner::where('id', $request->shop_id)->first();
         $folderPath = 'images/banner/';
         $ads = Ads::withTrashed()->findOrfail($id);
         if (!empty($shop_name)) {
@@ -359,11 +359,11 @@ class AdsController extends Controller
         $ads->links = $request->links;
 
         $ads->save();
-        \SuperadminLogActivity::SuperadminAdsEditLog($ads);
+        \SuperAdminLogActivity::SuperAdminAdsEditLog($ads);
 
         $ads = Ads::withTrashed()->findOrfail($id)->restore();
         Session::flash('message', 'Your ads was successfully updated');
-        return redirect('/backside/SuperAdmin/ads');
+        return redirect('/backside/super_admin/ads');
     }
 
     /**
@@ -376,7 +376,7 @@ class AdsController extends Controller
     {
 
         $ad = Ads::withTrashed()->findOrFail($id);
-        \SuperadminLogActivity::SuperadminAdsDeleteLog($ad);
+        \SuperAdminLogActivity::SuperAdminAdsDeleteLog($ad);
 
         if (File::exists(public_path('images/banner/' . $ad->image))) {
             File::delete(public_path('/images/banner/' . $ad->name));
@@ -389,6 +389,6 @@ class AdsController extends Controller
         }
         Session::flash('message', 'Your ads was successfully deleted');
 
-        return redirect()->route('backside.SuperAdmin.ads.index');
+        return redirect()->route('backside.super_admin.ads.index');
     }
 }

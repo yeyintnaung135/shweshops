@@ -3,24 +3,25 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\traid\ShopDelete;
+use App\Http\Controllers\Trait\ShopDelete;
+use App\Http\Controllers\Trait\UserRole;
 use App\Models\AddToCartClickLog;
 use App\Models\BuyNowClickLog;
 use App\Models\CountSetting;
-use App\Models\Featuresforshops;
-use App\Models\frontuserlogs;
-use App\Models\Guestoruserid;
+use App\Models\FeaturesForShops;
+use App\Models\FrontUserLogs;
+use App\Models\GuestOrUserId;
 use App\Models\Item;
 use App\Models\Manager;
 use App\Models\Messages;
 use App\Models\PremiumTemplate;
 use App\Models\ShopBanner;
-use App\Models\Shopdirectory;
-use App\Models\Shopowner;
+use App\Models\ShopDirectory;
+use App\Models\ShopOwner;
 use App\Models\State;
-use App\Models\SuperadminLogActivity;
+use App\Models\SuperAdminLogActivity;
 use App\Models\User;
-use App\Models\WhislistClickLog;
+use App\Models\WishlistClickLog;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -33,7 +34,7 @@ use Illuminate\Support\Str;
 class ShopController extends Controller
 {
     use ShopDelete;
-    use \App\Http\Controllers\traid\UserRole;
+    use UserRole;
 
     public function __construct()
     {
@@ -46,14 +47,14 @@ class ShopController extends Controller
      * @var array
      */
 
-    public function showowner_using_chat()
+    public function show_owner_using_chat()
     {
 
         $shopowner_only_count = Messages::where('from_role', 'shopowner')->groupBy('message_shop_id')->get();
         return view('backend.super_admin.shops.shopowner_chat_using', compact('shopowner_only_count'));
     }
 
-    public function showowner_using_chat_all(Request $request)
+    public function show_owner_using_chat_all(Request $request)
     {
         $id = 1;
 
@@ -134,7 +135,7 @@ class ShopController extends Controller
         echo json_encode($response);
     }
 
-    public function showowner_using_chat_detail($id)
+    public function show_owner_using_chat_detail($id)
     {
         $get_message_shops = Messages::where('message_shop_id', (int) $id)
             ->groupBy('message_user_id')
@@ -144,7 +145,7 @@ class ShopController extends Controller
 
         $messages = Messages::where('message_shop_id', (int) $id)->get();
         $shop_owner = Messages::where('message_shop_id', (int) $id)->first();
-        $shop_id = Shopowner::where('id', $id)->first();
+        $shop_id = ShopOwner::where('id', $id)->first();
 
         $chat_count = Messages::where('message_shop_id', (int) $id)->groupBy('message_user_id')->get();
 
@@ -167,7 +168,7 @@ class ShopController extends Controller
         return new LengthAwarePaginator($messages->forPage($page, $perPage), $messages->count(), $perPage, $page, ['path' => Paginator::resolveCurrentPath()]);
     }
 
-    public function shopowner_chat_product_code_search(Request $request)
+    public function shop_owner_chat_product_code_search(Request $request)
     {
         // return $request;
         // return Messages::where('message_shop_id',(int)$request->id)->get();
@@ -193,7 +194,7 @@ class ShopController extends Controller
 
         $messages = Messages::where('message_shop_id', (int) $request->id)->get();
         $shop_owner = Messages::where('message_shop_id', (int) $request->id)->first();
-        $shop_id = Shopowner::where('id', $request->id)->first();
+        $shop_id = ShopOwner::where('id', $request->id)->first();
 
         return view('backend.super_admin.shops.shop_date_filter', [
             'messages_all_users' => $messages_all_users,
@@ -211,7 +212,7 @@ class ShopController extends Controller
 
     public function all()
     {
-        $shopowner = Shopowner::all();
+        $shopowner = ShopOwner::all();
         return view('backend.super_admin.shops.all', ['shopowner' => $shopowner]);
     }
     public function get_all_trash_shop(Request $request)
@@ -230,13 +231,13 @@ class ShopController extends Controller
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
 
-        $totalRecords = Shopowner::onlyTrashed()
+        $totalRecords = ShopOwner::onlyTrashed()
             ->where('shop_name', 'like', '%' . $searchValue . '%')
             ->orWhere('shop_name_myan', 'like', '%' . $searchValue . '%')
             ->select('count(*) as allcount')->count();
-        $totalRecordswithFilter = Shopowner::onlyTrashed()->select('count(*) as allcount')->count();
+        $totalRecordswithFilter = ShopOwner::onlyTrashed()->select('count(*) as allcount')->count();
 
-        $records = Shopowner::orderBy($columnName, $columnSortOrder)
+        $records = ShopOwner::orderBy($columnName, $columnSortOrder)
             ->orderBy('created_at', 'desc')
             ->where('deleted_at', '!=', null)
             ->where('shop_name', 'like', '%' . $searchValue . '%')
@@ -303,7 +304,7 @@ class ShopController extends Controller
 
         $state = State::where('name', 'like', '%' . $searchValue . '%')->value('id');
 
-        $totalRecords = Shopowner::select('count(*) as allcount')
+        $totalRecords = ShopOwner::select('count(*) as allcount')
             ->where(function ($query) use ($searchValue) {
                 if (strtolower($searchValue) == "premium") {
                     $premium = '%' . "yes" . '%';
@@ -325,7 +326,7 @@ class ShopController extends Controller
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->count();
         $totalRecordswithFilter = $totalRecords;
 
-        $records = Shopowner::orderBy($columnName, $columnSortOrder)
+        $records = ShopOwner::orderBy($columnName, $columnSortOrder)
             ->where(function ($query) use ($searchValue) {
                 if (strtolower($searchValue) == "premium") {
                     $premium = '%' . "yes" . '%';
@@ -417,7 +418,7 @@ class ShopController extends Controller
             $searchByTodate = Carbon::now();
         }
 
-        $totalRecords = SuperadminLogActivity::select('count(*) as allcount')
+        $totalRecords = SuperAdminLogActivity::select('count(*) as allcount')
             ->where(function ($query) use ($searchValue) {
                 $query->where('name', 'like', '%' . $searchValue . '%')
                     ->orWhere('type', 'like', '%' . $searchValue . '%')
@@ -430,8 +431,8 @@ class ShopController extends Controller
             ->where('type', 'shop')
             ->count();
         $totalRecordswithFilter = $totalRecords;
-        $ads = SuperadminLogActivity::where('type', ['shop'])->orderBy('created_at', 'desc')->get();
-        $records = SuperadminLogActivity::orderBy($columnName, $columnSortOrder)
+        $ads = SuperAdminLogActivity::where('type', ['shop'])->orderBy('created_at', 'desc')->get();
+        $records = SuperAdminLogActivity::orderBy($columnName, $columnSortOrder)
             ->where(function ($query) use ($searchValue) {
                 $query->where('name', 'like', '%' . $searchValue . '%')
                     ->orWhere('type', 'like', '%' . $searchValue . '%')
@@ -473,7 +474,7 @@ class ShopController extends Controller
 
     public function show($id)
     {
-        $shop = Shopowner::findOrFail($id);
+        $shop = ShopOwner::findOrFail($id);
         $all = CountSetting::where('shop_id', $shop->id)->where('name', 'all')->get();
         $products_count_setting = CountSetting::where('shop_id', $shop->id)->where('name', 'item')->get();
         $users_count_setting = CountSetting::where('shop_id', $shop->id)->where('name', 'users')->get();
@@ -486,7 +487,7 @@ class ShopController extends Controller
         $whislistclick_count_setting = CountSetting::where('shop_id', $shop->id)->where('name', 'whislistclick')->get();
         $discountview_count_setting = CountSetting::where('shop_id', $shop->id)->where('name', 'discountview')->get();
         $adsview_count_setting = CountSetting::where('shop_id', $shop->id)->where('name', 'adsview')->get();
-        $poson = Featuresforshops::where([['shop_id', '=', $shop->id], ['feature', '=', 'pos']])->get();
+        $poson = FeaturesForShops::where([['shop_id', '=', $shop->id], ['feature', '=', 'pos']])->get();
 
         $premium_template = PremiumTemplate::where('id', $shop->premium_template_id)->first();
         return view('backend.super_admin.shops.detail', [
@@ -622,9 +623,9 @@ class ShopController extends Controller
             }
         } elseif ($request->setting == 111) {
             if ($request->action == 0) {
-                Featuresforshops::where([['shop_id', '=', $request->id], ['feature', '=', 'pos']])->forceDelete();
+                FeaturesForShops::where([['shop_id', '=', $request->id], ['feature', '=', 'pos']])->forceDelete();
             } else {
-                $count_setting = new Featuresforshops();
+                $count_setting = new FeaturesForShops();
                 $count_setting->shop_id = $request->id;
                 $count_setting->feature = "pos";
 
@@ -641,7 +642,7 @@ class ShopController extends Controller
         $array = ["item", "users", "shop_view", "items_view", "item_unique_view", "buyNowClick", "addToCartClick", "whislistclick", "discountview", "adsview", "inquiry", "pos"];
         if ($request->action == 0) {
             CountSetting::where('shop_id', $request->id)->forceDelete();
-            Featuresforshops::where([['shop_id', '=', $request->id], ['feature', '=', 'pos']])->forceDelete();
+            FeaturesForShops::where([['shop_id', '=', $request->id], ['feature', '=', 'pos']])->forceDelete();
         } else {
             $count_setting = new CountSetting();
             $count_setting->name = "all";
@@ -651,7 +652,7 @@ class ShopController extends Controller
 
             foreach ($array as $value) {
                 if ($value == 'pos') {
-                    $count_setting = new Featuresforshops();
+                    $count_setting = new FeaturesForShops();
                     $count_setting->shop_id = $request->id;
                     $count_setting->feature = "pos";
 
@@ -674,24 +675,24 @@ class ShopController extends Controller
     {
         $start_date = Carbon::now()->firstOfMonth();
         $last_date = Carbon::now()->lastOfMonth();
-        $shopowner = Shopowner::findOrFail($id);
+        $shopowner = ShopOwner::findOrFail($id);
 
         $off_counts = CountSetting::where('shop_id', $id)->get();
-        $shop_counts = Shopowner::all();
+        $shop_counts = ShopOwner::all();
 
         $items = Item::where('shop_id', $id)->orderBy('created_at', 'desc')->get();
         $products_count_setting = CountSetting::where('shop_id', $id)->where('name', 'item')->get();
 
-        $shopview = frontuserlogs::join('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->where('guestoruserid.user_agent', '!=', 'bot')->where('front_user_logs.shop_id', $id)->where('front_user_logs.status', 'shopdetail')->get();
+        $shopview = FrontUserLogs::join('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->where('guestoruserid.user_agent', '!=', 'bot')->where('front_user_logs.shop_id', $id)->where('front_user_logs.status', 'shopdetail')->get();
         $shops_view_count_setting = CountSetting::where('shop_id', $id)->where('name', 'shop_view')->get();
 
         $user_inquiry = Messages::where('message_shop_id', (int) $id)->where('from_role', 'user')->get();
         $user_inquiry_count_setting = CountSetting::where('shop_id', $id)->where('name', 'inquiry')->get();
 
-        $productclick = frontuserlogs::leftjoin('items', 'front_user_logs.product_id', '=', 'items.id')->where('front_user_logs.status', 'product_detail')->where('items.shop_id', $id)->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->get();
+        $productclick = FrontUserLogs::leftjoin('items', 'front_user_logs.product_id', '=', 'items.id')->where('front_user_logs.status', 'product_detail')->where('items.shop_id', $id)->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->get();
         $items_view_count_setting = CountSetting::where('shop_id', $id)->where('name', 'items_view')->get();
 
-        $unique_productclick = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->where('guestoruserid.user_agent', '!=', 'bot')->where('front_user_logs.status', 'product_detail')->where('front_user_logs.shop_id', $id)->where('front_user_logs.product_id', '!=', 0)->whereBetween('guestoruserid.created_at', [$start_date, $last_date])->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->get();
+        $unique_productclick = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->where('guestoruserid.user_agent', '!=', 'bot')->where('front_user_logs.status', 'product_detail')->where('front_user_logs.shop_id', $id)->where('front_user_logs.product_id', '!=', 0)->whereBetween('guestoruserid.created_at', [$start_date, $last_date])->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->get();
         $unique_product_click_count_setting = CountSetting::where('shop_id', $id)->where('name', 'item_unique_view')->get();
 
         $buynowclick = BuyNowClickLog::leftjoin('items', 'items.id', '=', 'buy_now_click_logs.item_id')->where('items.shop_id', $id)->orderBy('buy_now_click_logs.created_at', 'desc')->get();
@@ -700,13 +701,13 @@ class ShopController extends Controller
         $addtocartclick = AddToCartClickLog::leftjoin('items', 'items.id', '=', 'add_to_cart_click_logs.item_id')->where('items.shop_id', $id)->orderBy('add_to_cart_click_logs.created_at', 'desc')->get()->unique('guest_id', 'user_id');
         $addtocartclick_count_setting = CountSetting::where('shop_id', $id)->where('name', 'addToCartClick')->get();
 
-        $whislistclick = WhislistClickLog::leftjoin('items', 'items.id', '=', 'whislist_click_logs.item_id')->where('items.shop_id', $id)->orderBy('whislist_click_logs.created_at', 'desc')->get();
+        $whislistclick = WishlistClickLog::leftjoin('items', 'items.id', '=', 'whislist_click_logs.item_id')->where('items.shop_id', $id)->orderBy('whislist_click_logs.created_at', 'desc')->get();
         $whislistclick_count_setting = CountSetting::where('shop_id', $id)->where('name', 'whislistclick')->get();
-        $discountview = frontuserlogs::join('discount', 'discount.item_id', '=', 'front_user_logs.product_id')->where('front_user_logs.shop_id', $id)->where('front_user_logs.product_id', '!=', 0)->where('front_user_logs.product_id', '!=', null)->where('front_user_logs.status', 'product_detail')->groupBy('front_user_logs.product_id')->get();
+        $discountview = FrontUserLogs::join('discount', 'discount.item_id', '=', 'front_user_logs.product_id')->where('front_user_logs.shop_id', $id)->where('front_user_logs.product_id', '!=', 0)->where('front_user_logs.product_id', '!=', null)->where('front_user_logs.status', 'product_detail')->groupBy('front_user_logs.product_id')->get();
 
         $discountview_count_setting = CountSetting::where('shop_id', $id)->where('name', 'discountview')->get();
 
-        $adsview = frontuserlogs::join('guestoruserid', 'guestoruserid.id', '=', 'front_user_logs.userorguestid')->where('front_user_logs.status', 'homepage')->where('guestoruserid.user_agent', '!=', 'bot')->groupBy('front_user_logs.userorguestid')->get();
+        $adsview = FrontUserLogs::join('guestoruserid', 'guestoruserid.id', '=', 'front_user_logs.userorguestid')->where('front_user_logs.status', 'homepage')->where('guestoruserid.user_agent', '!=', 'bot')->groupBy('front_user_logs.userorguestid')->get();
         $adsview_count_setting = CountSetting::where('shop_id', $id)->where('name', 'adsview')->get();
 
         $users = Manager::where('shop_id', $id)->get();
@@ -718,9 +719,9 @@ class ShopController extends Controller
 
         // $newusers=Guestoruserid::whereBetween('created_at', [Carbon::createFromDate($start_date), Carbon::createFromDate($last_date)])->get();
 
-        $newusers = Guestoruserid::whereBetween('created_at', [$start_date, $last_date])->where('user_agent', '!=', 'bot')->groupBy('ip')->get();
+        $newusers = GuestOrUserId::whereBetween('created_at', [$start_date, $last_date])->where('user_agent', '!=', 'bot')->groupBy('ip')->get();
 
-        $total_users = Guestoruserid::where('user_agent', '!=', 'bot')->groupBy('ip')->get();
+        $total_users = GuestOrUserId::where('user_agent', '!=', 'bot')->groupBy('ip')->get();
         if (count($items) == 0) {
             $user_inquiry = [];
             $unique_productclick = [];
@@ -791,16 +792,16 @@ class ShopController extends Controller
 
         $users = Manager::where('shop_id', $id)->get();
 
-        $productview = frontuserlogs::where('shop_id', $id)->whereBetween('created_at', [$from, $to])->groupBy('userorguestid')->groupBy('visited_link')->get();
+        $productview = FrontUserLogs::where('shop_id', $id)->whereBetween('created_at', [$from, $to])->groupBy('userorguestid')->groupBy('visited_link')->get();
         $user_inquiry = Messages::where('message_shop_id', (int) $id)->where('from_role', 'user')->whereBetween('created_at', array(
             Carbon::createFromDate($from),
             Carbon::createFromDate($to)->addDays(1),
         ))->get();
 
-        // $productview = frontuserlogs::leftjoin('items','front_user_logs.product_id','=','items.id')->where('front_user_logs.status','product_detail')->where('items.shop_id',$id)->get();
+        // $productview = FrontUserLogs::leftjoin('items','front_user_logs.product_id','=','items.id')->where('front_user_logs.status','product_detail')->where('items.shop_id',$id)->get();
 
-        $shopview = frontuserlogs::join('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->where('guestoruserid.user_agent', '!=', 'bot')->where('front_user_logs.shop_id', $id)->where('front_user_logs.status', 'shopdetail')->whereBetween('front_user_logs.created_at', [$from, $to])->get();
-        $unique_product_view = frontuserlogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->where('guestoruserid.user_agent', '!=', 'bot')->where('front_user_logs.status', 'product_detail')->where('front_user_logs.shop_id', $id)->where('front_user_logs.product_id', '!=', 0)->whereBetween('guestoruserid.created_at', [$from, $to])->whereBetween('front_user_logs.created_at', [$from, $to])->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->get();
+        $shopview = FrontUserLogs::join('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->where('guestoruserid.user_agent', '!=', 'bot')->where('front_user_logs.shop_id', $id)->where('front_user_logs.status', 'shopdetail')->whereBetween('front_user_logs.created_at', [$from, $to])->get();
+        $unique_product_view = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->where('guestoruserid.user_agent', '!=', 'bot')->where('front_user_logs.status', 'product_detail')->where('front_user_logs.shop_id', $id)->where('front_user_logs.product_id', '!=', 0)->whereBetween('guestoruserid.created_at', [$from, $to])->whereBetween('front_user_logs.created_at', [$from, $to])->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->get();
 
         // $unique_product_view = ItemLogActivity::where('shop_id',$id)->whereBetween('created_at', [$from, $to])->get()->unique('user_id','guest_id');
 
@@ -808,15 +809,15 @@ class ShopController extends Controller
 
         $addtocartclick = AddToCartClickLog::leftjoin('items', 'items.id', '=', 'add_to_cart_click_logs.item_id')->where('items.shop_id', $id)->whereBetween('add_to_cart_click_logs.created_at', [$from, $to])->get()->unique('guest_id', 'user_id');
 
-        $whislistclick = WhislistClickLog::leftjoin('items', 'items.id', '=', 'whislist_click_logs.item_id')->where('items.shop_id', $id)->whereBetween('whislist_click_logs.created_at', [$from, $to])->get();
-        $adsview = frontuserlogs::join('guestoruserid', 'guestoruserid.id', '=', 'front_user_logs.userorguestid')->where('front_user_logs.status', 'homepage')->where('guestoruserid.user_agent', '!=', 'bot')->groupBy('front_user_logs.userorguestid')->whereBetween('front_user_logs.created_at', [$from, $to])->get();
+        $whislistclick = WishlistClickLog::leftjoin('items', 'items.id', '=', 'whislist_click_logs.item_id')->where('items.shop_id', $id)->whereBetween('whislist_click_logs.created_at', [$from, $to])->get();
+        $adsview = FrontUserLogs::join('guestoruserid', 'guestoruserid.id', '=', 'front_user_logs.userorguestid')->where('front_user_logs.status', 'homepage')->where('guestoruserid.user_agent', '!=', 'bot')->groupBy('front_user_logs.userorguestid')->whereBetween('front_user_logs.created_at', [$from, $to])->get();
 
-        $discountview = frontuserlogs::join('discount', 'discount.item_id', '=', 'front_user_logs.product_id')->where('front_user_logs.shop_id', $id)->where('front_user_logs.product_id', '!=', 0)->where('front_user_logs.product_id', '!=', null)->where('front_user_logs.status', 'product_detail')->whereBetween('front_user_logs.created_at', [$from, $to])->groupBy('front_user_logs.product_id')->get();
+        $discountview = FrontUserLogs::join('discount', 'discount.item_id', '=', 'front_user_logs.product_id')->where('front_user_logs.shop_id', $id)->where('front_user_logs.product_id', '!=', 0)->where('front_user_logs.product_id', '!=', null)->where('front_user_logs.status', 'product_detail')->whereBetween('front_user_logs.created_at', [$from, $to])->groupBy('front_user_logs.product_id')->get();
 
-        $newusers = Guestoruserid::whereBetween('created_at', [$from, $to])->where('user_agent', '!=', 'bot')->groupBy('ip')->get();
+        $newusers = GuestOrUserId::whereBetween('created_at', [$from, $to])->where('user_agent', '!=', 'bot')->groupBy('ip')->get();
 
         $countnu = 0;
-        // $countnu = Guestoruserid::select( DB::raw("count('*') as total"))->whereBetween('created_at', [Carbon::createFromDate($request->from), Carbon::createFromDate($request->to)])->total;
+        // $countnu = GuestOrUserId::select( DB::raw("count('*') as total"))->whereBetween('created_at', [Carbon::createFromDate($request->from), Carbon::createFromDate($request->to)])->total;
 
         if (count($total_items_all_time) == 0) {
             $user_inquiry = [];
@@ -868,17 +869,17 @@ class ShopController extends Controller
     //        $products_count_setting = CountSetting::where('shop_id',$id)->where('name','item')->get();
     //
     //
-    //        $shopview = frontuserlogs::where('shop_id',$id)->where('status','shopdetail')->orderBy('created_at', 'desc')->get()->unique('guest_id');
+    //        $shopview = FrontUserLogs::where('shop_id',$id)->where('status','shopdetail')->orderBy('created_at', 'desc')->get()->unique('guest_id');
     //        $shops_view_count_setting = CountSetting::where('shop_id', $id)->where('name','shop_view')->get();
     //
     //        $user_inquiry = Messages::where('message_shop_id',(int)$id)->where('from_role','user')->groupBy('message_user_id')->get();
     //        $user_inquiry_count_setting = CountSetting::where('shop_id', $id)->where('name','inquiry')->get();
     //
     //
-    //        $productclick = frontuserlogs::leftjoin('items','front_user_logs.product_id','=','items.id')->where('front_user_logs.status','product_detail')->where('items.shop_id',$id)->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->get();
+    //        $productclick = FrontUserLogs::leftjoin('items','front_user_logs.product_id','=','items.id')->where('front_user_logs.status','product_detail')->where('items.shop_id',$id)->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->get();
     //        $items_view_count_setting = CountSetting::where('shop_id', $id)->where('name','items_view')->get();
     //
-    //        $unique_productclick = frontuserlogs::leftjoin('guestoruserid','front_user_logs.userorguestid','=','guestoruserid.id')->where('guestoruserid.user_agent','!=','bot')->where('front_user_logs.status','product_detail')->where('front_user_logs.shop_id',$id)->where('front_user_logs.product_id','!=',0)->whereBetween('guestoruserid.created_at', [$start_date, $last_date])->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->get();
+    //        $unique_productclick = FrontUserLogs::leftjoin('guestoruserid','front_user_logs.userorguestid','=','guestoruserid.id')->where('guestoruserid.user_agent','!=','bot')->where('front_user_logs.status','product_detail')->where('front_user_logs.shop_id',$id)->where('front_user_logs.product_id','!=',0)->whereBetween('guestoruserid.created_at', [$start_date, $last_date])->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->get();
     //        $unique_product_click_count_setting = CountSetting::where('shop_id', $id)->where('name','item_unique_view')->get();
     //
     //        $buynowclick = BuyNowClickLog::leftjoin('items','items.id','=','buy_now_click_logs.item_id')->where('items.shop_id',$id)->orderBy('buy_now_click_logs.created_at', 'desc')->get();
@@ -887,14 +888,14 @@ class ShopController extends Controller
     //        $addtocartclick = AddToCartClickLog::leftjoin('items','items.id','=','add_to_cart_click_logs.item_id')->where('items.shop_id',$id)->orderBy('add_to_cart_click_logs.created_at', 'desc')->get()->unique('guest_id','user_id');
     //        $addtocartclick_count_setting = CountSetting::where('shop_id',$id)->where('name','addToCartClick')->get();
     //
-    //        $whislistclick = WhislistClickLog::leftjoin('items','items.id','=','whislist_click_logs.item_id')->where('items.shop_id',$id)->orderBy('whislist_click_logs.created_at', 'desc')->get();
+    //        $whislistclick = WishlistClickLog::leftjoin('items','items.id','=','whislist_click_logs.item_id')->where('items.shop_id',$id)->orderBy('whislist_click_logs.created_at', 'desc')->get();
     //        $whislistclick_count_setting = CountSetting::where('shop_id',$id)->where('name','whislistclick')->get();
-    //        $discountview = frontuserlogs::join('discount','discount.item_id','=','front_user_logs.product_id')->where('front_user_logs.shop_id',$id)->where('front_user_logs.product_id','!=',0)->where('front_user_logs.product_id','!=',null)->where('front_user_logs.status','product_detail')->groupBy('front_user_logs.product_id')->get();
+    //        $discountview = FrontUserLogs::join('discount','discount.item_id','=','front_user_logs.product_id')->where('front_user_logs.shop_id',$id)->where('front_user_logs.product_id','!=',0)->where('front_user_logs.product_id','!=',null)->where('front_user_logs.status','product_detail')->groupBy('front_user_logs.product_id')->get();
     //
     //// return $discountview;
     //        $discountview_count_setting = CountSetting::where('shop_id',$id)->where('name','discountview')->get();
     //
-    //        $adsview = frontuserlogs::join('guestoruserid','guestoruserid.id','=','front_user_logs.userorguestid')->where('front_user_logs.status','homepage')->where('guestoruserid.user_agent','!=','bot')->groupBy('front_user_logs.userorguestid')->get();
+    //        $adsview = FrontUserLogs::join('guestoruserid','guestoruserid.id','=','front_user_logs.userorguestid')->where('front_user_logs.status','homepage')->where('guestoruserid.user_agent','!=','bot')->groupBy('front_user_logs.userorguestid')->get();
     //        $adsview_count_setting = CountSetting::where('shop_id',$id)->where('name','adsview')->get();
     //
     //        $users = Manager::where('shop_id',$id)->get();
@@ -905,12 +906,12 @@ class ShopController extends Controller
     //        //New Users
     //
     //
-    ////        $newusers=Guestoruserid::whereBetween('created_at', [Carbon::createFromDate($start_date), Carbon::createFromDate($last_date)])->get();
+    ////        $newusers=GuestOrUserId::whereBetween('created_at', [Carbon::createFromDate($start_date), Carbon::createFromDate($last_date)])->get();
     //
-    //        $newusers=Guestoruserid::whereBetween('created_at', [$start_date, $last_date])->where('user_agent','!=','bot')->groupBy('ip')->get();
+    //        $newusers=GuestOrUserId::whereBetween('created_at', [$start_date, $last_date])->where('user_agent','!=','bot')->groupBy('ip')->get();
     //
     //
-    //        $total_users = Guestoruserid::where('user_agent','!=','bot')->groupBy('ip')->get();
+    //        $total_users = GuestOrUserId::where('user_agent','!=','bot')->groupBy('ip')->get();
     //
     //
     //        return view('backend.super_admin.shops.report', [
@@ -972,14 +973,14 @@ class ShopController extends Controller
     //
     //        $users = Manager::where('shop_id',$id)->whereBetween('created_at', [$from, $to])->get();
     //
-    //        $productview = frontuserlogs::where('shop_id',$id)->whereBetween('created_at', [$from,  $to])->groupBy('userorguestid')->groupBy('visited_link')->get();
+    //        $productview = FrontUserLogs::where('shop_id',$id)->whereBetween('created_at', [$from,  $to])->groupBy('userorguestid')->groupBy('visited_link')->get();
     //        $user_inquiry = Messages::where('message_shop_id',(int)$id)->where('from_role','user')->groupBy('message_user_id')->get();
     //
     //
-    //        // $productview = frontuserlogs::leftjoin('items','front_user_logs.product_id','=','items.id')->where('front_user_logs.status','product_detail')->where('items.shop_id',$id)->get();
+    //        // $productview = FrontUserLogs::leftjoin('items','front_user_logs.product_id','=','items.id')->where('front_user_logs.status','product_detail')->where('items.shop_id',$id)->get();
     //
-    //        $shopview = frontuserlogs::where('shop_id',$id)->where('status','shopdetail')->whereBetween('created_at', [$from, $to])->get()->unique('guest_id');
-    //        $unique_product_view = frontuserlogs::leftjoin('guestoruserid','front_user_logs.userorguestid','=','guestoruserid.id')->where('guestoruserid.user_agent','!=','bot')->where('front_user_logs.status','product_detail')->where('front_user_logs.shop_id',$id)->where('front_user_logs.product_id','!=',0)->whereBetween('guestoruserid.created_at', [$from, $to])->whereBetween('front_user_logs.created_at', [$from, $to])->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->get();
+    //        $shopview = FrontUserLogs::where('shop_id',$id)->where('status','shopdetail')->whereBetween('created_at', [$from, $to])->get()->unique('guest_id');
+    //        $unique_product_view = FrontUserLogs::leftjoin('guestoruserid','front_user_logs.userorguestid','=','guestoruserid.id')->where('guestoruserid.user_agent','!=','bot')->where('front_user_logs.status','product_detail')->where('front_user_logs.shop_id',$id)->where('front_user_logs.product_id','!=',0)->whereBetween('guestoruserid.created_at', [$from, $to])->whereBetween('front_user_logs.created_at', [$from, $to])->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->get();
     //
     //        // $unique_product_view = ItemLogActivity::where('shop_id',$id)->whereBetween('created_at', [$from, $to])->get()->unique('user_id','guest_id');
     //
@@ -987,15 +988,15 @@ class ShopController extends Controller
     //
     //        $addtocartclick = AddToCartClickLog::leftjoin('items','items.id','=','add_to_cart_click_logs.item_id')->where('items.shop_id',$id)->whereBetween('add_to_cart_click_logs.created_at', [$from, $to])->get()->unique('guest_id','user_id');
     //
-    //        $whislistclick = WhislistClickLog::leftjoin('items','items.id','=','whislist_click_logs.item_id')->where('items.shop_id',$id)->whereBetween('whislist_click_logs.created_at', [$from, $to])->get();
-    //        $adsview = frontuserlogs::join('guestoruserid','guestoruserid.id','=','front_user_logs.userorguestid')->where('front_user_logs.status','homepage')->where('guestoruserid.user_agent','!=','bot')->groupBy('front_user_logs.userorguestid')->whereBetween('front_user_logs.created_at', [$from, $to])->get();
+    //        $whislistclick = WishlistClickLog::leftjoin('items','items.id','=','whislist_click_logs.item_id')->where('items.shop_id',$id)->whereBetween('whislist_click_logs.created_at', [$from, $to])->get();
+    //        $adsview = FrontUserLogs::join('guestoruserid','guestoruserid.id','=','front_user_logs.userorguestid')->where('front_user_logs.status','homepage')->where('guestoruserid.user_agent','!=','bot')->groupBy('front_user_logs.userorguestid')->whereBetween('front_user_logs.created_at', [$from, $to])->get();
     //
-    //        $discountview = frontuserlogs::join('discount','discount.item_id','=','front_user_logs.product_id')->where('front_user_logs.shop_id',$id)->where('front_user_logs.product_id','!=',0)->where('front_user_logs.product_id','!=',null)->where('front_user_logs.status','product_detail')->whereBetween('front_user_logs.created_at', [$from,  $to])->groupBy('front_user_logs.product_id')->get();
+    //        $discountview = FrontUserLogs::join('discount','discount.item_id','=','front_user_logs.product_id')->where('front_user_logs.shop_id',$id)->where('front_user_logs.product_id','!=',0)->where('front_user_logs.product_id','!=',null)->where('front_user_logs.status','product_detail')->whereBetween('front_user_logs.created_at', [$from,  $to])->groupBy('front_user_logs.product_id')->get();
     //
-    //        $newusers=Guestoruserid::whereBetween('created_at', [$from, $to])->where('user_agent','!=','bot')->groupBy('ip')->get();
+    //        $newusers=GuestOrUserId::whereBetween('created_at', [$from, $to])->where('user_agent','!=','bot')->groupBy('ip')->get();
     //
     //        $countnu=0;
-    //        // $countnu = Guestoruserid::select( DB::raw("count('*') as total"))->whereBetween('created_at', [Carbon::createFromDate($request->from), Carbon::createFromDate($request->to)])->total;
+    //        // $countnu = GuestOrUserId::select( DB::raw("count('*') as total"))->whereBetween('created_at', [Carbon::createFromDate($request->from), Carbon::createFromDate($request->to)])->total;
     //
     //        return response()->json([
     //            'totalusers' => count($total_users),
@@ -1028,29 +1029,29 @@ class ShopController extends Controller
     public function trash($id)
     {
 
-        $shop_owner = Shopowner::findOrFail($id);
+        $shop_owner = ShopOwner::findOrFail($id);
         if (isset($shop_owner->getPhotos)) {
             $del = $shop_owner->getPhotos->pluck("id");
             ShopBanner::destroy($del);
         }
-        \SuperadminLogActivity::SuperadminShopDeleteLog($shop_owner);
+        \SuperAdminLogActivity::SuperAdminShopDeleteLog($shop_owner);
         $shop_owner->delete();
 
         $this->shop_relevant_destroy($id);
-        Shopdirectory::where('shop_id', $id)->delete();
+        ShopDirectory::where('shop_id', $id)->delete();
         return redirect()->route('shops.all')->with(['status' => 'success', 'message' => 'Your Shop was successfully Deleted']);
     }
 
     public function get_trash()
     {
-        $shop_owners = Shopowner::onlyTrashed()->get();
+        $shop_owners = ShopOwner::onlyTrashed()->get();
         return view('backend.super_admin.shops.trash', compact('shop_owners'));
     }
 
     public function restore($id)
     {
         $shop_owner = ShopBanner::where('shop_owner_id', $id)->withTrashed()->pluck("id");
-        Shopowner::onlyTrashed()->where('id', $id)->restore();
+        ShopOwner::onlyTrashed()->where('id', $id)->restore();
 
         if ($shop_owner) {
             foreach ($shop_owner as $i) {
@@ -1060,14 +1061,14 @@ class ShopController extends Controller
         $this->shop_relevant_restore($id);
 
         $shop_dir['shop_id'] = $id;
-        Shopdirectory::updateOrCreate($shop_dir);
+        ShopDirectory::updateOrCreate($shop_dir);
 
         return redirect()->route('shops.all')->with(['status' => 'success', 'message' => 'Your SHOP was restore']);
     }
 
     public function force_delete($id)
     {
-        $shop_owner = Shopowner::onlyTrashed()->with('getPhotos')->findOrFail($id);
+        $shop_owner = ShopOwner::onlyTrashed()->with('getPhotos')->findOrFail($id);
 
         if (File::exists('images/logo/' . $shop_owner->shop_logo)) {
             File::delete(public_path('images/logo/' . $shop_owner->shop_logo));
@@ -1085,8 +1086,8 @@ class ShopController extends Controller
 
         $this->shop_relevant_force_delete($id);
 
-        Shopowner::onlyTrashed()->findOrFail($id)->forceDelete();
-        Shopdirectory::where('shop_id', $id)->delete();
+        ShopOwner::onlyTrashed()->findOrFail($id)->forceDelete();
+        ShopDirectory::where('shop_id', $id)->delete();
         return redirect()->route('shops.all_trash')->with(['status' => 'success', 'message' => 'Your SHOP was Delete']);
     }
 
@@ -1095,7 +1096,7 @@ class ShopController extends Controller
 
         $change_request_array = explode(",", $request->deleted_shops);
         foreach ($change_request_array as $id) {
-            $shop_owner = Shopowner::onlyTrashed()->with('getPhotos')->findOrFail($id);
+            $shop_owner = ShopOwner::onlyTrashed()->with('getPhotos')->findOrFail($id);
             if (File::exists('images/logo/' . $shop_owner->shop_logo)) {
                 File::delete(public_path('images/logo/' . $shop_owner->shop_logo));
             }
@@ -1111,7 +1112,7 @@ class ShopController extends Controller
             }
             $this->shop_relevant_force_delete($id);
 
-            Shopowner::onlyTrashed()->findOrFail($id)->forceDelete();
+            ShopOwner::onlyTrashed()->findOrFail($id)->forceDelete();
         }
         return redirect()->route('shops.all_trash')->with(['status' => 'success', 'message' => 'Your SHOP was Delete']);
     }

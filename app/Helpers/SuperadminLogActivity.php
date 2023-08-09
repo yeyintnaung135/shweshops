@@ -2,14 +2,14 @@
 
 namespace App\Helpers;
 
-use App\Models\SuperadminLogActivity as SuperadminLogActivityModel;
+use App\Models\SuperAdminLogActivity as SuperAdminLogActivityModel;
 use Illuminate\Support\Facades\Auth;
 
-class SuperadminLogActivity
+class SuperAdminLogActivity
 {
 
     // ads
-    public static function SuperadminAdsDeleteLog($subject)
+    public static function SuperAdminAdsDeleteLog($subject)
     {
 
         $log = [];
@@ -28,7 +28,7 @@ class SuperadminLogActivity
         SuperadminLogActivityModel::create($log);
     }
 
-    public static function SuperadminAdsCreateLog($subject)
+    public static function SuperAdminAdsCreateLog($subject)
     {
 
         $log = [];
@@ -47,7 +47,7 @@ class SuperadminLogActivity
         SuperadminLogActivityModel::create($log);
     }
 
-    public static function SuperadminAdsEditLog($subject)
+    public static function SuperAdminAdsEditLog($subject)
     {
 
         $log = [];
@@ -69,7 +69,7 @@ class SuperadminLogActivity
     // end of ads
 
     // shop
-    public static function SuperadminShopCreateLog($subject)
+    public static function SuperAdminShopCreateLog($subject)
     {
 
         $log = [];
@@ -88,7 +88,7 @@ class SuperadminLogActivity
         SuperadminLogActivityModel::create($log);
     }
 
-    public static function SuperadminShopEditLog($subject)
+    public static function SuperAdminShopEditLog($subject)
     {
 
         $log = [];
@@ -107,7 +107,7 @@ class SuperadminLogActivity
         SuperadminLogActivityModel::create($log);
     }
 
-    public static function SuperadminShopDeleteLog($subject)
+    public static function SuperAdminShopDeleteLog($subject)
     {
 
         $log = [];
@@ -128,7 +128,7 @@ class SuperadminLogActivity
     // end of shop
 
     // admin
-    public static function SuperadminAdminCreateLog($subject)
+    public static function SuperAdminAdminCreateLog($subject)
     {
 
         $log = [];
@@ -147,7 +147,7 @@ class SuperadminLogActivity
         SuperadminLogActivityModel::create($log);
     }
 
-    public static function SuperadminAdminEditLog($subject)
+    public static function SuperAdminAdminEditLog($subject)
     {
         $log = [];
         $log['name'] = Auth::guard('super_admin')->user()->name;

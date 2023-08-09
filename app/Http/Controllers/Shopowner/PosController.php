@@ -1,46 +1,46 @@
 <?php
 
-namespace App\Http\Controllers\Shopowner;
+namespace App\Http\Controllers\ShopOwner;
 
-use App\PosItemPurchase;
-use App\PosPurchaseSale;
-use App\PosStaff;
-use App\State;
-use App\Item;
-use App\PosDiamond;
-use App\Category;
-use App\PosGoldSale;
-use App\PosPurchase;
-use App\PosSupplier;
-use App\PosKyoutSale;
-use App\Shopowner;
-use App\PosQuality;
-use App\PosPlatinumSale;
-use App\PosKyoutPurchase;
-use App\PosWhiteGoldSale;
-use App\PosAssignGoldPrice;
-use App\PosPlatinumPurchase;
-use App\PosWhiteGoldPurchase;
-use App\PosAssignPlatinumPrice;
+use App\Models\PosItemPurchase;
+use App\Models\PosPurchaseSale;
+use App\Models\PosStaff;
+use App\Models\State;
+use App\Models\Item;
+use App\Models\PosDiamond;
+use App\Models\Category;
+use App\Models\PosGoldSale;
+use App\Models\PosPurchase;
+use App\Models\PosSupplier;
+use App\Models\PosKyoutSale;
+use App\Models\Shopowner;
+use App\Models\PosQuality;
+use App\Models\PosPlatinumSale;
+use App\Models\PosKyoutPurchase;
+use App\Models\PosWhiteGoldSale;
+use App\Models\PosAssignGoldPrice;
+use App\Models\PosPlatinumPurchase;
+use App\Models\PosWhiteGoldPurchase;
+use App\Models\PosAssignPlatinumPrice;
 use Illuminate\Http\Request;
-use App\PosAssignWhiteGoldPrice;
-use App\PosCounterShop;
+use App\Models\PosAssignWhiteGoldPrice;
+use App\Models\PosCounterShop;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
-use App\Http\Controllers\traid\ykimage;
+use App\Http\Controllers\Trait\YKImage;
 use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\traid\UserRole;
+use App\Http\Controllers\Trait\UserRole;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\traid\MultipleItem;
-use App\PosCreditList;
-use App\PosReturnList;
+use App\Http\Controllers\Trait\MultipleItem;
+use App\Models\PosCreditList;
+use App\Models\PosReturnList;
 use Illuminate\Support\Facades\Storage;
 
 class PosController extends Controller
 {
-    use ykimage, UserRole, MultipleItem;
+    use YKImage, UserRole, MultipleItem;
 
     public $err_data = [];
 
@@ -443,7 +443,7 @@ class PosController extends Controller
             $result = $query->where('category_id',$data['catid']);
         }
         $results = $query->where('shop_owner_id',$this->getshopid())->with('supplier')->get();
-        
+
         return response()->json([
             'data' => $results,
         ]);
@@ -527,7 +527,7 @@ class PosController extends Controller
             $count = PosSupplier::find($request->supplier_id);
             $count->count += 1;
             $count->save();
-            
+
             if($request->shwe_item == 1){
                 if($request->hasfile('photo')){
                     if(env('USE_DO') != 'true'){
@@ -538,7 +538,7 @@ class PosController extends Controller
                         Storage::disk('digitalocean')->put('/prod/items/'.$filename,file_get_contents($image));
                     }
                 }
-              
+
                 if($request->inlineCheckbox == 'option1'){$gender = 'Women';}
                 if($request->inlineCheckbox == 'option2'){$gender = 'Men';}
                 if($request->inlineCheckbox == 'option3'){$gender = 'Unisex';}
@@ -840,7 +840,7 @@ class PosController extends Controller
             $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id',$this->getshopid())->first();
             return view('backend.pos.assign_gold_price',['shopowner'=>$shopowner,'assign_gold_price'=>$assign_gold_price]);
         }
-        
+
     }
 
     public function getPhone(Request $request){
@@ -866,7 +866,7 @@ class PosController extends Controller
                 }else{
                     Storage::disk('digitalocean')->put('/prod/pos/kyoutpurchase_photo/'.$filename,file_get_contents($image));
                 }
-              
+
              }else{
                  $filename = 'default.png';
              }
@@ -940,7 +940,7 @@ class PosController extends Controller
                 $bes = '';
              foreach($request->bes as $be){
                 $bes .= $be.',';
-             } 
+             }
                 $purchase->bes = $bes;
                 $purchase->save();
              }
@@ -959,7 +959,7 @@ class PosController extends Controller
                         Storage::disk('digitalocean')->put('/prod/items/'.$filename,file_get_contents($image));
                     }
                 }
-           
+
                 if($request->inlineCheckbox == 'option1'){$gender = 'Women';}
                 if($request->inlineCheckbox == 'option2'){$gender = 'Men';}
                 if($request->inlineCheckbox == 'option3'){$gender = 'Unisex';}
@@ -1102,7 +1102,7 @@ class PosController extends Controller
                 $bes = '';
              foreach($request->bes as $be){
                 $bes .= $be.',';
-             } 
+             }
                 $purchase->bes = $bes;
                 $purchase->save();
              }
@@ -1186,7 +1186,7 @@ class PosController extends Controller
             $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id',$this->getshopid())->first();
             return view('backend.pos.assign_platinum_price',['shopowner'=>$shopowner,'assign_gold_price'=>$assign_gold_price]);
         }
-       
+
     }
     public function createPtmPurchase(){
         $shopowner = Shopowner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
@@ -1283,7 +1283,7 @@ class PosController extends Controller
                         Storage::disk('digitalocean')->put('/prod/items/'.$filename,file_get_contents($image));
                     }
                 }
-               
+
                 if($request->inlineCheckbox == 'option1'){$gender = 'Women';}
                 if($request->inlineCheckbox == 'option2'){$gender = 'Men';}
                 if($request->inlineCheckbox == 'option3'){$gender = 'Unisex';}
@@ -1387,7 +1387,7 @@ class PosController extends Controller
                     Storage::disk('digitalocean')->put('/prod/items/'.$filename,file_get_contents($image));
                 }
             }
-           
+
             if($request->inlineCheckbox == 'option1'){$gender = 'Women';}
             if($request->inlineCheckbox == 'option2'){$gender = 'Men';}
             if($request->inlineCheckbox == 'option3'){$gender = 'Unisex';}
@@ -1444,7 +1444,7 @@ class PosController extends Controller
             $result = $query->where('category_id',$data['catid']);
         }
         $results = $query->where('shop_owner_id',$this->getshopid())->get();
-    
+
         return response()->json([
             'data' => $results,
         ]);
@@ -1479,7 +1479,7 @@ class PosController extends Controller
             $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id',$this->getshopid())->first();
             return view('backend.pos.assign_whitegold_price',['shopowner'=>$shopowner,'assign_gold_price'=>$assign_gold_price]);
         }
-        
+
     }
     public function createWgPurchase(){
         $shopowner = Shopowner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
@@ -1576,7 +1576,7 @@ class PosController extends Controller
                         Storage::disk('digitalocean')->put('/prod/items/'.$filename,file_get_contents($image));
                     }
                 }
-                
+
                 if($request->inlineCheckbox == 'option1'){$gender = 'Women';}
                 if($request->inlineCheckbox == 'option2'){$gender = 'Men';}
                 if($request->inlineCheckbox == 'option3'){$gender = 'Unisex';}
@@ -1681,7 +1681,7 @@ class PosController extends Controller
                     Storage::disk('digitalocean')->put('/prod/items/'.$filename,file_get_contents($image));
                 }
             }
-            
+
             if($request->inlineCheckbox == 'option1'){$gender = 'Women';}
             if($request->inlineCheckbox == 'option2'){$gender = 'Men';}
             if($request->inlineCheckbox == 'option3'){$gender = 'Unisex';}
@@ -1738,7 +1738,7 @@ class PosController extends Controller
             $result = $query->where('category_id',$data['catid']);
         }
         $results = $query->where('shop_owner_id',$this->getshopid())->get();
-    
+
         return response()->json([
             'data' => $results,
         ]);
@@ -1765,7 +1765,7 @@ class PosController extends Controller
     $quals = PosQuality::all();
     $counters = PosCounterShop::where('shop_owner_id',$this->getshopid())->get();
     $cats = Category::all();
- 
+
     return view('backend.pos.sale_gold_list',['shopowner'=>$shopowner,'counters'=>$counters,'purchases'=>$purchases,'sups'=>$suppliers,'quals'=>$quals,'cats'=>$cats]);
     }
     public function goldsaletypeFilter(Request $request){
@@ -1920,7 +1920,7 @@ class PosController extends Controller
         $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id',$this->getshopid())->first();
         return view('backend.pos.assign_gold_price',['shopowner'=>$shopowner,'assign_gold_price'=>$assign_gold_price]);
     }
-    
+
     }
     public function getSaleValues(Request $request){
         $purchase = PosPurchase::where('id',$request->purchase_id)->where('shop_owner_id',$this->getshopid())->with('quality')->with('category')->first();
@@ -2158,7 +2158,7 @@ class PosController extends Controller
         $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id',$this->getshopid())->first();
         return view('backend.pos.assign_gold_price',['shopowner'=>$shopowner,'assign_gold_price'=>$assign_gold_price]);
     }
-    
+
     }
     public function getSaleKValues(Request $request){
         $purchase = PosKyoutPurchase::where('id',$request->purchase_id)->where('shop_owner_id',$this->getshopid())->with('quality')->with('category')->first();
@@ -2200,7 +2200,7 @@ class PosController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-        
+
         try{
         $kyout_sale = PosKyoutSale::create([
             'date' => $request->date,
@@ -2560,7 +2560,7 @@ class PosController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-    
+
 
         try{
         $gold_sale = PosWhiteGoldSale::create([

@@ -4,12 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 
 class Buyer extends Model
 {
     use Notifiable;
-    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -17,7 +15,7 @@ class Buyer extends Model
      * @var array
      */
     protected $fillable = [
-        'name','email','phno','address','password','active'
+        'name', 'email', 'phno', 'address', 'password', 'active',
     ];
 
     /**

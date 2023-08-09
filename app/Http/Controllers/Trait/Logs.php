@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\traid;
+namespace App\Http\Controllers\Trait;
 
 use App\Models\Bots;
 use App\Models\frontuserlogs;
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
 
-trait logs
+trait Logs
 {
     //for logs
     use ykcheckbot;

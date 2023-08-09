@@ -9,9 +9,9 @@ class MultiplePriceLogs extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-        'shop_id','item_id','user_name','user_role',
-        'name','product_code', 'old_price','new_price',
-        'min_price','max_price','new_min_price','new_max_price','user_id','deleted_at'
+        'shop_id', 'item_id', 'user_name', 'user_role',
+        'name', 'product_code', 'old_price', 'new_price',
+        'min_price', 'max_price', 'new_min_price', 'new_max_price', 'user_id', 'deleted_at',
     ];
 
     protected $casts = [

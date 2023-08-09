@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\Shopowner;
+namespace App\Http\Controllers\ShopOwner;
 
 use App\Services\ImageService;
-use App\Event;
+use App\Models\Event;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\traid\ykimage;
+use App\Http\Controllers\Trait\YKImage;
 use App\Http\Requests\ShopOwner\StoreEventRequest;
 use App\Http\Requests\ShopOwner\UpdateEventRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use App\Http\Controllers\traid\ShopTrait;
+use App\Http\Controllers\Trait\ShopTrait;
 use Illuminate\Support\Str;
 
 class EventController extends Controller
 {
-    use ykimage;
+    use YKImage;
     use ShopTrait;
     private $imageService;
 

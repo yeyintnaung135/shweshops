@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Item;
-use App\Models\Manager;
-use App\Models\Shopowner;
-use Carbon\Carbon;
-use App\Models\MainCategory;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\traid\category;
-use App\Http\Controllers\traid\similarlogic;
-use App\Http\Controllers\traid\foryoulogic;
 use App\Http\Controllers\Controller;
-
+use App\Http\Controllers\traid\category;
+use App\Http\Controllers\traid\foryoulogic;
+use App\Http\Controllers\traid\similarlogic;
+use App\Models\Item;
+use App\Models\MainCategory;
+use App\Models\Shopowner;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class FrontforcatController extends Controller
 {
 
-    use similarlogic,foryoulogic;
+    use similarlogic, foryoulogic;
     use category;
 
     public function __construct()
@@ -30,83 +25,71 @@ class FrontforcatController extends Controller
 //        $this->middleware('user_temp_token');
     }
 
+    public function seeall_foryou()
+    {
 
- 
+        $mainCategory_id = 'all';
+        $category_id = 'all';
+        $check_mainCat = [];
+        $maincat_list = MainCategory::select('id', 'name')->distinct()->get();
 
-    public function seeall_foryou(){
+        $data = Item::limit(10)->get();
 
-      $mainCategory_id = 'all'; 
-      $category_id = 'all';
-      $check_mainCat = [];
-      $maincat_list = MainCategory::select('id','name')->distinct()->get();
-      
+        //for category list
+        $cat_list = $this->getallcatlistbycount();
+        //for category list
 
-      
+        $all_shop_id = Shopowner::where('id', '!=', 1)->orderBy('shop_name', 'asc')->get();
+        // $all_shop_id = Shopowner::where('id', '!=', 1)->orderBy('created_at', 'desc')->get();
 
-      $data = Item::limit(10)->get();
+        if ($this->caculateforyouforcurrentuser()[1] == 'yes') {
+            $is_foryou_random = 'yes';
+            return view('front.seeall_foryou', ['is_foryou_random' => $is_foryou_random, 'data' => $data, 'cat_list' => $cat_list, 'maincat_list' => $maincat_list, 'shop_ids' => $all_shop_id]);
 
-      //for category list
-      $cat_list = $this->getallcatlistbycount();
-      //for category list
+        } else {
+            $is_foryou_random = 'no';
+            $getitemdatafromtable = $this->getitemdatafromtable();
+            $fspricemin = $this->foryoupricelogic($getitemdatafromtable)['min'];
+            $fspricemax = $this->foryoupricelogic($getitemdatafromtable)['max'];
+            $fsmaincat = $this->foryoumaincat()->pluck('main_category')[0];
+            $fsmaincat = Maincategory::where('id', $fsmaincat)->pluck('name')[0];
 
-      
-      $all_shop_id = Shopowner::where('id', '!=', 1)->orderBy('shop_name', 'asc')->get();
-      // $all_shop_id = Shopowner::where('id', '!=', 1)->orderBy('created_at', 'desc')->get();
+            $fsshoplist = $this->getshopsforforyou()->pluck('shop_id');
 
-      if($this->caculateforyouforcurrentuser()[1]=='yes'){
-        $is_foryou_random='yes';
-        return view('front.seeall_foryou',['is_foryou_random'=>$is_foryou_random,'data'=>$data,'cat_list'=>$cat_list,'maincat_list'=>$maincat_list,'shop_ids'=>$all_shop_id]);
+            $fscatlist = $this->foryoucatlogic()->pluck('category_id');
 
-      }else{
-        $is_foryou_random='no';
-        $getitemdatafromtable=$this->getitemdatafromtable();
-        $fspricemin=$this->foryoupricelogic($getitemdatafromtable)['min'];
-        $fspricemax=$this->foryoupricelogic($getitemdatafromtable)['max'];    
-        $fsmaincat=$this->foryoumaincat()->pluck('main_category')[0]; 
-        $fsmaincat=Maincategory::where('id',$fsmaincat)->pluck('name')[0];   
-    
-        $fsshoplist=$this->getshopsforforyou()->pluck('shop_id');
-    
-        $fscatlist=$this->foryoucatlogic()->pluck('category_id');
-    
-        $fsgender=$this->getgender()->pluck('gender')[0];
-    
-          
-    
-    
-    
-    
-          return view('front.seeall_foryou',['is_foryou_random'=>$is_foryou_random,'fsmaincat'=>$fsmaincat,'data'=>$data,'cat_list'=>$cat_list,'maincat_list'=>$maincat_list,'shop_ids'=>$all_shop_id,'fspricemin'=>$fspricemin,'fspricemax'=>$fspricemax,'fsshoplist'=>$fsshoplist,'fscatlist'=>$fscatlist,'fsgender'=>$fsgender]);
-    
+            $fsgender = $this->getgender()->pluck('gender')[0];
 
-      }
-      
+            return view('front.seeall_foryou', ['is_foryou_random' => $is_foryou_random, 'fsmaincat' => $fsmaincat, 'data' => $data, 'cat_list' => $cat_list, 'maincat_list' => $maincat_list, 'shop_ids' => $all_shop_id, 'fspricemin' => $fspricemin, 'fspricemax' => $fspricemax, 'fsshoplist' => $fsshoplist, 'fscatlist' => $fscatlist, 'fsgender' => $fsgender]);
+
+        }
+
     }
 
     public function see_all($id)
     {
-      // return 'dd';
-      
-        $mainCategory_id = 'all'; 
+        // return 'dd';
+
+        $mainCategory_id = 'all';
         $category_id = 'all';
         $check_mainCat = [];
-        $mainCat_list = MainCategory::select('id','name')->distinct()->get();
-        
+        $mainCat_list = MainCategory::select('id', 'name')->distinct()->get();
+
         //for mainCategory list
-        foreach($mainCat_list as $mc){
-          array_push($check_mainCat, $mc['name']);
+        foreach ($mainCat_list as $mc) {
+            array_push($check_mainCat, $mc['name']);
         }
-        
+
         //Check if $id is mainCategory_id or category_id
-        if(in_array($id,$check_mainCat)){
-          $mainCategory_id = $id; 
+        if (in_array($id, $check_mainCat)) {
+            $mainCategory_id = $id;
         } else {
-          $category_id = $id;
+            $category_id = $id;
         }
-        
+
         $shop_ids = DB::table('items')->select('shop_id')->where('category_id', $id)->distinct()->get();
         $get_by_shopid = [];
-      //loop and retrive data by shop id greater than last 10 day
+        //loop and retrive data by shop id greater than last 10 day
         $count = 0;
         foreach ($shop_ids as $ni) {
             if ($count > 19) {
@@ -138,7 +121,7 @@ class FrontforcatController extends Controller
     public function search_items()
     {
 
-        $mainCat_list = MainCategory::select('id','name')->distinct()->get();
+        $mainCat_list = MainCategory::select('id', 'name')->distinct()->get();
         $shop_ids = DB::table('items')->select('shop_id')->distinct()->get();
         $get_by_shopid = [];
 //loop and retrive data by shop id greater than last 10 day
@@ -155,7 +138,6 @@ class FrontforcatController extends Controller
             }
 
         }
-
 
         //randomize result
         $get_by_shopid = collect($get_by_shopid)->shuffle()->values();
@@ -191,11 +173,11 @@ class FrontforcatController extends Controller
 
         //create cache key
         $cache_key = ($request->filtertype['ini_checked']) ? 'ini' : '' . $forkey . 'cat_id'
-          . str_replace(' ', '', implode("_", $request->filtertype['cat_id'])) . 'price_range' . $request->filtertype['price_range']
-          . 'byshop' . str_replace(' ', '', implode("_", $request->filtertype['byshop']))
-          . 'sort' . $request->filtertype['sort'] . 'gender' . $request->filtertype['gender']
-          . 'gems' . str_replace(' ', '', implode("_", $request->filtertype['gems']))
-          . 'goldcolour' . $request->filtertype['gold_colour'] . 'goldquality' . $request->filtertype['selected_product_quality'];
+        . str_replace(' ', '', implode("_", $request->filtertype['cat_id'])) . 'price_range' . $request->filtertype['price_range']
+        . 'byshop' . str_replace(' ', '', implode("_", $request->filtertype['byshop']))
+        . 'sort' . $request->filtertype['sort'] . 'gender' . $request->filtertype['gender']
+        . 'gems' . str_replace(' ', '', implode("_", $request->filtertype['gems']))
+        . 'goldcolour' . $request->filtertype['gold_colour'] . 'goldquality' . $request->filtertype['selected_product_quality'];
         //create cache key
 
         //to check all data id from client payload
@@ -218,12 +200,11 @@ class FrontforcatController extends Controller
 
         //for filters
 
-        if(!$request->filtertype['cat_id']) {
-          $cat_id = [];
+        if (!$request->filtertype['cat_id']) {
+            $cat_id = [];
         } else {
-          $cat_id = $request->filtertype['cat_id'];
+            $cat_id = $request->filtertype['cat_id'];
         }
-
 
         if ($request->filtertype['price_range'] == 'all') {
             $price_from = 0;
@@ -237,7 +218,7 @@ class FrontforcatController extends Controller
         // $get_shopname_id = Shopowner::where('shop_name', $request->filtertype['byshop'])->first();
         $get_shopname_id = Shopowner::whereIn('id', $request->filtertype['byshop'])->orWhere('shop_name', $request->filtertype['byshop'])->get();
         if ($request->filtertype['byshop'][0] == 'all') {
-          $shops = 'all';
+            $shops = 'all';
             if ($request->filtertype['additional'] == 'no') {
                 $tmp_shop_id = 'items.shop_id > 0';
             } else {
@@ -245,7 +226,7 @@ class FrontforcatController extends Controller
             }
 
         } else {
-          $shops = '';
+            $shops = '';
             $tmp_shop_id = [];
             foreach ($get_shopname_id as $gsi) {
                 $tmp_shop_id[] = $gsi->id;
@@ -286,71 +267,68 @@ class FrontforcatController extends Controller
             $tmp_order = 'discount.percent DESC';
         }
 
-        if(!$request->filtertype['gems']) {
-          $gems = [];
+        if (!$request->filtertype['gems']) {
+            $gems = [];
         } else {
-          $gems = $request->filtertype['gems'];
+            $gems = $request->filtertype['gems'];
         }
 
-        if($request->filtertype['gender'] == 'all') {
-          $gender = '%';
+        if ($request->filtertype['gender'] == 'all') {
+            $gender = '%';
         } else {
-          $gender = $request->filtertype['gender'] . '%';
+            $gender = $request->filtertype['gender'] . '%';
         }
-        if($request->filtertype['selected_product_quality'] == 'All') {
-          $selected_product_quality = '%';
+        if ($request->filtertype['selected_product_quality'] == 'All') {
+            $selected_product_quality = '%';
         } else {
-          $selected_product_quality = $request->filtertype['selected_product_quality'] . '%';
-        }
-
-        if($request->filtertype['gold_colour'] == 'all') {
-          $gold_colour = '%';
-        } else {
-          $gold_colour = $request->filtertype['gold_colour'];
+            $selected_product_quality = $request->filtertype['selected_product_quality'] . '%';
         }
 
-
+        if ($request->filtertype['gold_colour'] == 'all') {
+            $gold_colour = '%';
+        } else {
+            $gold_colour = $request->filtertype['gold_colour'];
+        }
 
         //for filters
 
         // To fix
 
         if ($request->filtertype['typesearch'] != "") {
-          $checkcat = \App\Category::whereRaw("mm_name REGEXP '(" .  $request->filtertype['typesearch']. ")'");
-          if ($checkcat->count() > 0) {
-              $checkcat = $checkcat->first()->name;
-          } else {
-            $checkcat = $request->filtertype['typesearch'];
-          }
+            $checkcat = \App\Category::whereRaw("mm_name REGEXP '(" . $request->filtertype['typesearch'] . ")'");
+            if ($checkcat->count() > 0) {
+                $checkcat = $checkcat->first()->name;
+            } else {
+                $checkcat = $request->filtertype['typesearch'];
+            }
 
-          $typesearchresult = Item::select('items.id')
-            ->leftjoin('tagging_tagged', 'items.id', '=', 'tagging_tagged.taggable_id')
-            ->leftjoin('for_gems_and_diamonds', 'items.id', '=', 'for_gems_and_diamonds.item_id')
-            ->leftjoin('main_category', 'items.main_category', '=', 'main_category.id')
-            ->where(function ($query) use ($request, $checkcat){
-              $query->where('items.name', 'like', '%' . $request->filtertype['typesearch'] . '%')
-                    ->orWhere('items.name', 'like', '%' . $request->filtertype['typesearch'] . '%')
-                    ->orwhereRaw("tagging_tagged.tag_name REGEXP '(" . $request->filtertype['typesearch'] . ")'")
-                    ->orWhere('items.category_id', 'like', $checkcat)
-                    ->orWhere('items.gold_quality', 'like', $request->filtertype['typesearch'] . '%')
+            $typesearchresult = Item::select('items.id')
+                ->leftjoin('tagging_tagged', 'items.id', '=', 'tagging_tagged.taggable_id')
+                ->leftjoin('for_gems_and_diamonds', 'items.id', '=', 'for_gems_and_diamonds.item_id')
+                ->leftjoin('main_category', 'items.main_category', '=', 'main_category.id')
+                ->where(function ($query) use ($request, $checkcat) {
+                    $query->where('items.name', 'like', '%' . $request->filtertype['typesearch'] . '%')
+                        ->orWhere('items.name', 'like', '%' . $request->filtertype['typesearch'] . '%')
+                        ->orwhereRaw("tagging_tagged.tag_name REGEXP '(" . $request->filtertype['typesearch'] . ")'")
+                        ->orWhere('items.category_id', 'like', $checkcat)
+                        ->orWhere('items.gold_quality', 'like', $request->filtertype['typesearch'] . '%')
                     // ->orWhere('items.gold_colour', 'like', $request->filtertype['typesearch'] . '%')
-                    ->orwhere('main_category.name', 'like', $request->filtertype['typesearch'] . '%')
-                    ->orWhere('items.gender', 'like', $request->filtertype['typesearch'] . '%')
-                    ->orWhere('items.product_code', 'like', '%' . $request->filtertype['typesearch'] . '%')
-                    ->orWhere('items.product_code', 'like', '%' . $request->filtertype['typesearch'] . '%');
-            })
+                        ->orwhere('main_category.name', 'like', $request->filtertype['typesearch'] . '%')
+                        ->orWhere('items.gender', 'like', $request->filtertype['typesearch'] . '%')
+                        ->orWhere('items.product_code', 'like', '%' . $request->filtertype['typesearch'] . '%')
+                        ->orWhere('items.product_code', 'like', '%' . $request->filtertype['typesearch'] . '%');
+                })
             // ->toSql();
-            ->pluck('id');
+                ->pluck('id');
 
-          $tostring=implode(",",$typesearchresult->toArray());
-          $typesearchquery='items.id IN ('.$tostring.')';
-        }else{
-            $typesearchquery='items.id != 0';
+            $tostring = implode(",", $typesearchresult->toArray());
+            $typesearchquery = 'items.id IN (' . $tostring . ')';
+        } else {
+            $typesearchquery = 'items.id != 0';
         }
 
-
         if ($request->filtertype['typesearch'] != "" && empty($tostring)) {
-          return response()->json([[], 0, 'empty_on_server' => 1, 'search_key' => []]);
+            return response()->json([[], 0, 'empty_on_server' => 1, 'search_key' => []]);
         }
 
         $tmp_data = Item::select('items.*')
@@ -358,12 +336,12 @@ class FrontforcatController extends Controller
             ->leftjoin('for_gems_and_diamonds', 'items.id', '=', 'for_gems_and_diamonds.item_id')
             ->leftjoin('main_category', 'items.main_category', '=', 'main_category.id')
             ->whereRaw($typesearchquery)
-            ->where(function($query) use ($gems) {
-              if(!empty($gems)){
-                foreach ($gems as $gem) {
-                  $query->orwhereRaw("for_gems_and_diamonds.gems REGEXP '" . $gem . "'");
+            ->where(function ($query) use ($gems) {
+                if (!empty($gems)) {
+                    foreach ($gems as $gem) {
+                        $query->orwhereRaw("for_gems_and_diamonds.gems REGEXP '" . $gem . "'");
+                    }
                 }
-              }
             })
             ->where(function ($query) use ($similar) {
                 $query->whereRaw($similar);
@@ -371,33 +349,33 @@ class FrontforcatController extends Controller
             ->where('items.gender', 'like', $gender)
             ->where('main_category.name', 'like', $gold_colour)
             ->where('items.gold_quality', 'like', $selected_product_quality)
-            // ->where('items.main_category', 'like' , $)
-            ->where(function($query) use ($cat_id) {
-              if(!empty($cat_id)){
-                foreach ($cat_id as $ci) {
-                  $query->orWhere("items.category_id", 'like', $ci);
+        // ->where('items.main_category', 'like' , $)
+            ->where(function ($query) use ($cat_id) {
+                if (!empty($cat_id)) {
+                    foreach ($cat_id as $ci) {
+                        $query->orWhere("items.category_id", 'like', $ci);
+                    }
                 }
-              }
             })
             ->where(function ($query) use ($discountquery) {
-              $query->whereRaw($discountquery);
+                $query->whereRaw($discountquery);
             })
             ->where(function ($query) use ($tmp_shop_id, $shops) {
-              if($shops == 'all') {
-                $query->whereRaw($tmp_shop_id);
-              } else {
-                $query->whereIn('items.shop_id', $tmp_shop_id);
-              }
+                if ($shops == 'all') {
+                    $query->whereRaw($tmp_shop_id);
+                } else {
+                    $query->whereIn('items.shop_id', $tmp_shop_id);
+                }
             })
             ->where(function ($query) use ($price_to, $price_from) {
                 $query->where('items.price', '!=', 0)
-                      ->whereBetween('items.price', [$price_from, $price_to])
-                      ->orWhere(function ($query) use ($price_to, $price_from) {
+                    ->whereBetween('items.price', [$price_from, $price_to])
+                    ->orWhere(function ($query) use ($price_to, $price_from) {
                         $query->where([['items.min_price', '>', $price_from], ['items.max_price', '<', $price_to]]);
-                      });
+                    });
             })->orderByRaw($tmp_order)
             ->groupBy('items.id')
-            // ->toSql();
+        // ->toSql();
             ->skip($request->filtertype['limit'])
             ->take('20')->get();
 
@@ -415,7 +393,6 @@ class FrontforcatController extends Controller
         } else {
             $random = $tmp_data;
         }
-
 
         return response()->json([$tmp_data, 0, 'empty_on_server' => $empty_on_server, 'search_key' => $cache_key]);
     }
