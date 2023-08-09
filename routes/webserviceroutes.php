@@ -1,6 +1,6 @@
 <?php
 Route::group(['prefix' => 'webservice', 'as' => 'backside.super_admin.'], function () {
-
+//f
     Route::post('storewspushapi', 'WebserviceController@storewspushapi');
     Route::get('checkhavefromserver', 'WebserviceController@checkhavefromserver');
     Route::get('checkhavefromserverfirebase', 'WebserviceController@checkhavefromserverfirebase');
