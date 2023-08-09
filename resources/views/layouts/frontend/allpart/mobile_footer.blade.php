@@ -44,7 +44,7 @@
             </a>
         </div>
 
-    @elseif(isset(Auth::guard('shop_owner')->user()->id))
+    @elseif(isset(Auth::guard('shop_owners_and_staffs')->user()->id))
         <div class="mobile-account">
             <a href="{{url('backside/shop_owner/detail')}}">
                 <i class="zh-icon fa-solid fa-user-gear" style="color:#666666 !important;"></i>
@@ -52,7 +52,7 @@
             </a>
         </div>
 
-    @elseif(isset(Auth::guard('shop_role')->user()->id))
+    @elseif(isset(Auth::guard('shop_owners_and_staffs')->user()->id))
         <div class="mobile-account">
             <a href="{{url('backside/shop_owner/detail')}}" title="Logout">
                 <i class="zh-icon fa-solid fa-user-gear" style="color:#666666 !important;"></i>
@@ -87,17 +87,17 @@
         var userID = {!! (Auth::guard('web')->user()) !!};
         let userType = "Users"
         console.log('userID',userID)
-        @elseif(isset(Auth::guard('shop_owner')->user()->id))
-        var userID = {!! (Auth::guard('shop_owner')->user()) !!};
+        @elseif(isset(Auth::guard('shop_owners_and_staffs')->user()->id))
+        var userID = {!! (Auth::guard('shop_owners_and_staffs')->user()) !!};
         let userType = "Shop_owners";
         console.log('userID',userID);
-        @elseif(isset(Auth::guard('shop_role')->user()->id))
-        var userID = {!! (Auth::guard('shop_role')->user()) !!};
+        @elseif(isset(Auth::guard('shop_owners_and_staffs')->user()->id))
+        var userID = {!! (Auth::guard('shop_owners_and_staffs')->user()) !!};
         let userType = "Manager"
         console.log('userID',userID)
         @endif
 
-        @if (isset(Auth::guard('web')->user()->id) || isset(Auth::guard('shop_owner')->user()->id) || isset(Auth::guard('shop_role')->user()->id))
+        @if (isset(Auth::guard('web')->user()->id) || isset(Auth::guard('shop_owners_and_staffs')->user()->id) || isset(Auth::guard('shop_owners_and_staffs')->user()->id))
         //remove dup from array
         Array.prototype.unique = function() {
             var a = this.concat();
@@ -194,7 +194,7 @@
         }
 
         function postSyncSelectionID(){
-            @if (isset(Auth::guard('web')->user()->id) || isset(Auth::guard('shop_owner')->user()->id) || isset(Auth::guard('shop_role')->user()->id))
+            @if (isset(Auth::guard('web')->user()->id) || isset(Auth::guard('shop_owners_and_staffs')->user()->id))
             $.ajax({
                 url: "/addtocart/update",
                 type:"post",
@@ -216,7 +216,7 @@
             @endif
         }
         function postSyncFavID(){
-            @if (isset(Auth::guard('web')->user()->id) || isset(Auth::guard('shop_owner')->user()->id) || isset(Auth::guard('shop_role')->user()->id))
+            @if (isset(Auth::guard('web')->user()->id) || isset(Auth::guard('shop_owners_and_staffs')->user()->id))
             $.ajax({
 
                 url: "/myfav/update",
@@ -283,7 +283,7 @@
             return
         }
         $( document ).ready(function() {
-            @if (isset(Auth::guard('web')->user()->id) || isset(Auth::guard('shop_owner')->user()->id) || isset(Auth::guard('shop_role')->user()->id))
+            @if (isset(Auth::guard('web')->user()->id) || isset(Auth::guard('shop_owners_and_staffs')->user()->id))
             syncLocalOnlineData();
             getSyncFavID();
             getSyncSelectionID();

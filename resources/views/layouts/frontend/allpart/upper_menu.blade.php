@@ -102,7 +102,7 @@
                         </a>
                     </div> --}}
 
-                @elseif(isset(Auth::guard('shop_owner')->user()->id))
+                @elseif(isset(Auth::guard('shop_owners_and_staffs')->user()->id))
                     <div class="sop-upper-nav-text-l px-3">
                         <a href="" data-toggle="modal" data-target="#notiModal">
                             <i class="far fa-bell  fa-lg" style="color:#F7B538 !important;" id="mobileFootNoti"></i>
@@ -126,7 +126,7 @@
 
                         </a>
                     </div>
-                @elseif(isset(Auth::guard('shop_role')->user()->id))
+                @elseif(isset(Auth::guard('shop_owners_and_staffs')->user()->id))
                     <div class="sop-upper-nav-text-l px-3">
                         <a href="" data-toggle="modal" data-target="#notiModal">
                             <i class="far fa-bell  fa-lg" style="color:#F7B538 !important;" id="mobileFootNoti"></i>

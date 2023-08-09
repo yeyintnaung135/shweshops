@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Trait;
 use App\Models\Bots;
 use App\Models\frontuserlogs;
 use App\Models\Guestoruserid;
-use App\Http\Controllers\traid\ykcheckbot;
+use App\Http\Controllers\Trait\ykcheckbot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -59,7 +59,7 @@ trait Logs
 
         $useragent = \Illuminate\Support\Facades\Request::userAgent();
         if ($this->isbotdetectbyyk($useragent) === 'no') {
-            if (!Auth::guard('super_admin')->check() and !Auth::guard('shop_owner')->check()) {
+            if (!Auth::guard('super_admin')->check() and !Auth::guard('shop_owners_and_staffs')->check()) {
 
                 if (Session::has('guest_id')) {
                     $tableidof_userorguestid = $this->getidoftable_userorguestid();

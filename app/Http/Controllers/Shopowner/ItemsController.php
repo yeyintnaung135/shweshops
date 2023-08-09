@@ -53,20 +53,16 @@ class ItemsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:shop_owner,shop_role');
+        $this->middleware('auth:shop_owners_and_staffs');
     }
 
     public function index()
     {
-        if (Auth::guard("shop_role")->check()) {
-            $this->role('shop_role');
-            $items = Item::where('shop_id', $this->role_shop_id)->orderBy('created_at', 'desc')->get();
-        } else {
-            $this->role('shop_owner');
-            $items = Item::where('shop_id', $this->role)->orderBy('created_at', 'desc')->get();
-        }
+      
+            $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+     
 
-        return view('backend.shopowner.item.list', ['items' => $items, 'shopowner' => $this->shop_owner]);
+        return view('backend.shopowner.item.list', ['items' => $items, 'shopowner' => $this->current_shop_data()]);
     }
 
     public function updateexcel()
@@ -560,14 +556,9 @@ class ItemsController extends Controller
             $searchByTodate = Carbon::now();
         }
 
-        $shop_id = 1;
+        $shop_id = $this->get_shopid();
 
-        if (Auth::guard('shop_owner')->check()) {
-            $shop_id = Auth::guard('shop_owner')->user()->id;
-
-        } else {
-            $shop_id = Auth::guard('shop_role')->user()->shop_id;
-        }
+       
 
 
         $totalRecords = Item::select('count(*) as allcount')
@@ -1700,7 +1691,7 @@ class ItemsController extends Controller
         $plus_price = $request->price;
         foreach ($request->id as $id) {
             $item = Item::findOrfail($id);
-            $shop_id = $this->getshopid();
+            $shop_id = $this->get_shopid();
 
             \MultiplePriceLogs:: MultipleMinusPriceLogs($item, $plus_price, $shop_id);
             $this->minus($item, $request);
@@ -1722,7 +1713,7 @@ class ItemsController extends Controller
         $old_percent = $request;
         foreach ($request->id as $id) {
             $item = Item::findOrfail($id);
-            $shop_id = $this->getshopid();
+            $shop_id = $this->get_shopid();
 
             // return dd($item);
             \MultipleDamageLogs:: MultipleDamageLogs($item, $old_percent, $shop_id);
@@ -1747,7 +1738,7 @@ class ItemsController extends Controller
         $plus_price = $request->price;
         foreach ($request->id as $id) {
             $item = Item::findOrfail($id);
-            $shop_id = $this->getshopid();
+            $shop_id = $this->get_shopid();
 
             \MultiplePriceLogs:: MultiplePlusPriceLogs($item, $plus_price, $shop_id);
             $this->plus($item, $request);

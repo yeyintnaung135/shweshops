@@ -6,22 +6,10 @@
         </li>
         <li class="nav-item d-sm-inline-block">
             <a class="nav-link" href="{{ url('backside/shop_owner/shop') }}">Hello
-                @auth('shop_owner')
-                    {{ \Illuminate\Support\Str::limit(auth('shop_owner')->user()->name, 10, '..') }}
-                    <span>(Owner)</span>
-                @else
-                    @auth('shop_role')
-                        @if(auth('shop_role')->user()->role_id == 1)
-                            {{ \Illuminate\Support\Str::limit(auth('shop_role')->user()->name, 10, '..') }}
-                            <span>(Admin)</span>
-                        @elseif(auth('shop_role')->user()->role_id == 2)
-                            {{ \Illuminate\Support\Str::limit(auth('shop_role')->user()->name, 10, '..') }}
-                            <span>(Manager)</span>
-                        @elseif(auth('shop_role')->user()->role_id == 3)
-                            {{ \Illuminate\Support\Str::limit(auth('shop_role')->user()->name, 10, '..') }}
-                            <span>(Staff)</span>
-                        @endif
-                    @endauth
+                @auth('shop_owners_and_staffs')
+                    {{ \Illuminate\Support\Str::limit(auth('shop_owners_and_staffs')->user()->name, 10, '..') }}
+                    <span>({{auth('shop_owners_and_staffs')->user()->role->name}})</span>
+             
                 @endauth
                 !
             </a>

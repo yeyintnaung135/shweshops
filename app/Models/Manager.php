@@ -10,8 +10,10 @@ class Manager extends Model
     //
     use SoftDeletes;
     protected $fillable=['name','phone','shop_id','role_id','password','deleted_at'];
-    protected $table='manager';
+    protected $table='shop_owners_and_staffs';
     protected $appends = ['favIds','selectionIds','notification'];
+
+ 
 
     public function getRoleAttribute(){
         $role_name=Role::where('id',$this->role_id)->first();

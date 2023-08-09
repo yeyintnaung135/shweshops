@@ -33,16 +33,16 @@ use App\Models\VisitorLogActivity;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\traid\logs;
+use App\Http\Controllers\Trait\logs;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\traid\allshops;
+use App\Http\Controllers\Trait\allshops;
 use App\Http\Controllers\Controller;
 
-use App\Http\Controllers\traid\category;
-use App\Http\Controllers\traid\foryoulogic;
-use App\Http\Controllers\traid\similarlogic;
+use App\Http\Controllers\Trait\category;
+use App\Http\Controllers\Trait\foryoulogic;
+use App\Http\Controllers\Trait\similarlogic;
 
 class FrontController extends Controller
 {

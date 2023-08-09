@@ -3,16 +3,17 @@
 namespace App\Providers;
 
 use App\Models\Event;
-use App\Http\Controllers\traid\category;
+use App\Http\Controllers\Trait\category;
 use App\Models\News;
 use App\Models\Promotions;
-use App\Models\Shopowner;
+use App\Models\Shops;
 use App\Models\sitesettings;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
 
 
 class   AppServiceProvider extends ServiceProvider
@@ -37,7 +38,13 @@ class   AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //        URL::forceScheme('https');
-        $all_shop_id = Shopowner::where('id', '!=', 1)->orderBy('shop_name', 'asc')->get();
+
+        Blade::if('isRole', function ($role) {
+            return Auth::guard('shop_owners_and_staffs')->check() && Auth::guard('shop_owners_and_staffs')->user()->role->name === $role;
+        });
+
+
+        $all_shop_id = Shops::where('id', '!=', 1)->orderBy('shop_name', 'asc')->get();
         View::share('shop_ids', $all_shop_id);
         //for chat
         $check_chat = sitesettings::where('name', 'ownchat')->first();
@@ -52,7 +59,7 @@ class   AppServiceProvider extends ServiceProvider
         $isscrollon = sitesettings::where('name', 'infinitescroll')->first();
         View::share('is_scroll_on', $isscrollon->action);
 
-        $all_shop_id_bylatest = Shopowner::where('id', '!=', 1)->orderBy('id', 'desc')->limit(4)->get();
+        $all_shop_id_bylatest = Shops::where('id', '!=', 1)->orderBy('id', 'desc')->limit(4)->get();
         View::share('latest_shops', $all_shop_id_bylatest);
 
         $catlist = $this->getallcatlistbycount();

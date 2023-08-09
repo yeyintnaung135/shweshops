@@ -3,26 +3,22 @@ namespace App\Http\Controllers\Trait;
 
 use App\Models\Item;
 use App\Models\Manager;
-use App\Models\Shopowner;
+use App\Models\Shops;
 use Illuminate\Support\Facades\Auth;
 
 trait UserRole{
 
     private $role,$role_shop_id,$role_user,$user_lists;
 
-    private function role($user_role)
+    private function get_shopowners_role($user_role)
     {
-        $this->role = Auth::guard($user_role)->user()->id;
-        $this->role_shop_id = Auth::guard($user_role)->user()->shop_id;
-        $this->shop_owner($user_role);
+     return Auth::guard('shop_owners_and_staffs')->user()->role->name;
     }
 
-    private function shop_owner($user_role){
-        if($user_role == 'shop_owner'){
-            $this->shop_owner =  Shopowner::where('id',$this->role)->orderBy('created_at', 'desc')->get();
-        }else{
-            $this->shop_owner =  Shopowner::where('id',$this->role_shop_id)->orderBy('created_at', 'desc')->get();
-        }
+    public function current_shop_data(){
+      
+            return Shops::where('id',$this->get_shopid())->orderBy('created_at', 'desc')->get();
+        
     }
 
     private function role_check_trash($x)
@@ -35,27 +31,7 @@ trait UserRole{
         }
     }
 
-    private function role_check($role)
-    {
-        if($role == 2){
-            $this->user_lists =  Manager::where('shop_id',$this->role_shop_id)->whereIn('role_id',[3])->orderBy('created_at', 'desc')->get();
-        }elseif($role == 1){
-            $this->user_lists =  Manager::where('shop_id',$this->role_shop_id)->whereIn('role_id',[2,3])->orderBy('created_at', 'desc')->get();
-        }elseif($role == 3){
-            abort(404);
-        }else{
-            $this->user_lists = Manager::where('shop_id',$this->shop_owner_id)->get();
-        }
-    }
 
-    public function isowner(){
-        if(Auth::guard('shop_owner')->check()){
-            return true;
-        }else{
-            return false;
-        }
-
-    }
     public function itisowneritem($itemid){
          $tmpdata=0;
          if($this->isowner()){
@@ -73,21 +49,21 @@ trait UserRole{
 
     }
     public function isadmin(){
-        if(Auth::guard('shop_role')->check() && (Auth::guard('shop_role')->user()->role_id == 1)){
+        if(Auth::guard('shop_owners_and_staffs')->user()->role->id==1){
             return true;
         }else{
             return false;
         }
     }
     public function ismanager(){
-        if(Auth::guard('shop_role')->check() && (Auth::guard('shop_role')->user()->role_id == 2)){
+        if(Auth::guard('shop_owners_and_staffs')->user()->role->id==2){
             return true;
         }else{
             return false;
         }
     }
     public function isstaff(){
-        if(Auth::guard('shop_role')->check() && (Auth::guard('shop_role')->user()->role_id == 3)){
+        if(Auth::guard('shop_owners_and_staffs')->user()->role->id==3){
             return true;
         }else{
             return false;
@@ -114,21 +90,11 @@ trait UserRole{
         }
     }
     public function getcurrentauthdata(){
-        if(!$this->isowner()){
-            return Auth::guard('shop_role')->user();
-        }else{
-            return Auth::guard('shop_owner')->user();
-        }
+        return Auth::guard('shop_owners_and_staffs')->user();
     }
-    public function getshopid(){
-        if($this->isowner()){
-            $shop_id=$this->getcurrentauthdata()->id;
+    public function get_shopid(){
+        $shop_id=$this->getcurrentauthdata()->shop_id;
 
-        }else{
-            $shop_id=$this->getcurrentauthdata()->shop_id;
-
-
-        }
         return $shop_id;
     }
 }

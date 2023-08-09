@@ -270,7 +270,7 @@ class Item extends Model
 
     public function getUserNameAttribute()
     {
-        if ((isset(Auth::guard('shop_owner')->user()->id) && Auth::guard('shop_owner')->user()->id == $this->shop_id) || (isset(Auth::guard('shop_role')->user()->id) && Auth::guard('shop_role')->user()->shop_id == $this->shop_id)) {
+        if ((isset(Auth::guard('shop_owners_and_staffs')->user()->id) && Auth::guard('shop_owners_and_staffs')->user()->id == $this->shop_id)) {
             if ($this->user_id != 0) {
                 $user_name = Manager::where('id', $this->user_id);
                 if ($user_name->count() != 0) {
