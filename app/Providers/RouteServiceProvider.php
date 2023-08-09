@@ -22,6 +22,7 @@ class RouteServiceProvider extends ServiceProvider
      * @var string
      */
     public const HOME = '/';
+    public const SUPERADMIN = 'backside/super_admin';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -62,8 +63,6 @@ class RouteServiceProvider extends ServiceProvider
             ->group(base_path('routes/web.php'));
 
     }
-
-  
 
     /**
      * Define the "api" routes for the application.
