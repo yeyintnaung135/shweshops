@@ -38,7 +38,7 @@ class AdsController extends Controller
     }
 
     // datable for ads log activity
-    public function getAdsActivity(Request $request)
+    public function get_ads_activity(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -120,7 +120,7 @@ class AdsController extends Controller
         echo json_encode($response);
     }
 
-    public function getAllAds(Request $request)
+    public function get_all_ads(Request $request)
     {
 
         $draw = $request->get('draw');

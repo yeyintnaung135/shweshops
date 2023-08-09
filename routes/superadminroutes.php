@@ -4,6 +4,7 @@
 use App\Http\Controllers\Auth\ShopownerRegisterController;
 use App\Http\Controllers\Auth\SuperAdminForgotPasswordController;
 use App\Http\Controllers\Auth\SuperadminLoginController;
+use App\Http\Controllers\SuperAdmin\AdsController;
 use App\Http\Controllers\SuperAdmin\AppFileController;
 use App\Http\Controllers\SuperAdmin\CatController;
 use App\Http\Controllers\SuperAdmin\CustomerController;
@@ -97,7 +98,7 @@ Route::group(['prefix' => 'backside/super_admin', 'as' => 'backside.super_admin.
     });
     // Route::post('register', ['as' => 'registered', 'uses' => 'Auth\SuperadminRegisterController@store']);
     Route::put('approve/{id}', [SuperAdminController::class, 'approve']);
-    Route::put('ban/{id}', [SuperAdminController::class, 'isBanned']);
+    Route::put('ban/{id}', [SuperAdminController::class, 'is_banned']);
     Route::post('delete', [SuperAdminController::class, 'delete']);
     //    auth
     Route::get('login', [SuperadminLoginController::class, 'loginform']);
@@ -128,13 +129,13 @@ Route::group(['prefix' => 'backside/super_admin', 'as' => 'backside.super_admin.
     Route::get('gold_price', [SuperAdminController::class, 'gold_price_get'])->name('superAdmin.gold_price_get');
     Route::put('gold_price', [SuperAdminController::class, 'gold_price_update'])->name('superAdmin.gold_price_update');
 
-    Route::get('get_all_ads', [AdsController::class, 'getAllAds'])->name('ads.getAllAds');
-    Route::get('get_ads_activity', [AdsController::class, 'getAdsActivity'])->name('ads.getAdsActivity');
+    Route::get('get_all_ads', [AdsController::class, 'get_all_ads'])->name('ads.getAllAds');
+    Route::get('get_ads_activity', [AdsController::class, 'get_ads_activity'])->name('ads.getAdsActivity');
     Route::post('ads_video', [AdsController::class, 'store_video'])->name('ads.video.create');
 
 // zh for Shop
     Route::get('shops/all', [ShopController::class, 'all'])->name('shops.all');
-    Route::get('shops/get_all_shops', [ShopController::class, 'getAllShops'])->name('shops.getAllShops');
+    Route::get('shops/get_all_shops', [ShopController::class, 'get_all_shops'])->name('shops.getAllShops');
 
     Route::get('shops/create', [ShopownerRegisterController::class, 'create'])->name('shops.create');
     Route::get('shops/edit/{id}', [ShopownerRegisterController::class, 'edit'])->name('shops.edit');
@@ -142,11 +143,11 @@ Route::group(['prefix' => 'backside/super_admin', 'as' => 'backside.super_admin.
 
 // for website viewer
     Route::get('visitorcount/all', [SuperAdminController::class, 'visitor_count'])->name('visitorcount.all');
-    Route::get('visitorcount/get_all_visitor', [SuperAdminController::class, 'getAllVisitor'])->name('visitorcount.getAllVisitor');
+    Route::get('visitorcount/get_all_visitor', [SuperAdminController::class, 'get_all_visitor'])->name('visitorcount.getAllVisitor');
 
 // for ads view
     Route::get('adscount/all', [SuperAdminController::class, 'ads_count'])->name('adscount.all');
-    Route::get('adscount/get_all_adscount', [SuperAdminController::class, 'getAllAdsCount'])->name('adscount.getAllAdsCount');
+    Route::get('adscount/get_all_adscount', [SuperAdminController::class, 'get_all_ads_count'])->name('adscount.getAllAdsCount');
 
 // for shops viewer
     Route::get('shopviewercount/all', [SuperAdminController::class, 'shop_viewer_count'])->name('shopviewercount.all');
@@ -154,15 +155,15 @@ Route::group(['prefix' => 'backside/super_admin', 'as' => 'backside.super_admin.
 
 // for buy now count
     Route::get('buynowcount/all', [SuperAdminController::class, 'buy_now_count'])->name('buynowcount.all');
-    Route::get('buynowcount/get_all_buynowcount', [SuperAdminController::class, 'getAllBuyNowCount'])->name('buynowcount.getAllBuyNowCount');
+    Route::get('buynowcount/get_all_buynowcount', [SuperAdminController::class, 'get_all_buy_now_count'])->name('buynowcount.getAllBuyNowCount');
 
 // for add to cart count
     Route::get('addtocartcount/all', [SuperAdminController::class, 'add_to_cart_count'])->name('addtocartcount.all');
-    Route::get('addtocartcount/get_all_addtocartcount', [SuperAdminController::class, 'getAllAddToCartCount'])->name('addtocartcount.getAllAddtocartCount');
+    Route::get('addtocartcount/get_all_addtocartcount', [SuperAdminController::class, 'get_all_add_to_cart_count'])->name('addtocartcount.getAllAddtocartCount');
 
 // for wish list count
     Route::get('wishlistcount/all', [SuperAdminController::class, 'wishlist_count'])->name('wishlistcount.all');
-    Route::get('wishlistcount/get_all_wishlistcount', [SuperAdminController::class, 'getAllWishlistCount'])->name('wishlistcount.getAllWishlistCount');
+    Route::get('wishlistcount/get_all_wishlistcount', [SuperAdminController::class, 'get_all_wishlist_count'])->name('wishlistcount.getAllWishlistCount');
 
 // zh for dailycount
     Route::get('productdailycount/all', [SuperAdminController::class, 'product_daily_count'])->name('productdailycount.all');
@@ -191,17 +192,17 @@ Route::group(['prefix' => 'backside/super_admin', 'as' => 'backside.super_admin.
     Route::get('shop_update_action', [ShopController::class, 'counts_setting'])->name('shops.update_action');
     Route::get('shop_update_action_all', [ShopController::class, 'all_counts_setting'])->name('shops.update_action_all');
     Route::post('save_all_report', [ShopController::class, 'save_all_report'])->name('save_all_report');
-    Route::get('download-zip', [ShopController::class, 'downloadZip'])->name('report_zip');
+    Route::get('download-zip', [ShopController::class, 'download_zip'])->name('report_zip');
     Route::get('all_monthly_report', [ShopController::class, 'all_report'])->name('shop.all_monthly_report');
     Route::get('monthly_report/{id}', [ShopController::class, 'report'])->name('shop.monthly_report');
     Route::post('date_filter', [ShopController::class, 'count_date_filter']);
 
-    Route::get('shops/get_shop_activity', [ShopController::class, 'getShopActivity'])->name('shops.getShopActivity');
+    Route::get('shops/get_shop_activity', [ShopController::class, 'get_shop_activity'])->name('shops.getShopActivity');
 
 // zh for super_admin_role
     Route::get('admins/all', [SuperAdminRoleController::class, 'list'])->name('super_admin_role.list');
-    Route::get('admins/get_all_admins', [SuperAdminRoleController::class, 'getAllAdmins'])->name('super_admin_role.getAllAdmins');
-    Route::get('admins/get_admin_activity', [SuperAdminRoleController::class, 'etAdminActivity'])->name('super_admin_role.getAdminActivity');
+    Route::get('admins/get_all_admins', [SuperAdminRoleController::class, 'get_all_admins'])->name('super_admin_role.getAllAdmins');
+    Route::get('admins/get_admin_activity', [SuperAdminRoleController::class, 'get_admin_activity'])->name('super_admin_role.getAdminActivity');
     Route::get('admins/create', [SuperAdminRoleController::class, 'create'])->name('super_admin_role.create');
     Route::post('admins/create', [SuperAdminRoleController::class, 'store'])->name('super_admin_role.store');
     Route::get('admins/edit/{id}', [SuperAdminRoleController::class, 'edit'])->name('super_admin_role.edit');
@@ -219,15 +220,15 @@ Route::group(['prefix' => 'backside/super_admin', 'as' => 'backside.super_admin.
 
 // Customers
     Route::get('customers', [CustomerController::class, 'index'])->name('customers.index');
-    Route::get('get_customers', [CustomerController::class, 'getCustomers'])->name('customers.getCustomers');
-    Route::get('get_customer_activity', [CustomerController::class, 'getCustomerActivity'])->name('customers.getCustomerActivity');
+    Route::get('get_customers', [CustomerController::class, 'get_customers'])->name('customers.getCustomers');
+    Route::get('get_customer_activity', [CustomerController::class, 'get_customer_activity'])->name('customers.getCustomerActivity');
 //contact us
     Route::get('Contact-us/edit', [SuperAdminController::class, 'contact_us_get'])->name('superAdmin.contactus_get');
     Route::put('Contact-us/edit', [SuperAdminController::class, 'contact_us_update'])->name('superAdmin.contactus_update');
 
 //site setting
     Route::get('sitesetting', [SiteSettingController::class, 'index'])->name('superadmin.sitesetting');
-    Route::get('sitesetting/edit', [SiteSettingController::class, 'updateAction'])->name('superadmin.update_action');
+    Route::get('sitesetting/edit', [SiteSettingController::class, 'update_action'])->name('superadmin.update_action');
 
 //shop_owner_using chat
     Route::get('shop_owner_using_chat', [ShopController::class, 'show_owner_using_chat']);

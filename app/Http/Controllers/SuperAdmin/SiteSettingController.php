@@ -23,7 +23,7 @@ class SiteSettingController extends Controller
         return view('backend.super_admin.sitesetting.all', compact('sitesettings'));
     }
 
-    public function updateAction(Request $request)
+    public function update_action(Request $request)
     {
         SiteSettings::where('id', $request->id)->update(['action' => $request->action]);
         $action = SiteSettings::where('id', $request->id)->first()->action;

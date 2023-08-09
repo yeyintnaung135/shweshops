@@ -29,7 +29,7 @@ class CustomerController extends Controller
         return view('backend.super_admin.activity_logs.customer', ['itemlogs' => $itemlogs]);
     }
 
-    public function getCustomers(Request $request)
+    public function get_customers(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -100,7 +100,7 @@ class CustomerController extends Controller
         echo json_encode($response);
     }
 
-    public function getCustomerActivity(Request $request)
+    public function get_customer_activity(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");

@@ -20,7 +20,7 @@ class SuperAdminRoleController extends Controller
         $this->middleware(['auth:super_admin']);
     }
 
-    function list() {
+    public function list() {
         $super_admin = SuperAdmin::all();
         $super_admin_log = SuperAdminLogActivity::all();
         return view('backend.super_admin_role.list', ['super_admin' => $super_admin, 'super_admin_log' => $super_admin_log]);
@@ -33,7 +33,7 @@ class SuperAdminRoleController extends Controller
         return view('backend.super_admin.activity_logs.admin', ['super_admin' => $super_admin, 'super_admin_log' => $super_admin_log]);
 
     }
-    public function getAllAdmins(Request $request)
+    public function get_all_admins(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -88,7 +88,7 @@ class SuperAdminRoleController extends Controller
         echo json_encode($response);
     }
 
-    public function getAdminActivity(Request $request)
+    public function get_admin_activity(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
