@@ -1,8 +1,8 @@
 @php
-    use App\Shopowner;
-    use App\Ads;
-    $ads_deleted_count = Ads::all()->count();
-    $all_shops_count = Shopowner::all()->count();
+    use App\Models\Shops;
+    use App\Models\Ads;
+    $ads_deleted_count = Ads::count();
+    $all_shops_count = Shops::count();
     $admin_request = DB::table('super_admins')->where('role' , '==' , 2)->count();
 @endphp
 <aside class="main-sidebar sidebar-dark-primary elevation-4" style="z-index: 99999;">
@@ -25,11 +25,6 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-        {{--  @php
-            use App\Super_admin_role;
-            $super_admin_role = Super_admin_role::where('id')->first();
-            @endphp --}}
-        <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
             <a href="{{url('/backside/super_admin')}}">
                 <div class="image">
@@ -235,7 +230,7 @@
                                 <i class="fa fa-circle pl-5"></i>
                                 <p class="ml-3">Fb Messengers</p>
                                 <?php
-                                $count=\App\facebooktable::all();
+                                $count=\App\Models\FacebookTable::all();
                                     $all_fb_msg_count=count($count);
                                     ?>
                                 @if ($all_fb_msg_count)

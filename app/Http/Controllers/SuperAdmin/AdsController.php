@@ -6,7 +6,7 @@ use App\Facade\Repair;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdsImageRequest;
 use App\Models\Ads;
-use App\Models\ShopOwner;
+use App\Models\Shops;
 use App\Models\SuperAdminLogActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -201,7 +201,7 @@ class AdsController extends Controller
      */
     public function create()
     {
-        $shops = ShopOwner::all();
+        $shops = Shops::all();
         return view('backend.super_admin.ad.create', ['shops' => $shops]);
     }
 
@@ -216,7 +216,7 @@ class AdsController extends Controller
 
         $folderPath = 'images/banner/';
         $mobileimgfolder = 'images/banner/thumbs/';
-        $shop_name = ShopOwner::where('id', $request->shop_id)->first();
+        $shop_name = Shops::where('id', $request->shop_id)->first();
         $start = Carbon::parse($request->start, 'UTC')->format('Y-m-d H:i:s A');
         $end = Carbon::parse($request->end, 'UTC')->format('Y-m-d H:i:s A');
         $ads = new Ads();
@@ -263,7 +263,7 @@ class AdsController extends Controller
         $folderPath = 'images/banner';
         $mobileimgfolder = 'images/banner/thumbs/';
 
-        $shop_name = ShopOwner::where('id', $request->shop_id)->first();
+        $shop_name = Shops::where('id', $request->shop_id)->first();
 
         $start = Carbon::parse($request->start, 'UTC')->format('Y-m-d H:i:s A');
         $end = Carbon::parse($request->end, 'UTC')->format('Y-m-d H:i:s A');
@@ -299,16 +299,35 @@ class AdsController extends Controller
     public function show($id)
     {
         $ad = Ads::withTrashed()->findOrFail($id);
-        $shop = ShopOwner::where('shop_name', $ad->name)->first();
+        $shop = Shops::where('shop_name', $ad->name)->first();
+
         if (empty($shop)) {
             $shop_name_myan = 'No Shop';
         } else {
             $shop_name_myan = $shop->shop_name_myan;
-
         }
 
-        return view('backend.super_admin.ad.detail', ['ad' => $ad, 'shop_name_myan' => $shop_name_myan, 'id' => $id]);
+        $end_date = $ad->end;
+        $today = Carbon::now();
 
+        if ($ad->deleted_at == null) {
+            $day = $end_date->diffInDays($today);
+            $hour = $end_date->diffInHours($today);
+            $minutes = $end_date->diffInMinutes($today);
+        } else {
+            $day = null;
+            $hour = null;
+            $minutes = null;
+        }
+
+        return view('backend.super_admin.ad.detail', [
+            'ad' => $ad,
+            'shop_name_myan' => $shop_name_myan,
+            'id' => $id,
+            'day' => $day,
+            'hour' => $hour,
+            'minutes' => $minutes,
+        ]);
     }
 
     /**
@@ -320,7 +339,7 @@ class AdsController extends Controller
     public function edit($id)
     {
         $ad = Ads::withTrashed()->findOrFail($id);
-        $shops = ShopOwner::all();
+        $shops = Shops::all();
         return view('backend.super_admin.ad.edit', ['shops' => $shops, 'ad' => $ad]);
     }
     /**
@@ -333,7 +352,7 @@ class AdsController extends Controller
     public function update(Request $request, $id)
     {
 //        return $request->shop_id;
-        $shop_name = ShopOwner::where('id', $request->shop_id)->first();
+        $shop_name = Shops::where('id', $request->shop_id)->first();
         $folderPath = 'images/banner/';
         $ads = Ads::withTrashed()->findOrfail($id);
         if (!empty($shop_name)) {

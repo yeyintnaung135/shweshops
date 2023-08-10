@@ -22,7 +22,7 @@ class SupportController extends Controller
         $cats = CatSupport::all();
         return view('backend.super_admin.support.create', ['cats' => $cats]);
     }
-    public function list() {
+    function list() {
         return view('backend.super_admin.support.list');
     }
     public function all(Request $request)
@@ -93,7 +93,12 @@ class SupportController extends Controller
     {
 
         $ttdata = Support::where('id', $id)->first();
-        return view('backend.super_admin.support.detail', ['ttdata' => $ttdata]);
+        $ca = Catsupport::where('id', $ttdata->cat_id)->first()->title;
+
+        return view('backend.super_admin.support.detail', [
+            'ttdata' => $ttdata,
+            'ca' => $ca,
+        ]);
 
     }
     public function edit($id)

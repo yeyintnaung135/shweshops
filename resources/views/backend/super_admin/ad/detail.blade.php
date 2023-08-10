@@ -3,23 +3,6 @@
 
 @section('content')
     <div class="wrapper">
-        @php
-            use Illuminate\Support\Carbon;
-            use App\Ads;
-            $ad = Ads::withTrashed()->findOrFail($id);
-            if ($ad->deleted_at == null) {
-                $end_date = Ads::findOrFail($id)->end;
-                $today = strtotime(Carbon::now());
-                $end_date = strtotime($end_date);
-                $day = (int) floor(($end_date - $today) / (60 * 60 * 24));
-                $hour = (int) floor(($end_date - $today) / (60 * 60));
-                $minutes = (int) floor(($end_date - $today) / 60);
-            } else {
-                $day = null;
-                $hour = null;
-                $minutes = null;
-            }
-        @endphp
         @include('backend.super_admin.navbar')
         @include('backend.super_admin.sidebar')
         <section class="content-wrapper">
@@ -38,10 +21,10 @@
                                     <img src="{{ asset('images/banner/' . $ad->image) }}" alt="cover" class="w-100 h-100">
                                 @endif
 
-                             
+
                             </div>
                             <br>
-                           
+
 
                             @if ($ad->deleted_at)
                             <img src="{{ asset('images/banner/thumbs/' . $ad->image_for_mobile) }}" alt="cover"
