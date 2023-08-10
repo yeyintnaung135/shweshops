@@ -242,9 +242,9 @@
                                             {{-- <label for="shopname">အထည်မပျက် ပြန်သွင်း (%)</label> --}}
                                             <input @focus="$event.target.select()" type="text"
                                                 class="form-control sop-form-control" id="name"
-                                                name="အထည်မပျက်_ပြန်သွင်း"
-                                                value="{{ old('အထည်မပျက်_ပြန်သွင်း', $shopowner->အထည်မပျက်_ပြန်သွင်း) }}"
-                                                value="{{ $shopowner->အထည်မပျက်_ပြန်သွင်း }}">
+                                                name="undamaged_product"
+                                                value="{{ old('undamaged_product', $shopowner->undamaged_product) }}"
+                                                value="{{ $shopowner->undamaged_product }}">
                                             @error('name')
                                                 <x-error>
                                                     {{ $message }}
@@ -260,8 +260,8 @@
                                             {{-- <label for="shopname">တန်ဖိုးမြင့်အထည် နှင့် အထည်မပျက်ပြန်လဲ (%)</label> --}}
                                             <input @focus="$event.target.select()" type="text"
                                                 class="form-control sop-form-control" id="name"
-                                                name="တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ"
-                                                value="{{ old('တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ', $shopowner->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ) }}">
+                                                name="valuable_product"
+                                                value="{{ old('valuable_product', $shopowner->valuable_product) }}">
                                             @error('name')
                                                 <x-error>
                                                     {{ $message }}
@@ -277,8 +277,8 @@
                                             {{-- <label for="shopname">အထည်ပျက်စီး ချို့ယွင်း (%)</label> --}}
                                             <input @focus="$event.target.select()" type="text"
                                                 class="form-control sop-form-control" id="name"
-                                                name="အထည်ပျက်စီးချို့ယွင်း"
-                                                value="{{ old('အထည်ပျက်စီးချို့ယွင်း', $shopowner->အထည်ပျက်စီးချို့ယွင်း) }}">
+                                                name="damaged_product"
+                                                value="{{ old('damaged_product', $shopowner->damaged_product) }}">
                                             @error('name')
                                                 <x-error>
                                                     {{ $message }}

@@ -41,7 +41,7 @@
                                 {{-- <h3 class="product_title entry-title yk-jello-horizontal sn-discount-badge">
                                     {{$get_dis->percent}}% <span class="sn-off-text">OFF</span></h3> --}}
                             @endif
-                            
+
 
                             <div class="details-img col-12 col-md-6 col-xl-4">
 
@@ -729,18 +729,18 @@
                                                         </div>
                                                         <div class="col-4 ">
                                                             <span class="sku"
-                                                                itemprop="sku">{{ $item->အထည်မပျက်_ပြန်သွင်း }}</span>
+                                                                itemprop="sku">{{ $item->undamaged_product }}</span>
                                                         </div>
                                                     </div>
 
                                                     <div class="zh-row row">
                                                         <div class="col-8 ">
                                                             <span
-                                                                class="sn-detail-title font-red">အထည်ပျက်စီးချို့ယွင်း</span>
+                                                                class="sn-detail-title font-red">အထည်ပျက်စီး ချို့ယွင်း</span>
                                                         </div>
                                                         <div class="col-4 ">
                                                             <span class="sku"
-                                                                itemprop="sku">{{ $item->အထည်ပျက်စီးချို့ယွင်း }}</span>
+                                                                itemprop="sku">{{ $item->damaged_product }}</span>
                                                         </div>
                                                     </div>
                                                     <div class="zh-row row">
@@ -750,7 +750,7 @@
                                                         </div>
                                                         <div class="col-4 ">
                                                             <span class="sku"
-                                                                itemprop="sku">{{ $item->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ }}</span>
+                                                                itemprop="sku">{{ $item->valuable_product }}</span>
                                                         </div>
                                                     </div>
                                                 </div>

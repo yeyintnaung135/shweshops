@@ -483,22 +483,22 @@
                                             <b>shop name</b> <a class="float-right">{{ $shopowner->shop_name }}</a>
                                         </li>
                                         <li class="list-group-item">
-                                            <b>အထည်မပျက်_ပြန်သွင်း</b> <a
-                                                class="float-right">{{ $shopowner->အထည်မပျက်_ပြန်သွင်း }}</a>
+                                            <b>undamaged_product</b> <a
+                                                class="float-right">{{ $shopowner->undamaged_product }}</a>
                                         </li>
                                         <li class="list-group-item">
                                             <b>တန်ဖိုးမြင့်အထည်</b> <a
-                                                class="float-right">{{ $shopowner->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ }}
+                                                class="float-right">{{ $shopowner->valuable_product }}
                                             </a>
                                         </li>
                                         <li class="list-group-item">
                                             <b>အထည်မပျက်ပြန်လဲ</b> <a
-                                                class="float-right">{{ $shopowner->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ }}
+                                                class="float-right">{{ $shopowner->valuable_product }}
                                             </a>
                                         </li>
                                         <li class="list-group-item">
-                                            <b>အထည်ပျက်စီးချို့ယွင်း</b> <a
-                                                class="float-right">{{ $shopowner->အထည်ပျက်စီးချို့ယွင်း }}</a>
+                                            <b>damaged_product</b> <a
+                                                class="float-right">{{ $shopowner->damaged_product }}</a>
                                         </li>
                                         <li class="list-group-item">
                                             <b>Page Link</b> <a

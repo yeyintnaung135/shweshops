@@ -37,20 +37,20 @@
 
                             <div class="row g-3 align-items-center mb-3">
                                 <div class="col-12">
-                                    <label for="a-2" class="col-form-label">အထည်မပျက်ပြန်သွင်း %</label>
+                                    <label for="a-2" class="col-form-label">အထည်မပျက် ပြန်သွင်း %</label>
                                 </div>
                                 <div class="col-12">
-                                    <input type="text" min=0 class="form-control" name="အထည်မပျက်ပြန်သွင်း"
-                                        id="a-2" value="{{ $template->undamage_product }}">
+                                    <input type="text" min=0 class="form-control" name="undamaged_product"
+                                        id="a-2" value="{{ $template->undamaged_product }}">
                                 </div>
                             </div>
                             <div class="row g-3 align-items-center mb-3">
                                 <div class="col-12">
-                                    <label for="a-3" class="col-form-label">အထည်ပျက်စီးချို့ယွင်း %</label>
+                                    <label for="a-3" class="col-form-label">အထည်ပျက်စီး ချို့ယွင်း %</label>
                                 </div>
                                 <div class="col-12">
-                                    <input type="text" min=0 class="form-control" name="အထည်ပျက်စီးချို့ယွင်း"
-                                        id="a-3" value="{{ $template->damage_product }}">
+                                    <input type="text" min=0 class="form-control" name="damaged_product"
+                                        id="a-3" value="{{ $template->damaged_product }}">
                                 </div>
                             </div>
                             <div class="row g-3 align-items-center mb-3">
@@ -59,7 +59,7 @@
                                         %</label>
                                 </div>
                                 <div class="col-12">
-                                    <input type="text" min=0 class="form-control" name="တန်ဖိုးမြင့်" id="a-4"
+                                    <input type="text" min=0 class="form-control" name="valuable_product" id="a-4"
                                         value="{{ $template->valuable_product }}">
                                 </div>
                             </div>
@@ -91,9 +91,9 @@
                 data: {
                     _token: '{{ csrf_token() }}',
                     name: jQuery("input[name=name]").val(),
-                    အထည် မပျ က် ပြ န် သွ င်း: jQuery("input[name=အထည်မပျက်ပြန်သွင်း]").val(),
-                    အထည် ပျ က် စီး ချို့ ယွ င်း: jQuery("input[name=အထည်ပျက်စီးချို့ယွင်း]").val(),
-                    တန် ဖိုး မြ င့်: jQuery("input[name=တန်ဖိုးမြင့်]").val(),
+                    အထည် မပျ က် ပြ န် သွ င်း: jQuery("input[name=undamaged_product]").val(),
+                    အထည် ပျ က် စီး ချို့ ယွ င်း: jQuery("input[name=damaged_product]").val(),
+                    တန် ဖိုး မြ င့်: jQuery("input[name=valuable_product]").val(),
                 },
                 error: function(err) {
                     console.warn(err.responseJSON.errors);

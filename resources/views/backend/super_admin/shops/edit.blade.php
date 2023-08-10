@@ -232,8 +232,8 @@
                                             {{-- <label for="shopname">အထည်မပျက် ပြန်သွင်း (%)</label> --}}
                                             <input type="text" class="form-control sop-form-control" id="name"
                                                 placeholder="10 % or 10000ကျပ်" name="valuable_product"
-                                                value="{{ old('အထည်မပျက်_ပြန်သွင်း', $shopowner->အထည်မပျက်_ပြန်သွင်း) }}"
-                                                value="{{ $shopowner->အထည်မပျက်_ပြန်သွင်း }}">
+                                                value="{{ old('undamaged_product', $shopowner->undamaged_product) }}"
+                                                value="{{ $shopowner->undamaged_product }}">
                                             @error('name')
                                                 <x-error>
                                                     {{ $message }}
@@ -248,8 +248,8 @@
                                             <legend>တန်ဖိုးမြင့်အထည် နှင့် အထည်မပျက်ပြန်လဲ </legend>
                                             {{-- <label for="shopname">တန်ဖိုးမြင့်အထည် နှင့် အထည်မပျက်ပြန်လဲ (%)</label> --}}
                                             <input type="text" class="form-control sop-form-control" id="name"
-                                                placeholder="10 % or 10000ကျပ်" name="undamage_product"
-                                                value="{{ old('တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ', $shopowner->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ) }}">
+                                                placeholder="10 % or 10000ကျပ်" name="undamaged_product"
+                                                value="{{ old('valuable_product', $shopowner->valuable_product) }}">
                                             @error('name')
                                                 <x-error>
                                                     {{ $message }}
@@ -264,8 +264,8 @@
                                             <legend>အထည်ပျက်စီး ချို့ယွင်း </legend>
                                             {{-- <label for="shopname">အထည်ပျက်စီး ချို့ယွင်း (%)</label> --}}
                                             <input type="text" class="form-control sop-form-control" id="name"
-                                                placeholder="10 % or 10000ကျပ်" name="damage_product"
-                                                value="{{ old('အထည်ပျက်စီးချို့ယွင်း', $shopowner->အထည်ပျက်စီးချို့ယွင်း) }}">
+                                                placeholder="10 % or 10000ကျပ်" name="damaged_product"
+                                                value="{{ old('damaged_product', $shopowner->damaged_product) }}">
                                             @error('name')
                                                 <x-error>
                                                     {{ $message }}

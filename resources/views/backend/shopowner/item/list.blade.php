@@ -217,21 +217,21 @@
 
                     </div>
                     <div class="form-group">
-                        <label class="control-label">အထည်မပျက်ပြန်သွင်း % : </label>
-                        <input type="text" name="အထည်မပျက်ပြန်သွင်း" id="first_name" class="form-control"/>
-                        <span id="error_အထည်မပျက်ပြန်သွင်း" class="text-danger d-none">error</span>
+                        <label class="control-label">အထည်မပျက် ပြန်သွင်း % : </label>
+                        <input type="text" name="undamaged_product" id="first_name" class="form-control"/>
+                        <span id="error_undamaged_product" class="text-danger d-none">error</span>
 
                     </div>
                     <div class="form-group">
-                        <label class="control-label">အထည်ပျက်စီးချို့ယွင်း % : </label>
-                        <input type="text" name="အထည်ပျက်စီးချို့ယွင်း" id="first_name" class="form-control"/>
-                        <span id="error_အထည်ပျက်စီးချို့ယွင်း" class="text-danger d-none">error</span>
+                        <label class="control-label">အထည်ပျက်စီး ချို့ယွင်း % : </label>
+                        <input type="text" name="damaged_product" id="first_name" class="form-control"/>
+                        <span id="error_damaged_product" class="text-danger d-none">error</span>
 
                     </div>
                     <div class="form-group ">
                         <label class="control-label">တန်ဖိုးမြင့် အထည်နှင့်အထည်မပျက်ပြန်လဲ % : </label>
-                        <input type="text" name="တန်ဖိုးမြင့်" id="first_name" class="form-control"/>
-                        <span id="error_တန်ဖိုးမြင့်" class="text-danger d-none sop-font">error</span>
+                        <input type="text" name="valuable_product" id="first_name" class="form-control"/>
+                        <span id="error_valuable_product" class="text-danger d-none sop-font">error</span>
 
                     </div>
                     <br/>
@@ -793,20 +793,20 @@
                     let val = $("input[name=အလျော့တွက်]").val();
                     conone = `<p>အလျော့တွက် : ${val} %</p>`;
                 }
-                if ($("input[name=အထည်မပျက်ပြန်သွင်း]").val() !== '') {
-                    let val = $("input[name=အထည်မပျက်ပြန်သွင်း]").val();
-                    confive = `<p>အထည်မပျက်ပြန်သွင်း : ${val} %</p>`;
+                if ($("input[name=undamaged_product]").val() !== '') {
+                    let val = $("input[name=undamaged_product]").val();
+                    confive = `<p>အထည်မပျက် ပြန်သွင်း : ${val} %</p>`;
                 }
                 if ($("input[name=လက်ခ]").val() !== '') {
                     let val = $("input[name=လက်ခ]").val();
                     contwo = `<p>လက်ခ : ${val} %</p>`;
                 }
-                if ($("input[name=အထည်ပျက်စီးချို့ယွင်း]").val() !== '') {
-                    let val = $("input[name=အထည်ပျက်စီးချို့ယွင်း]").val();
-                    conthree = `<p>အထည်ပျက်စီးချို့ယွင်း : ${val} %</p>`;
+                if ($("input[name=damaged_product]").val() !== '') {
+                    let val = $("input[name=damaged_product]").val();
+                    conthree = `<p>အထည်ပျက်စီး ချို့ယွင်း : ${val} %</p>`;
                 }
-                if ($("input[name=တန်ဖိုးမြင့်]").val() !== '') {
-                    let val = $("input[name=တန်ဖိုးမြင့်]").val();
+                if ($("input[name=valuable_product]").val() !== '') {
+                    let val = $("input[name=valuable_product]").val();
                     confour = `<p>တန်ဖိုးမြင့် အထည်နှင့်အထည်မပျက်ပြန်လဲ : ${val} %</p>`;
                 }
 
@@ -968,9 +968,9 @@
                     oper: oper,
                     အလျော့တွက်: $("input[name=အလျော့တွက်]").val(),
                     လက်ခ: $("input[name=လက်ခ]").val(),
-                    အထည်မပျက်ပြန်သွင်း: $("input[name=အထည်မပျက်ပြန်သွင်း]").val(),
-                    အထည်ပျက်စီးချို့ယွင်း: $("input[name=အထည်ပျက်စီးချို့ယွင်း]").val(),
-                    တန်ဖိုးမြင့်: $("input[name=တန်ဖိုးမြင့်]").val()
+                    undamaged_product: $("input[name=undamaged_product]").val(),
+                    damaged_product: $("input[name=damaged_product]").val(),
+                    valuable_product: $("input[name=valuable_product]").val()
 
                 },
                 error: function (err) {
@@ -983,12 +983,12 @@
                     if (response['status'] == 'success') {
                         updatedSuccess(response['data'], 'test msg', 'price');
                         // for percent template
-                        if ($("input[name=အလျော့တွက်]").val() !== '' || $("input[name=လက်ခ]").val() !== '' || $("input[name=အထည်မပျက်ပြန်သွင်း]").val() !== '' || $("input[name=အထည်ပျက်စီးချို့ယွင်း]").val() !== '' || $("input[name=တန်ဖိုးမြင့်]").val() !== '') {
+                        if ($("input[name=အလျော့တွက်]").val() !== '' || $("input[name=လက်ခ]").val() !== '' || $("input[name=undamaged_product]").val() !== '' || $("input[name=damaged_product]").val() !== '' || $("input[name=valuable_product]").val() !== '') {
                             updatedSuccess('recap', 'test msg', 'recap')
 
                         }
                     } else if (response['status'] == 'onlypercent') {
-                        if ($("input[name=အလျော့တွက်]").val() !== '' || $("input[name=လက်ခ]").val() !== '' || $("input[name=အထည်မပျက်ပြန်သွင်း]").val() !== '' || $("input[name=အထည်ပျက်စီးချို့ယွင်း]").val() !== '' || $("input[name=တန်ဖိုးမြင့်]").val() !== '') {
+                        if ($("input[name=အလျော့တွက်]").val() !== '' || $("input[name=လက်ခ]").val() !== '' || $("input[name=undamaged_product]").val() !== '' || $("input[name=damaged_product]").val() !== '' || $("input[name=valuable_product]").val() !== '') {
                             updatedSuccess('recap', 'test msg', 'recap')
 
                         }
@@ -1005,23 +1005,23 @@
                             $("#error_လက်ခ").addClass('d-block');
                             $("#error_လက်ခ").html(response['data'].လက်ခ[0]);
                         }
-                        if (response['data'].အထည်မပျက်ပြန်သွင်း != undefined) {
-                            $("input[name=အထည်မပျက်ပြန်သွင်း]").addClass('is-invalid');
-                            $("#error_အထည်မပျက်ပြန်သွင်း").removeClass('d-none');
-                            $("#error_အထည်မပျက်ပြန်သွင်း").addClass('d-block');
-                            $("#error_အထည်မပျက်ပြန်သွင်း").html(response['data'].အထည်မပျက်ပြန်သွင်း[0]);
+                        if (response['data'].undamaged_product != undefined) {
+                            $("input[name=undamaged_product]").addClass('is-invalid');
+                            $("#error_undamaged_product").removeClass('d-none');
+                            $("#error_undamaged_product").addClass('d-block');
+                            $("#error_undamaged_product").html(response['data'].undamaged_product[0]);
                         }
-                        if (response['data'].အထည်ပျက်စီးချို့ယွင်း != undefined) {
-                            $("input[name=အထည်ပျက်စီးချို့ယွင်း]").addClass('is-invalid');
-                            $("#error_အထည်ပျက်စီးချို့ယွင်း").removeClass('d-none');
-                            $("#error_အထည်ပျက်စီးချို့ယွင်း").addClass('d-block');
-                            $("#error_အထည်ပျက်စီးချို့ယွင်း").html(response['data'].အထည်ပျက်စီးချို့ယွင်း[0]);
+                        if (response['data'].damaged_product != undefined) {
+                            $("input[name=damaged_product]").addClass('is-invalid');
+                            $("#error_damaged_product").removeClass('d-none');
+                            $("#error_damaged_product").addClass('d-block');
+                            $("#error_damaged_product").html(response['data'].damaged_product[0]);
                         }
-                        if (response['data'].တန်ဖိုးမြင့် != undefined) {
-                            $("input[name=တန်ဖိုးမြင့်]").addClass('is-invalid');
-                            $("#error_တန်ဖိုးမြင့်").removeClass('d-none');
-                            $("#error_တန်ဖိုးမြင့်").addClass('d-block');
-                            $("#error_တန်ဖိုးမြင့်").html(response['data'].တန်ဖိုးမြင့်[0]);
+                        if (response['data'].valuable_product != undefined) {
+                            $("input[name=valuable_product]").addClass('is-invalid');
+                            $("#error_valuable_product").removeClass('d-none');
+                            $("#error_valuable_product").addClass('d-block');
+                            $("#error_valuable_product").html(response['data'].valuable_product[0]);
                         }
                         if (response['data'].price != undefined) {
                             $("input[name=price]").addClass('is-invalid');
@@ -1044,8 +1044,8 @@
 
             let price = $("#changepricebox").val();
             e.preventDefault();
-            if (price !== '' || $("input[name=အလျော့တွက်]").val() !== '' || $("input[name=လက်ခ]").val() !== '' || $("input[name=အထည်မပျက်ပြန်သွင်း]").val() !== '' || $("input[name=အထည်ပျက်စီးချို့ယွင်း]").val() !== '' || $("input[name=တန်ဖိုးမြင့်]").val() !== '') {
-                if ($("input[name=အလျော့တွက်]").val() !== '' || $("input[name=လက်ခ]").val() !== '' || $("input[name=အထည်မပျက်ပြန်သွင်း]").val() !== '' || $("input[name=အထည်ပျက်စီးချို့ယွင်း]").val() !== '' || $("input[name=တန်ဖိုးမြင့်]").val() !== '') {
+            if (price !== '' || $("input[name=အလျော့တွက်]").val() !== '' || $("input[name=လက်ခ]").val() !== '' || $("input[name=undamaged_product]").val() !== '' || $("input[name=damaged_product]").val() !== '' || $("input[name=valuable_product]").val() !== '') {
+                if ($("input[name=အလျော့တွက်]").val() !== '' || $("input[name=လက်ခ]").val() !== '' || $("input[name=undamaged_product]").val() !== '' || $("input[name=damaged_product]").val() !== '' || $("input[name=valuable_product]").val() !== '') {
                     if (price !== '') {
                         if (oper == 'plus') {
                             plus();
@@ -1189,9 +1189,9 @@
                     id: item_id,
                     အလျော့တွက်: jQuery("input[name=အလျော့တွက်]").val(),
                     လက်ခ: jQuery("input[name=လက်ခ]").val(),
-                    အထည်မပျက်ပြန်သွင်း: jQuery("input[name=အထည်မပျက်ပြန်သွင်း]").val(),
-                    အထည်ပျက်စီးချို့ယွင်း: jQuery("input[name=အထည်ပျက်စီးချို့ယွင်း]").val(),
-                    တန်ဖိုးမြင့်: jQuery("input[name=တန်ဖိုးမြင့်]").val(),
+                    undamaged_product: jQuery("input[name=undamaged_product]").val(),
+                    damaged_product: jQuery("input[name=damaged_product]").val(),
+                    တန်ဖိုးမြင့်: jQuery("input[name=valuable_product]").val(),
 
                 },
                 error: function (err) {

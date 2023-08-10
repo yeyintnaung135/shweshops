@@ -63,17 +63,17 @@
                             <h5 class="h5 font-weight-bold mb-4">Extra Information</h5>
                             <div>
                                 <div class="mb-2 d-flex justify-content-between">
-                                    <span class="mm-font">အထည်မပျက် ပြန်သွင် : </span>
-                                    <span class="font-weight-bold">{{ $shop->အထည်မပျက်_ပြန်သွင်း }} %</span>
+                                    <span class="mm-font">အထည်မပျက် ပြန်သွင်း : </span>
+                                    <span class="font-weight-bold">{{ $shop->undamaged_product }} %</span>
                                 </div>
                                 <div class="mb-2 d-flex justify-content-between">
                                     <span class="mm-font">တန်ဖိုးမြင့်အထည် နှင့် အထည်မပျက်ပြန်လဲ : </span>
-                                    <span class="font-weight-bold">{{ $shop->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ }}
+                                    <span class="font-weight-bold">{{ $shop->valuable_product }}
                                         %</span>
                                 </div>
                                 <div class="mb-2 d-flex justify-content-between">
-                                    <span class="mm-font">အထည်ပျက်စီးချို့ယွင်း : </span>
-                                    <span class="font-weight-bold">{{ $shop->အထည်ပျက်စီးချို့ယွင်း }} %</span>
+                                    <span class="mm-font">အထည်ပျက်စီး ချို့ယွင်း : </span>
+                                    <span class="font-weight-bold">{{ $shop->damaged_product }} %</span>
                                 </div>
                             </div>
                         </div>

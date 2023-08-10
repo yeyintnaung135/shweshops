@@ -35,7 +35,7 @@
 
                         <div class="row g-3 align-items-center mb-3">
                             <div class="col-12">
-                                <label for="a-2" class="col-form-label">အထည်မပျက်ပြန်သွင်း </label>
+                                <label for="a-2" class="col-form-label">undamaged_product </label>
                             </div>
                             <div class="col-12">
                                 <input type="text"class="form-control" name="undamage" id="a-2"
@@ -44,7 +44,7 @@
                         </div>
                         <div class="row g-3 align-items-center mb-3">
                             <div class="col-12">
-                                <label for="a-3" class="col-form-label">အထည်ပျက်စီးချို့ယွင်း </label>
+                                <label for="a-3" class="col-form-label">damaged_product </label>
                             </div>
                             <div class="col-12">
                                 <input type="text"class="form-control" name="damage" id="a-3"

@@ -75,9 +75,9 @@
                                                 <th>Type</th>
                                                 <!-- <th>Description</th> -->
                                                 <th>Total Product Counts</th>
-                                                <!-- <th>အထည်မပျက်_ပြန်သွင်း</th>
-                                              <th>တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ</th>
-                                              <th>အထည်ပျက်စီးချို့ယွင်း</th> -->
+                                                <!-- <th>undamaged_product</th>
+                                              <th>valuable_product</th>
+                                              <th>damaged_product</th> -->
                                                 <!-- <th>Messanger Link</th>
                                               <th>Page Link</th> -->
                                                 <!-- <th>Address</th> -->
@@ -246,9 +246,9 @@
                 {
                     data: 'email'
                 },
-                // {data: 'အထည်မပျက်_ပြန်သွင်း'},
-                // {data: 'တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ'},
-                // {data: 'အထည်ပျက်စီးချို့ယွင်း'},
+                // {data: 'undamaged_product'},
+                // {data: 'valuable_product'},
+                // {data: 'damaged_product'},
                 // {data: 'messenger_link'},
                 // {data: 'page_link'},
                 // {data: 'address'},

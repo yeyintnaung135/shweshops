@@ -380,16 +380,16 @@
 
                                     <div class="se form-group row">
                                         <div class="col-md-12 col-12">
-                                            <label for="အထည်မပျက်_ပြန်သွင်း">အထည်မပျက် ပြန်သွင်း</label>
+                                            <label for="undamaged_product">အထည်မပျက် ပြန်သွင်း</label>
                                             <div class="input-group mb-3">
 
-                                                <input id="အထည်မပျက်_ပြန်သွင်း" value="{{ old('အထည်မပျက်_ပြန်သွင်း') }}"
+                                                <input id="undamaged_product" value="{{ old('undamaged_product') }}"
                                                     min="0"
-                                                    class="form-control @error('အထည်မပျက်_ပြန်သွင်း') is-invalid @enderror"
-                                                    name="အထည်မပျက်_ပြန်သွင်း" placeholder="10 % or 10000ကျပ် "
+                                                    class="form-control @error('undamaged_product') is-invalid @enderror"
+                                                    name="undamaged_product" placeholder="10 % or 10000ကျပ် "
                                                     autocomplete="new-password">
                                             </div>
-                                            @error('အထည်မပျက်_ပြန်သွင်း')
+                                            @error('undamaged_product')
                                             <x-error>
                                                 {{$message}}
                                             </x-error>
@@ -398,18 +398,18 @@
                                     </div>
                                     <div class="se form-group row">
                                         <div class="col-md-12 col-12">
-                                            <label for="တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ">တန်ဖိုးမြင့်အထည် နှင့် အထည်မပျက်ပြန်လဲ</label>
+                                            <label for="valuable_product">တန်ဖိုးမြင့်အထည် နှင့် အထည်မပျက်ပြန်လဲ</label>
                                             <div class="input-group mb-3">
 
-                                                <input value="{{ old('တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ') }}"
-                                                    min="0"  id="တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ"
+                                                <input value="{{ old('valuable_product') }}"
+                                                    min="0"  id="valuable_product"
 
-                                                    class="form-control @error('တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ') is-invalid @enderror"
-                                                    name="တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ"
+                                                    class="form-control @error('valuable_product') is-invalid @enderror"
+                                                    name="valuable_product"
                                                     placeholder="10 % or 10000ကျပ် "
                                                     >
                                             </div>
-                                            @error('တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ')
+                                            @error('valuable_product')
                                             <x-error>
                                                 {{$message}}
                                             </x-error>
@@ -421,18 +421,18 @@
                                         <!-- <label for="password" class="col-md-4 col-form-label text-md-right">Shop NAME</label> -->
 
                                         <div class="col-md-12 col-12">
-                                            <label for="အထည်ပျက်စီးချို့ယွင်း">အထည်ပျက်စီးချို့ယွင်း</label>
+                                            <label for="damaged_product">အထည်ပျက်စီး ချို့ယွင်း</label>
                                             <div class="input-group mb-3">
 
-                                                <input id="အထည်ပျက်စီးချို့ယွင်း"
-                                                    value="{{ old('အထည်ပျက်စီးချို့ယွင်း') }}" min="0"
+                                                <input id="damaged_product"
+                                                    value="{{ old('damaged_product') }}" min="0"
                                                     type="text"
-                                                    class="form-control @error('အထည်ပျက်စီးချို့ယွင်း') is-invalid @enderror"
-                                                    name="အထည်ပျက်စီးချို့ယွင်း"
+                                                    class="form-control @error('damaged_product') is-invalid @enderror"
+                                                    name="damaged_product"
                                                     placeholder="10 % or 10000ကျပ် "
                                                     autocomplete="new-password">
                                             </div>
-                                            @error('အထည်ပျက်စီးချို့ယွင်း')
+                                            @error('damaged_product')
                                             <x-error>
                                                 {{$message}}
                                             </x-error>

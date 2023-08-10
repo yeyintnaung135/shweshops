@@ -1311,9 +1311,9 @@ class PosSecondPhaseController extends Controller
         $shopowner->description = $request->description;
         $shopowner->address = $request->address;
         $shopowner->main_phone = $request->main_phone;
-        $shopowner->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ = $request->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ;
-        $shopowner->အထည်မပျက်_ပြန်သွင်း = $request->အထည်မပျက်_ပြန်သွင်း;
-        $shopowner->အထည်ပျက်စီးချို့ယွင်း = $request->အထည်ပျက်စီးချို့ယွင်း;
+        $shopowner->valuable_product = $request->valuable_product;
+        $shopowner->undamaged_product = $request->undamaged_product;
+        $shopowner->damaged_product = $request->damaged_product;
         $shopowner->messenger_link = $request->messenger_link;
         $shopowner->page_link = $request->page_link;
         $shopowner->map = $request->map;

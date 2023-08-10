@@ -579,18 +579,18 @@
                                     <input
                                         type="text"
                                         class="form-control"
-                                        v-model="undamage_product"
+                                        v-model="undamaged_product"
                                         placeholder="10 % or 10000ကျပ် "
                                     />
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>အထည်ပျက်စီးချို့ယွင်း</label>
+                                    <label>အထည်ပျက်စီး ချို့ယွင်း</label>
                                     <input
                                         type="text"
                                         class="form-control"
-                                        v-model="damage_product"
+                                        v-model="damaged_product"
                                         placeholder="10 % or 10000ကျပ် "
                                     />
                                 </div>
@@ -1412,19 +1412,19 @@ export default {
             },
 
             valuable_product: 0,
-            undamage_product: 0,
-            damage_product: 0,
+            undamaged_product: 0,
+            damaged_product: 0,
         };
     },
 
-  mounted() {
-    console.log(this.editdata.YkgetDiscount);
+    mounted() {
+        console.log(this.editdata.YkgetDiscount);
 
-    this.main_category = this.editdata.main_category;
-    this.valuable_product = this.editdata.တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ;
-    this.undamage_product = this.editdata.အထည်မပျက်_ပြန်သွင်း;
-    this.damage_product = this.editdata.အထည်ပျက်စီးချို့ယွင်း;
-    //for cat
+        this.main_category = this.editdata.main_category;
+        this.valuable_product = this.editdata.valuable_product;
+        this.undamaged_product = this.editdata.undamaged_product;
+        this.damaged_product = this.editdata.damaged_product;
+        //for cat
 
         //for cat
 
@@ -2301,12 +2301,9 @@ export default {
             bodyFormData.append("stock_count", this.stock_count);
             bodyFormData.append("description", this.description);
 
-            bodyFormData.append("အထည်မပျက်_ပြန်သွင်း", this.undamage_product);
-            bodyFormData.append("အထည်ပျက်စီးချို့ယွင်း", this.damage_product);
-            bodyFormData.append(
-                "တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ",
-                this.valuable_product
-            );
+            bodyFormData.append("undamaged_product", this.undamaged_product);
+            bodyFormData.append("damaged_product", this.damaged_product);
+            bodyFormData.append("valuable_product", this.valuable_product);
             bodyFormData.append("gold_quality", this.gold_quality);
             bodyFormData.append("gold_colour", this.gold_colour);
             bodyFormData.append("collection_id", this.collection_id);
@@ -2333,32 +2330,38 @@ export default {
 
             //or
 
-      axios
-        .post(this.$hostname + "/backside/shop_owner/customedit", bodyFormData, {
-          header: {
-            "Content-Type": "multipart/form-data",
-            // "X-CSRF-TOKEN": document
-            //     .querySelector('meta[name="csrf-token"]')
-            //     .getAttribute("content"),
-          },
-        })
-        .then((response) => {
-          console.log(response);
-          if (response.data.msg == "success") {
-            window.location.assign(
-              this.$hostname + "/backside/shop_owner/items/" + response.data.id
-            );
-          } else {
-            alert(response.data.error_msg);
-            if (window.confirm("Do u want to continue?")) {
-              location.assign(window.location.href);
-            } else {
-              location.assign(window.location.href);
-            }
-          }
-        });
-    },
-    // sendevent is prepare to send before real send
+            axios
+                .post(
+                    this.$hostname + "/backside/shop_owner/customedit",
+                    bodyFormData,
+                    {
+                        header: {
+                            "Content-Type": "multipart/form-data",
+                            // "X-CSRF-TOKEN": document
+                            //     .querySelector('meta[name="csrf-token"]')
+                            //     .getAttribute("content"),
+                        },
+                    }
+                )
+                .then((response) => {
+                    console.log(response);
+                    if (response.data.msg == "success") {
+                        window.location.assign(
+                            this.$hostname +
+                                "/backside/shop_owner/items/" +
+                                response.data.id
+                        );
+                    } else {
+                        alert(response.data.error_msg);
+                        if (window.confirm("Do u want to continue?")) {
+                            location.assign(window.location.href);
+                        } else {
+                            location.assign(window.location.href);
+                        }
+                    }
+                });
+        },
+        // sendevent is prepare to send before real send
 
         sendingEvent(files, xhr, formData) {
             console.log(files.length);
@@ -2383,12 +2386,9 @@ export default {
             formData.append("description", this.description);
             formData.append("tags", this.tags);
 
-            formData.append("အထည်မပျက်_ပြန်သွင်း", this.undamage_product);
-            formData.append("အထည်ပျက်စီးချို့ယွင်း", this.damage_product);
-            formData.append(
-                "တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ",
-                this.valuable_product
-            );
+            formData.append("undamaged_product", this.undamaged_product);
+            formData.append("damaged_product", this.damaged_product);
+            formData.append("valuable_product", this.valuable_product);
             formData.append("gold_quality", this.gold_quality);
             formData.append("gold_colour", this.gold_colour);
             formData.append("collection_id", this.collection_id);
@@ -2422,22 +2422,22 @@ export default {
             );
         },
 
-    // after send
-    successEvent(files, response) {
-      console.log(response);
-      if (response.msg == "success") {
-        window.location.assign(
-          this.$hostname + "/backside/shop_owner/items/" + response.id
-        );
-      } else {
-        alert(response.error_msg);
-        if (window.confirm("Do u want to continue?")) {
-          location.assign(window.location.href);
-        } else {
-          location.assign(window.location.href);
-        }
-      }
-    },
+        // after send
+        successEvent(files, response) {
+            console.log(response);
+            if (response.msg == "success") {
+                window.location.assign(
+                    this.$hostname + "/backside/shop_owner/items/" + response.id
+                );
+            } else {
+                alert(response.error_msg);
+                if (window.confirm("Do u want to continue?")) {
+                    location.assign(window.location.href);
+                } else {
+                    location.assign(window.location.href);
+                }
+            }
+        },
 
         //if some errors appear while uploading to server
         errorEvent(file, message, xhr) {

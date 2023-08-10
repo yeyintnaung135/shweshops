@@ -102,15 +102,15 @@
                                         </div>
                                         <div class="col-12 pl-lg-5 col-lg-6">
                                             <p><span class="mm-font">အထည်မပျက် ပြန်သွင်း
-                                                    :</span>{{ $shopowner->အထည်မပျက်_ပြန်သွင်း }}
+                                                    :</span>{{ $shopowner->undamaged_product }}
                                                 <span style="font-size: 0.85rem">%</span>
                                             </p>
                                             <p><span class="mm-font">တန်ဖိုးမြင့်အထည် နှင့် အထည်မပျက်ပြန်လဲ :
-                                                </span>{{ $shopowner->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ }}
+                                                </span>{{ $shopowner->valuable_product }}
                                                 <span style="font-size: 0.85rem">%</span>
                                             </p>
-                                            <p><span class="mm-font">အထည်ပျက်စီးချို့ယွင်း :
-                                                </span>{{ $shopowner->အထည်ပျက်စီးချို့ယွင်း }}
+                                            <p><span class="mm-font">အထည်ပျက်စီး ချို့ယွင်း :
+                                                </span>{{ $shopowner->damaged_product }}
                                                 <span style="font-size: 0.85rem">%</span>
                                             </p>
                                             @if (\App\sitesettings::where('id', 1)->first()->action === 'on')

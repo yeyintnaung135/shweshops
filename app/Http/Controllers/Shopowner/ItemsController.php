@@ -2,52 +2,41 @@
 
 namespace App\Http\Controllers\ShopOwner;
 
+use App\Facade\TzGate;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Trait\FacebookTraid;
+use App\Http\Controllers\Trait\MultipleItem;
+use App\Http\Controllers\Trait\UserRole;
+use App\Http\Controllers\Trait\YKImage;
+use App\Http\Requests\ItemsRecapUpdateRequest;
+use App\Http\Requests\MultiplePriceUpdateRequest;
+use App\Imports\ItemsImport;
+use App\Models\Collection;
+use App\Models\Discount;
 use App\Models\FacebookTable;
 use App\Models\Gems;
-use App\Http\Controllers\Trait\FacebookTraid;
-use App\Imports\ItemsImport;
 use App\Models\Item;
 use App\Models\ItemLogActivity;
-use App\Models\MultiplePriceLogs;
-use App\Models\MultipleDiscountLogs;
-use App\Models\MultipleDamageLogs;
-use App\Models\Recap;
-use App\Models\Discount;
-use App\Models\MainCategory;
-use App\Models\ShopOwner;
-use App\Models\PercentTemplate;
-use App\Models\Categories;
-use App\Models\Collection;
 use App\Models\ItemsEditDetailLogs;
-use App\Facade\TzGate;
+use App\Models\MainCategory;
+use App\Models\MultipleDamageLogs;
+use App\Models\MultipleDiscountLogs;
+use App\Models\MultiplePriceLogs;
+use App\Models\ShopOwner;
 use App\Productdetails;
-use Illuminate\Support\Str;
-use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
-use App\ProdcutdetailsForItems;
-use Illuminate\Validation\Rule;
-use Maatwebsite\Excel\Facades\Excel;
-use PhpParser\Node\Stmt\Foreach_;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Http;
-use Intervention\Image\Facades\Image;
-use App\Http\Controllers\Trait\TzRule;
-use App\Http\Controllers\Trait\YKImage;
 use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\Trait\UserRole;
-use App\Http\Requests\ItemsRecapRequest;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Trait\MultipleItem;
-use App\Http\Requests\ItemsRecapUpdateRequest;
-use Illuminate\Validation\ValidationException;
-use App\Http\Requests\MultiplePriceUpdateRequest;
+use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ItemsController extends Controller
 {
-    use YKImage, UserRole, MultipleItem,FacebookTraid;
+    use YKImage, UserRole, MultipleItem, FacebookTraid;
 
     public $err_data = [];
 
@@ -60,7 +49,6 @@ class ItemsController extends Controller
     {
 
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-
 
         return view('backend.shopowner.item.list', ['items' => $items, 'shopowner' => $this->current_shop_data()]);
     }
@@ -86,8 +74,7 @@ class ItemsController extends Controller
 
     public function item_activity_index()
     {
-            $items = Item::where('shop_id', $this->get_shopid)->orderBy('created_at', 'desc')->get();
-
+        $items = Item::where('shop_id', $this->get_shopid)->orderBy('created_at', 'desc')->get();
 
         return view('backend.shopowner.activity.product.item', ['items' => $items, 'shopowner' => $this->shop_owner]);
     }
@@ -95,7 +82,7 @@ class ItemsController extends Controller
     public function multiprice_activity_index()
     {
 
-            $items = Item::where('shop_id', $this->get_shopid)->orderBy('created_at', 'desc')->get();
+        $items = Item::where('shop_id', $this->get_shopid)->orderBy('created_at', 'desc')->get();
 
         return view('backend.shopowner.activity.product.multiprice', ['items' => $items, 'shopowner' => $this->shop_owner]);
     }
@@ -133,7 +120,6 @@ class ItemsController extends Controller
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
 
-
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
         }
@@ -142,8 +128,6 @@ class ItemsController extends Controller
         }
 
         $shop_id = $this->get_shopid;
-
-
 
         $totalRecords = Itemlogactivity::select('count(*) as allcount')
             ->where('shop_id', $shop_id)
@@ -170,7 +154,6 @@ class ItemsController extends Controller
             ->skip($start)
             ->take($rowperpage)
             ->get();
-
 
         $data_arr = array();
 
@@ -212,7 +195,6 @@ class ItemsController extends Controller
 
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
-
 
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
@@ -269,7 +251,6 @@ class ItemsController extends Controller
             ->take($rowperpage)
             ->get();
 
-
         //    return $records;
         $data_arr = array();
 
@@ -318,7 +299,6 @@ class ItemsController extends Controller
 
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
-
 
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
@@ -436,7 +416,6 @@ class ItemsController extends Controller
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
 
-
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
         }
@@ -524,7 +503,6 @@ class ItemsController extends Controller
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
 
-
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
         }
@@ -533,9 +511,6 @@ class ItemsController extends Controller
         }
 
         $shop_id = $this->get_shopid();
-
-
-
 
         $totalRecords = Item::select('count(*) as allcount')
             ->where('shop_id', $shop_id)
@@ -614,7 +589,6 @@ class ItemsController extends Controller
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
 
-
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
         }
@@ -630,7 +604,6 @@ class ItemsController extends Controller
         } else {
             $shop_id = Auth::guard('shop_role')->user()->shop_id;
         }
-
 
         $totalRecords = Item::select('count(*) as allcount')
             ->where('shop_id', $shop_id)
@@ -695,11 +668,9 @@ class ItemsController extends Controller
         echo json_encode($result);
     }
 
-
     //show create form
     public function create()
     {
-
 
         $test_world_gold = 3224903.7151547;
         $product_details = Productdetails::all();
@@ -736,7 +707,6 @@ class ItemsController extends Controller
         $jdmidimage = json_decode($input['formidphotos'], true);
         $jdthumbimage = json_decode($input['forthumbphotos'], true);
 
-
         foreach ($request->file('file') as $key => $value) {
             $file = $request->file('file')[$key];
             $imageName[$key] = strtolower($request->file('file')[$key]->getClientOriginalName());
@@ -745,7 +715,6 @@ class ItemsController extends Controller
             //for thumbnail
 
             //            $this->setthumbs($get_path, $imageName[$key]);
-
 
         }
         foreach ($jdmidimage as $jdmi) {
@@ -855,7 +824,6 @@ class ItemsController extends Controller
 
         $input['weight_unit'] = 0;
 
-
         $itemupload = Item::create($input);
         \ShopownerLogActivity::ShopownerCreateLog($itemupload, $shop_id);
         if ($itemupload) {
@@ -863,23 +831,21 @@ class ItemsController extends Controller
             $itemupload->tag($request->tags);
 
         }
-        if($input['price'] != 0){
-            $toshowprice=$input['price'];
+        if ($input['price'] != 0) {
+            $toshowprice = $input['price'];
 
-        }else{
-            $toshowprice=$input['min_price'].'-'.$input['max_price'];
-
-        }
-        $data=$input['name'].' ('.$toshowprice.')'.$input['description'];
-        $getfbdata=facebooktable::where('shop_id',$input['shop_id'])->first();
-        if(!empty($getfbdata)){
-            $this->posttofbpage($input['shop_id'],$data,$itemupload->check_photo);
+        } else {
+            $toshowprice = $input['min_price'] . '-' . $input['max_price'];
 
         }
+        $data = $input['name'] . ' (' . $toshowprice . ')' . $input['description'];
+        $getfbdata = facebooktable::where('shop_id', $input['shop_id'])->first();
+        if (!empty($getfbdata)) {
+            $this->posttofbpage($input['shop_id'], $data, $itemupload->check_photo);
 
+        }
 
         Session::flash('message', 'Your item was successfully uploaded');
-
 
         return response()->json(['msg' => 'success', 'id' => $itemupload->id]);
 
@@ -907,7 +873,6 @@ class ItemsController extends Controller
             }
         } else {
 
-
             $this->role('shop_owner');
 
             $collection = Collection::where('shop_id', $this->role)->get();
@@ -926,7 +891,6 @@ class ItemsController extends Controller
                 }
             }
         }
-
 
         $cat_list = DB::table('categories')->leftjoin('items', 'categories.name', '=', 'items.category_id')->select('categories.*')->groupBy('categories.name')->orderByRaw("CASE
                                 WHEN count(items.category_id) = 0 THEN categories.id END ASC,
@@ -962,7 +926,6 @@ class ItemsController extends Controller
 
         }
 
-
     }
 
     //edit but custom upload not from dropzone
@@ -995,7 +958,6 @@ class ItemsController extends Controller
         $old = $change->getOriginal();
         $old_gem = Gems::where('item_id', $request->id)->first();
 
-
         if ($change->update($input)) {
 
             if (isset(Auth::guard('shop_role')->user()->id)) {
@@ -1005,8 +967,7 @@ class ItemsController extends Controller
                 $shop_id = Auth::guard('shop_owner')->user()->id;
             }
 
-
-            $shopownerlogid = \ShopownerLogActivity:: ShopownerEditLog($request, $shop_id);
+            $shopownerlogid = \ShopownerLogActivity::ShopownerEditLog($request, $shop_id);
             $old_tags = DB::table('tagging_tagged')->where('taggable_id', $request->id)->get();
             $item_tag = Item::where('id', $request->id)->first();
             $item_tagarray = explode(',', $item_tag->tags);
@@ -1015,14 +976,11 @@ class ItemsController extends Controller
 
             // $item_tagarray = implode(',',$item_tag->tags);
 
-
             Item::find($request->id)->retag($request->all()['tags']);
-
 
             $checkgcount = Gems::where('item_id', $request->id)->count();
             if ($checkgcount == 0) {
                 $n_gems = Gems::create(['gems' => $request->all()['gems'], 'item_id' => $request->id]);
-
 
             } else {
                 $n_gems = Gems::where('item_id', $request->id);
@@ -1051,7 +1009,6 @@ class ItemsController extends Controller
 
         $items_edit_detail_logs = new ItemsEditDetailLogs();
         // return dd($item_tag['tags']);
-
 
         $items_edit_detail_logs->tags = $output;
 
@@ -1112,23 +1069,23 @@ class ItemsController extends Controller
         //   }else{
         //       $items_edit_detail_logs->new_sizing_guide = $changes['sizing_guide'];
         //   }
-        $items_edit_detail_logs->undamage = $old['အထည်မပျက်_ပြန်သွင်း'];
-        if ($old['အထည်မပျက်_ပြန်သွင်း'] == $change->အထည်မပျက်_ပြန်သွင်း) {
+        $items_edit_detail_logs->undamage = $old['undamaged_product'];
+        if ($old['undamaged_product'] == $change->undamaged_product) {
             $items_edit_detail_logs->new_undamage = "-----";
         } else {
-            $items_edit_detail_logs->new_undamage = $changes['အထည်မပျက်_ပြန်သွင်း'];
+            $items_edit_detail_logs->new_undamage = $changes['undamaged_product'];
         }
-        $items_edit_detail_logs->expensive_thing = $old['တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ'];
-        if ($old['တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ'] == $change->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ) {
+        $items_edit_detail_logs->expensive_thing = $old['valuable_product'];
+        if ($old['valuable_product'] == $change->valuable_product) {
             $items_edit_detail_logs->new_expensive_thing = "-----";
         } else {
-            $items_edit_detail_logs->new_expensive_thing = $changes['တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ'];
+            $items_edit_detail_logs->new_expensive_thing = $changes['valuable_product'];
         }
-        $items_edit_detail_logs->damage = $old['အထည်ပျက်စီးချို့ယွင်း'];
-        if ($old['အထည်ပျက်စီးချို့ယွင်း'] == $change->အထည်ပျက်စီးချို့ယွင်း) {
+        $items_edit_detail_logs->damage = $old['damaged_product'];
+        if ($old['damaged_product'] == $change->damaged_product) {
             $items_edit_detail_logs->new_damage = "-----";
         } else {
-            $items_edit_detail_logs->new_damage = $changes['အထည်ပျက်စီးချို့ယွင်း'];
+            $items_edit_detail_logs->new_damage = $changes['damaged_product'];
         }
         $items_edit_detail_logs->weight = $old['weight'];
         if ($old['weight'] == $change->weight) {
@@ -1239,15 +1196,13 @@ class ItemsController extends Controller
         } else {
             $items_edit_detail_logs->new_collection_id = $changes['collection_id'];
         }
-        $items_edit_detail_logs->user_id = $old ['user_id'];
-        $items_edit_detail_logs->shop_id = $old ['shop_id'];
+        $items_edit_detail_logs->user_id = $old['user_id'];
+        $items_edit_detail_logs->shop_id = $old['shop_id'];
         $items_edit_detail_logs->shopownereditlogs_id = $shopownerlogid->id;
         $items_edit_detail_logs->save();
 
-
         Session::flash('message', 'Your item was successfully updated');
         return response()->json(['msg' => 'success', 'id' => $request->id]);
-
 
     }
 
@@ -1292,7 +1247,6 @@ class ItemsController extends Controller
             //$this->setthumbs($get_path, $imageName[$key]);
             //for thumbnail
 
-
         }
         foreach ($jdmidimage as $jdmi) {
             $this->base64_to_image($jdmi['data'], public_path('images/items/mid/' . strtolower($jdmi['name'])));
@@ -1321,7 +1275,6 @@ class ItemsController extends Controller
 
             }
 
-
         }
         $change = Item::where('id', $request->id)->first();
         // return dd($change);
@@ -1334,7 +1287,7 @@ class ItemsController extends Controller
                 $shop_id = Auth::guard('shop_owner')->user()->id;
             }
 
-            $shopownerlogid = \ShopownerLogActivity:: ShopownerEditLog($request, $shop_id);
+            $shopownerlogid = \ShopownerLogActivity::ShopownerEditLog($request, $shop_id);
             Item::find($request->id)->retag($request->all()['tags']);
 
             $checkgcount = Gems::where('item_id', $request->id)->count();
@@ -1365,16 +1318,13 @@ class ItemsController extends Controller
 
                 }
 
-
             }
-
 
             //            $dis = discount::where('item_id', $request->id)->get();
             //            foreach ($dis as $d) {
             //                $percent = $input['price'] - ($input['price'] * $d->percent / 100);
             //                discount::where('item_id', $request->id)->update(['discount_price' => $percent]);
             //            }
-
 
         }
         // else {
@@ -1396,7 +1346,6 @@ class ItemsController extends Controller
 
         $items_edit_detail_logs = new ItemsEditDetailLogs();
         // return dd($item_tag['tags']);
-
 
         $items_edit_detail_logs->tags = $output;
 
@@ -1524,23 +1473,23 @@ class ItemsController extends Controller
         //   }else{
         //       $items_edit_detail_logs->new_sizing_guide = $changes['sizing_guide'];
         //   }
-        $items_edit_detail_logs->undamage = $current_item->အထည်မပျက်_ပြန်သွင်း;
-        if ($current_item->အထည်မပျက်_ပြန်သွင်း == $change->အထည်မပျက်_ပြန်သွင်း) {
+        $items_edit_detail_logs->undamage = $current_item->undamaged_product;
+        if ($current_item->undamaged_product == $change->undamaged_product) {
             $items_edit_detail_logs->new_undamage = "-----";
         } else {
-            $items_edit_detail_logs->new_undamage = $changes['အထည်မပျက်_ပြန်သွင်း'];
+            $items_edit_detail_logs->new_undamage = $changes['undamaged_product'];
         }
-        $items_edit_detail_logs->expensive_thing = $current_item->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ;
-        if ($current_item->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ == $change->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ) {
+        $items_edit_detail_logs->expensive_thing = $current_item->valuable_product;
+        if ($current_item->valuable_product == $change->valuable_product) {
             $items_edit_detail_logs->new_expensive_thing = "-----";
         } else {
-            $items_edit_detail_logs->new_expensive_thing = $changes['တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ'];
+            $items_edit_detail_logs->new_expensive_thing = $changes['valuable_product'];
         }
-        $items_edit_detail_logs->damage = $current_item->အထည်ပျက်စီးချို့ယွင်း;
-        if ($current_item->အထည်ပျက်စီးချို့ယွင်း == $change->အထည်ပျက်စီးချို့ယွင်း) {
+        $items_edit_detail_logs->damage = $current_item->damaged_product;
+        if ($current_item->damaged_product == $change->damaged_product) {
             $items_edit_detail_logs->new_damage = "-----";
         } else {
-            $items_edit_detail_logs->new_damage = $changes['အထည်ပျက်စီးချို့ယွင်း'];
+            $items_edit_detail_logs->new_damage = $changes['damaged_product'];
         }
         $items_edit_detail_logs->weight = $current_item->weight;
         if ($current_item->weight == $change->weight) {
@@ -1656,7 +1605,6 @@ class ItemsController extends Controller
         $items_edit_detail_logs->shopownereditlogs_id = $shopownerlogid->id;
         $items_edit_detail_logs->save();
 
-
         Session::flash('message', 'Your item was successfully updated');
         return response()->json(['msg' => 'success', 'id' => $request->id]);
 
@@ -1669,7 +1617,7 @@ class ItemsController extends Controller
             $item = Item::findOrfail($id);
             $shop_id = $this->get_shopid();
 
-            \MultiplePriceLogs:: MultipleMinusPriceLogs($item, $plus_price, $shop_id);
+            \MultiplePriceLogs::MultipleMinusPriceLogs($item, $plus_price, $shop_id);
             $this->minus($item, $request);
         }
         $items = Item::whereIn('id', $request->id)->get();
@@ -1692,7 +1640,7 @@ class ItemsController extends Controller
             $shop_id = $this->get_shopid();
 
             // return dd($item);
-            \MultipleDamageLogs:: MultipleDamageLogs($item, $old_percent, $shop_id);
+            \MultipleDamageLogs::MultipleDamageLogs($item, $old_percent, $shop_id);
             // $item->user_id = $user_id;
             $this->get_multiple_recap($item, $old_percent);
         }
@@ -1716,13 +1664,11 @@ class ItemsController extends Controller
             $item = Item::findOrfail($id);
             $shop_id = $this->get_shopid();
 
-            \MultiplePriceLogs:: MultiplePlusPriceLogs($item, $plus_price, $shop_id);
+            \MultiplePriceLogs::MultiplePlusPriceLogs($item, $plus_price, $shop_id);
             $this->plus($item, $request);
-
 
         }
         $items = Item::whereIn('id', $request->id)->get();
-
 
         Session::flash('message', 'Your items were successfully edited');
         return response()->json(
@@ -1746,7 +1692,6 @@ class ItemsController extends Controller
             ]);
 
         }
-
 
         $change_request_array = explode(",", $request->multipleStockId);
 
@@ -1773,23 +1718,22 @@ class ItemsController extends Controller
             'လက်ခ.min' => 'လက်ခသည် 0 ထပ် မငယ်ရ',
             'လက်ခ.numeric' => 'လက်ခသည် number ဖြစ်ရမည်',
 
-            'အထည်မပျက်ပြန်သွင်း.min' => 'အထည်မပျက်ပြန်သွင်းသည် 0 ထပ် မငယ်ရ',
-            'အထည်မပျက်ပြန်သွင်း.numeric' => 'အထည်မပျက်ပြန်သွင်းသည် number ဖြစ်ရမည်',
+            'undamaged_product.min' => 'အထည်မပျက်ပြန်သွင်းသည် 0 ထပ် မငယ်ရ',
+            'undamaged_product.numeric' => 'အထည်မပျက်ပြန်သွင်းသည် number ဖြစ်ရမည်',
 
-            'အထည်ပျက်စီးချို့ယွင်း.min' => 'အထည်ပျက်စီးချို့ယွင်းသည် 0 ထပ် မငယ်ရ',
-            'အထည်ပျက်စီးချို့ယွင်း.numeric' => 'အထည်ပျက်စီးချို့ယွင်းသည် number ဖြစ်ရမည်',
+            'damaged_product.min' => 'အထည်ပျက်စီးချို့ယွင်းသည် 0 ထပ် မငယ်ရ',
+            'damaged_product.numeric' => 'အထည်ပျက်စီးချို့ယွင်းသည် number ဖြစ်ရမည်',
 
-
-            'တန်ဖိုးမြင့်.min' => 'တန်ဖိုးမြင့် အထည်နှင့်အထည်မပျက်ပြန်လဲသည် 0 ထပ် မငယ်ရ',
-            'တန်ဖိုးမြင့်.numeric' => 'တန်ဖိုးမြင့် အထည်နှင့်အထည်မပျက်ပြန်လဲသည် number ဖြစ်ရမည်'];
+            'valuable_product.min' => 'တန်ဖိုးမြင့် အထည်နှင့်အထည်မပျက်ပြန်လဲသည် 0 ထပ် မငယ်ရ',
+            'valuable_product.numeric' => 'တန်ဖိုးမြင့် အထည်နှင့်အထည်မပျက်ပြန်လဲသည် number ဖြစ်ရမည်'];
 
         return Validator::make($data, [
             'price' => ['numeric', 'min:1'],
             'အလျော့တွက်' => ['numeric', 'min:0', 'max:90'],
             'လက်ခ' => ['numeric', 'min:0', 'max:90'],
-            'အထည်မပျက်ပြန်သွင်း' => ['numeric', 'min:0', 'max:90'],
-            'အထည်ပျက်စီးချို့ယွင်း' => ['numeric', 'min:0', 'max:90'],
-            'တန်ဖိုးမြင့်' => ['numeric', 'min:0', 'max:90'],
+            'undamaged_product' => ['numeric', 'min:0', 'max:90'],
+            'damaged_product' => ['numeric', 'min:0', 'max:90'],
+            'valuable_product' => ['numeric', 'min:0', 'max:90'],
         ], $message);
     }
 
@@ -1863,8 +1807,7 @@ class ItemsController extends Controller
                 if ($item->price != 0) {
                     $willupdatepricelist[$key] = ['fromdisprice' => $fromdisprice, 'disitem' => $disitem, 'disprice' => $disprice, 'dismin' => $dismin, 'dismax' => $dismax, 'id' => $item->id, 'name' => $item->name, 'product_code' => $item->product_code, 'orgprice' => $item->price, 'orgmin' => 0, 'orgmax' => 0, 'price' => $plus_price, 'min' => 0, 'max' => 0];
                 } else {
-                    $willupdatepricelist[$key] = ['fromdisprice' => $fromdisprice, 'disitem' => $disitem, 'disprice' => $disprice, 'dismin' => $dismin, 'dismax' => $dismax, 'id' => $item->id, 'name' => $item->name, 'product_code' => $item->product_code, 'price' => 0, 'min' => $minPrice, 'max' => $maxPrice, 'orgprice' => 0, 'orgmin' => $item->min_price, 'orgmax' => $item->max_price,];
-
+                    $willupdatepricelist[$key] = ['fromdisprice' => $fromdisprice, 'disitem' => $disitem, 'disprice' => $disprice, 'dismin' => $dismin, 'dismax' => $dismax, 'id' => $item->id, 'name' => $item->name, 'product_code' => $item->product_code, 'price' => 0, 'min' => $minPrice, 'max' => $maxPrice, 'orgprice' => 0, 'orgmin' => $item->min_price, 'orgmax' => $item->max_price];
 
                 }
 
@@ -1874,7 +1817,6 @@ class ItemsController extends Controller
             return response()->json(['status' => 'onlypercent']);
 
         }
-
 
     }
 
@@ -1903,7 +1845,6 @@ class ItemsController extends Controller
 
         $item_log = ItemLogActivity::where('item_id', $id);
 
-
         if (discount::where('item_id', $id)->count() > 0) {
             discount::where('item_id', $id)->delete();
         }
@@ -1923,8 +1864,7 @@ class ItemsController extends Controller
             }
             $shop_id = "yahoo";
         }
-        $shopownerlogid = \ShopownerLogActivity:: ShopownerDeleteLog($shopowner_log, $shop_id);
-
+        $shopownerlogid = \ShopownerLogActivity::ShopownerDeleteLog($shopowner_log, $shop_id);
 
         return redirect(url('backside/shop_owner/items'))->with(['status' => 'success', 'message' => 'Your Item was successfully Deleted']);
     }
@@ -1966,7 +1906,6 @@ class ItemsController extends Controller
         } else {
             $shop_id = Auth::guard('shop_role')->user()->shop_id;
         }
-
 
         $totalRecords = Item::onlyTrashed()
             ->select('count(*) as allcount')
@@ -2138,33 +2077,30 @@ class ItemsController extends Controller
     {
 
         $request->validate([
-            'price' => 'required'
+            'price' => 'required',
         ]);
 
         $price = explode("-", $request->price);
 
         $item = Item::find($request->id);
-        if(count($price) > 1){
-            if($price[0] < $price[1]){
+        if (count($price) > 1) {
+            if ($price[0] < $price[1]) {
                 $item->price = 0;
                 $item->min_price = $price[0];
                 $item->max_price = $price[1];
                 $item->update();
-            }else{
-               return redirect()->back()->withErrors('wrong_price','In Valid Price');
+            } else {
+                return redirect()->back()->withErrors('wrong_price', 'In Valid Price');
             }
 
-
-
-        }else{
+        } else {
             $item->price = $request->price;
             $item->update();
         }
 
-
         return response()->json([
             'success' => true,
-            'data' =>  $price
+            'data' => $price,
         ]);
     }
 

@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class Item extends Model
@@ -13,7 +12,7 @@ class Item extends Model
     //
     use \Conner\Tagging\Taggable , SoftDeletes;
 
-    protected $fillable = ['id', 'main_category', 'diamond', 'gender', 'size', 'handmade', 'charge', 'carat', 'yati', 'pwint', 'd_gram', 'stock_count', 'product_code', 'photo_one', 'collection_id', 'min_price', 'max_price', 'weight_unit', 'photo_two', 'photo_three', 'photo_four', 'photo_five', 'photo_five', 'photo_six', 'default_photo', 'view_count', 'photo_seven', 'photo_eight', 'photo_nine', 'photo_ten', 'name', 'price', 'description', 'shop_id', 'gold_quality', 'gold_colour', 'sizing_guide', 'အထည်မပျက်_ပြန်သွင်း', 'တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ', 'အထည်ပျက်စီးချို့ယွင်း', 'weight', 'review', 'stock', 'category_id', 'user_id'];
+    protected $fillable = ['id', 'main_category', 'diamond', 'gender', 'size', 'handmade', 'charge', 'carat', 'yati', 'pwint', 'd_gram', 'stock_count', 'product_code', 'photo_one', 'collection_id', 'min_price', 'max_price', 'weight_unit', 'photo_two', 'photo_three', 'photo_four', 'photo_five', 'photo_five', 'photo_six', 'default_photo', 'view_count', 'photo_seven', 'photo_eight', 'photo_nine', 'photo_ten', 'name', 'price', 'description', 'shop_id', 'gold_quality', 'gold_colour', 'sizing_guide', 'undamaged_product', 'valuable_product', 'damaged_product', 'weight', 'review', 'stock', 'category_id', 'user_id'];
 
     //NOTE Upper Cases are for vue to pass attribute to JS as json
 
