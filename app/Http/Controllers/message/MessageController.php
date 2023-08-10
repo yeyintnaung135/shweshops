@@ -13,6 +13,7 @@ use App\Http\Controllers\traid\firebase;
 use App\Http\Controllers\traid\forsitesetting;
 use App\Http\Controllers\traid\UserRole;
 use App\Messages;
+use App\Models\Shops;
 use App\Shopowner;
 use App\User;
 use App\Usersorshopsonlinestatus;
@@ -93,7 +94,15 @@ class MessageController extends Controller
 
     public function chatpannel()
     {
-        return view('backend.shopowner.chatpannel.chatpannel');
+
+
+        if (isset(Auth::guard('shop_owner')->user()->id)) {
+            $current_shop = ShopOwner::where('id', Auth::guard('shop_owner')->user()->id)->first();
+        } else {
+            $manager = Manager::where('id', Auth::guard('shop_role')->user()->id)->pluck('shop_id');
+            $current_shop = Shopowner::where('id', $manager)->first();
+        }
+        return view('backend.shopowner.chatpannel.chatpannel', ['currentShop' => $current_shop]);
     }
 
     public function getshopschatslist()

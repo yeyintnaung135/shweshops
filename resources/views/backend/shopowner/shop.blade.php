@@ -54,8 +54,8 @@
                                         </div>
                                     @else
                                         <?php
-                                        if (\App\ShopBanner::where('shop_owner_id', $shopowner->id)->first()) {
-                                            $getbanner = \App\ShopBanner::where('shop_owner_id', $shopowner->id)->first()->location;
+                                        if ($banner) {
+                                            $getbanner = $banner->location;
                                         } else {
                                             $getbanner = 'default.jpg';
                                         }
@@ -113,7 +113,7 @@
                                                 </span>{{ $shopowner->အထည်ပျက်စီးချို့ယွင်း }}
                                                 <span style="font-size: 0.85rem">%</span>
                                             </p>
-                                            @if (\App\sitesettings::where('id', 1)->first()->action === 'on')
+                                            @if ($siteSettingAction === 'on')
                                                 <p v-if="fbdata.showdv=='yes'">
                                                     <a href="javascript:void(0)" @click="fblogin"
                                                         v-if="fbdata.connected == 'no'" class="btn btn-primary "><b>

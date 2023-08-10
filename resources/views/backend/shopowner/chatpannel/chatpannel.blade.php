@@ -11,12 +11,9 @@
             use App\Shopowner;
             use App\Manager;
 
-            if (isset(Auth::guard('shop_owner')->user()->id)) {
-                $current_shop = Shopowner::where('id', Auth::guard('shop_owner')->user()->id)->first();
-            } else {
-                $manager = Manager::where('id', Auth::guard('shop_role')->user()->id)->pluck('shop_id');
-                $current_shop = Shopowner::where('id', $manager)->first();
-            }
+
+                $current_shop = $currentShop;
+
         @endphp
         <div class="content-wrapper sn-background-light-blue">
             <div class="sn-admin-wrapper">

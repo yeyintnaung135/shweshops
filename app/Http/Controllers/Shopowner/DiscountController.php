@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\ShopOwner;
 
 use App\Events\Shopownermessage;
-use App\Forfirebase;
+use App\ForFirebase;
 use App\Http\Controllers\Trait\Firebase;
 use App\Models\Item;
 use App\Models\Discount;
