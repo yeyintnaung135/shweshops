@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Role;
-use App\Models\Shopowner;
+use App\Models\Shops;
 use App\Models\Shopdirectory;
 use App\Models\ShopBanner;
 use App\Models\Percent_template;

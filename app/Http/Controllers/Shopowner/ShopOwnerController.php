@@ -47,8 +47,8 @@ class ShopOwnerController extends Controller
 
     public function index()
     {
-        $storecattocache = Cache::put('cat', $this->getallcatcount());
 
+        $storecattocache = Cache::put('cat', $this->getallcatcount());
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.list', ['items' => $items]);
     }

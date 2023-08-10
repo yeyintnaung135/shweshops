@@ -2,29 +2,17 @@
 
 namespace App\Providers;
 
-<<<<<<< HEAD
-use App\Featuresforshops;
-=======
 use App\Models\Featuresforshops;
->>>>>>> c127b1566be7122c565719718ac60f06891577f9
 use App\Http\Controllers\Trait\UserRole;
 use App\Policies\ItemYkPolicy;
 
 use App\Models\Item;
 use App\Models\Role;
-<<<<<<< HEAD
-use App\sitesettings;
-use App\Models\User;
-use App\Models\Manager;
-use App\Models\Shopowner;
-use App\ShweNews\Post;
-=======
 use App\Models\sitesettings;
 use App\Models\User;
 use App\Models\Manager;
 use App\Models\Shops;
 use App\Models\ShweNews\Post;
->>>>>>> c127b1566be7122c565719718ac60f06891577f9
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;

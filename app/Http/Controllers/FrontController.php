@@ -23,7 +23,7 @@ use App\Models\Manager_fav;
 use App\Models\News;
 use App\Models\OpeningTimes;
 use App\Models\Shopdirectory;
-use App\Models\Shopowner;
+use App\Models\Shops;
 use App\Models\Shop_owners_fav;
 use App\Models\State;
 use App\Models\Township;
@@ -52,7 +52,7 @@ class FrontController extends Controller
 
     public function getshopbystate($id)
     {
-        $shops = Shopowner::where('state', $id)->orderBy('shop_name', 'asc')->get();
+        $shops = Shops::where('state', $id)->orderBy('shop_name', 'asc')->get();
         return response()->json($shops);
     }
 
@@ -66,16 +66,16 @@ class FrontController extends Controller
         $data = Shopdirectory::select(
             [
                 'shop_directory.id as dir_id', 'shop_directory.shop_id as id',
-                'shop_directory.shop_name as dir_shop_name', 'shop_owners.shop_name as shop_name',
-                'shop_directory.shop_name_url as dir_shop_name_url', 'shop_owners.shop_name_url as shop_name_url',
-                'shop_directory.main_phone as dir_main_phone', 'shop_owners.main_phone as main_phone',
-                'shop_directory.shop_logo as dir_shop_logo', 'shop_owners.shop_logo as shop_logo',
-                'shop_directory.facebook_link as dir_facebook_link', 'shop_owners.page_link as facebook_link',
+                'shop_directory.shop_name as dir_shop_name', 'shops.shop_name as shop_name',
+                'shop_directory.shop_name_url as dir_shop_name_url', 'shops.shop_name_url as shop_name_url',
+                'shop_directory.main_phone as dir_main_phone', 'shops.main_phone as main_phone',
+                'shop_directory.shop_logo as dir_shop_logo', 'shops.shop_logo as shop_logo',
+                'shop_directory.facebook_link as dir_facebook_link', 'shops.page_link as facebook_link',
                 'shop_directory.website_link as website_link',
-                'shop_owners.premium as premium',
+                'shops.premium as premium',
             ]
-        )->leftjoin('shop_owners', 'shop_directory.shop_id', '=', 'shop_owners.id')
-            ->where('shop_owners.deleted_at', null)
+        )->leftjoin('shops', 'shop_directory.shop_id', '=', 'shops.id')
+            ->where('shops.deleted_at', null)
             ->orderBy('shop_directory.created_at', 'DESC')
             ->where('pos_only', 'no')
             ->limit(20)->get()
@@ -113,20 +113,20 @@ class FrontController extends Controller
 
         if ($request->filtertype['state'] == 0) {
             $dir_state = 'shop_directory.state >= 0';
-            $state = 'shop_owners.state >= 0';
+            $state = 'shops.state >= 0';
         } else {
             // $dir_state = "shop_directory.state = " . $request->filtertype['state'];
             $dir_state = "shop_directory.state REGEXP '\"" . $request->filtertype['state'] . "\"'";
-            $state = "shop_owners.state = " . $request->filtertype['state'];
+            $state = "shops.state = " . $request->filtertype['state'];
         }
 
         if ($request->filtertype['township'] == 0) {
             $dir_township = 'shop_directory.township >= 0';
-            $township = 'shop_owners.township >= 0';
+            $township = 'shops.township >= 0';
         } else {
             // $dir_township = "shop_directory.township = " . $request->filtertype['township'];
             $dir_township = "shop_directory.township REGEXP '\"" . $request->filtertype['township'] . "\"'";
-            $township = "shop_owners.township = " . $request->filtertype['township'];
+            $township = "shops.township = " . $request->filtertype['township'];
         }
 
         if ($request->filtertype['shopname'] == '') {
@@ -139,16 +139,16 @@ class FrontController extends Controller
         $shops = Shopdirectory::select(
             [
                 'shop_directory.id as dir_id', 'shop_directory.shop_id as id',
-                'shop_directory.shop_name as dir_shop_name', 'shop_owners.shop_name as shop_name',
-                'shop_directory.shop_name_url as dir_shop_name_url', 'shop_owners.shop_name_url as shop_name_url',
-                'shop_directory.main_phone as dir_main_phone', 'shop_owners.main_phone as main_phone',
-                'shop_directory.shop_logo as dir_shop_logo', 'shop_owners.shop_logo as shop_logo',
-                'shop_directory.facebook_link as dir_facebook_link', 'shop_owners.page_link as facebook_link',
+                'shop_directory.shop_name as dir_shop_name', 'shops.shop_name as shop_name',
+                'shop_directory.shop_name_url as dir_shop_name_url', 'shops.shop_name_url as shop_name_url',
+                'shop_directory.main_phone as dir_main_phone', 'shops.main_phone as main_phone',
+                'shop_directory.shop_logo as dir_shop_logo', 'shops.shop_logo as shop_logo',
+                'shop_directory.facebook_link as dir_facebook_link', 'shops.page_link as facebook_link',
                 'shop_directory.website_link as website_link',
-                'shop_owners.premium as premium',
+                'shops.premium as premium',
             ]
-        )->leftjoin('shop_owners', 'shop_directory.shop_id', '=', 'shop_owners.id')
-            ->where('shop_owners.deleted_at', null)
+        )->leftjoin('shops', 'shop_directory.shop_id', '=', 'shops.id')
+            ->where('shops.deleted_at', null)
             ->orderBy('shop_directory.created_at', 'DESC')
             ->where(function ($query) use ($state, $dir_state) {
                 $query->whereRaw($state)
@@ -161,8 +161,8 @@ class FrontController extends Controller
             ->where(function ($query) use ($shopname, ) {
                 $query->where('shop_directory.shop_name', 'like', $shopname)
                     ->orWhere('shop_directory.shop_name_myan', 'like', $shopname)
-                    ->orWhere('shop_owners.shop_name', 'like', $shopname)
-                    ->orWhere('shop_owners.shop_name_myan', 'like', $shopname);
+                    ->orWhere('shops.shop_name', 'like', $shopname)
+                    ->orWhere('shops.shop_name_myan', 'like', $shopname);
             })
             ->skip($request->filtertype['shoplimit'])->take('20')->get()
             ->map(fn($data) => [
@@ -254,9 +254,9 @@ class FrontController extends Controller
 
         //for all cat count
 
-//        $shops = Shopowner::orderBy('created_at', 'desc')->limit(20)->get();
+//        $shops = Shops::orderBy('created_at', 'desc')->limit(20)->get();
 //        $shops = $shops->shuffle()->values();
-        $premiumshops = Shopowner::orderBy('created_at', 'desc')->where('premium', 'yes')->where('pos_only', 'no')->limit(20)->get();
+        $premiumshops = Shops::orderBy('created_at', 'desc')->where('premium', 'yes')->where('pos_only', 'no')->limit(20)->get();
 
 //        //for discount slide and promotion pannel
 //        $discount = discount::orderBy('percent', 'desc')->get();
@@ -268,8 +268,8 @@ class FrontController extends Controller
 
         //forlogs
 
-        $popular_shops = frontuserlogs::leftJoin('shop_owners', 'front_user_logs.shop_id', '=', 'shop_owners.id')
-            ->select('shop_owners.id', 'shop_owners.shop_logo', 'shop_owners.shop_name', 'shop_owners.shop_name_url')->selectRaw('count(*) as s_count')
+        $popular_shops = frontuserlogs::leftJoin('shops', 'front_user_logs.shop_id', '=', 'shops.id')
+            ->select('shops.id', 'shops.shop_logo', 'shops.shop_name', 'shops.shop_name_url')->selectRaw('count(*) as s_count')
             ->where('status', 'shopdetail')
             ->whereDate('front_user_logs.created_at', '>', Carbon::today()->subDay(30))
             ->groupBy('shop_id')
@@ -392,7 +392,7 @@ class FrontController extends Controller
     public function search()
     {
         $categories = Item::select('category_id')->groupBy('category_id')->get();
-        $shops = Shopowner::all();
+        $shops = Shops::all();
         $priceFrom = Item::select('price')->orderBy('price', 'asc')->get();
         $priceTo = Item::select('price')->orderBy('price', 'desc')->get();
         $gold_quality = Item::select('gold_quality')->groupBy('gold_quality')->get();
@@ -422,7 +422,7 @@ class FrontController extends Controller
 
         // })->orwhereRaw("tagging_tagged.tag_name REGEXP '(" . $request['data'] . ")'")->orWhere('items.category_id', 'like', $request['data'])->orWhere('items.product_code', 'like', '%' . $request['data'] . '%')->skip($request['limit'])->take('20')->get();
 
-        $search_result_shops = Shopowner::where(function ($query) use ($request) {
+        $search_result_shops = Shops::where(function ($query) use ($request) {
             //remove space from incoming str
             $remove_space = str_replace(' ', '', $request['data']);
             $query->whereRaw("REPLACE(shop_name,' ','')  REGEXP '(" . $remove_space . ")'");
@@ -438,8 +438,8 @@ class FrontController extends Controller
         $catlist = DB::table('categories')->leftjoin('items', 'categories.name', '=', 'items.category_id')->select('categories.*')->where('items.deleted_at', '=', null)->groupBy('categories.name')->orderByRaw("CASE
                         WHEN count(items.category_id) = 0 THEN categories.id END ASC,
             case when count(items.category_id) != 0 then count(categories.name) end DESC")->get();
-        $all_shop_id = Shopowner::where('id', '!=', 1)->orderBy('shop_name', 'asc')->get();
-        // $all_shop_id = Shopowner::where('id', '!=', 1)->orderBy('created_at', 'desc')->get();
+        $all_shop_id = Shops::where('id', '!=', 1)->orderBy('shop_name', 'asc')->get();
+        // $all_shop_id = Shops::where('id', '!=', 1)->orderBy('created_at', 'desc')->get();
 
         return view('front.searchresult', ['searchtext' => $searchtext, 'catlist' => $catlist, 'shop_ids' => $all_shop_id]);
 
@@ -539,9 +539,9 @@ class FrontController extends Controller
 
     public function shop_detail($shopname)
     {
-        $id = DB::table('shop_owners')->where('name', $shopname)->value('id');
+        $id = DB::table('shops')->where('name', $shopname)->value('id');
 
-        $shop = Shopowner::whereRaw("REPLACE(shop_name,' ','') = '" . $shopname . "'")
+        $shop = Shops::whereRaw("REPLACE(shop_name,' ','') = '" . $shopname . "'")
             ->orWhere('shop_name_url', $shopname)
             ->with(['getPhotos'])
             ->first();
@@ -558,9 +558,9 @@ class FrontController extends Controller
         }
         //for log
 
-        $premiumshops = Shopowner::orderBy('created_at', 'desc')->where('premium', 'yes')->limit(20)->get();
+        $premiumshops = Shops::orderBy('created_at', 'desc')->where('premium', 'yes')->limit(20)->get();
 
-        $othersellers = Shopowner::orderBy('created_at', 'desc')->where('premium', '!=', 'yes')->orWhereNull('premium')->limit(20)->get();
+        $othersellers = Shops::orderBy('created_at', 'desc')->where('premium', '!=', 'yes')->orWhereNull('premium')->limit(20)->get();
 
         $allitems = Item::where('shop_id', $id)->orderBy('created_at', 'desc');
         //for load more button
@@ -584,7 +584,7 @@ class FrontController extends Controller
         $remove_discount_pop_item = collect($get_pop_items)->filter(function ($value, $key) {
             return $value->check_discount == 0;
         })->values();
-        $shops = Shopowner::where('id', '!=', $id)->orderBy('created_at', 'desc')->limit(20)->get();
+        $shops = Shops::where('id', '!=', $id)->orderBy('created_at', 'desc')->limit(20)->get();
         // $discount = discount::where('shop_id', $id)->orderBy('created_at', 'desc')->limit(20)->get();
         $discount = Item::select('items.*')->leftjoin('discount', 'items.id', '=', 'discount.item_id')->where('discount.shop_id', $id)->whereNotNull('discount.id')->orderBy('discount.percent', 'DESC')->where('discount.deleted_at', null)->limit('12')->get();
         $allcatcount = DB::table('categories')->leftjoin('items', 'categories.name', '=', 'items.category_id')->select('items.category_id', 'categories.mm_name', DB::raw('count(items.category_id) as catcount'))->where('items.deleted_at', '=', null)->groupBy('categories.name')->orderByRaw("CASE
@@ -592,7 +592,7 @@ class FrontController extends Controller
             case when count(items.category_id) != 0 then count(categories.name) end DESC")->where('shop_id', $id)->get();
 
         $visitor_view_count = frontuserlogs::where('front_user_logs.shop_id', '=', $id)->count();
-        $fav_count = Users_fav::leftjoin('items', 'items.id', '=', 'users_fav.fav_id')->leftjoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')->where('items.shop_id', $id)->count();
+        $fav_count = Users_fav::leftjoin('items', 'items.id', '=', 'users_fav.fav_id')->leftjoin('shops', 'shops.id', '=', 'items.shop_id')->where('items.shop_id', $id)->count();
         // return count($fav_count);
 
         $popup = MainPopup::select('video_name', 'ad_title')->where('shop_id', $id)->first();
@@ -614,9 +614,9 @@ class FrontController extends Controller
         $collections = Collection::leftJoin('items', 'collection.id', '=', 'items.collection_id')->select('collection.id', 'collection.name', 'items.default_photo')->where('collection.shop_id', $id)->groupBy('collection.id')->orderBy('collection.created_at', 'desc')->get();
         //dd($collections . "!");
 
-        $premium_type = Shopowner::leftjoin('premium_templates', 'shop_owners.premium_template_id', '=', 'premium_templates.id')
+        $premium_type = Shops::leftjoin('premium_templates', 'shops.premium_template_id', '=', 'premium_templates.id')
             ->select('premium_templates.id')
-            ->where('shop_owners.id', $id)
+            ->where('shops.id', $id)
             ->first();
         // dd($premium_status->name);
         // dd($popup);
@@ -730,8 +730,8 @@ class FrontController extends Controller
         }
         //
         $discount = discount::where('shop_id', $shopid)->orderBy('created_at', 'desc')->limit(20)->get();
-        $shops = Shopowner::where('id', '!=', $shopid)->orderBy('created_at', 'desc')->limit(30)->get();
-        $shop = Shopowner::where('id', $shopid)->first();
+        $shops = Shops::where('id', '!=', $shopid)->orderBy('created_at', 'desc')->limit(30)->get();
+        $shop = Shops::where('id', $shopid)->first();
         $allcatcount = collect($allitems->get())->countBy('category_id')->all();
 
         return view('front.getitembyshocat', ['forcheck_count' => $forcheck_count, 'discount' => $discount, 'items' => $items, 'shops' => $shops, 'shop_data' => $shop, 'catname' => $catname, 'allcatcount' => $allcatcount]);
@@ -775,8 +775,8 @@ class FrontController extends Controller
 
 //        return Cache::get($tmp_key);
 
-        $all_shop_id = Shopowner::where('id', '!=', 1)->orderBy('shop_name', 'asc')->get();
-        // $all_shop_id = Shopowner::where('id', '!=', 1)->orderBy('created_at', 'desc')->get();
+        $all_shop_id = Shops::where('id', '!=', 1)->orderBy('shop_name', 'asc')->get();
+        // $all_shop_id = Shops::where('id', '!=', 1)->orderBy('created_at', 'desc')->get();
 
         return view('front.see_all', ['new_items' => $get_by_shopid, 'shop_ids' => $all_shop_id]);
 
@@ -794,7 +794,7 @@ class FrontController extends Controller
 
         }
 
-        $temp_shop_name = Shopowner::where('id', $shop_id)->first()->id;
+        $temp_shop_name = Shops::where('id', $shop_id)->first()->id;
 
         $forselected = $temp_shop_name;
         //values function is beacause filter retrun {{}} but i need [{}]
@@ -811,8 +811,8 @@ class FrontController extends Controller
 //        $remove_discount_pop = collect($pop)->filter(function ($value, $key) {
 //            return $value->check_discount == 0;
 //        })->values();
-        $all_shop_id = Shopowner::where('id', '!=', 1)->orderBy('shop_name', 'asc')->get();
-        // $all_shop_id = Shopowner::where('id', '!=', 1)->orderBy('created_at', 'desc')->get();
+        $all_shop_id = Shops::where('id', '!=', 1)->orderBy('shop_name', 'asc')->get();
+        // $all_shop_id = Shops::where('id', '!=', 1)->orderBy('created_at', 'desc')->get();
 
         return view('front.seeall_pop', ['pop_items' => $pop, 'shop_ids' => $all_shop_id]);
 
@@ -889,13 +889,13 @@ class FrontController extends Controller
 
     public function getShops()
     {
-        $shops = Shopowner::orderBy('created_at', 'desc')->where('pos_only', 'no')->limit(20)->get();
+        $shops = Shops::orderBy('created_at', 'desc')->where('pos_only', 'no')->limit(20)->get();
         return view('front.shops', ['shops' => $shops, 'active' => 'all']);
     }
 
     public function getPremiumShops()
     {
-        $shops = Shopowner::orderBy('created_at', 'desc')->where('premium', 'yes')->limit(20)->get();
+        $shops = Shops::orderBy('created_at', 'desc')->where('premium', 'yes')->limit(20)->get();
         return view('front.shops', ['shops' => $shops, 'active' => 'premium']);
     }
 
@@ -904,11 +904,11 @@ class FrontController extends Controller
         $dateS = Carbon::now()->subMonths(6);
         $dateE = Carbon::now();
         $shops = frontuserlogs::join('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
-            ->join('shop_owners', 'front_user_logs.shop_id', '=', 'shop_owners.id')
+            ->join('shops', 'front_user_logs.shop_id', '=', 'shops.id')
             ->where('guestoruserid.user_agent', '!=', 'bot')
             ->where('front_user_logs.status', 'shopdetail')
             ->whereBetween('front_user_logs.created_at', [$dateS, $dateE])
-            ->select('front_user_logs.shop_id', 'shop_owners.*', DB::raw('count(*) as total'))
+            ->select('front_user_logs.shop_id', 'shops.*', DB::raw('count(*) as total'))
             ->groupBy('front_user_logs.shop_id')
             ->orderBy('total', 'DESC')
             ->take('20')
@@ -932,22 +932,22 @@ class FrontController extends Controller
             $dateS = Carbon::now()->subMonths(6);
             $dateE = Carbon::now();
             $shops = frontuserlogs::join('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
-                ->join('shop_owners', 'front_user_logs.shop_id', '=', 'shop_owners.id')
+                ->join('shops', 'front_user_logs.shop_id', '=', 'shops.id')
                 ->where('guestoruserid.user_agent', '!=', 'bot')
                 ->where('front_user_logs.status', 'shopdetail')
                 ->where(function ($query) use ($shopname) {
-                    $query->where('shop_owners.shop_name', 'like', $shopname)
-                        ->orWhere('shop_owners.shop_name_myan', 'like', $shopname);
+                    $query->where('shops.shop_name', 'like', $shopname)
+                        ->orWhere('shops.shop_name_myan', 'like', $shopname);
                 })
                 ->whereBetween('front_user_logs.created_at', [$dateS, $dateE])
-                ->select('front_user_logs.shop_id', 'shop_owners.*', DB::raw('count(*) as total'))
+                ->select('front_user_logs.shop_id', 'shops.*', DB::raw('count(*) as total'))
                 ->groupBy('front_user_logs.shop_id')
                 ->orderBy('total', 'DESC')
                 ->skip($request->filtertype['shoplimit'])->take('20')
                 ->get();
 
         } else {
-            $shops = Shopowner::orderBy('created_at', 'desc')
+            $shops = Shops::orderBy('created_at', 'desc')
                 ->where(function ($query) use ($shopname) {
                     $query->where('shop_name', 'like', $shopname)
                         ->orWhere('shop_name_myan', 'like', $shopname);

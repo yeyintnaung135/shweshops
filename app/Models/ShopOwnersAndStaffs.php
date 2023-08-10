@@ -9,7 +9,7 @@ class ShopRole extends Authenticatable
 {
     use Notifiable;
 
-    protected $table = 'manager';
+    protected $table = 'shop_owners_and_staffs';
 
     protected $fillable = [
         'name', 'phone', 'shop_id', 'role_id', 'password',

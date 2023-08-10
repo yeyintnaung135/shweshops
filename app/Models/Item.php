@@ -41,7 +41,7 @@ class Item extends Model
 
     public function getWithoutspaceShopnameAttribute()
     {
-        $shop_name_for_space = Shopowner::where('id', $this->shop_id)->first();
+        $shop_name_for_space = Shops::where('id', $this->shop_id)->first();
         if (empty($shop_name_for_space)) {
             return 'noshop' . $this->shop_id;
         } else {
@@ -68,7 +68,7 @@ class Item extends Model
 
     public function getShopNameAttribute()
     {
-        $shop_name = Shopowner::where('id', $this->shop_id)->first();
+        $shop_name = Shops::where('id', $this->shop_id)->first();
         return $shop_name;
     }
 
@@ -270,17 +270,10 @@ class Item extends Model
 
     public function getUserNameAttribute()
     {
-        if ((isset(Auth::guard('shop_owner')->user()->id) && Auth::guard('shop_owner')->user()->id == $this->shop_id) || (isset(Auth::guard('shop_role')->user()->id) && Auth::guard('shop_role')->user()->shop_id == $this->shop_id)) {
+        if ((isset(Auth::guard('shop_owners_and_staffs')->user()->id) && Auth::guard('shop_owners_and_staffs')->user()->id == $this->shop_id)) {
             if ($this->user_id != 0) {
-                $user_name = Manager::where('id', $this->user_id);
-                if ($user_name->count() != 0) {
+                return Auth::guard('shop_owners_and_staffs')->user()->name;
 
-                    return $user_name->first()->name;
-                } else {
-                    //                $user_name_del = Manager::withTrashed()->where('id', 194)->first();
-                    $user_name_del = DB::table('manager')->where('id', $this->user_id)->first();
-                    return $user_name_del->name . '(del usr)';
-                }
             } else {
                 return (0);
             }

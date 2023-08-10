@@ -59,7 +59,7 @@ class ItemsController extends Controller
     public function index()
     {
 
-            $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
 
 
         return view('backend.shopowner.item.list', ['items' => $items, 'shopowner' => $this->current_shop_data()]);
@@ -74,7 +74,6 @@ class ItemsController extends Controller
     {
         $data = $request->except('_token');
         $validator = Validator::make($data, [
-
             'excel' => ['mimes:xlsx', 'required'],
         ]);
         if ($validator->fails()) {
