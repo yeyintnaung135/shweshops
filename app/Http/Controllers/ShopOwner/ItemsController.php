@@ -173,7 +173,6 @@ class ItemsController extends Controller
             ->get();
 
 
-        //    return $records;
         $data_arr = array();
 
         foreach ($records as $record) {
