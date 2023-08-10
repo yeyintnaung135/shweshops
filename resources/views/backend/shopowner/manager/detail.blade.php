@@ -56,20 +56,12 @@
                                         <td> {{ $manager->role->name }}</td>
 
                                         <td>
-                                            @isset(Auth::guard('shop_role')->user()->id)
-                                                @if (Auth::guard('shop_role')->user()->role_id == 1)
-                                                    <button type="button" onclick="Delete()"
-                                                        class="btn btn-block bg-gradient-danger btn-sm">Delete</button>
-                                                @else(Auth::guard('shop_role')->user()->role_id == 2)
-                                                    <button type="button" onclick="Delete()"
-                                                        class="btn btn-block bg-gradient-danger btn-sm">Delete</button>
-                                                @endif
-                                            @endisset
-
-                                            @isset(Auth::guard('shop_owner')->user()->id)
+                                            @can('to_create_user', $manager->role->id)
                                                 <button type="button" onclick="Delete()"
                                                     class="btn btn-block bg-gradient-danger btn-sm">Delete</button>
-                                            @endisset
+                                            @endcan
+
+
                                             <form id="delete_form"
                                                 action="{{ route('backside.shop_owner.managers.remove_user', $manager->id) }}"
                                                 method="POST" style="display: none;">

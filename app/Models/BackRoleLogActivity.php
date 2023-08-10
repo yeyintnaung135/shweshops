@@ -9,6 +9,7 @@ class BackRoleLogActivity extends Model
 {
     //
     use SoftDeletes;
+    protected $table = 'backrole_log_activities';
     protected $fillable = [
         'shop_id', 'user_name', 'user_role', 'action', 'name', 'role', 'old_name', 'new_name', 'deleted_at',
     ];

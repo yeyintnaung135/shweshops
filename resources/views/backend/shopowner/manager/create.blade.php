@@ -35,7 +35,6 @@
             Create Admin,Managers And Staffs
             @endisset
             </x-title> --}}
-            @csrf
             <!-- Main content -->
 
             <section class="content">
@@ -44,20 +43,22 @@
                         <!-- SELECT2 EXAMPLE -->
                         <div class="">
 
-                        <div class="container-fluid">
-                            <div class="sn-item-create-wrapper">
-                              <div class="">
-                                <h3 class="">Create A New User </h3>
-                                <p class="create-user-text">ဆိုင်အတွက် လိုအပ်သည့် User Roleကို ပြုလုပ်နိုင်ပါသည်</p>
-                              </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group ">
-                                            <fieldset>
-                                              <legend>User Name </legend>
-                                              <input type="text" class="form-control sop-form-control @error('name') is-invalid @enderror" name="name"
-                                                   placeholder="Enter name" autocomplete="off" required/>
-                                                   @error('name')
+                            <div class="container-fluid">
+                                <div class="sn-item-create-wrapper">
+                                    <div class="">
+                                        <h3 class="">Create A New User </h3>
+                                        <p class="create-user-text">ဆိုင်အတွက် လိုအပ်သည့် User Roleကို ပြုလုပ်နိုင်ပါသည်</p>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group ">
+                                                <fieldset>
+                                                    <legend>User Name </legend>
+                                                    <input type="text"
+                                                        class="form-control sop-form-control @error('name') is-invalid @enderror"
+                                                        name="name" placeholder="Enter name" autocomplete="off"
+                                                        required />
+                                                    @error('name')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
                                                         </span>
@@ -157,6 +158,8 @@
                                                 </fieldset>
                                             </div>
                                         </div>
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+
 
                                         <div class="col-md-12 sn-form-button">
                                             <a href="{{ url()->previous() }}" style="margin-top: 25px;">Cancel</a>
@@ -229,14 +232,14 @@
         }
 
         /* .zh-eye-picon{
-                    height: 40px;
+                            height: 40px;
 
-                }
-            @media only screen and (max-width: 576px){
-                .zh-eye-picon{
-                    height: 38px;
-                }
-            } */
+                        }
+                    @media only screen and (max-width: 576px){
+                        .zh-eye-picon{
+                            height: 38px;
+                        }
+                    } */
     </style>
 @endpush
 

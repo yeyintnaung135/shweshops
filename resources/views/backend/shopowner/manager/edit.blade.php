@@ -15,7 +15,7 @@
             <!-- zhheader shopname -->
             <x-header>
                 @foreach ($shopowner as $shopowner)
-                {{ $shopowner->shop_name }}
+                    {{ $shopowner->shop_name }}
                 @endforeach
             </x-header>
             <!-- end zh header shopname -->
