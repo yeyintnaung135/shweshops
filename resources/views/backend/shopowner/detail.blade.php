@@ -564,8 +564,8 @@
                                                                     alt="Photo">
                                                             @else
                                                                 <?php
-                                                                if (\App\ShopBanner::where('shop_owner_id', $shopowner->id)->first()) {
-                                                                    $getbanner = \App\ShopBanner::where('shop_owner_id', $shopowner->id)->first()->location;
+                                                                if ($banner) {
+                                                                    $getbanner = $banner->location;
                                                                 } else {
                                                                     $getbanner = 'default.jpg';
                                                                 }

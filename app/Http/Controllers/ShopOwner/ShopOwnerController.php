@@ -25,6 +25,13 @@ use App\Models\WishlistClickLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use App\Http\Controllers\Trait\YKImage;
+use App\Http\Controllers\Trait\UserRole;
+use App\Models\ShopOwnerGoldPoint;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Trait\CalculateCat;
+use App\Models\SiteSettings;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
@@ -87,6 +94,8 @@ class ShopOwnerController extends Controller
         $users = $this->getuserlistbyrolelevel();
         $users_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'users')->get();
 
+        $banner = ShopBanner::where('shop_owner_id', $this->get_shopid())->first();
+
         //  return $buynowclick;
 
         return view('backend.shopowner.detail', [
@@ -121,6 +130,8 @@ class ShopOwnerController extends Controller
 
             'managers' => $users,
             'users_count_setting' => $users_count_setting,
+
+            'banner' => $banner,
 
         ]);
     }
@@ -805,7 +816,9 @@ class ShopOwnerController extends Controller
         $users_list = $this->getuserlistbyrolelevel();
         $result = Shops::where('id', $this->get_shopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        return view('backend.shopowner.shop', ['shopowner' => $result, 'items' => $items, 'managers' => $users_list]);
+        $banner = ShopBanner::where('shop_owner_id', $this->get_shopid())->first();
+        $siteSettingAction = SiteSettings::where('id', 1)->first()->action;
+        return view('backend.shopowner.shop', ['shopowner' => $result, 'items' => $items, 'managers' => $users_list, 'banner' => $banner, 'siteSettingAction' => $siteSettingAction]);
     }
 
     public function edit()
