@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Trait;
 
 use App\Models\Item;
-use App\Models\Manager;
+use App\Models\ShopOwnersAndStaffs;
 use App\Models\Shops;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,10 +35,10 @@ trait UserRole{
     public function itisowneritem($itemid){
          $tmpdata=0;
          if($this->isowner()){
-             $tmpdata= Item::where('shop_id',$this->getcurrentauthdata()->id)->first()->count();
+             $tmpdata= Item::where('shop_id',$this->get_shopid)->first()->count();
 
          }else{
-             $tmpdata= Item::where('user_id',$this->getcurrentauthdata()->id)->first()->count();
+             $tmpdata= Item::where('user_id',$this->get_shopid)->first()->count();
 
          }
         if($tmpdata != 0){
@@ -48,21 +48,28 @@ trait UserRole{
         }
 
     }
-    public function isadmin(){
+    public function is_admin(){
         if(Auth::guard('shop_owners_and_staffs')->user()->role->id==1){
             return true;
         }else{
             return false;
         }
     }
-    public function ismanager(){
+    public function is_manager(){
         if(Auth::guard('shop_owners_and_staffs')->user()->role->id==2){
             return true;
         }else{
             return false;
         }
     }
-    public function isstaff(){
+    public function is_owner(){
+        if(Auth::guard('shop_owners_and_staffs')->user()->role->id==4){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public function is_staff(){
         if(Auth::guard('shop_owners_and_staffs')->user()->role->id==3){
             return true;
         }else{
@@ -74,26 +81,26 @@ trait UserRole{
     }
     public function getuserlistbyrolelevel(){
         if($this->ismanager()){
-            return Manager::where('shop_id',$this->getcurrentauthdata()->shop_id)->whereIn('role_id',[3])->orderBy('created_at', 'desc')->get();
+            return ShopOwnersAndStaffs::where('shop_id',$this->get_shopid())->whereIn('role_id',[3])->orderBy('created_at', 'desc')->get();
         }
         if($this->isadmin()){
-            return Manager::where('shop_id',$this->getcurrentauthdata()->shop_id)->whereIn('role_id',[2,3])->orderBy('created_at', 'desc')->get();
+            return ShopOwnersAndStaffs::where('shop_id',$this->get_shopid())->whereIn('role_id',[2,3])->orderBy('created_at', 'desc')->get();
         }
         if($this->isowner()){
-           return $this->user_lists = Manager::where('shop_id',$this->getcurrentauthdata()->id)->get();
+           return $this->user_lists = ShopOwnersAndStaffs::where('shop_id',$this->get_shopid())->get();
 
         }
         if($this->isstaff()){
 
-            return Manager::where('shop_id',$this->getcurrentauthdata()->shop_id)->orderBy('created_at', 'desc')->get();
+            return ShopOwnersAndStaffs::where('shop_id',$this->get_shopid())->orderBy('created_at', 'desc')->get();
 
         }
     }
-    public function getcurrentauthdata(){
+    public function get_currentauthdata(){
         return Auth::guard('shop_owners_and_staffs')->user();
     }
     public function get_shopid(){
-        $shop_id=$this->getcurrentauthdata()->shop_id;
+        $shop_id=$this->get_currentauthdata()->shop_id;
 
         return $shop_id;
     }

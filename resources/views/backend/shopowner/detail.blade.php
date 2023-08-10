@@ -204,20 +204,18 @@
                             <i class="fa fa-plus"></i>
                             <p>Create Item</p>
                         </a>
-                        @if (isset(Auth::guard('shop_owner')->user()->id) ||
-                                Auth::guard('shop_role')->user()->role_id == 1 ||
-                                Auth::guard('shop_role')->user()->role_id == 2)
+                        @can('can_show_dashboard')
                             <a href="{{ url('backside/shop_owner/users/create') }}" class="">
                                 <i class="fa fa-user-plus"></i>
                                 <p>Create User</p>
                             </a>
-                        @endif
-                        @if (isset(Auth::guard('shop_owner')->user()->id) || Auth::guard('shop_role')->user()->role_id == 1)
+                        @endcan
+                        @isRole('shopowner', 'admin')
                             <a href="{{ route('backside.shop_owner.edit') }}" class="">
                                 <i class="fa fa-edit"></i>
                                 <p>Edit Shop</p>
                             </a>
-                        @endif
+                        @endisRole
                         <a href="#" class="sop-detail-disabled">
                             <i class="fa fa-ad"></i>
                             <p>Ads Create</p>
@@ -443,13 +441,11 @@
                                 @endforeach
                             @endisset
 
-                            @if (isset(Auth::guard('shop_owner')->user()->id) ||
-                                    Auth::guard('shop_role')->user()->role_id == 2 ||
-                                    Auth::guard('shop_role')->user()->role_id == 1)
+                            @can('can_show_dashboard')
                                 <li class="d-flex justify-content-center"><a
                                         href="{{ url('backside/shop_owner/users/create') }}"
                                         class="btn btn-outline-secondary px-5">Add New User +</a></li>
-                            @endif
+                            @endcan
                         </ul>
                     </div>
 
@@ -513,47 +509,23 @@
                                                 href="{{ $shopowner->messenger_link }}">{{ $shopowner->messenger_link }}</a>
                                         </li>
                                         <!-- <li class="list-group-item">
-                                                <b>Address</b><br> <a class="text-muted">{{ $shopowner->address }}</a>
-                                            </li> -->
+                                                                            <b>Address</b><br> <a class="text-muted">{{ $shopowner->address }}</a>
+                                                                        </li> -->
 
                                     </ul>
 
                                     <div class="row">
                                         <div class="col-12">
-                                            @isset(Auth::guard('shop_role')->user()->id)
-                                                @if (Auth::guard('shop_role')->user()->role_id == 1)
-                                                    <a href="{{ route('backside.shop_owner.edit') }}"
-                                                        class="btn btn-primary btn-block"><b><span
-                                                                class="fa fa-edit"></span>&nbsp;&nbsp;Edit</b></a>
-                                                @elseif(Auth::guard('shop_role')->user()->role_id == 2)
-                                                    <a href="{{ route('backside.shop_owner.edit') }}"
-                                                        class="btn btn-primary btn-block"><b><span
-                                                                class="fa fa-edit"></span>&nbsp;&nbsp;Edit</b></a>
-                                                @endif
-                                            @endisset
-
-                                            @isset(Auth::guard('shop_owner')->user()->id)
+                                            @isRole('shopowner', 'admin', 'manager')
                                                 <a href="{{ route('backside.shop_owner.edit') }}"
                                                     class="btn btn-primary btn-block"><b><span
                                                             class="fa fa-edit"></span>&nbsp;&nbsp;Edit</b></a>
-                                            @endisset
-
-                                            @isset(Auth::guard('shop_role')->user()->id)
-                                                @if (Auth::guard('shop_role')->user()->role_id == 1)
-                                                    <a href="{{ route('backside.shop_owner.change.password') }}"
-                                                        class="btn btn-primary btn-block"><b><span
-                                                                class="fa fa-lock"></span>&nbsp;&nbsp;Edit</b></a>
-                                                @elseif(Auth::guard('shop_role')->user()->role_id == 2)
-                                                    <a href="{{ route('backside.shop_owner.change.password') }}"
-                                                        class="btn btn-primary btn-block"><b><span
-                                                                class="fa fa-lock"></span>&nbsp;&nbsp;Edit</b></a>
-                                                @endif
-                                            @endisset
-
-                                            @isset(Auth::guard('shop_owner')->user()->id)
                                                 <a href="{{ route('backside.shop_owner.change.password') }}"
                                                     class="btn btn-primary btn-block"><b><span
                                                             class="fa fa-lock"></span>&nbsp;&nbsp;Edit</b></a>
+                                            @endisRole
+
+                                            @isset(Auth::guard('shop_owners_and_staffs')->user()->id)
                                             @endisset
                                         </div>
                                     </div>

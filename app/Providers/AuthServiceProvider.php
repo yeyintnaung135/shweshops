@@ -69,7 +69,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('access-shop-owner-premium', function ($user) {
             return $user->premium === 'yes';
         });
-
+        Gate::define('isstaff', function ($user) {
+            return $this->isstaff();
+        });
         Gate::define('access-shop-role-premium', function ($user) {
             $shopRole = Shops::where('id', $user->shop_id)->first();
 

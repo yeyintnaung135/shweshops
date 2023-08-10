@@ -39,8 +39,14 @@ class   AppServiceProvider extends ServiceProvider
     {
         //        URL::forceScheme('https');
 
-        Blade::if('isRole', function ($role) {
-            return Auth::guard('shop_owners_and_staffs')->check() && Auth::guard('shop_owners_and_staffs')->user()->role->name === $role;
+        Blade::if('isRole', function ($role,$secrole='empty',$throle='empty',$forthrole='empty') {
+            return Auth::guard('shop_owners_and_staffs')->check() 
+                  && (Auth::guard('shop_owners_and_staffs')->user()->role->name === $role
+                  || Auth::guard('shop_owners_and_staffs')->user()->role->name === $secrole
+                  || Auth::guard('shop_owners_and_staffs')->user()->role->name === $throle
+                  || Auth::guard('shop_owners_and_staffs')->user()->role->name === $forthrole)
+                  
+                  ;
         });
 
 

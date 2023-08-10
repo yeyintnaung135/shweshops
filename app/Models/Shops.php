@@ -56,7 +56,7 @@ class Shops extends Authenticatable
     public function getFavIdsAttribute()
     {
         if (isset(Auth::guard('shop_owners_and_staffs')->user()->id)) {
-            $fav_ids = Shop_owners_fav::where('user_id', $this->id)->get();
+            $fav_ids = ShopOwnersFav::where('user_id', $this->id)->get();
             return $fav_ids;
         }
         return ('');
@@ -64,7 +64,7 @@ class Shops extends Authenticatable
     public function getSelectionIdsAttribute()
     {
         if (isset(Auth::guard('shop_owners_and_staffs')->user()->id)) {
-            $selection_ids = Shop_owners_selection::where('user_id', $this->id)->get();
+            $selection_ids = ShopOwnersSelection::where('user_id', $this->id)->get();
             return $selection_ids;
         }
         return ('');
@@ -72,16 +72,16 @@ class Shops extends Authenticatable
     public function getNotificationAttribute()
     {
         if (isset(Auth::guard('shop_owners_and_staffs')->user()->id)) {
-            $noti = Usernoti::where('receiver_user_id', $this->id)->where('user_type', 'shop_owners')->where('read_by_receiver', 0)->get();
+            $noti = UserNoti::where('receiver_user_id', $this->id)->where('user_type', 'shop_owners')->where('read_by_receiver', 0)->get();
             return $noti;
         }
         return ('');
     }
     public function getYkmessengerlinkAttribute()
     {
-        $check_facebook_function = \App\Models\sitesettings::where('name', 'facebook')->first();
+        $check_facebook_function = \App\Models\SiteSettings::where('name', 'facebook')->first();
 
-        $check_connect = \App\Models\facebooktable::where('shop_id', $this->id);
+        $check_connect = \App\Models\FacebookTable::where('shop_id', $this->id);
         if ($check_facebook_function->action == 'on' and ($check_connect->count() != 0)) {
             return 'http://m.me/' . $check_connect->first()->page_id;
         } else {
@@ -90,9 +90,9 @@ class Shops extends Authenticatable
     }
     public function getConnectedwithFacebookAttribute()
     {
-        $check_facebook_function = \App\Models\sitesettings::where('name', 'facebook')->first();
+        $check_facebook_function = \App\Models\SiteSettings::where('name', 'facebook')->first();
 
-        $check_connect = \App\Models\facebooktable::where('shop_id', $this->id);
+        $check_connect = \App\Models\FacebookTable::where('shop_id', $this->id);
         if ($check_facebook_function->action == 'on' and ($check_connect->count() != 0)) {
             return 'yes';
         } else {

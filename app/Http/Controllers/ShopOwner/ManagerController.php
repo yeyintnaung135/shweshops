@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\Trait\UserRole;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Gate;
 
 class ManagerController extends Controller
 {
@@ -27,15 +28,20 @@ class ManagerController extends Controller
 
     public function __construct()
     {
-       $this->middleware('auth:shop_owner,shop_role');
+       $this->middleware('auth:shop_owners_and_staffs');
+
+    }
+    public function dont_allow_for_staff(){
+        if($this->is_staff()){
+
+            return abort(401);
+        }
 
     }
 
     public function list()
     {
-        if ($this->isstaff()) {
-            return $this->unauthorize();
-        }
+       $this->dont_allow_for_staff();
         $itemlogs = ItemLogActivity::all();
         $backrolelogs = BackroleLogActivity::all();
 //         return dd($backrolelogs);
@@ -46,9 +52,7 @@ class ManagerController extends Controller
     }
     public function u_product()
     {
-        if ($this->isstaff()) {
-            return $this->unauthorize();
-        }
+       $this->dont_allow_for_staff();
         $itemlogs = ItemLogActivity::all();
         $backrolelogs = BackroleLogActivity::all();
         // return dd($backrolelogs);
@@ -59,9 +63,7 @@ class ManagerController extends Controller
     }
     public function u_role()
     {
-        if ($this->isstaff()) {
-            return $this->unauthorize();
-        }
+       $this->dont_allow_for_staff();
         $itemlogs = ItemLogActivity::all();
         $backrolelogs = BackroleLogActivity::all();
         // return dd($backrolelogs);
@@ -333,33 +335,27 @@ class ManagerController extends Controller
     }
 
     public function create(){
-        if ($this->isstaff()) {
-            return $this->unauthorize();
-        }
+       $this->dont_allow_for_staff();
         $role=Role::all();
         //tz
-        if($this->isadmin() or $this->ismanager()){
-            $this->role('shop_role');
-            if($this->isadmin()){
+        if($this->is_admin() or $this->is_manager()){
+           
+            if($this->is_admin()){
                 $role = Role::whereIn('id',[2,3])->orderBy('created_at', 'desc')->get();
             }else{
 
                 $role = Role::where(['id'=>3])->orderBy('created_at', 'desc')->get();
 
             }
-            return view('backend.shopowner.manager.create',['shopowner' => $this->shop_owner,'role'=>$role]);
 
         }
-        $shopowner = Shopowner::where('id', Auth::guard('shop_owner')->user()->id)->orderBy('created_at', 'desc')->get();
-        return view('backend.shopowner.manager.create',['shopowner' => $shopowner,'role'=>$role]);
+        return view('backend.shopowner.manager.create',['shopowner' => $this->get_currentauthdata(),'role'=>$role]);
     }
 
     public function store(Request $request)
     {
 
-        if ($this->isstaff()) {
-            return $this->unauthorize();
-        }
+       $this->dont_allow_for_staff();
         $input=$request->except('_token');
 
         $rules = [

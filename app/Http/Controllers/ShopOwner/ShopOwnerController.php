@@ -9,7 +9,7 @@ use App\Models\FrontUserLogs;
 use App\Models\Item;
 use App\Models\GoldPoint;
 use App\Models\Discount;
-use App\Models\Shop;
+use App\Models\Shops;
 use App\Models\ShopBanner;
 use App\Models\BuyNowClickLog;
 use App\Models\ItemLogActivity;
@@ -47,7 +47,6 @@ class ShopOwnerController extends Controller
 
     public function index()
     {
-
         $storecattocache = Cache::put('cat', $this->getallcatcount());
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.list', ['items' => $items]);
@@ -55,7 +54,8 @@ class ShopOwnerController extends Controller
 
     public function detail()
     {
-        $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
 
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $products_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'item')->get();
@@ -135,7 +135,7 @@ class ShopOwnerController extends Controller
     {
         if (count($this->shopViewCheck($this->get_shopid())) != 0) {
 
-            $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.shop_view', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -145,7 +145,7 @@ class ShopOwnerController extends Controller
     public function product_view()
     {
 
-        $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.count.product_view', ['shopowner' => $shopowner]);
     }
 
@@ -153,7 +153,7 @@ class ShopOwnerController extends Controller
     {
 
         if (count($this->uniqueProductViewCheck($this->get_shopid())) != 0) {
-            $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.uniqueproduct_view', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -163,7 +163,7 @@ class ShopOwnerController extends Controller
     public function buy_now_click()
     {
         if (count($this->buyNowClickViewCheck($this->get_shopid())) != 0) {
-            $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.buy_now_click', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -173,7 +173,7 @@ class ShopOwnerController extends Controller
     public function unique_add_to_cart_click()
     {
         if (count($this->uniqueAddToCartViewCheck($this->get_shopid())) != 0) {
-            $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.unique_add_to_cart_click', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -183,7 +183,7 @@ class ShopOwnerController extends Controller
     public function unique_whishlist_click()
     {
         if (count($this->uniqueWhishlistViewCheck($this->get_shopid())) != 0) {
-            $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.unique_whishlist_click', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -193,7 +193,7 @@ class ShopOwnerController extends Controller
     public function unique_ads_view()
     {
         if (count($this->uniqueAdsViewCheck($this->get_shopid())) != 0) {
-            $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.unique_ads_view', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -203,7 +203,7 @@ class ShopOwnerController extends Controller
     public function discount_product_view()
     {
         if (count($this->uniqueDiscountCheck($this->get_shopid())) != 0) {
-            $shopowner = Shop::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             return view('backend.shopowner.count.discount_product_view', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
@@ -818,7 +818,7 @@ class ShopOwnerController extends Controller
     {
 
         $users_list = $this->getuserlistbyrolelevel();
-        $result = Shop::where('id', $this->get_shopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
+        $result = Shops::where('id', $this->get_shopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.shop', ['shopowner' => $result, 'items' => $items, 'managers' => $users_list]);
     }
@@ -828,7 +828,7 @@ class ShopOwnerController extends Controller
         if ($this->isstaff()) {
             return $this->unauthorize();
         }
-        $shopowner = Shop::where('id', $this->get_shopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.edit', ['shopowner' => $shopowner]);
     }
 
@@ -842,7 +842,7 @@ class ShopOwnerController extends Controller
 
 
         // $input = $request->except('_token', '_method');
-        $shopowner = Shop::findOrFail($id);
+        $shopowner = Shops::findOrFail($id);
         $request->validate(
             [
                 'name' => ['required', 'string', 'max:255'],
