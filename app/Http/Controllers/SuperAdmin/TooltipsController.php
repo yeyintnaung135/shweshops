@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Tooltips;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
 
 class TooltipsController extends Controller
 {
@@ -21,10 +20,10 @@ class TooltipsController extends Controller
     }
     public function store(Request $request)
     {
-        $val = Validator::make($request->all(), ['endpoint' => ['string', 'required', 'max:222'], 'info' => ['string', 'required', 'max:22222']]);
-        if ($val->fails()) {
-            return redirect()->back()->withErrors($val)->withInput();
-        }
+        $request->validate([
+            'endpoint' => ['required', 'string', 'max:222'],
+            'info' => ['required', 'string', 'max:22222'],
+        ]);
         Tooltips::create($request->except('_token'));
         Session::flash('message', 'Your Tooltips was successfully Created');
 
@@ -45,7 +44,7 @@ class TooltipsController extends Controller
         return redirect('backside/super_admin/tooltips/list');
 
     }
-    public function list() {
+    function list() {
         $alltt = Tooltips::all();
         return view('backend.super_admin.tooltips.list', ['alltt' => $alltt]);
     }

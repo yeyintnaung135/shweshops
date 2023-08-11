@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\trait\CalculateCat;
+use App\Http\Requests\SuperAdmin\SuperAdminContactUsUpdateRequest;
 use App\Models\AddToCartClickLog;
 use App\Models\BuyNowClickLog;
 use App\Models\Category;
@@ -21,7 +22,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
 class SuperAdminController extends Controller
 {
@@ -976,30 +976,11 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.contactus.edit', ['contact' => $contact]);
     }
 
-    public function contact_us_update(Request $request)
+    public function contact_us_update(SuperAdminContactUsUpdateRequest $request)
     {
-        $input = $request->except('_token', '_method');
         $folderPath = 'images/contactus/';
         $contact = ContactUs::where('active', 1)->first();
-        $rules = [
-            'top_text' => ['required', 'max:1000'],
-            'phone' => ['required', 'max:30'],
-            'email' => ['required', 'max:30'],
-            'mid_text' => ['required', 'max:1000'],
-            'address' => ['required', 'max:1000'],
-            'map' => ['required', 'max:1000'],
-            // 'image' => 'required|mimes:jpeg,png,jpg,gif'
-        ];
-        if (isset($contact->image) || !empty($contact->image)) {
-            $rules['image'] = 'image';
-        } else {
-            $rules['image'] = 'required|mimes:jpeg,png,jpg,gif';
-        }
-        $validate = Validator::make($input, $rules);
 
-        if ($validate->fails()) {
-            return redirect()->back()->withErrors($validate)->withInput();
-        }
         if ($request->file('image')) {
             $file = $request->file('image');
             $filename = date('YmdHi') . $file->getClientOriginalName();
@@ -1024,22 +1005,16 @@ class SuperAdminController extends Controller
 
     public function gold_price_update(Request $request)
     {
-        $input = $request->except('_token', '_method');
-        $gold_price = GoldPrice::first();
-        $rules = [
+        $validatedData = $request->validate([
             'sell_price' => ['required', 'max:30'],
             'buy_price' => ['required', 'max:30'],
-        ];
-        $validate = Validator::make($input, $rules);
+        ]);
 
-        if ($validate->fails()) {
-            return redirect()->back()->withErrors($validate)->withInput();
-        }
-
+        $gold_price = GoldPrice::first();
         if ($gold_price) {
-            $result = GoldPrice::find($gold_price['id'])->update($input);
+            $result = GoldPrice::find($gold_price['id'])->update($validatedData);
         } else {
-            $result = GoldPrice::create($input);
+            $result = GoldPrice::create($validatedData);
         }
 
         if ($result) {

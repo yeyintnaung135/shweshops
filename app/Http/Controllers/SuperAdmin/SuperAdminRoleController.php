@@ -4,14 +4,13 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Facade\TzGate;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SuperAdmin\SuperAdminRole\UpdateSuperAdminRoleRequest;
 use App\Models\SuperAdmin;
 use App\Models\SuperAdminLogActivity;
-use App\Rules\MatchOldPassword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
 
 class SuperAdminRoleController extends Controller
 {
@@ -171,35 +170,26 @@ class SuperAdminRoleController extends Controller
         return view('backend.super_admin_role.create');
     }
 
-    public function validator(array $data)
+    public function store(Request $request)
     {
-        return Validator::make($data, [
+        $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:super_admins'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
-    }
 
-    public function store(Request $request)
-    {
-
-        $valid = $this->validator($request->except('_token'));
-        if ($valid->fails()) {
-            return redirect()->back()->withErrors($valid)->withInput();
-        }
-        $data = $request->except("_token");
         $super_admin_data = SuperAdmin::create([
-            'name' => $data['name'],
+            'name' => $validatedData['name'],
             'role' => "1",
             // 'role' => '0',
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
             'active' => 'yes',
         ]);
 
         if ($super_admin_data) {
 
-            \SuperAdminLogActivity::SuperAdminAdminCreateLog($data);
+            \SuperAdminLogActivity::SuperAdminAdminCreateLog($validatedData);
         }
 
         return redirect()->route('super_admin_role.list')->with(['status' => 'success', 'message' => 'Sub Admin was successfully created']);
@@ -216,41 +206,26 @@ class SuperAdminRoleController extends Controller
 
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateSuperAdminRoleRequest $request, $id)
     {
-        if (TzGate::super_admin_allows($id)) {
-            $admin = SuperAdmin::findOrFail($id);
+        if (!TzGate::super_admin_allows($id)) {
+            abort(403, 'You are not authorized to perform this action.');
         }
 
-        if ($request->current_password || $request->new_password || $request->new_confirm_password) {
+        $admin = SuperAdmin::findOrFail($id);
 
-            $request->validate([
-                'current_password' => ['required', 'min:8', new MatchOldPassword],
-
-                'new_password' => ['required', 'min:8'],
-
-                'new_confirm_password' => ['same:new_password'],
-            ]);
+        if ($request->filled(['current_password', 'new_password', 'new_confirm_password'])) {
             $admin->password = Hash::make($request->new_password);
-        } else {
-            $request->validate([
-                'email' => ['required', 'string', 'email', 'max:255'],
-                'name' => ['required', 'string', 'max:255'],
-            ]);
         }
-
-        $input = $request->except('_token', '_method');
 
         $admin->name = $request->name;
         $admin->email = $request->email;
-        $result = $admin->update();
+        $admin->save();
 
-        if ($result) {
-            \SuperAdminLogActivity::SuperAdminAdminEditLog($input);
-            Session::flash('message', 'Your admin was successfully updated');
-            return redirect('/backside/super_admin/admins/all');
-        }
+        \SuperAdminLogActivity::SuperAdminAdminEditLog($request->except('_token', '_method'));
+        Session::flash('message', 'Your admin was successfully updated');
 
+        return redirect('/backside/super_admin/admins/all');
     }
 
 }

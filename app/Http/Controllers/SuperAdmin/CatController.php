@@ -7,7 +7,6 @@ use App\Models\CatSupport;
 use App\Models\Support;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
 
 class CatController extends Controller
 {
@@ -19,16 +18,16 @@ class CatController extends Controller
 
     public function store(Request $request)
     {
-        $val = Validator::make($request->all(), ['title' => ['string', 'required', 'max:222']]);
-        if ($val->fails()) {
-            return redirect()->back()->withErrors($val)->withInput();
-        }
+        $request->validate([
+            'title' => ['required', 'string', 'max:222'],
+        ]);
+
         CatSupport::create($request->except('_token'));
         Session::flash('message', 'Your Category was successfully Created');
 
         return redirect('backside/super_admin/support/cat/list');
     }
-    public function list() {
+    function list() {
         $catall = CatSupport::all();
         return view('backend.super_admin.support.category.list', ['cats' => $catall]);
     }

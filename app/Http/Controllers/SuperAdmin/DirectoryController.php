@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SuperAdmin\Directory\StoreDirectoryRequest;
+use App\Http\Requests\SuperAdmin\Directory\UpdateDirectoryRequest;
 use App\Models\ShopDirectory;
 use App\Models\State;
 use App\Models\Tooltips;
@@ -11,7 +13,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
 
 class DirectoryController extends Controller
 {
@@ -128,51 +129,11 @@ class DirectoryController extends Controller
         $states = State::get();
         return view('backend.super_admin.directory.create', ['states' => $states]);
     }
-    public function validator(array $data)
-    {
-        return Validator::make($data, [
 
-            'shop_logo' => ['mimes:jpeg,bmp,png,jpg'],
-            'shop_name' => ['required', 'string', 'max:50'],
-            'shop_name_url' => ['required', 'string', 'max:50', 'unique:shop_directory,shop_name_url'],
-            'main_phone' => ['string', 'max:11', 'unique:shop_directory,main_phone'],
-            'address' => ['required', 'string'],
-            'state' => ['required', 'string', 'min:3'],
-            'township' => ['required', 'string', 'min:3'],
-
-        ],
-            [
-                'state.min' => 'State field is required',
-                'township.min' => 'Township field is required',
-            ]);
-    }
-    public function e_validator(array $data)
-    {
-        return Validator::make($data, [
-
-            'shop_logo' => ['mimes:jpeg,bmp,png,jpg'],
-            'shop_name' => ['required', 'string', 'max:50'],
-            'shop_name_url' => ['required', 'string', 'max:50'],
-            'main_phone' => ['string', 'max:11'],
-            'address' => ['required', 'string'],
-            'state' => ['required', 'string', 'min:3'],
-            'township' => ['required', 'string', 'min:3'],
-
-        ],
-            [
-                'state.array' => 'State field is required',
-                'township.array' => 'Township field is required',
-            ]);
-    }
-    public function store(Request $request)
+    public function store(StoreDirectoryRequest $request)
     {
         // dd($request);
-        $data = $request->except("_token");
-        $valid = $this->validator($data);
-
-        if ($valid->fails()) {
-            return redirect()->back()->withErrors($valid)->withInput();
-        }
+        $data = $request->validated();
         if ($request->hasFile('shop_logo')) {
             $shop_logo = $data['shop_logo'];
 
@@ -227,15 +188,10 @@ class DirectoryController extends Controller
         return view('backend.super_admin.directory.edit', ['ttdata' => $ttdata, 'states' => $states]);
 
     }
-    public function update(Request $request)
+    public function update(UpdateDirectoryRequest $request)
     {
         $sd = ShopDirectory::where('id', $request->id)->first();
-        $data = $request->except("_token");
-        $valid = $this->e_validator($data);
-
-        if ($valid->fails()) {
-            return redirect()->back()->withErrors($valid)->withInput();
-        }
+        $data = $request->validated();
 
         if ($request->file('shop_logo')) {
 
@@ -284,7 +240,7 @@ class DirectoryController extends Controller
         return redirect('backside/super_admin/directory/all');
 
     }
-    function list() {
+    public function list() {
         $alltt = Tooltips::all();
         return view('backend.super_admin.tooltips.list', ['alltt' => $alltt]);
     }

@@ -4,7 +4,8 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Facade\Repair;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AdsImageRequest;
+use App\Http\Requests\SuperAdmin\Ads\AdsImageRequest;
+use App\Http\Requests\SuperAdmin\Ads\StoreAdsVideoFormRequest;
 use App\Models\Ads;
 use App\Models\Shops;
 use App\Models\SuperAdminLogActivity;
@@ -245,21 +246,8 @@ class AdsController extends Controller
 
     }
 
-    public function store_video(Request $request)
+    public function store_video(StoreAdsVideoFormRequest $request)
     {
-        $request->validate([
-            "video" => "required|mimes:gif,jpg,bmp,png,jpeg",
-            "image_for_mobile" => "required|mimes:gif,jpg,bmp,png,jpeg",
-
-            "start" => "required",
-            "end" => "required",
-
-        ], [
-            "start.required" => 'Start Date ထည့်ပေးရန်',
-            "end.required" => 'End Date ထည့်ပေးရန်',
-            "video.required" => 'Video ထည့်ပေးရန်',
-            "video.mimes" => 'Image',
-        ]);
         $folderPath = 'images/banner';
         $mobileimgfolder = 'images/banner/thumbs/';
 

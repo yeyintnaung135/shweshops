@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Facade\Repair;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SuperAdmin\News\StoreNewsRequest;
 use App\Models\News;
 use Illuminate\Http\Request;
 
@@ -40,14 +41,8 @@ class NewsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreNewsRequest $request)
     {
-        $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-            'file_upload' => 'required|mimes:jpeg,bmp,png,jpg',
-        ]);
-
         $file = $request->file('file_upload');
         $dir = "images/news_&_events/news";
         $news = new News();

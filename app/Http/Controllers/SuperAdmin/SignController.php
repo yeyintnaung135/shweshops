@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SuperAdmin\Sign\StoreSignRequest;
+use App\Http\Requests\SuperAdmin\Sign\UpdateSignRequest;
 use App\Models\Sign;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Validator;
 
 class SignController extends Controller
 {
@@ -45,36 +46,20 @@ class SignController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreSignRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'title' => 'required',
-            'description' => 'required',
-            'photo' => 'required',
-            'sign_logo' => 'required',
-            'credit' => 'required',
-        ]);
-        if ($validator->fails()) {
-            return redirect('baydins/create')->withErrors($validator)->withInput();
-        }
-        // return dd($request);
-        if ($request->hasfile('photo')) {
-            // dd("okok");
+        if ($request->hasFile('photo')) {
             $photo = $request->photo;
             $name = uniqid() . '_baydin' . '.' . $photo->getClientOriginalName();
             $photo->move(public_path() . '/images/baydin/', $name);
             $photo = $name;
-
         }
 
-        if ($request->hasfile('sign_logo')) {
-            // dd("okok");
+        if ($request->hasFile('sign_logo')) {
             $sign_logo = $request->sign_logo;
             $name = uniqid() . '_sign_logo' . '.' . $sign_logo->getClientOriginalName();
             $sign_logo->move(public_path() . '/images/baydin/sign', $name);
             $sign_logo = $name;
-
         }
 
         Sign::create([
@@ -86,7 +71,6 @@ class SignController extends Controller
             'credit' => $request->credit,
         ]);
         return redirect()->route('baydins.index')->with('success', 'Your Sign is successfully Created');
-        //
     }
 
     /**
@@ -122,29 +106,9 @@ class SignController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update_validator(array $data)
+    public function update(UpdateSignRequest $request, $id)
     {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:50'],
-            'description' => ['required', 'string'],
-            'credit' => ['required', 'string', 'max:255'],
-            'title' => ['required', 'string', 'max:255'],
-            // 'photo' => ['required', 'string', 'max:50'],
-        ]);
-    }
-
-    public function update(Request $request, $id)
-    {
-        //
-        $valid = $this->update_validator($request->except('_token'));
-        if ($valid->fails()) {
-            return redirect()->back()->withErrors($valid)->withInput();
-        }
         $update_sign = Sign::findOrFail($id);
-        // dd($request->all());
-
-        // dd($photo);
-
         $update_sign->name = $request->name;
         $update_sign->description = $request->description;
         $update_sign->title = $request->title;
