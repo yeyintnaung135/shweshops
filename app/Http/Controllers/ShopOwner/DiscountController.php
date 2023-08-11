@@ -2,33 +2,27 @@
 
 namespace App\Http\Controllers\ShopOwner;
 
-use App\Events\Shopownermessage;
-use App\ForFirebase;
 use App\Http\Controllers\Trait\Firebase;
 use App\Models\Item;
 use App\Models\Discount;
-use App\Facade\TzGate;
-use App\Models\ShopOwner;
 use App\Models\UserNoti;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\UserRole;
-use FG\ASN1\Universal\Integer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
-
 class DiscountController extends Controller
 {
-    //
     use UserRole;
 
     public function __construct()
     {
         $this->middleware('auth:shop_owner,shop_role');
     }
+
     public function validate_dis($data){
         $message= [
             'percent.required' => 'Percent တန်ဖိုး ထည့်ပေးရန်',
@@ -85,11 +79,11 @@ class DiscountController extends Controller
 
         if (isset(Auth::guard('shop_role')->user()->id)) {
             $this->role('shop_role');
-            $items = discount::where('shop_id', $this->role_shop_id)->onlyTrashed()->get();
+            $items = Discount::where('shop_id', $this->role_shop_id)->onlyTrashed()->get();
             return view('backend.shopowner.item.discount.list', ['items' => $items, 'shopowner' => $this->shop_owner]);
         } else {
-            $this->role('shop_owner');
-            $items = discount::where('shop_id', $this->role)->onlyTrashed()->get();
+            $this->role('shop_owner'); 
+            $items = Discount::where('shop_id', $this->role)->onlyTrashed()->get();
             return view('backend.shopowner.item.discount.list', ['items' => $items, 'shopowner' => $this->shop_owner]);
         }
     }

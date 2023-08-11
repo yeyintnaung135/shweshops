@@ -7,10 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ShopOwner\StoreCollectionRequest;
 use App\Http\Requests\ShopOwner\UpdateCollectionRequest;
 use App\Models\Item;
-use App\Models\ShopOwner;
-use App\Models\ShopRole;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\Trait\ShopTrait;
@@ -129,10 +126,13 @@ class CollectionController extends Controller
         if ($item) {
             $collectionId = $item->collection_id; // Store the collection_id before updating the item to pass as parameter in route
             $item->update(['collection_id' => 0]);
+
             Session::flash('message', 'Your item was successfully removed');
+
             return redirect()->route('backside.shop_owner.collections.show', ['collection' => $collectionId]);
         } else {
             Session::flash('message', 'Item not found');
+
             return redirect()->back();
         }
     }
