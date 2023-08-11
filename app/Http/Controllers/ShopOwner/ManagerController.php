@@ -90,13 +90,9 @@ class ManagerController extends Controller
             $searchByTodate = Carbon::now();
         }
 
-        $shop_id = 1;
+        $shop_id = $this->get_shopid();
 
-        if (Auth::guard('shop_owner')->check()) {
-            $shop_id = Auth::guard('shop_owner')->user()->id;
-        } else {
-            $shop_id = Auth::guard('shop_role')->user()->shop_id;
-        }
+
 
         $totalRecords = ShopownerLogActivity::select('count(*) as allcount')
             ->where('shop_id', $shop_id)
@@ -176,13 +172,8 @@ class ManagerController extends Controller
             $searchByTodate = Carbon::now();
         }
 
-        $shop_id = 1;
+        $shop_id = $this->get_shopid();
 
-        if (Auth::guard('shop_owner')->check()) {
-            $shop_id = Auth::guard('shop_owner')->user()->id;
-        } else {
-            $shop_id = Auth::guard('shop_role')->user()->shop_id;
-        }
 
 
         $totalRecords = BackroleLogActivity::select('count(*) as allcount')
@@ -301,7 +292,7 @@ class ManagerController extends Controller
                 ->skip($start)
                 ->take($rowperpage)
                 ->get();
-            // $shopowner = $this->shop_owner;
+            // $shopowner = $this->current_shop_data();
             // $users = $role_users;
         }
 
@@ -334,17 +325,20 @@ class ManagerController extends Controller
     {
         $this->authorize('to_create_user', 3);
 
-        $role = Role::all();
         //tz
         if ($this->is_admin() or $this->is_manager()) {
 
             if ($this->is_admin()) {
-                $role = Role::whereIn('id', [2, 3])->orderBy('created_at', 'desc')->get();
-            } else {
+                $role_limit = [2, 3];
+            } else if ($this->is_manager()) {
 
-                $role = Role::where(['id' => 3])->orderBy('created_at', 'desc')->get();
+                $role_limit = [3];
+            } else {
+                $role_limit = [1, 2, 3];
             }
         }
+        $role = Role::whereIn('id', $role_limit)->orderBy('created_at', 'desc')->get();
+
         return view('backend.shopowner.manager.create', ['shopowner' => $this->get_currentauthdata(), 'role' => $role]);
     }
 
@@ -377,14 +371,12 @@ class ManagerController extends Controller
         } elseif (ShopOwnersAndStaffs::create($input)) {
             if ($input['role_id'] == 1) {
                 Session::flash('message', 'Your admin was successfully added');
-                return redirect('/backside/shop_owner/users');
             } else if ($input['role_id'] == 2) {
                 Session::flash('message', 'Your manager was successfully added');
-                return redirect('/backside/shop_owner/users');
             } else if ($input['role_id'] == 3) {
                 Session::flash('message', 'Your staff was successfully added');
-                return redirect('/backside/shop_owner/users');
             }
+            return redirect('/backside/shop_owner/users');
         }
     }
 
@@ -428,12 +420,11 @@ class ManagerController extends Controller
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:11'],
-            'role_id' => ['required', 'max:255', Rule::in('1', '2', '3', '4')],
+            'role_id' => ['required', 'max:255', Rule::in('1', '2', '3')],
 
             //rules
             'phone' => [
                 'required',
-                Rule::unique('shops', 'main_phone')->ignore($manager->id),
                 Rule::unique('shop_owners_and_staffs')->ignore($manager->id),
             ],
 
@@ -650,42 +641,23 @@ class ManagerController extends Controller
         if (Auth::guard('shop_role')->check()) {
             $this->role('shop_role');
             $this->role_check_trash(Auth::user()->role_id);
-            return view('backend.shopowner.manager.restore_list', ['shopowner' => $this->shop_owner, 'manager' => $this->role_user]);
+            return view('backend.shopowner.manager.restore_list', ['shopowner' => $this->current_shop_data(), 'manager' => $this->role_user]);
         }
         $this->role('shop_owner');
         $manager = ShopOwnersAndStaffs::onlyTrashed()->where('shop_id', $this->role)->get();
-        return view('backend.shopowner.manager.restore_list', ['shopowner' => $this->shop_owner, 'manager' => $manager]);
+        return view('backend.shopowner.manager.restore_list', ['shopowner' => $this->current_shop_data(), 'manager' => $manager]);
     }
 
-    public function get_users_trash(Request $request)
-    {
-    }
+
 
     public function restore($id)
     {
 
         $user_url = ShopOwnersAndStaffs::onlyTrashed()->findOrFail($id)->shop_id;
         $role_id = ShopOwnersAndStaffs::onlyTrashed()->findOrFail($id)->role_id;
-        if (Auth::guard('shop_role')->check()) {
-            $this->role('shop_role');
-
-            if (TzGate::allows($user_url == $this->role_shop_id, $role_id)) {
-                ShopOwnersAndStaffs::onlyTrashed()->findOrFail($id)->restore();
-            }
-        } else {
-            $this->role('shop_owner');
-            if (TzGate::allows($user_url == $this->role)) {
-                ShopOwnersAndStaffs::onlyTrashed()->findOrFail($id)->restore();
-            }
-        }
+        Gate::authorize('to_create_user', $role_id);
 
 
         return redirect()->back();
-    }
-
-    public function restore_all()
-    {
-
-        return back();
     }
 }

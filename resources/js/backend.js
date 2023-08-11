@@ -52,10 +52,10 @@ Window.allfrommsg = allfrommessagefunction;
 window.pricelogicsn = pricelogicsn;
 
 //for host name global var
-Vue.prototype.$hostname = "https://" + window.location.hostname;
+// Vue.prototype.$hostname = "https://" + window.location.hostname;
 // Vue.prototype.$hostname = "http://" + window.location.hostname;
 
-// Vue.prototype.$hostname = "http://" + window.location.hostname + "/moe/public";
+Vue.prototype.$hostname = "http://" + window.location.hostname + "/shweshops/public";
 
 //for host name global var
 const backend = new Vue({

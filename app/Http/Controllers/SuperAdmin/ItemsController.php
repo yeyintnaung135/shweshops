@@ -5,7 +5,7 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Models\Item;
 use App\Models\ShopBanner;
-use App\Models\ShopOwner;
+use App\Models\Shops;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -27,9 +27,8 @@ class ItemsController extends Controller
     public function all()
     {
         //TODO $shopOwner is not needed. Thus, we should remove this
-        $shopOwner = ShopOwner::all();
+        $shopOwner = Shops::all();
         return view('backend.super_admin.items.all', ['shopOwner' => $shopOwner]);
-
     }
 
     public function get_items_ajax(Request $request)
@@ -106,12 +105,10 @@ class ItemsController extends Controller
         foreach ($records as $record) {
             $checkbanner = ShopBanner::where('shop_owner_id', $record->id)->first();
             if (empty($checkbanner)) {
-
             } else {
                 $record->shop_banner = ShopBanner::where('shop_owner_id', $record->id)->first()->location;
-
             }
-            $shopname = ShopOwner::where('id', $record->id)->first()->shop_name;
+            $shopname = Shops::where('id', $record->id)->first()->shop_name;
             $data_arr[] = array(
                 "id" => $record->id,
                 "name" => $shopname,

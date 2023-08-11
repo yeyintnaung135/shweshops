@@ -13,11 +13,11 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label
-                                        >Item Name
+                                    >Item Name
                                         <span
                                             v-if="this.name == ''"
                                             class="sn-required-asterick"
-                                            >*</span
+                                        >*</span
                                         ></label
                                     >
                                     <input
@@ -38,11 +38,11 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label
-                                        >Product Code
+                                    >Product Code
                                         <span
                                             v-if="this.product_code == 0"
                                             class="sn-required-asterick"
-                                            >*</span
+                                        >*</span
                                         ></label
                                     >
                                     <input
@@ -191,11 +191,11 @@
                                         v-if="this.diamond == 'Yes'"
                                     >
                                         <label style="font-size: 14px"
-                                            >ကာရက်(Carat)<span
-                                                v-if="this.carat == 0"
-                                                class="sn-required-asterick"
-                                                >*</span
-                                            >
+                                        >ကာရက်(Carat)<span
+                                            v-if="this.carat == 0"
+                                            class="sn-required-asterick"
+                                        >*</span
+                                        >
                                         </label>
 
                                         <input
@@ -218,11 +218,11 @@
                                         v-if="this.diamond == 'Yes'"
                                     >
                                         <label style="font-size: 14px"
-                                            >ရတီ(Yati)<span
-                                                v-if="this.yati == 0"
-                                                class="sn-required-asterick"
-                                                >*</span
-                                            >
+                                        >ရတီ(Yati)<span
+                                            v-if="this.yati == 0"
+                                            class="sn-required-asterick"
+                                        >*</span
+                                        >
                                         </label>
 
                                         <input
@@ -245,11 +245,11 @@
                                         v-if="this.diamond == 'Yes'"
                                     >
                                         <label style="font-size: 14px"
-                                            >ပွင့်<span
-                                                v-if="this.pwint == 0"
-                                                class="sn-required-asterick"
-                                                >*</span
-                                            >
+                                        >ပွင့်<span
+                                            v-if="this.pwint == 0"
+                                            class="sn-required-asterick"
+                                        >*</span
+                                        >
                                         </label>
 
                                         <input
@@ -272,11 +272,11 @@
                                         v-if="this.diamond == 'Yes'"
                                     >
                                         <label style="font-size: 14px"
-                                            >ဂရမ်(Gram)<span
-                                                v-if="this.d_gram == 0"
-                                                class="sn-required-asterick"
-                                                >*</span
-                                            >
+                                        >ဂရမ်(Gram)<span
+                                            v-if="this.d_gram == 0"
+                                            class="sn-required-asterick"
+                                        >*</span
+                                        >
                                         </label>
 
                                         <input
@@ -330,12 +330,12 @@
                                         <label
                                             v-if="g.error == false"
                                             class="sn-required-asterick"
-                                            >Counts<span>*</span>
+                                        >Counts<span>*</span>
                                         </label>
                                         <label
                                             v-else
                                             class="sn-required-asterick"
-                                            >Counts<span>*</span>
+                                        >Counts<span>*</span>
                                         </label>
 
                                         <input
@@ -350,7 +350,7 @@
                                     </div>
                                     <div class="col-6">
                                         <label style="font-size: 14px"
-                                            >ကာရက်<span></span>
+                                        >ကာရက်<span></span>
                                         </label>
 
                                         <input
@@ -363,7 +363,7 @@
 
                                     <div class="col-6">
                                         <label style="font-size: 14px"
-                                            >ရတီ<span></span>
+                                        >ရတီ<span></span>
                                         </label>
 
                                         <input
@@ -375,7 +375,7 @@
                                     </div>
                                     <div class="col-6">
                                         <label style="font-size: 14px"
-                                            >ဘီ<span></span>
+                                        >ဘီ<span></span>
                                         </label>
 
                                         <input
@@ -387,6 +387,7 @@
                                     </div>
                                 </div>
                             </div>
+
 
                             <div class="col-md-6 p-0">
                                 <div class="form-group row">
@@ -411,11 +412,11 @@
                                         v-if="this.stock === 'In Stock'"
                                     >
                                         <label
-                                            >Counts
+                                        >Counts
                                             <span
                                                 v-if="this.stock_count == 0"
                                                 class="sn-required-asterick"
-                                                >*</span
+                                            >*</span
                                             ></label
                                         >
 
@@ -458,11 +459,11 @@
                                 <!-- textarea -->
                                 <div class="form-group">
                                     <label
-                                        >Description
+                                    >Description
                                         <span
                                             v-if="this.description == ''"
                                             class="sn-required-asterick"
-                                            >*</span
+                                        >*</span
                                         ></label
                                     >
 
@@ -484,7 +485,7 @@
                             <!-- /.col -->
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Gender</label>
+                                    <label>Gender </label>
                                     <select
                                         @change="temp"
                                         class="form-control"
@@ -504,7 +505,6 @@
                                     </select>
                                 </div>
                             </div>
-
                             <div class="col-md-6 p-0">
                                 <div class="form-group row">
                                     <div class="col-4">
@@ -527,11 +527,11 @@
                                         v-if="this.exceptorrates == 'Range'"
                                     >
                                         <label style="font-size: 14px"
-                                            >MIN(Ks)
+                                        >MIN(Ks)
                                             <span
                                                 v-if="this.min_price == 0"
                                                 class="sn-required-asterick"
-                                                >*</span
+                                            >*</span
                                             >
                                         </label>
 
@@ -546,14 +546,12 @@
                                             "
                                             class="form-control"
                                             name="min_price"
+
                                             v-bind:class="[
-                                                this.requireerroryk.minprice
-                                                    ? 'border-danger'
-                                                    : '',
-                                                this.requireerroryk.price
-                                                    ? 'border-danger'
-                                                    : '',
-                                            ]"
+            this.requireerroryk.minprice ? 'border-danger' : '',
+            this.requireerroryk.price ? 'border-danger' : '',
+
+          ]"
                                             v-model="min_price"
                                             value=""
                                             placeholder="Enter Min price"
@@ -566,11 +564,11 @@
                                         v-if="this.exceptorrates == 'Range'"
                                     >
                                         <label style="font-size: 14px"
-                                            >MAX(Ks)
+                                        >MAX(Ks)
                                             <span
                                                 v-if="this.max_price == 0"
                                                 class="sn-required-asterick"
-                                                >*</span
+                                            >*</span
                                             >
                                         </label>
 
@@ -585,13 +583,9 @@
                                             "
                                             class="form-control"
                                             v-bind:class="[
-                                                this.requireerroryk.minprice
-                                                    ? 'border-danger'
-                                                    : '',
-                                                this.requireerroryk.price
-                                                    ? 'border-danger'
-                                                    : '',
-                                            ]"
+                                           this.requireerroryk.minprice ? 'border-danger' : '',
+                                           this.requireerroryk.price ? 'border-danger' : '',
+                                           ]"
                                             name="max_price"
                                             v-model="max_price"
                                             value=""
@@ -604,11 +598,11 @@
                                         v-if="this.exceptorrates == 'Exactly'"
                                     >
                                         <label
-                                            >Price Exactly(Ks)
+                                        >Price Exactly(Ks)
                                             <span
                                                 v-if="this.price == 0"
                                                 class="sn-required-asterick"
-                                                >*</span
+                                            >*</span
                                             ></label
                                         >
 
@@ -620,13 +614,9 @@
                                             type="number"
                                             class="form-control"
                                             v-bind:class="[
-                                                this.requireerroryk.minprice
-                                                    ? 'border-danger'
-                                                    : '',
-                                                this.requireerroryk.price
-                                                    ? 'border-danger'
-                                                    : '',
-                                            ]"
+                                           this.requireerroryk.minprice ? 'border-danger' : '',
+                                           this.requireerroryk.price ? 'border-danger' : '',
+                                           ]"
                                             v-model="price"
                                             name="price"
                                             placeholder="Enter Exact price"
@@ -638,7 +628,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label style="font-size: 15px"
-                                        >အလျော့တွက်
+                                    >အလျော့တွက်
                                     </label>
                                     <input
                                         type="text"
@@ -663,7 +653,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label
-                                            >ရောင်း / ဝယ် / လဲ
+                                        >ရောင်း / ဝယ် / လဲ
                                             ရာခိုင်နှုန်း</label
                                         >
                                         <select
@@ -685,7 +675,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label style="font-size: 15px"
-                                            >အထည်မပျက် ပြန်သွင်း</label
+                                        >အထည်မပျက် ပြန်သွင်း</label
                                         >
                                         <input
                                             type="text"
@@ -698,7 +688,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label style="font-size: 15px"
-                                            >အထည်ပျက်စီးချို့ယွင်း</label
+                                        >အထည်ပျက်စီးချို့ယွင်း</label
                                         >
                                         <input
                                             type="text"
@@ -712,7 +702,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label style="font-size: 15px"
-                                            >တန်ဖိုးမြင့်အထည် နှင့်
+                                        >တန်ဖိုးမြင့်အထည် နှင့်
                                             အထည်မပျက်ပြန်လဲ</label
                                         >
                                         <input
@@ -727,7 +717,7 @@
                             <!-- /.col -->
                             <Ykweight ref="aa"></Ykweight>
 
-                            <img src="" id="img-ff" />
+                            <img src="" id="img-ff"/>
                             <canvas
                                 id="canvas"
                                 class="d-none"
@@ -735,7 +725,7 @@
                             ></canvas>
                             <div class="col-md-6 pt-3">
                                 <label for="tags-basic"
-                                    >Type a new tag and press enter</label
+                                >Type a new tag and press enter</label
                                 >
                                 <b-form-tags
                                     input-id="tags-basic"
@@ -744,27 +734,6 @@
                                     separator=",;"
                                 ></b-form-tags>
                             </div>
-
-                            <div class="col-md-6 pt-3">
-                                <div class="form-group">
-                                    <label>Collection</label>
-                                    <select
-                                        class="form-control"
-                                        v-model="collection_id"
-                                        style="width: 100%"
-                                    >
-                                        <option
-                                            v-for="collection in this
-                                                .collection"
-                                            :key="collection.index"
-                                            :value="collection.id"
-                                        >
-                                            {{ collection.name }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-
                             <div class="col-md-12 pt-3">
                                 <div
                                     v-bind:class="{
@@ -775,7 +744,7 @@
                                     }"
                                 >
                                     <label style="font-size: 15px"
-                                        >အနည်းဆုံး ပုံ တစ်ပုံတင်ပါ</label
+                                    >အနည်းဆုံး ပုံ တစ်ပုံတင်ပါ</label
                                     >
                                 </div>
 
@@ -824,7 +793,7 @@
 
                             <div class="col-12">
                                 <button
-                                    class="sn-item-create-button btn btn-primary float-left float-sm-none"
+                                    class="sn-item-create-button btn btn-primary float-right float-sm-none"
                                     type="submit"
                                     @click="submitform"
                                 >
@@ -1150,7 +1119,6 @@ export default {
 
             // forstock
             stock: "In Stock",
-
             collection_id: 0,
 
             stock_count: 0,
@@ -1188,7 +1156,7 @@ export default {
                 stock_count: false,
                 weight: false,
                 main_category: false,
-                minprice: false,
+                minprice: false
             },
             //forerror
             //for to set default photo
@@ -1197,9 +1165,9 @@ export default {
             //for to set default photo
 
             hidetoggle: false,
-            // csrf: document
-            //     .querySelector('meta[name="csrf-token"]')
-            //     .getAttribute("content"),
+            csrf: document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content"),
             dropzoneOptions: {
                 url: this.link,
                 maxFiles: 10,
@@ -1222,9 +1190,9 @@ export default {
 
                 headers: {
                     "My-Awesome-Header": "header value",
-                    // "X-CSRF-TOKEN": document
-                    //     .querySelector('meta[name="csrf-token"]')
-                    //     .getAttribute("content"),
+                    "X-CSRF-TOKEN": document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute("content"),
                 },
             },
         };
@@ -1245,7 +1213,7 @@ export default {
             this.damage_product = 0;
             this.valuable_product = 0;
 
-            this.recap[0] = { id: 1, name: "Default" };
+            this.recap[0] = {id: 1, name: "Default"};
         } else {
             this.recap_id = this.recap[0].id;
             this.handmade = this.recap[0].handmade ? this.recap[0].handmade : 0;
@@ -1331,6 +1299,7 @@ export default {
                 this.requireerroryk.name = false;
             }
 
+
             // check all input field has value
             // if (this.name == "") {
             //     this.requireerroryk.name = true;
@@ -1411,17 +1380,19 @@ export default {
             } else {
                 this.requireerroryk.price = false;
             }
-            if (this.exceptorrates == "Range") {
+            if (this.exceptorrates == 'Range') {
                 if (this.min_price < 10000 || this.max_price < 10000) {
                     tmperrorcounts += 1;
                     this.requireerroryk.minprice = true;
+
                 } else {
                     this.requireerroryk.minprice = false;
                 }
-            } else {
+            }else{
                 if (this.price < 10000) {
                     tmperrorcounts += 1;
                     this.requireerroryk.minprice = true;
+
                 } else {
                     this.requireerroryk.minprice = false;
                 }
@@ -1502,8 +1473,7 @@ export default {
                     i++;
                 }
                 if (this.requireerroryk.stock_count) {
-                    alertText[i] =
-                        "ပစ္စည်းအရေအတွက် ဖြည့်သွင်းပေးရန် လိုအပ်ပါသည်။";
+                    alertText[i] = "ပစ္စည်းအရေအတွက် ဖြည့်သွင်းပေးရန် လိုအပ်ပါသည်။";
                     i++;
                 }
                 if (this.requireerroryk.price) {
@@ -1527,25 +1497,24 @@ export default {
                     i++;
                 }
                 alert(alertText.join("\n\n"));
-                console.log("alertText", i, this.requireerroryk);
+                console.log('alertText', i, this.requireerroryk)
                 if (this.name == "") {
-                    $("html").animate({ scrollTop: "100" });
+                    $("html").animate({scrollTop: "100"});
                 } else {
                     if (
-                        this.requireerroryk.price == true ||
-                        this.requireerroryk.minprice == true ||
+                        this.requireerroryk.price == true || this.requireerroryk.minprice == true ||
                         this.stock_count == 0 ||
                         this.requireerroryk.weight
                     ) {
-                        $("html").animate({ scrollTop: "500" });
+                        $("html").animate({scrollTop: "500"});
                     } else {
                         if (this.description == "" || this.product_code == 0) {
-                            $("html").animate({ scrollTop: "1000" });
+                            $("html").animate({scrollTop: "1000"});
                         } else {
                             if (this.requireerroryk.gems == true) {
-                                $("html").animate({ scrollTop: "100" });
+                                $("html").animate({scrollTop: "100"});
                             } else {
-                                $("html").animate({ scrollTop: "100" });
+                                $("html").animate({scrollTop: "100"});
                             }
                         }
                     }
@@ -1695,7 +1664,20 @@ export default {
 
         thumbnail: function (file, dataUrl) {
             //resize image
-
+            ykresizer(file, 300, 300).then((res) => {
+                this.mid_photos.push({
+                    name: file.upload.filename,
+                    data: res,
+                    type: file.type,
+                });
+            });
+            ykresizer(file, 100, 100).then((res) => {
+                this.thumb_photos.push({
+                    name: file.upload.filename,
+                    data: res,
+                    type: file.type,
+                });
+            });
             //resize image
             var self = this;
             var j, len, ref, thumbnailElement, refp;
@@ -1838,24 +1820,8 @@ export default {
         // sendevent is prepare to send before real send
 
         sendingEvent(files, xhr, formData) {
-            for (var f = 0; f < files.length; f++) {
-                ykresizer(files[f], 300, 300).then((res) => {
-                    this.mid_photos.push({
-                        name: file.upload.filename,
-                        data: res,
-                        type: file.type,
-                    });
-                });
-                ykresizer(files[f], 100, 100).then((res) => {
-                    this.thumb_photos.push({
-                        name: file.upload.filename,
-                        data: res,
-                        type: file.type,
-                    });
-                });
-            }
             //why not use v-model because vue conflit with select2 js
-            // formData.append("_token", this.csrf);
+            formData.append("_token", this.csrf);
             formData.append("gems", JSON.stringify(this.gems));
             formData.append("formidphotos", JSON.stringify(this.mid_photos));
             formData.append(
@@ -1931,9 +1897,11 @@ export default {
         //if some errors appear while uploading to server
         errorEvent(file, message, xhr) {
             this.$refs.myVueDropzone.removeFile(file);
-            $(".dz-error").remove();
+            $('.dz-error').remove();
+
 
             this.showerrorwithmodel(message);
+
         },
     },
     computed: {},
