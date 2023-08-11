@@ -2,27 +2,28 @@
 
 namespace App\Http\Controllers\ShopOwner;
 
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Trait\CalculateCat;
+use App\Http\Controllers\Trait\CountSettingCheck;
+use App\Http\Controllers\Trait\UserRole;
+use App\Http\Controllers\Trait\YKImage;
+use App\Models\AddToCartClickLog;
 use App\Models\Ads;
-
-
-use App\Models\FrontUserLogs;
-use App\Models\Item;
-use App\Models\GoldPoint;
-use App\Models\Discount;
-use App\Models\Shops;
-use App\Models\ShopBanner;
 use App\Models\BuyNowClickLog;
+use App\Models\CountSetting;
+use App\Models\Discount;
+use App\Models\FrontUserLogs;
+use App\Models\GoldPoint;
+use App\Models\Item;
 use App\Models\ItemLogActivity;
+use App\Models\ShopBanner;
 use App\Models\ShopLogActivity;
+use App\Models\ShopOwnerGoldPoint;
+use App\Models\Shops;
 use App\Models\User;
 use App\Models\WishlistClickLog;
-use App\Models\AddToCartClickLog;
-use App\Models\CountSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Validation\Rule;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Trait\CountSettingCheck;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use App\Http\Controllers\Trait\YKImage;
@@ -30,7 +31,10 @@ use App\Http\Controllers\Trait\UserRole;
 use App\Models\ShopOwnerGoldPoint;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Trait\CalculateCat;
+use App\Models\SiteSettings;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
+use Illuminate\Validation\Rule;
 
 class ShopOwnerController extends Controller
 {
@@ -60,10 +64,8 @@ class ShopOwnerController extends Controller
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $products_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'item')->get();
 
-
         $shopview = frontuserlogs::where('shop_id', $this->get_shopid())->where('status', 'shopdetail')->orderBy('created_at', 'desc')->get()->unique('guest_id');
         $shops_view_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'shop_view')->get();
-
 
         $productclick = frontuserlogs::leftjoin('items', 'front_user_logs.product_id', '=', 'items.id')->where('front_user_logs.status', 'product_detail')->where('items.shop_id', $this->get_shopid())->orderBy('front_user_logs.created_at', 'desc')->get();
         $items_view_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'items_view')->get();
@@ -92,6 +94,7 @@ class ShopOwnerController extends Controller
         $users = $this->getuserlistbyrolelevel();
         $users_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'users')->get();
 
+        $banner = ShopBanner::where('shop_owner_id', $this->get_shopid())->first();
 
         //  return $buynowclick;
 
@@ -127,6 +130,8 @@ class ShopOwnerController extends Controller
 
             'managers' => $users,
             'users_count_setting' => $users_count_setting,
+
+            'banner' => $banner,
 
         ]);
     }
@@ -229,7 +234,6 @@ class ShopOwnerController extends Controller
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
 
-
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
         }
@@ -272,7 +276,6 @@ class ShopOwnerController extends Controller
             ->get();
 
         $data_arr = array();
-
 
         foreach ($records as $record) {
             if ($record->user_id == 0) {
@@ -320,7 +323,6 @@ class ShopOwnerController extends Controller
 
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
-
 
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
@@ -424,7 +426,6 @@ class ShopOwnerController extends Controller
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
 
-
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
         }
@@ -524,7 +525,6 @@ class ShopOwnerController extends Controller
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
 
-
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
         }
@@ -623,7 +623,6 @@ class ShopOwnerController extends Controller
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
 
-
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
         }
@@ -673,7 +672,6 @@ class ShopOwnerController extends Controller
             ->get();
 
         $data_arr = array();
-
 
         foreach ($records as $record) {
             if ($record->user_id == 0) {
@@ -731,7 +729,6 @@ class ShopOwnerController extends Controller
             ->take($rowperpage)
             ->get()->unique('guest_id', 'user_id');
 
-
         $data_arr = array();
 
         foreach ($users as $user) {
@@ -739,7 +736,7 @@ class ShopOwnerController extends Controller
                 "id" => $user->id,
                 "user_id" => $user->user_id,
                 "user_name" => $user->user_name,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($user->created_at))
+                "created_at" => date('F d, Y ( h:i A )', strtotime($user->created_at)),
             );
         }
 
@@ -783,13 +780,12 @@ class ShopOwnerController extends Controller
 
         $records = ItemLogActivity::orderBy($columnName, $columnSortOrder)
             ->where('shop_id', $shop_id)->orderBy('created_at', 'desc')
-            // ->where('product_code', 'like', '%' . $searchValue . '%')
-            // ->orWhere('name', 'like', '%' . $searchValue . '%')
+        // ->where('product_code', 'like', '%' . $searchValue . '%')
+        // ->orWhere('name', 'like', '%' . $searchValue . '%')
             ->select('item_log_activities.*')
             ->skip($start)
             ->take($rowperpage)
             ->get()->unique('user_id', 'guest_id');
-
 
         //    return $records;
         $data_arr = array();
@@ -820,7 +816,9 @@ class ShopOwnerController extends Controller
         $users_list = $this->getuserlistbyrolelevel();
         $result = Shops::where('id', $this->get_shopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        return view('backend.shopowner.shop', ['shopowner' => $result, 'items' => $items, 'managers' => $users_list]);
+        $banner = ShopBanner::where('shop_owner_id', $this->get_shopid())->first();
+        $siteSettingAction = SiteSettings::where('id', 1)->first()->action;
+        return view('backend.shopowner.shop', ['shopowner' => $result, 'items' => $items, 'managers' => $users_list, 'banner' => $banner, 'siteSettingAction' => $siteSettingAction]);
     }
 
     public function edit()
@@ -839,7 +837,6 @@ class ShopOwnerController extends Controller
         }
         //remove token and method from request
         $input = $request->except('_token', '_method');
-
 
         // $input = $request->except('_token', '_method');
         $shopowner = Shops::findOrFail($id);
@@ -881,15 +878,14 @@ class ShopOwnerController extends Controller
         $shopowner->description = $request->description;
         $shopowner->address = $request->address;
         $shopowner->main_phone = $request->main_phone;
-        $shopowner->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ = $request->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ;
-        $shopowner->အထည်မပျက်_ပြန်သွင်း = $request->အထည်မပျက်_ပြန်သွင်း;
-        $shopowner->အထည်ပျက်စီးချို့ယွင်း = $request->အထည်ပျက်စီးချို့ယွင်း;
+        $shopowner->valuable_product = $request->valuable_product;
+        $shopowner->undamaged_product = $request->undamaged_product;
+        $shopowner->damaged_product = $request->damaged_product;
         $shopowner->messenger_link = $request->messenger_link;
         $shopowner->page_link = $request->page_link;
         $shopowner->map = $request->map;
         $shopowner->additional_phones = json_encode($add_ph_array);
         $shopowner->other_address = $request->other_address;
-
 
         if ($request->file('shop_logo')) {
 
@@ -931,7 +927,6 @@ class ShopOwnerController extends Controller
                 $banner->save();
             }
         }
-
 
         if ($updateSuccess) {
             return redirect()->route('backside.shop_owner.shop_detail')->with(['status' => 'success', 'message' => 'Your Shop was successfully Edited']);

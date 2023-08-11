@@ -66,8 +66,8 @@
                                             <tr>
                                                 <td>ID</td>
                                                 <td>Name</td>
-                                                <td>Undamage_product</td>
-                                                <td>Damage_product</td>
+                                                <td>Undamaged Product</td>
+                                                <td>Damaged Product</td>
                                                 <td>Valuable_product</td>
                                                 <td>Action</td>
                                                 <td>date</td>
@@ -77,10 +77,9 @@
                                             <tr>
                                                 <td>ID</td>
                                                 <td>Name</td>
-
-                                                <td>Undamage_product</td>
-                                                <td>Demage_product</td>
-                                                <td>Valuable_product</td>
+                                                <td>Undamaged Product</td>
+                                                <td>Damaged Product</td>
+                                                <td>Valuable Product</td>
                                                 <td>Action</td>
                                                 <td>date</td>
                                             </tr>

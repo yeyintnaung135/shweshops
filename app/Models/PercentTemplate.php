@@ -9,5 +9,5 @@ class PercentTemplate extends Model
 {
     use SoftDeletes;
     protected $table = 'percent_template';
-    protected $fillable = ['shop_id', 'name', 'undamage_product', 'damage_product', 'valuable_product', 'deleted_at'];
+    protected $fillable = ['shop_id', 'name', 'undamaged_product', 'damaged_product', 'valuable_product', 'deleted_at'];
 }

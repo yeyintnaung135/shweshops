@@ -54,8 +54,8 @@
                                         </div>
                                     @else
                                         <?php
-                                        if (\App\ShopBanner::where('shop_owner_id', $shopowner->id)->first()) {
-                                            $getbanner = \App\ShopBanner::where('shop_owner_id', $shopowner->id)->first()->location;
+                                        if ($banner) {
+                                            $getbanner = $banner->location;
                                         } else {
                                             $getbanner = 'default.jpg';
                                         }
@@ -102,18 +102,18 @@
                                         </div>
                                         <div class="col-12 pl-lg-5 col-lg-6">
                                             <p><span class="mm-font">အထည်မပျက် ပြန်သွင်း
-                                                    :</span>{{ $shopowner->အထည်မပျက်_ပြန်သွင်း }}
+                                                    :</span>{{ $shopowner->undamaged_product }}
                                                 <span style="font-size: 0.85rem">%</span>
                                             </p>
                                             <p><span class="mm-font">တန်ဖိုးမြင့်အထည် နှင့် အထည်မပျက်ပြန်လဲ :
-                                                </span>{{ $shopowner->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ }}
+                                                </span>{{ $shopowner->valuable_product }}
                                                 <span style="font-size: 0.85rem">%</span>
                                             </p>
-                                            <p><span class="mm-font">အထည်ပျက်စီးချို့ယွင်း :
-                                                </span>{{ $shopowner->အထည်ပျက်စီးချို့ယွင်း }}
+                                            <p><span class="mm-font">အထည်ပျက်စီး ချို့ယွင်း :
+                                                </span>{{ $shopowner->damaged_product }}
                                                 <span style="font-size: 0.85rem">%</span>
                                             </p>
-                                            @if (\App\sitesettings::where('id', 1)->first()->action === 'on')
+                                            @if ($siteSettingAction === 'on')
                                                 <p v-if="fbdata.showdv=='yes'">
                                                     <a href="javascript:void(0)" @click="fblogin"
                                                         v-if="fbdata.connected == 'no'" class="btn btn-primary "><b>

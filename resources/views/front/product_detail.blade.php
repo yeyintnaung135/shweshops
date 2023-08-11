@@ -819,22 +819,22 @@
                                                     <div class="zh-row row">
                                                         <div class="col-4 ">
                                                             <span
-                                                                class="sn-detail-title font-red sop-font">အထည်မပျက်ပြန်သွင်း</span>
+                                                                class="sn-detail-title font-red sop-font">အထည်မပျက် ပြန်သွင်း</span>
                                                         </div>
                                                         <div class="col-8 ">
                                                             <span class="sku sop-font"
-                                                                itemprop="sku">{{ $item->အထည်မပျက်_ပြန်သွင်း }} </span>
+                                                                itemprop="sku">{{ $item->undamaged_product }} </span>
                                                         </div>
                                                     </div>
 
                                                     <div class="zh-row row">
                                                         <div class="col-4 ">
                                                             <span
-                                                                class="sn-detail-title font-red sop-font">အထည်ပျက်စီးချို့ယွင်း</span>
+                                                                class="sn-detail-title font-red sop-font">အထည်ပျက်စီး ချို့ယွင်း</span>
                                                         </div>
                                                         <div class="col-8 ">
                                                             <span class="sku sop-font"
-                                                                itemprop="sku">{{ $item->အထည်ပျက်စီးချို့ယွင်း }}</span>
+                                                                itemprop="sku">{{ $item->damaged_product }}</span>
                                                         </div>
                                                     </div>
                                                     <div class="zh-row row">
@@ -845,7 +845,7 @@
                                                         </div>
                                                         <div class="col-8 ">
                                                             <span class="sku sop-font"
-                                                                itemprop="sku">{{ $item->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ }}
+                                                                itemprop="sku">{{ $item->valuable_product }}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -960,7 +960,7 @@
                                                                     </div>
                                                                 </a>
                                                             @endif
-                                                      
+
                                                         @endif
 
                                                     </li>

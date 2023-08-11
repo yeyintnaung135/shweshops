@@ -191,20 +191,20 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label">အထည်မပျက်ပြန်သွင်း % : </label>
-                        <input type="text" name="အထည်မပျက်ပြန်သွင်း" id="first_name" class="form-control" />
-                        <span id="error_အထည်မပျက်ပြန်သွင်း" class="text-danger d-none">error</span>
+                        <input type="text" name="undamaged_product" id="first_name" class="form-control" />
+                        <span id="error_undamaged_product" class="text-danger d-none">error</span>
 
                     </div>
                     <div class="form-group">
-                        <label class="control-label">အထည်ပျက်စီးချို့ယွင်း % : </label>
-                        <input type="text" name="အထည်ပျက်စီးချို့ယွင်း" id="first_name" class="form-control" />
+                        <label class="control-label">အထည်ပျက်စီး ချို့ယွင်း % : </label>
+                        <input type="text" name="damaged_product" id="first_name" class="form-control" />
                         <span id="error_အထည်ပျက်စီးချို့ယွင်း" class="text-danger d-none">error</span>
 
                     </div>
                     <div class="form-group ">
                         <label class="control-label">တန်ဖိုးမြင့် အထည်နှင့်အထည်မပျက်ပြန်လဲ % : </label>
-                        <input type="text" name="တန်ဖိုးမြင့်" id="first_name" class="form-control" />
-                        <span id="error_တန်ဖိုးမြင့်" class="text-danger d-none sop-font">error</span>
+                        <input type="text" name="valuable_product" id="first_name" class="form-control" />
+                        <span id="error_valuable_product" class="text-danger d-none sop-font">error</span>
 
                     </div>
                     <br />

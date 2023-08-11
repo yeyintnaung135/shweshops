@@ -680,7 +680,7 @@
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="undamage_product"
+                                            v-model="undamaged_product"
                                             placeholder="10 % or 10000ကျပ် "
                                         />
                                     </div>
@@ -688,12 +688,12 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label style="font-size: 15px"
-                                        >အထည်ပျက်စီးချို့ယွင်း</label
+                                            >အထည်ပျက်စီး ချို့ယွင်း</label
                                         >
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="damage_product"
+                                            v-model="damaged_product"
                                             id=""
                                             placeholder="10 % or 10000ကျပ် "
                                         />
@@ -847,8 +847,8 @@ export default {
         return {
             submittedLoading: 0,
             valuable_product: 0,
-            undamage_product: 0,
-            damage_product: 0,
+            undamaged_product: 0,
+            damaged_product: 0,
             snprice_to_word_min: "",
             snprice_to_word_max: "",
             category_id: "",
@@ -1199,18 +1199,17 @@ export default {
     },
     mounted() {
         console.log(this.main_cat);
-        this.damage_product = this.somedatafromshop.အထည်ပျက်စီးချို့ယွင်း;
-        this.valuable_product =
-            this.somedatafromshop.တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ;
-        this.undamage_product = this.somedatafromshop.အထည်မပျက်_ပြန်သွင်း;
+        this.damaged_product = this.somedatafromshop.damaged_product;
+        this.valuable_product = this.somedatafromshop.valuable_product;
+        this.undamaged_product = this.somedatafromshop.undamaged_product;
         this.category_id = this.catlist[0].name;
 
         console.log("fefe");
         console.log(this.recap);
         if (this.recap.length == 0) {
             this.recap_id = 1;
-            this.undamage_product = 0;
-            this.damage_product = 0;
+            this.undamaged_product = 0;
+            this.damaged_product = 0;
             this.valuable_product = 0;
 
             this.recap[0] = {id: 1, name: "Default"};
@@ -1218,15 +1217,13 @@ export default {
             this.recap_id = this.recap[0].id;
             this.handmade = this.recap[0].handmade ? this.recap[0].handmade : 0;
             this.charge = this.recap[0].charge ? this.recap[0].charge : 0;
-            this.undamage_product = this.recap[0].undamage_product;
-            this.damage_product = this.recap[0].damage_product;
+            this.undamaged_product = this.recap[0].undamaged_product;
+            this.damaged_product = this.recap[0].damaged_product;
             this.valuable_product = this.recap[0].valuable_product;
         }
         // console.log("Recap data worked", this.recap);
 
-        console.log(
-            this.somedatafromshop.တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ
-        );
+        console.log(this.somedatafromshop.valuable_product);
     },
 
     components: {
@@ -1244,8 +1241,8 @@ export default {
                 if (recap.id == this.recap_id) {
                     // this.handmade = recap.handmade;
                     // this.charge = recap.charge;
-                    this.undamage_product = recap.undamage_product;
-                    this.damage_product = recap.damage_product;
+                    this.undamaged_product = recap.undamaged_product;
+                    this.damaged_product = recap.damaged_product;
                     this.valuable_product = recap.valuable_product;
                     return;
                 }
@@ -1837,12 +1834,9 @@ export default {
             formData.append("charge", this.charge);
 
             formData.append("description", this.description);
-            formData.append("အထည်မပျက်_ပြန်သွင်း", this.undamage_product);
-            formData.append("အထည်ပျက်စီးချို့ယွင်း", this.damage_product);
-            formData.append(
-                "တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ",
-                this.valuable_product
-            );
+            formData.append("undamaged_product", this.undamaged_product);
+            formData.append("damaged_product", this.damaged_product);
+            formData.append("valuable_product", this.valuable_product);
             formData.append(
                 "gold_quality",
                 document.getElementsByName("gold_quality")[0].value

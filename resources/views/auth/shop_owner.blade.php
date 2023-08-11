@@ -388,13 +388,13 @@
                                     <div class="col-md-12 col-12">
                                         <div class="input-group mb-3">
 
-                                            <input id="အထည်မပျက်_ပြန်သွင်း" value="{{ old('အထည်မပျက်_ပြန်သွင်း') }}"
+                                            <input id="undamaged_product" value="{{ old('undamaged_product') }}"
                                                    min="0" type="number"
-                                                   class="form-control @error('အထည်မပျက်_ပြန်သွင်း') is-invalid @enderror"
-                                                   name="အထည်မပျက်_ပြန်သွင်း" placeholder="အထည်မပျက် ပြန်သွင်း %"
+                                                   class="form-control @error('undamaged_product') is-invalid @enderror"
+                                                   name="undamaged_product" placeholder="အထည်မပျက် ပြန်သွင်း %"
                                                    autocomplete="new-password">
                                         </div>
-                                        @error('အထည်မပျက်_ပြန်သွင်း')
+                                        @error('undamaged_product')
                                         <x-error>
                                             {{$message}}
                                         </x-error>
@@ -404,15 +404,15 @@
                                 <div class="yk form-group row">
                                     <div class="col-md-12 col-12">
                                         <div class="input-group mb-3">
-                                            <input value="{{ old('တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ') }}"
-                                                   min="0" type="number" id="တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ"
+                                            <input value="{{ old('valuable_product') }}"
+                                                   min="0" type="number" id="valuable_product"
 
-                                                   class="form-control @error('တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ') is-invalid @enderror"
-                                                   name="တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ"
-                                                   placeholder="တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ %"
+                                                   class="form-control @error('valuable_product') is-invalid @enderror"
+                                                   name="valuable_product"
+                                                   placeholder="valuable_product %"
                                                    >
                                         </div>
-                                        @error('တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ')
+                                        @error('valuable_product')
                                         <x-error>
                                             {{$message}}
                                         </x-error>
@@ -426,15 +426,15 @@
                                     <div class="col-md-12 col-12">
                                         <div class="input-group mb-3">
 
-                                            <input id="အထည်ပျက်စီးချို့ယွင်း"
-                                                   value="{{ old('အထည်ပျက်စီးချို့ယွင်း') }}" min="0" type="number"
+                                            <input id="damaged_product"
+                                                   value="{{ old('damaged_product') }}" min="0" type="number"
                                                    type="text"
-                                                   class="form-control @error('အထည်ပျက်စီးချို့ယွင်း') is-invalid @enderror"
-                                                   name="အထည်ပျက်စီးချို့ယွင်း"
-                                                   placeholder="အထည်ပျက်စီးချို့ယွင်း %"
+                                                   class="form-control @error('damaged_product') is-invalid @enderror"
+                                                   name="damaged_product"
+                                                   placeholder="အထည်ပျက်စီး ချို့ယွင်း %"
                                                    autocomplete="new-password">
                                         </div>
-                                        @error('အထည်ပျက်စီးချို့ယွင်း')
+                                        @error('damaged_product')
                                         <x-error>
                                             {{$message}}
                                         </x-error>
@@ -448,15 +448,15 @@
                                     <div class="col-md-12 col-12">
                                         <div class="input-group mb-3">
 
-                                            <input id="အထည်ပျက်စီးချို့ယွင်း"
-                                                   value="{{ old('အထည်ပျက်စီးချို့ယွင်း') }}" min="0" type="number"
+                                            <input id="damaged_product"
+                                                   value="{{ old('damaged_product') }}" min="0" type="number"
                                                    type="text"
-                                                   class="form-control @error('အထည်ပျက်စီးချို့ယွင်း') is-invalid @enderror"
-                                                   name="အထည်ပျက်စီးချို့ယွင်း"
-                                                   placeholder="အထည်ပျက်စီးချို့ယွင်း %"
+                                                   class="form-control @error('damaged_product') is-invalid @enderror"
+                                                   name="damaged_product"
+                                                   placeholder="အထည်ပျက်စီး ချို့ယွင်း %"
                                                    autocomplete="new-password">
                                         </div>
-                                        @error('အထည်ပျက်စီးချို့ယွင်း')
+                                        @error('damaged_product')
                                         <x-error>
                                             {{$message}}
                                         </x-error>

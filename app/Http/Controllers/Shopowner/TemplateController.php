@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers\ShopOwner;
 
-use App\Models\Item;
 use App\Facade\TzGate;
-use App\Models\PercentTemplate;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Trait\UserRole;
 use App\Http\Requests\ItemsRecapRequest;
+use App\Models\PercentTemplate;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 
 class TemplateController extends Controller
@@ -35,7 +33,6 @@ class TemplateController extends Controller
         }
         return view('backend.shopowner.template.list', ['templates' => $templates, 'shopowner' => $this->shop_owner]);
     }
-
 
     public function get_template(Request $request)
     {
@@ -62,20 +59,19 @@ class TemplateController extends Controller
             $shop_id = Auth::guard('shop_role')->user()->shop_id;
         }
 
-
         $totalRecords = PercentTemplate::select('count(*) as allcount')
-                        ->where('shop_id', $shop_id)
-                        ->where('name', 'like', '%' . $searchValue . '%')
-                        ->count();
+            ->where('shop_id', $shop_id)
+            ->where('name', 'like', '%' . $searchValue . '%')
+            ->count();
         $totalRecordswithFilter = $totalRecords;
 
-          $records = PercentTemplate::orderBy($columnName, $columnSortOrder)
-              ->where('shop_id', $shop_id)->orderBy('created_at', 'desc')
-              ->where('name', 'like', '%' . $searchValue . '%')
-              ->select('percent_template.*')
-              ->skip($start)
-              ->take($rowperpage)
-              ->get();
+        $records = PercentTemplate::orderBy($columnName, $columnSortOrder)
+            ->where('shop_id', $shop_id)->orderBy('created_at', 'desc')
+            ->where('name', 'like', '%' . $searchValue . '%')
+            ->select('percent_template.*')
+            ->skip($start)
+            ->take($rowperpage)
+            ->get();
 
         $data_arr = array();
 
@@ -83,8 +79,8 @@ class TemplateController extends Controller
             $data_arr[] = array(
                 "id" => $record->id,
                 "name" => $record->name,
-                "undamage_product" => $record->undamage_product,
-                "damage_product" => $record->damage_product,
+                "undamaged_product" => $record->undamaged_product,
+                "damaged_product" => $record->damaged_product,
                 "valuable_product" => $record->valuable_product,
                 "action" => $record->id,
                 "created_at" => $record->created_at,
@@ -109,7 +105,7 @@ class TemplateController extends Controller
             $this->role('shop_owner');
 
         }
-        return view('backend.shopowner.template.template_create', [ 'shopowner' => $this->shop_owner]);
+        return view('backend.shopowner.template.template_create', ['shopowner' => $this->shop_owner]);
     }
 
     public function edit($id)
@@ -122,72 +118,67 @@ class TemplateController extends Controller
             }
         } else {
 
-
             $this->role('shop_owner');
-
-
 
             $user_id = $this->role;
             if (TzGate::allows($user_id == $template_id)) {
                 $tempalte = PercentTemplate::where('id', $id)->first();
 
-
             }
         }
 
-
-        return view('backend.shopowner.template.edit', [ 'shopowner' => $this->shop_owner, 'template' => $tempalte]);
+        return view('backend.shopowner.template.edit', ['shopowner' => $this->shop_owner, 'template' => $tempalte]);
     }
     public function store(ItemsRecapRequest $request)
     {
-       if(Auth::guard('shop_role')->check()){
-         $this->role('shop_role');
-         $shop_id = $this->role_shop_id;
-       }else{
-        $this->role('shop_owner');
-         $shop_id = $this->role;
-       }
-       PercentTemplate::create([
+        if (Auth::guard('shop_role')->check()) {
+            $this->role('shop_role');
+            $shop_id = $this->role_shop_id;
+        } else {
+            $this->role('shop_owner');
+            $shop_id = $this->role;
+        }
+        PercentTemplate::create([
             'shop_id' => $shop_id,
             'name' => $request->input('name'),
-            'undamage_product' => $request->input('undamage'),
-            'damage_product' => $request->input('damage'),
+            'undamaged_product' => $request->input('undamage'),
+            'damaged_product' => $request->input('damage'),
             'valuable_product' => $request->input('valuable'),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
         return response()->json(
             [
-                'success'=> true,
-                'message'=> "Template Create Successfully",
+                'success' => true,
+                'message' => "Template Create Successfully",
             ],
         );
     }
 
     public function update(ItemsRecapRequest $request, $id)
     {
-        if(Auth::guard('shop_role')->check()){
+        if (Auth::guard('shop_role')->check()) {
             $this->role('shop_role');
             $shop_id = $this->role_shop_id;
-          }else{
-           $this->role('shop_owner');
+        } else {
+            $this->role('shop_owner');
             $shop_id = $this->role;
-          }
-            $template =  PercentTemplate::find($id);
-            $template->shop_id = $shop_id;
-            $template->name = $request->name;
-            $template->undamage_product = $request->အထည်မပျက်ပြန်သွင်း;
-            $template->damage_product = $request->အထည်ပျက်စီးချို့ယွင်း;
-            $template->valuable_product = $request->တန်ဖိုးမြင့်;
-            $template->created_at = Carbon::now();
-            $template->updated_at = Carbon::now();
-            $template->save();
-            return response()->json(
-                [
-                    'success'=> true,
-                    'message'=> "Template Update Successfully",
-                ],
-            );
+        }
+        $template = PercentTemplate::find($id);
+        $template->shop_id = $shop_id;
+        $template->name = $request->name;
+        $template->undamaged_product = $request->undamaged_product;
+        $template->damaged_product = $request->damaged_product;
+        $template->valuable_product = $request->valuable_product;
+        $template->created_at = Carbon::now();
+        $template->updated_at = Carbon::now();
+        $template->save();
+        return response()->json(
+            [
+                'success' => true,
+                'message' => "Template Update Successfully",
+            ],
+        );
     }
 
     public function destroy($id)

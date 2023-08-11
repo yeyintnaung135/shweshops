@@ -54,9 +54,6 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Category</label>
-                                            <?php
-                                            $ca = \App\Catsupport::where('id', $ttdata->cat_id)->first()->title;
-                                            ?>
                                             <div>{{ $ca }}</div>
                                         </div>
                                         <div class="form-group">

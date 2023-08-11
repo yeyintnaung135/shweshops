@@ -47,12 +47,12 @@ class ShopownerRegisterController extends Controller
             'main_phone' => ['required', 'string', 'max:11', 'unique:manager,phone', 'unique:users,phone', 'unique:shop_owners,main_phone'],
             'description' => ['string', 'max:1255555'],
             'page_link' => ['required', 'string', 'max:1111'],
-            // 'အထည်မပျက်_ပြန်သွင်း' => ['numeric'],
-            // 'တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ' => [ 'numeric'],
-            // 'အထည်ပျက်စီးချို့ယွင်း' => ['numeric'],
-            'အထည်မပျက်_ပြန်သွင်း' => ['string', 'max:50'],
-            'တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ' => ['string', 'max:50'],
-            'အထည်ပျက်စီးချို့ယွင်း' => ['string', 'max:50'],
+            // 'undamaged_product' => ['numeric'],
+            // 'valuable_product' => [ 'numeric'],
+            // 'damaged_product' => ['numeric'],
+            'undamaged_product' => ['string', 'max:50'],
+            'valuable_product' => ['string', 'max:50'],
+            'damaged_product' => ['string', 'max:50'],
             'state' => ['required'],
             'township' => ['required'],
             'premium' => ['sometimes', 'required', 'string', 'in:yes,no'],
@@ -145,9 +145,9 @@ class ShopownerRegisterController extends Controller
                 'name' => 'default',
                 'handmade' => 1,
                 'charge' => 1,
-                'undamage_product' => $data['အထည်မပျက်_ပြန်သွင်း'],
-                'damage_product' => $data['အထည်ပျက်စီးချို့ယွင်း'],
-                'valuable_product' => $data['တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ'],
+                'undamaged_product' => $data['undamaged_product'],
+                'damaged_product' => $data['damaged_product'],
+                'valuable_product' => $data['valuable_product'],
             ];
 
             Percent_template::create($template_percent);
@@ -218,9 +218,9 @@ class ShopownerRegisterController extends Controller
         $shopowner->address = $request->address;
         $shopowner->main_phone = $request->main_phone;
         $shopowner->premium = $request->premium;
-        $shopowner->တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ = $request->undamage_product;
-        $shopowner->အထည်မပျက်_ပြန်သွင်း = $request->valuable_product;
-        $shopowner->အထည်ပျက်စီးချို့ယွင်း = $request->damage_product;
+        $shopowner->valuable_product = $request->undamaged_product;
+        $shopowner->undamaged_product = $request->valuable_product;
+        $shopowner->damaged_product = $request->damaged_product;
         $shopowner->messenger_link = $request->messenger_linkt;
         $shopowner->page_link = $request->page_link;
         $shopowner->map = $request->map;

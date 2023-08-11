@@ -2,10 +2,6 @@
 @section('title', 'MOE Admin Team | Shop Chat Detail')
 
 @section('content')
-    @php
-        use App\Shopowner;
-    @endphp
-
     <div class="wrapper">
         @include('backend.super_admin.loading')
         @include('backend.super_admin.navbar')

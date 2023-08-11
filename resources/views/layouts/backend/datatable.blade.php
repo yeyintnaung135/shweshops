@@ -30,10 +30,10 @@
     {{--    </script>--}}
     @if(Auth::check())
         <?php
-      
+
             $shopid = Auth::guard('shop_owners_and_staffs')->user()->shop_id;
 
-   
+
         ?>
         <script>
             window.userid = {{$shopid}};
@@ -201,10 +201,10 @@
     use App\Models\Manager;
     if($is_chat_on){
 
-   
+
            $current_shop=Shops::where('id',Auth::guard('shop_owners_and_staffs')->user()->shop_id)->first();
            $roleid=Auth::guard('shop_owners_and_staffs')->user()->role->id;
-       
+
 
       if($roleid == 4) {
         $shop_role = Auth::guard('shop_owners_and_staffs')->user()->name . ' (Owner)';
@@ -723,8 +723,8 @@
                 columns: [
                     {data: 'id'},
                     {data: 'name'},
-                    {data: 'undamage_product'},
-                    {data: 'damage_product'},
+                    {data: 'undamaged_product'},
+                    {data: 'damaged_product'},
                     {data: 'valuable_product'},
                     {
                         data: 'action',
