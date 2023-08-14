@@ -24,14 +24,10 @@ class AppDownloadController extends Controller
     {
         $filepath = storage_path('app/app_files/' . $appFile->file);
 
-        // $filename = 'ShweShop.apk';
-        // $filepath = storage_path('app/app_files/' . $filename); // Static Download
-
         if (file_exists($filepath)) {
             return response()->download($filepath, $appFile->file);
         } else {
             return redirect()->route('backside.shop_owner.app-files.android')->with('error', 'File not found.');
         }
     }
-
 }

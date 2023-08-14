@@ -22,7 +22,7 @@ class Discount extends Model
 
     public function getItembyDiscountAttribute()
     {
-        $item = \App\Item::where('id', $this->item_id)->first();
+        $item = Item::where('id', $this->item_id)->first();
         return $item;
     }
 

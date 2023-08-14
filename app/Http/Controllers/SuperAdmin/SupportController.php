@@ -7,7 +7,6 @@ use App\Models\CatSupport;
 use App\Models\Support;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class SupportController extends Controller
@@ -22,7 +21,7 @@ class SupportController extends Controller
         $cats = CatSupport::all();
         return view('backend.super_admin.support.create', ['cats' => $cats]);
     }
-    function list() {
+    public function list() {
         return view('backend.super_admin.support.list');
     }
     public function all(Request $request)
@@ -126,10 +125,10 @@ class SupportController extends Controller
     }
     public function store(Request $request)
     {
-        $val = Validator::make($request->all(), ['title' => ['string', 'required', 'max:222'], 'video' => ['string', 'required', 'max:22222']]);
-        if ($val->fails()) {
-            return redirect()->back()->withErrors($val)->withInput();
-        }
+        $request->validate([
+            'title' => ['required', 'string', 'max:222'],
+            'video' => ['required', 'string', 'max:22222'],
+        ]);
         Support::create($request->except('_token'));
         Session::flash('message', 'Your Video was successfully Created');
 

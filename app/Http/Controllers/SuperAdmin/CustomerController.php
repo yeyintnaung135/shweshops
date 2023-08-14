@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SuperAdmin\Customer\PointUpdateRequest;
 use App\Models\GoldPoint;
 use App\Models\ItemLogActivity;
 use App\Models\Point;
@@ -198,44 +199,8 @@ class CustomerController extends Controller
             "username" => $username,
         ]);
     }
-    public function point_update(Request $request)
+    public function point_update(PointUpdateRequest $request)
     {
-
-        $message = [
-            'count1.required' => 'The register point count field is required.',
-            'count1.numeric' => 'The register point count must be a number.',
-            'count2.required' => 'The Daily Login count field is required.',
-            'count2.numeric' => 'The Daily Login count must be a number.',
-            'count3.required' => 'The Whislist point count field is required.',
-            'count3.numeric' => 'The Whislist point count must be a number.',
-            'count4.required' => 'The Buynow point count field is required.',
-            'count4.numeric' => 'The Buynow point count must be a number.',
-            'count5.required' => 'The AddToCart point count field is required.',
-            'count5.numeric' => 'The AddTocArt point count must be a number.',
-            'count10.required' => 'The Profile Edit point count field is required.',
-            'count10.numeric' => 'The Profile Edit point count must be a number.',
-            'count6.required' => 'The Phone Number point count field is required.',
-            'count6.numeric' => 'The Phone Number point count must be a number.',
-            'count7.required' => 'The Birth Date Edit point count field is required.',
-            'count7.numeric' => 'The Birth Date Edit point count must be a number.',
-            'count8.required' => 'The Address Edit point count field is required.',
-            'count8.numeric' => 'The Address Edit point count must be a number.',
-            'count9.required' => 'The Username Edit point count field is required.',
-            'count9.numeric' => 'The Username Edit point count must be a number.',
-        ];
-        $request->validate([
-            'count1' => 'required|numeric',
-            'count2' => 'required|numeric',
-            'count3' => 'required|numeric',
-            'count4' => 'required|numeric',
-            'count5' => 'required|numeric',
-            'count10' => 'required|numeric',
-            'count6' => 'required|numeric',
-            'count7' => 'required|numeric',
-            'count8' => 'required|numeric',
-            'count9' => 'required|numeric',
-        ], $message);
-
         Point::where('status', $request->register)->update([
             'count' => $request->count1,
         ]);
