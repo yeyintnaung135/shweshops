@@ -12,24 +12,13 @@
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
 
-            <!-- zhheader shopname -->
-            {{-- <x-header>
-            @foreach ($shopowner as $shopowner)
-               <div class="sn-shop-header d-sm-none">{{$shopowner->shop_name}}</div>
-            @endforeach
 
-            </x-header> --}}
-            <!-- end zh header shopname -->
-            <!-- Content Header (Page header) -->
-            {{-- <x-title>
-                Item Create
-            </x-title> --}}
             @csrf
             <!-- Main content -->
 
             <yk-dropzone link="{{ url('backside/shop_owner/items') }}" :main_cat="{{ $main_cat }}"
                 :catlist="{{ $cat_list }}" :collection="{{ $collection }}" :somedatafromshop="{{ $somedatafromshop }}"
-                :worldgoldprice="{{ $world_gold_price }}" :recap="{{ $recap }}"></yk-dropzone>
+                :recap="{{ $recap }}"></yk-dropzone>
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->

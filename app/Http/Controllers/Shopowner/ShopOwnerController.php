@@ -25,16 +25,7 @@ use App\Models\WishlistClickLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
-use App\Http\Controllers\Trait\YKImage;
-use App\Http\Controllers\Trait\UserRole;
-use App\Models\ShopOwnerGoldPoint;
-use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Trait\CalculateCat;
-use App\Models\SiteSettings;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\File;
-use Illuminate\Validation\Rule;
+
 
 class ShopOwnerController extends Controller
 {
@@ -780,8 +771,8 @@ class ShopOwnerController extends Controller
 
         $records = ItemLogActivity::orderBy($columnName, $columnSortOrder)
             ->where('shop_id', $shop_id)->orderBy('created_at', 'desc')
-        // ->where('product_code', 'like', '%' . $searchValue . '%')
-        // ->orWhere('name', 'like', '%' . $searchValue . '%')
+            // ->where('product_code', 'like', '%' . $searchValue . '%')
+            // ->orWhere('name', 'like', '%' . $searchValue . '%')
             ->select('item_log_activities.*')
             ->skip($start)
             ->take($rowperpage)
@@ -969,5 +960,4 @@ class ShopOwnerController extends Controller
             return redirect()->back()->withErrors(['error' => 'User does not exit']);
         }
     }
-
 }
