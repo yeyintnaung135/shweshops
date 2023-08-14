@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ShopOwner;
 use App\Facade\TzGate;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\FacebookTraid;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 use App\Http\Controllers\Trait\UserRole;
 use App\Http\Controllers\Trait\YKImage;
@@ -692,15 +693,14 @@ class ItemsController extends Controller
         $jdmidimage = json_decode($input['formidphotos'], true);
         $jdthumbimage = json_decode($input['forthumbphotos'], true);
 
+
+
+
         foreach ($request->file('file') as $key => $value) {
             $file = $request->file('file')[$key];
             $imageName[$key] = strtolower($request->file('file')[$key]->getClientOriginalName());
 
             $get_path = $request->file('file')[$key]->move(public_path('images/items'), $imageName[$key]);
-            //for thumbnail
-
-            //            $this->setthumbs($get_path, $imageName[$key]);
-
         }
         foreach ($jdmidimage as $jdmi) {
             $this->base64_to_image($jdmi['data'], public_path('images/items/mid/' . strtolower($jdmi['name'])));
@@ -800,47 +800,28 @@ class ItemsController extends Controller
     public function edit($id)
     {
 
-        $item_id = Item::findOrFail($id)->shop_id;
-        if (isset(Auth::guard('shop_role')->user()->id)) {
-            $this->role('shop_role');
-            $collection = Collection::where('shop_id', $this->role_shop_id)->get();
-            if (TzGate::allows($this->role_shop_id == $item_id)) {
-                $item = Item::where('id', $id)->with('tagged')->first();
-                foreach ($item->toArray() as $key => $value) {
-                    if ($value === $item->default_photo and $key != 'default_photo') {
-                        $item->default_photo = $key;
-                    }
-                }
-                if ($item->weight_unit != '0') {
-                    $item->weight = 'temp';
-                }
-            }
-        } else {
 
-            $this->role('shop_owner');
+        $shop_id = $this->get_shopid();
+        $collection = Collection::where('shop_id', $this->role)->get();
 
-            $collection = Collection::where('shop_id', $this->role)->get();
-
-            $user_id = $this->role;
-            if (TzGate::allows($user_id == $item_id)) {
-                $item = Item::where('id', $id)->with('tagged')->first();
-                foreach ($item->toArray() as $key => $value) {
-                    if ($value === $item->default_photo and $key != 'default_photo') {
-                        $item->default_photo = $key;
-                    }
-                }
-                if ($item->weight_unit != '0') {
-                    $item->weight = 'temp';
-                }
+        $item = Item::where('shop_id', $shop_id)->where('id', $id)->with('tagged')->first();
+        foreach ($item->toArray() as $key => $value) {
+            if ($value === $item->default_photo and $key != 'default_photo') {
+                $item->default_photo = $key;
             }
         }
+        if ($item->weight_unit != '0') {
+            $item->weight = 'temp';
+        }
+
 
         $cat_list = DB::table('categories')->leftjoin('items', 'categories.name', '=', 'items.category_id')->select('categories.*')->groupBy('categories.name')->orderByRaw("CASE
                                 WHEN count(items.category_id) = 0 THEN categories.id END ASC,
                     case when count(items.category_id) != 0 then count(categories.name) end DESC")->get();
         $main_cat = MainCategory::get();
 
-        return view('backend.shopowner.item.edit', ['cat_list' => $cat_list, 'main_cat' => $main_cat, 'shopowner' => $this->shop_owner, 'item' => $item, 'collection' => $collection]);
+
+        return view('backend.shopowner.item.edit', ['cat_list' => $cat_list, 'main_cat' => $main_cat, 'shopowner' => $this->current_shop_data(), 'item' => $item, 'collection' => $collection]);
     }
 
     public function remove_image(Request $request)

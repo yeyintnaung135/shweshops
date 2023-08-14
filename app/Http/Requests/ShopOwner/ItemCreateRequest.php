@@ -2,12 +2,14 @@
 
 namespace App\Http\Requests\ShopOwner;
 
+use App\Rules\YkSixFourBitImageCheck;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
 use Illuminate\Auth\Access\Response;
+
 
 class ItemcreateRequest extends FormRequest
 {
@@ -50,18 +52,17 @@ class ItemcreateRequest extends FormRequest
 
             'sizing_guide' => ['required', 'max:1000'],
             'review' => ['required', 'max:1000'],
-            // 'files'=>['required','array','min:1','max:10'],
-            // 'small_files'=>['required','array','min:1','max:10'],
+            'file' => ['required', 'array', 'min:1', 'max:10'],
             // 'mid_files'=>['required','array','min:1','max:10'],
             'tags' => ['max:2000'],
+            'formidphotos' => ['required', new YkSixFourBitImageCheck],
 
             'stock' => ['required', 'regex:(In Stock|Out Of Stock)'],
             'default_photo' => ['required', 'max:300'],
 
 
-            // 'files.*'=>['required','mimes:jpg,jpeg,png,bmp,gif'],
+            'file.*' => ['required', 'mimes:jpg,jpeg,png,bmp,gif'],
             // 'small_files.*'=>['required','mimes:jpg,jpeg,png,bmp,gif'],
-            // 'mid_files.*'=>['required','mimes:jpg,jpeg,png,bmp,gif'],
             'stock_count' => ['required', 'integer', 'between:1,100'],
             'main_category' => ['required', 'integer', 'between:1,5'],
             'category_id' => ["required", "max:255", Rule::in(['footchain', 'headband', 'brooch', 'comb', 'bayat', 'ring', 'earring', 'necklace', 'nrrswel', 'swal_tee', 'braceket', 'hand_chain', 'pendant', 'hair_clip', 'accessories', 'pixiu', 'bayat'])],
