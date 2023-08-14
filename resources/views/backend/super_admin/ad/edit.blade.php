@@ -24,7 +24,8 @@
                                     </div>
                                     <br>
                                     <div class="">
-                                        <img src="{{ asset('images/banner/thumbs/' . $ad->image_for_mobile) }}" alt="" class="w-50 ">
+                                        <img src="{{ asset('images/banner/thumbs/' . $ad->image_for_mobile) }}"
+                                            alt="" class="w-50 ">
                                     </div>
                                 </div>
                             </div>
@@ -37,9 +38,10 @@
                                         <label id="shop">Image</label>
 
                                         <input type="file" name="image"
-                                            class=" form-control  @error('image')
+                                            class=" form-control
+                                        @error('image')
                                             is-invalid
-@enderror">
+                                        @enderror">
                                     </div>
                                     {{--                            <div class="form-group mb-2"> --}}
                                     {{--                            <div class="image_area"> --}}
@@ -92,7 +94,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="linkUrl">Links</label>
-                                        <input type="text" name="links" value="{{ $ad->links }}"
+                                        <input type="url" name="links" value="{{ $ad->links }}"
                                             class="form-control" id="linkUrl">
                                     </div>
                                     <div class="form-row mb-4">
@@ -168,11 +170,11 @@
 
 
         /* #uploaded_image:hover{
-          transform: scale(1.5);
-        }
-        #uploaded_image:active{
-          transform: scale(1.5);
-        } */
+                  transform: scale(1.5);
+                }
+                #uploaded_image:active{
+                  transform: scale(1.5);
+                } */
         .photo-invalid {
             border: 3px dashed red;
         }
@@ -310,5 +312,3 @@
         });
     </script>
 @endpush
-
-

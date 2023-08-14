@@ -264,6 +264,11 @@ class CustomerController extends Controller
 
     public function gold_point_update(Request $request, $id)
     {
+        $request->validate([
+            'status' => 'required|numeric|unique:gold_points,status,' . $id, // Rule::unique('gold_points', 'status')->ignore($this->status),
+            'counts' => 'required|numeric',
+        ]);
+
         $gold_point = GoldPoint::findOrFail($id);
         $gold_point->status = $request->status;
         $gold_point->counts = $gold_point->counts;

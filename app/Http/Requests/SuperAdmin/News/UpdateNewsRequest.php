@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests\SuperAdmin\Events;
+namespace App\Http\Requests\SuperAdmin\News;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreEventRequest extends FormRequest
+class UpdateNewsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -23,7 +23,6 @@ class StoreEventRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            // 'start' => 'required',
             'description' => 'required',
             'file_upload' => 'required|mimes:jpeg,bmp,png,jpg',
         ];
