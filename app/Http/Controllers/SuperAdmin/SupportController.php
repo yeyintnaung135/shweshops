@@ -26,58 +26,47 @@ class SupportController extends Controller
     }
     public function all(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        if ($request->ajax()) {
+        $data = Support::query();
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+        $data->where('title', 'like', '%' . $request->input('search.value') . '%')
+             ->orWhere('id', $request->input('search.value'));
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $totalRecords = Support::select('count(*) as allcount')
-            ->where('title', 'like', '%' . $searchValue . '%')->orWhere('id', $searchValue)
-            ->count();
+        $totalRecords = $data->count();
         $totalRecordswithFilter = $totalRecords;
-        if ($columnName == 'category') {
-            $columnName = 'cat_id';
+
+        if ($request->input('order.0.column') == '1') {
+            $data->orderBy('cat_id', $request->input('order.0.dir'));
+        } else {
+            $data->orderBy($request->input('columns.' . $request->input('order.0.column') . '.data'), $request->input('order.0.dir'));
         }
 
-        $records = Support::orderBy($columnName, $columnSortOrder)
-            ->orderBy('created_at', 'desc')
-            ->where('title', 'like', '%' . $searchValue . '%')->orWhere('id', $searchValue)
-            ->select('*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
+        $records = $data->skip($request->input('start'))
+                        ->take($request->input('length'))
+                        ->get();
 
-        $data_arr = array();
-        $id = 1;
+        $data_arr = [];
         foreach ($records as $record) {
             $cat = CatSupport::where('id', $record->cat_id)->first()->title;
 
-            $data_arr[] = array(
+            $data_arr[] = [
                 "id" => $record->id,
                 "title" => Str::limit($record->title, 100, '...'),
                 "video" => $record->video,
                 "action" => $record->id,
                 'category' => $cat,
                 "created_at" => $record->created_at,
-            );
+            ];
         }
 
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+        return DataTables::of($data_arr)
+            ->addColumn('action', function ($record) {
+                return '<a href="#">Edit</a>'; // Add your action link here
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
     }
     public function delete($id)
     {
