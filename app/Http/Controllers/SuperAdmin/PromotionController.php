@@ -100,7 +100,9 @@ class PromotionController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'file_upload' => 'mimes:jpeg,bmp,png,jpg',
+            'title' => 'required',
+            'description' => 'required',
+            'file_upload' => 'required|mimes:jpeg,bmp,png,jpg',
         ]);
 
         $file = $request->file('file_upload');

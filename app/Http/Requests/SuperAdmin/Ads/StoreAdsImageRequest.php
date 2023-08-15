@@ -4,7 +4,7 @@ namespace App\Http\Requests\SuperAdmin\Ads;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AdsImageRequest extends FormRequest
+class StoreAdsImageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +24,11 @@ class AdsImageRequest extends FormRequest
     public function rules()
     {
         return [
-            "shop_id" => "required",
-            "start" => "required",
-            "end" => "required",
-            "image" => "required",
+            "shop_id" => "required|exists:shops,id", // Validate that shop_id exists in the 'shops' table
+            "start" => "required|date", // Validate that 'start' is a valid date
+            "end" => "required|date|after:start", // Validate that 'end' is a valid date and comes after 'start'
+            "image" => "required|image|mimes:jpeg,png,gif", // Validate that 'image' is an uploaded image with allowed extensions
         ];
-
     }
 
     public function messages()

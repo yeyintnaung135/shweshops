@@ -4,8 +4,9 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Facade\Repair;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SuperAdmin\Ads\AdsImageRequest;
+use App\Http\Requests\SuperAdmin\Ads\StoreAdsImageRequest;
 use App\Http\Requests\SuperAdmin\Ads\StoreAdsVideoFormRequest;
+use App\Http\Requests\SuperAdmin\Ads\UpdateAdsImageRequest;
 use App\Models\Ads;
 use App\Models\Shops;
 use App\Models\SuperAdminLogActivity;
@@ -212,7 +213,7 @@ class AdsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(AdsImageRequest $request)
+    public function store(StoreAdsImageRequest $request)
     {
 
         $folderPath = 'images/banner/';
@@ -337,7 +338,7 @@ class AdsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateAdsImageRequest $request, $id)
     {
 //        return $request->shop_id;
         $shop_name = Shops::where('id', $request->shop_id)->first();

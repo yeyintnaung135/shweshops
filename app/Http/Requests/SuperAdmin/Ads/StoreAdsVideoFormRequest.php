@@ -23,9 +23,9 @@ class StoreAdsVideoFormRequest extends FormRequest
     {
         return [
             "video" => "required|mimes:gif,jpg,bmp,png,jpeg",
-            "image_for_mobile" => "required|mimes:gif,jpg,bmp,png,jpeg",
-            "start" => "required",
-            "end" => "required",
+            "image_for_mobile" => "required|image|mimes:gif,jpg,bmp,png,jpeg",
+            "start" => "required|date",
+            "end" => "required|date|after:start",
         ];
     }
 

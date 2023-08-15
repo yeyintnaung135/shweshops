@@ -5,6 +5,7 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Facade\Repair;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SuperAdmin\News\StoreNewsRequest;
+use App\Http\Requests\SuperAdmin\News\UpdateNewsRequest;
 use App\Models\News;
 use Illuminate\Http\Request;
 
@@ -87,12 +88,8 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateNewsRequest $request, $id)
     {
-        $request->validate([
-            'file_upload' => 'mimes:jpeg,bmp,png,jpg',
-        ]);
-
         $file = $request->file('file_upload');
         $dir = "images/news_&_events/news";
         $news = News::findOrFail($id);

@@ -4,7 +4,8 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Facade\Repair;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SuperAdmin\Events\StoreEventRequest;
+use App\Http\Requests\SuperAdmin\Event\StoreEventRequest;
+use App\Http\Requests\SuperAdmin\Event\UpdateEventRequest;
 use App\Models\Event;
 use Illuminate\Http\Request;
 
@@ -88,12 +89,8 @@ class EventsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateEventRequest $request, $id)
     {
-        $request->validate([
-            'file_upload' => 'mimes:jpeg,bmp,png,jpg',
-        ]);
-
         $file = $request->file('file_upload');
         $dir = "images/news_&_events/event";
         $event = Event::findOrFail($id);
