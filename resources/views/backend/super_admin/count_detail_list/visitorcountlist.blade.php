@@ -131,6 +131,9 @@
                 dom: 'lBfrtip',
                 "responsive": true,
                 "autoWidth": false,
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
             })
 
             $('#visitor_search_button').click(function() {

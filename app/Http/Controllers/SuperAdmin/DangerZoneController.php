@@ -7,7 +7,7 @@ use App\Models\AddToCartClickLog;
 use App\Models\BuyNowClickLog;
 use App\Models\FrontUserLogs;
 use App\Models\GuestOrUserId;
-use App\Models\ShopOwner;
+use App\Models\Shops;
 use App\Models\User;
 use App\Models\WishlistClickLog;
 use Illuminate\Http\Request;
@@ -33,7 +33,7 @@ class DangerZoneController extends Controller
         $adsview = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
             ->where('status', 'adsclick')->groupBy('front_user_logs.userorguestid')->groupBy(DB::raw('date(front_user_logs.created_at)'))->groupBy('front_user_logs.visited_link')->whereBetween('front_user_logs.created_at', [Carbon::now()->subDays(3), Carbon::now()])->get();
 
-        $shop = ShopOwner::all();
+        $shop = Shops::all();
         $shopview = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
             ->where('status', 'shopdetail')->groupBy('front_user_logs.userorguestid')->groupBy(DB::raw('date(front_user_logs.created_at)'))->groupBy('front_user_logs.visited_link')->whereBetween('front_user_logs.created_at', [Carbon::now()->subDays(3), Carbon::now()])->get();
 
@@ -49,7 +49,7 @@ class DangerZoneController extends Controller
         $uqadsview = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
             ->where('status', 'adsclick')->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->whereBetween('front_user_logs.created_at', [Carbon::now()->subDays(3), Carbon::now()])->get();
 
-        $shop = ShopOwner::all();
+        $shop = Shops::all();
         $uqshopview = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))
             ->where('status', 'shopdetail')->groupBy('front_user_logs.userorguestid')->groupBy('front_user_logs.visited_link')->whereBetween('front_user_logs.created_at', [Carbon::now()->subDays(3), Carbon::now()])->get();
         $uqbuynow = BuyNowClickLog::leftjoin('guestoruserid', 'buy_now_click_logs.userorguestid', '=', 'guestoruserid.id')->select('*', DB::raw("count('*') as total"))

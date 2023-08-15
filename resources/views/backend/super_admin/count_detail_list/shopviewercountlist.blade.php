@@ -143,8 +143,11 @@
                 },
             ],
             dom: 'lBfrtip',
-                "responsive": true,
-                "autoWidth": false,
+            "responsive": true,
+            "autoWidth": false,
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
         })
 
         $(document).ready(function() {
@@ -155,7 +158,7 @@
 
             $('#shopviewer_search_button').click(function() {
                 if ($('#search_fromdate_shopviewer').val() != null && $('#search_todate_shopviewer')
-                .val() != null) {
+                    .val() != null) {
                     shopVisitorTable.draw();
                 }
             });

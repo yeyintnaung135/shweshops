@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Yajra\DataTables\DataTables;
 
 class SuperAdminRoleController extends Controller
 {
@@ -19,7 +20,7 @@ class SuperAdminRoleController extends Controller
         $this->middleware(['auth:super_admin']);
     }
 
-    public function list() {
+    function list() {
         $super_admin = SuperAdmin::all();
         $super_admin_log = SuperAdminLogActivity::all();
         return view('backend.super_admin_role.list', ['super_admin' => $super_admin, 'super_admin_log' => $super_admin_log]);
@@ -42,8 +43,8 @@ class SuperAdminRoleController extends Controller
                     if ($request->has('search.value')) {
                         $searchValue = $request->input('search.value');
                         $query->where('name', 'like', '%' . $searchValue . '%')
-                              ->orWhere('email', 'like', '%' . $searchValue . '%')
-                              ->orWhere('role', 'like', '%' . $searchValue . '%');
+                            ->orWhere('email', 'like', '%' . $searchValue . '%')
+                            ->orWhere('role', 'like', '%' . $searchValue . '%');
                     }
                 })
                 ->addColumn('action', function ($record) {
@@ -63,11 +64,11 @@ class SuperAdminRoleController extends Controller
             $data->where(function ($query) use ($request) {
                 $searchValue = $request->input('search.value');
                 $query->where('name', 'like', '%' . $searchValue . '%')
-                      ->orWhere('type', 'like', '%' . $searchValue . '%')
-                      ->orWhere('type_id', 'like', '%' . $searchValue . '%')
-                      ->orWhere('type_name', 'like', '%' . $searchValue . '%')
-                      ->orWhere('role', 'like', '%' . $searchValue . '%')
-                      ->orWhere('status', 'like', '%' . $searchValue . '%');
+                    ->orWhere('type', 'like', '%' . $searchValue . '%')
+                    ->orWhere('type_id', 'like', '%' . $searchValue . '%')
+                    ->orWhere('type_name', 'like', '%' . $searchValue . '%')
+                    ->orWhere('role', 'like', '%' . $searchValue . '%')
+                    ->orWhere('status', 'like', '%' . $searchValue . '%');
             });
 
             $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');

@@ -219,6 +219,9 @@
             dom: 'lBfrtip',
                 "responsive": true,
                 "autoWidth": false,
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
         });
     </script>
 @endpush

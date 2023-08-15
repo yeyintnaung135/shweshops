@@ -10,6 +10,7 @@ use App\Models\Point;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Yajra\DataTables\DataTables;
 
 class CustomerController extends Controller
 {
@@ -32,145 +33,50 @@ class CustomerController extends Controller
 
     public function get_customers(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
+        $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+        $recordsQuery = User::select([
+            'id',
+            'username',
+            'phone',
+            'gender',
+            'birthday',
+            'active',
+            'created_at',
+        ])->whereBetween('created_at', [$searchByFromdate, $searchByTodate]);
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
-        }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-
-        $totalRecords = User::select('count(*) as allcount')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('username', 'like', '%' . $searchValue . '%')
-                    ->orWhere('phone', 'like', '%' . $searchValue . '%')
-                    ->orWhere('gender', 'like', '%' . $searchValue . '%');
+        return DataTables::of($recordsQuery)
+            ->addColumn('birthday', function ($record) {
+                return $record->birthday;
             })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->count();
-        $totalRecordswithFilter = $totalRecords;
-
-        $records = User::orderBy($columnName, $columnSortOrder)
-            ->orderBy('created_at', 'desc')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('username', 'like', '%' . $searchValue . '%')
-                    ->orWhere('phone', 'like', '%' . $searchValue . '%')
-                    ->orWhere('gender', 'like', '%' . $searchValue . '%');
+            ->addColumn('active', function ($record) {
+                return $record->active;
             })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->select('users.*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "id" => $record->id,
-                "username" => $record->username,
-                "phone" => $record->phone,
-                "gender" => $record->gender,
-                "birthday" => $record->birthday,
-                "active" => $record->active,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->created_at)),
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+            ->addColumn('created_at_formatted', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->created_at));
+            })
+            ->rawColumns(['created_at_formatted'])
+            ->make(true);
     }
 
     public function get_customer_activity(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
+        $searchByTodate = $request->input('toDate') ?? Carbon::now();
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+        $recordsQuery = ItemLogActivity::select('item_log_activities.*')
+            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate]);
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
-        }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-
-        $totalRecords = ItemLogActivity::select('count(*) as allcount')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('item_code', 'like', '%' . $searchValue . '%')
-                    ->orWhere('name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_name', 'like', '%' . $searchValue . '%');
+        return DataTables::of($recordsQuery)
+            ->addColumn('user_name', function ($record) {
+                return $record->user_name;
             })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->count();
-        $totalRecordswithFilter = $totalRecords;
-
-        $records = ItemLogActivity::orderBy($columnName, $columnSortOrder)
-            ->orderBy('created_at', 'desc')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('item_code', 'like', '%' . $searchValue . '%')
-                    ->orWhere('name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_name', 'like', '%' . $searchValue . '%');
+            ->addColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->select('item_log_activities.*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "id" => $record->id,
-                "item_code" => $record->item_code,
-                "name" => $record->name,
-                "user_id" => $record->user_id,
-                "user_name" => $record->user_name,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->created_at)),
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+            ->rawColumns(['created_at'])
+            ->make(true);
     }
 
     public function point()

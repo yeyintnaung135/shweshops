@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Messages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Yajra\DataTables\DataTables;
 
 class SuperAdminMessage extends Controller
 {

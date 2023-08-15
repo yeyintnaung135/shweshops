@@ -202,7 +202,8 @@
                     }
                 },
                 {
-                    data: 'action',
+                    data: 'id',
+                    name: 'action',
                     render: function(data, type) {
                         var detail = `
                       <a href="{{ route('showowner_using_chat_detail', ':action') }}" role="button" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Detail">
@@ -219,46 +220,11 @@
                 }
 
             ],
-
-            responsive: true,
-            lengthChange: true,
-            autoWidth: false,
-            paging: true,
-            dom: 'Blfrtip',
-            buttons: ["copy", "csv", "excel", "pdf", "print"],
-            columnDefs: [{
-                    responsivePriority: 1,
-                    targets: 1
-                },
-                {
-                    responsivePriority: 2,
-                    targets: 2
-                },
-                {
-                    responsivePriority: 3,
-                    targets: 3
-                },
-                {
-                    'targets': [1, 2, 3],
-                    'orderable': false,
-                },
-                {
-                    'targets': [5],
-                    'visible': false,
-                    'searchable': false,
-                }
-            ],
-            language: {
-                "search": '<i class="fa-solid fa-search"></i>',
-                "searchPlaceholder": 'Search',
-                paginate: {
-                    next: '<i class="fa fa-angle-right"></i>', // or '→'
-                    previous: '<i class="fa fa-angle-left"></i>' // or '←'
-                }
-            },
-
-            "order": [
-                [5, "desc"]
+            dom: 'lBfrtip',
+            "responsive": true,
+            "autoWidth": false,
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
             ],
         });
 

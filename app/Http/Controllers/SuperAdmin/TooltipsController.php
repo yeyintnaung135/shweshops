@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Tooltips;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Yajra\DataTables\DataTables;
 
 class TooltipsController extends Controller
 {
@@ -44,7 +45,7 @@ class TooltipsController extends Controller
         return redirect('backside/super_admin/tooltips/list');
 
     }
-    function list() {
+    public function list() {
         $alltt = Tooltips::all();
         return view('backend.super_admin.tooltips.list', ['alltt' => $alltt]);
     }
@@ -57,7 +58,7 @@ class TooltipsController extends Controller
             $searchValue = $request->input('search.value');
 
             $data->where('endpoint', 'like', '%' . $searchValue . '%')
-                 ->orWhere('info', 'like', '%' . $searchValue . '%');
+                ->orWhere('info', 'like', '%' . $searchValue . '%');
 
             $totalRecords = $data->count();
             $totalRecordswithFilter = $totalRecords;
@@ -68,9 +69,9 @@ class TooltipsController extends Controller
             $orderColumn = $orderColumnIndex == 1 ? 'endpoint' : $request->input('columns.' . $orderColumnIndex . '.data');
 
             $data->orderBy($orderColumn, $orderDirection)
-                 ->orderBy('created_at', 'desc')
-                 ->skip($request->input('start'))
-                 ->take($request->input('length'));
+                ->orderBy('created_at', 'desc')
+                ->skip($request->input('start'))
+                ->take($request->input('length'));
 
             return DataTables::of($data)
                 ->addColumn('action', function ($record) {

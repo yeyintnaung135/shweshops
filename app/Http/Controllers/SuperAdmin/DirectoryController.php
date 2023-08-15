@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
+use Yajra\DataTables\DataTables;
 
 class DirectoryController extends Controller
 {
@@ -28,78 +29,32 @@ class DirectoryController extends Controller
 
     public function all_directory(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
+        $searchByTodate = $request->input('toDate') ?? Carbon::now();
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
-
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
-        }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-
-        $totalRecords = ShopDirectory::select('count(*) as allcount')
-            ->where('shop_name', '!=', '')
-            ->where(function ($query) use ($searchValue) {
-                $query->orWhere('shop_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('main_phone', 'like', '%' . $searchValue . '%')
-                    ->orWhere('address', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->count();
-        $totalRecordswithFilter = $totalRecords;
-
-        $records = ShopDirectory::orderBy($columnName, $columnSortOrder)
-            ->orderBy('created_at', 'desc')
+        $totalRecordsQuery = ShopDirectory::select('shop_directory.*')
             ->where('shop_id', '=', '0')
-            ->where(function ($query) use ($searchValue) {
-                $query->orWhere('shop_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('main_phone', 'like', '%' . $searchValue . '%')
-                    ->orWhere('address', 'like', '%' . $searchValue . '%');
-            })
-
-            ->select('shop_directory.*')
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->skip($start)
-            ->take($rowperpage)
+            ->selectRaw('count(*) as allcount')
             ->get();
 
-        $data_arr = array();
-
-        foreach ($records as $record) {
-
-            $data_arr[] = array(
-                "id" => $record->id,
-                "shop_name" => $record->shop_name,
-
-                "shop_logo" => $record->shop_logo,
-
-                "main_phone" => $record->main_phone,
-                "action" => $record->id,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->created_at)),
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+        return DataTables::of($totalRecordsQuery)
+            ->addColumn('shop_name', function ($record) {
+                return $record->shop_name;
+            })
+            ->addColumn('shop_logo', function ($record) {
+                return $record->shop_logo;
+            })
+            ->addColumn('main_phone', function ($record) {
+                return $record->main_phone;
+            })
+            ->addColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->created_at));
+            })
+            ->addColumn('action', function ($record) {
+                return $record->id;
+            })
+            ->make(true);
     }
 
     public function get_township(Request $request)
@@ -247,53 +202,21 @@ class DirectoryController extends Controller
 
     public function all(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        $recordsQuery = Tooltips::select('*');
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
-
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $totalRecords = Tooltips::select('count(*) as allcount')
-            ->where('endpoint', 'like', '%' . $searchValue . '%')
-            ->orWhere('info', 'like', '%' . $searchValue . '%')
-            ->count();
-        $totalRecordswithFilter = $totalRecords;
-
-        $records = Tooltips::orderBy($columnName, $columnSortOrder)
-            ->orderBy('created_at', 'desc')
-            ->where('endpoint', 'like', '%' . $searchValue . '%')
-            ->orWhere('info', 'like', '%' . $searchValue . '%')
-            ->select('*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "id" => $record->id,
-                "url" => $record->name,
-                "info" => $record->email,
-                "id" => $record->id,
-                "created_at" => $record->created_at,
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+        return DataTables::of($recordsQuery)
+            ->addColumn('url', function ($record) {
+                return $record->name;
+            })
+            ->addColumn('info', function ($record) {
+                return $record->email;
+            })
+            ->addColumn('created_at', function ($record) {
+                return $record->created_at;
+            })
+            ->addColumn('action', function ($record) {
+                return $record->id;
+            })
+            ->make(true);
     }
 }

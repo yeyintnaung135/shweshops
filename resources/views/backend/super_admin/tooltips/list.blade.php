@@ -123,7 +123,8 @@
                     data: 'info'
                 },
                 {
-                    data: 'action',
+                    data: 'id',
+                    name: 'action',
                     render: function(data, type) {
                         var detail =
                             `
@@ -160,10 +161,12 @@
                 }
 
             ],
-
             dom: 'lBfrtip',
                 "responsive": true,
                 "autoWidth": false,
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
             });
 
 

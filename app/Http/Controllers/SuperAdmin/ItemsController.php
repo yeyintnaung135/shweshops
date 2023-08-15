@@ -33,109 +33,63 @@ class ItemsController extends Controller
 
     public function get_items_ajax(Request $request)
     {
-        //
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
+        $searchByTodate = $request->input('toDate') ?? Carbon::now();
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+        $recordsQuery = Item::leftJoin('shop_owners', 'items.shop_id', '=', 'shop_owners.id')
+            ->select('shop_owners.*', DB::raw('count(*) as total'), 'items.created_at as ica')
+            ->whereBetween('items.created_at', [$searchByFromdate, $searchByTodate]);
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        $totalRecords = Item::leftjoin('shop_owners', 'items.shop_id', '=', 'shop_owners.id')
-            ->where(function ($query) use ($searchValue) {
-                if (strtolower($searchValue) == "premium") {
-                    $premium = '%' . "yes" . '%';
-                } elseif (strtolower($searchValue) == "normal") {
-                    $premium = '%' . "no" . '%';
-                } else {
-                    $premium = $searchValue;
-                }
-                $query->where('shop_owners.premium', 'like', $premium)->orWhere('shop_owners.name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('shop_owners.shop_name_myan', 'like', '%' . $searchValue . '%')
-                    ->orWhere('shop_owners.email', 'like', '%' . $searchValue . '%')
-                    ->orWhere('shop_owners.address', 'like', '%' . $searchValue . '%')
-                    ->orWhere('shop_owners.main_phone', 'like', '%' . $searchValue . '%');
+        return DataTables::of($recordsQuery)
+            ->addColumn('name', function ($record) {
+                return Shops::where('id', $record->id)->first()->shop_name;
             })
-
-            ->groupBy('items.shop_id')
-
-            ->whereBetween('items.created_at', [$searchByFromdate, $searchByTodate])->get();
-        $totalRecordswithFilter = $totalRecords;
-        if ($columnName == 'name') {
-            $columnName = 'shop_owners.shop_name';
-        }
-        if ($columnName == 'created_at') {
-            $columnName = 'items.created_at';
-        }
-        $records = Item::leftjoin('shop_owners', 'items.shop_id', '=', 'shop_owners.id')->select('shop_owners.*', DB::raw("count('*') as total"), 'items.created_at as ica')
-            ->orderBy($columnName, $columnSortOrder)
-            ->where(function ($query) use ($searchValue) {
-                if (strtolower($searchValue) == "premium") {
-                    $premium = '%' . "yes" . '%';
-                } elseif (strtolower($searchValue) == "normal") {
-                    $premium = '%' . "no" . '%';
-                } else {
-                    $premium = $searchValue;
-                }
-                $query->where('shop_owners.premium', 'like', $premium)->orWhere('shop_owners.name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('shop_owners.shop_name_myan', 'like', '%' . $searchValue . '%')
-                    ->orWhere('shop_owners.email', 'like', '%' . $searchValue . '%')
-                    ->orWhere('shop_owners.address', 'like', '%' . $searchValue . '%')
-                    ->orWhere('shop_owners.main_phone', 'like', '%' . $searchValue . '%');
+            ->addColumn('shop_name_myan', function ($record) {
+                return $record->shop_name_myan ? $record->shop_name_myan : '-';
             })
-
-            ->whereBetween('items.created_at', [$searchByFromdate, $searchByTodate])
-            ->groupBy('items.shop_id')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            $checkbanner = ShopBanner::where('shop_owner_id', $record->id)->first();
-            if (empty($checkbanner)) {
-            } else {
-                $record->shop_banner = ShopBanner::where('shop_owner_id', $record->id)->first()->location;
-            }
-            $shopname = Shops::where('id', $record->id)->first()->shop_name;
-            $data_arr[] = array(
-                "id" => $record->id,
-                "name" => $shopname,
-                "shop_name_myan" => $record->shop_name_myan ? $record->shop_name_myan : '-',
-                "shop_logo" => $record->shop_logo,
-                "shop_banner" => $record->shop_banner,
-                "premium" => $record->premium,
-                "description" => Str::limit($record->description, 50, ' ...'),
-                "email" => $record->total,
-                "undamaged_product" => $record->undamaged_product,
-                "valuable_product" => $record->valuable_product,
-                "damaged_product" => $record->damaged_product,
-                "messenger_link" => $record->messenger_link,
-                "page_link" => $record->page_link,
-                "address" => $record->address,
-                "main_phone" => $record->main_phone,
-                "action" => $record->id,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->ica)),
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => count($totalRecords),
-            "iTotalDisplayRecords" => count($totalRecordswithFilter),
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+            ->addColumn('shop_logo', function ($record) {
+                return $record->shop_logo;
+            })
+            ->addColumn('shop_banner', function ($record) {
+                $checkbanner = ShopBanner::where('shop_owner_id', $record->id)->first();
+                return empty($checkbanner) ? '' : $checkbanner->location;
+            })
+            ->addColumn('premium', function ($record) {
+                return $record->premium;
+            })
+            ->addColumn('description', function ($record) {
+                return Str::limit($record->description, 50, ' ...');
+            })
+            ->addColumn('email', function ($record) {
+                return $record->total;
+            })
+            ->addColumn('undamaged_product', function ($record) {
+                return $record->undamaged_product;
+            })
+            ->addColumn('valuable_product', function ($record) {
+                return $record->valuable_product;
+            })
+            ->addColumn('damaged_product', function ($record) {
+                return $record->damaged_product;
+            })
+            ->addColumn('messenger_link', function ($record) {
+                return $record->messenger_link;
+            })
+            ->addColumn('page_link', function ($record) {
+                return $record->page_link;
+            })
+            ->addColumn('address', function ($record) {
+                return $record->address;
+            })
+            ->addColumn('main_phone', function ($record) {
+                return $record->main_phone;
+            })
+            ->addColumn('action', function ($record) {
+                return $record->id;
+            })
+            ->addColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->ica));
+            })
+            ->make(true);
     }
 }

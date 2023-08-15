@@ -5,7 +5,7 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Facade\Repair;
 use App\Http\Controllers\Controller;
 use App\Models\Promotions;
-use App\Models\ShopOwner;
+use App\Models\Shops;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -28,7 +28,7 @@ class PromotionController extends Controller
      */
     public function create()
     {
-        $shopowners = ShopOwner::all();
+        $shopowners = Shops::all();
         $promotions = Promotions::latest()->paginate(5);
         return view('backend.super_admin.news_&_events.promotions.create', compact('shopowners', 'promotions'));
     }
@@ -85,7 +85,7 @@ class PromotionController extends Controller
     public function edit($id)
     {
         $promotion = Promotions::findOrFail($id);
-        $shopowners = ShopOwner::all();
+        $shopowners = Shops::all();
         $promotions = Promotions::latest()->paginate(5);
         return view('backend.super_admin.news_&_events.promotions.edit', compact('shopowners', 'promotion', 'promotions'));
     }
