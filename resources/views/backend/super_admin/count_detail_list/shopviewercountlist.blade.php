@@ -56,7 +56,7 @@
                                 <table id="shopVisitorTable" class="table table-borderless">
                                     <thead>
                                         <tr>
-                                            <td>id</td>
+                                            <td>Id</td>
                                             <td>Shop</td>
                                             <td>Shop Name</td>
                                             <td>User Id</td>
@@ -67,7 +67,7 @@
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <td>id</td>
+                                            <td>Id</td>
                                             <td>Shop</td>
                                             <td>Shop Name</td>
                                             <td>User Id</td>
@@ -139,50 +139,12 @@
                     data: 'user_name'
                 },
                 {
-                    data: 'created_at'
-                },
-                // {data: 'deleted_at'},
-
-
-            ],
-            responsive: true,
-            lengthChange: true,
-            autoWidth: false,
-            paging: true,
-
-            columnDefs: [{
-                    responsivePriority: 1,
-                    targets: 0
-                },
-                {
-                    responsivePriority: 2,
-                    targets: 2
-                },
-                {
-                    responsivePriority: 3,
-                    targets: 3
-                },
-                {
-                    responsivePriority: 4,
-                    targets: 4
+                    data: 'created_at_formatted'
                 },
             ],
-            language: {
-                "search": '<i class="fa-solid fa-search sn-search-icon" style="left: 12px;"></i>',
-                "searchPlaceholder": 'Search...',
-                paginate: {
-                    next: '<i class="fa fa-angle-right"></i>', // or '→'
-                    previous: '<i class="fa fa-angle-left"></i>' // or '←'
-                }
-            },
-
-
-
-
-            "order": [
-                [5, "desc"]
-            ],
-
+            dom: 'lBfrtip',
+                "responsive": true,
+                "autoWidth": false,
         })
 
         $(document).ready(function() {

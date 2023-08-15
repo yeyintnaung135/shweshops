@@ -56,7 +56,7 @@
                                 <table id="addToCartCountTable" class="table table-borderless">
                                     <thead>
                                         <tr>
-                                            <td>id</td>
+                                            <td>Id</td>
                                             <td>User Name</td>
                                             <td>User Id</td>
                                             <td>Shop Id</td>
@@ -65,7 +65,7 @@
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <td>id</td>
+                                            <td>Id</td>
                                             <td>User Name</td>
                                             <td>User Id</td>
                                             <td>Shop Id</td>

@@ -200,7 +200,7 @@
                 },
 
                 {
-                    data: 'mid',
+                    data: 'action',
                     render: function(data, type) {
 
                         var del = `<form action="{{ route('backside.super_admin.delete', ':id') }}" method="post" >
@@ -216,55 +216,9 @@
                     }
                 }
             ],
-
-            responsive: true,
-            lengthChange: true,
-            autoWidth: false,
-            paging: true,
-            dom: 'Blfrtip',
-            buttons: ["copy", "csv", "excel", "pdf", "print"],
-            columnDefs: [{
-                    responsivePriority: 1,
-                    targets: 1
-                },
-                {
-                    responsivePriority: 2,
-                    targets: 2
-                },
-                {
-                    responsivePriority: 3,
-                    targets: 3
-                },
-                {
-                    responsivePriority: 4,
-                    targets: 4
-                },
-                {
-                    responsivePriority: 5,
-                    targets: 5
-                },
-                {
-                    responsivePriority: 6,
-                    targets: 6
-                },
-                {
-                    responsivePriority: 7,
-                    targets: 7
-                },
-
-            ],
-            language: {
-                "search": '<i class="fa-solid fa-search"></i>',
-                "searchPlaceholder": 'Search Shop Name',
-                paginate: {
-                    next: '<i class="fa fa-angle-right"></i>', // or '→'
-                    previous: '<i class="fa fa-angle-left"></i>' // or '←'
-                }
-            },
-
-            "order": [
-                [6, "desc"]
-            ],
+            dom: 'lBfrtip',
+                "responsive": true,
+                "autoWidth": false,
         });
     </script>
 @endpush
