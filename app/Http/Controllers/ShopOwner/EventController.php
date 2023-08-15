@@ -11,7 +11,10 @@ use App\Http\Requests\ShopOwner\UpdateEventRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Trait\ShopTrait;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class EventController extends Controller
 {
@@ -28,7 +31,7 @@ class EventController extends Controller
         });
     }
 
-    public function index()
+    public function index(): View
     {
         return view('backend.shopowner.event.index');
     }
@@ -38,7 +41,7 @@ class EventController extends Controller
         return view('backend.shopowner.event.create');
     }
 
-    public function store(StoreEventRequest $request)
+    public function store(StoreEventRequest $request): RedirectResponse
     {
         $baseDirectory = 'shop_owner';
         $subDirectory = 'events';
@@ -65,12 +68,12 @@ class EventController extends Controller
             ->with('message', 'Your event was successfully created');
     }
 
-    public function edit(Event $event)
+    public function edit(Event $event): View
     {
         return view('backend.shopowner.event.edit', compact('event'));
     }
 
-    public function update(UpdateEventRequest $request, Event $event)
+    public function update(UpdateEventRequest $request, Event $event): RedirectResponse
     {
         $image = $event->photo;
         $baseDirectory = 'shop_owner';
@@ -116,7 +119,7 @@ class EventController extends Controller
             ->with('message', 'Your event was successfully updated');
     }
 
-    public function destroy(Event $event)
+    public function destroy(Event $event): RedirectResponse
     {
         $event->delete();
         $baseDirectory = 'shop_owner';

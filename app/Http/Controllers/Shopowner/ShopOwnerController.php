@@ -25,7 +25,8 @@ use App\Models\WishlistClickLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Cache;
+use Illuminate\View\View;
 
 class ShopOwnerController extends Controller
 {
@@ -40,14 +41,14 @@ class ShopOwnerController extends Controller
         $this->middleware('auth:shop_owners_and_staffs');
     }
 
-    public function index()
+    public function index(): View
     {
         $storecattocache = Cache::put('cat', $this->getallcatcount());
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.list', ['items' => $items]);
     }
 
-    public function detail()
+    public function detail(): View
     {
 
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -127,7 +128,7 @@ class ShopOwnerController extends Controller
         ]);
     }
 
-    public function shop_view()
+    public function shop_view(): mixed
     {
         if (count($this->shopViewCheck($this->get_shopid())) != 0) {
 

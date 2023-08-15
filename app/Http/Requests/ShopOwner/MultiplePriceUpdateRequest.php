@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\ShopOwner;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -21,17 +21,17 @@ class MultiplePriceUpdateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'price' => 'numeric|min:0',
+            'price' => ['integer', 'min:1000', 'max:1000000000'],
         ];
     }
-    public function messages()
+    public function messages(): array
     {
-        return[
-            'price.min' => 'Price သည် 0 ထပ် မငယ်ရ',
-            'price.numeric' => 'Price သည် number ဖြစ်ရမည်',
+        return [
+            'price.min' => 'Price သည် 1000 ထပ် မငယ်ရ',
+            'price.integer' => 'Price သည် number ဖြစ်ရမည်',
         ];
     }
 }

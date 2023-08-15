@@ -10,32 +10,38 @@ use App\Http\Controllers\Controller;
 use App\Models\Manager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Trait\UserRole;
+
 
 class PopupAdsController extends Controller
 {
-    public function main_popup(){
-        $current_shop = $this->get_current_shop_id();
+    use UserRole;
 
-        $popup = MainPopup::where('shop_id',$current_shop->id)->first();
-        return view('backend.shopowner.ads.main_popup',["shop_id" => $current_shop->id, "popup" => $popup]);
+    public function main_popup()
+    {
+        $current_shop = $this->get_shopid();
+
+        $popup = MainPopup::where('shop_id', $current_shop)->first();
+        return view('backend.shopowner.ads.main_popup', ["shop_id" => $current_shop, "popup" => $popup]);
     }
 
-    public function main_popup_upload(Request $request){
-        $current_shop = $this->get_current_shop_id();
+    public function main_popup_upload(Request $request)
+    {
+        $current_shop = $this->get_shopid();
 
         $this->validate($request, [
             'video' => 'required|file|mimetypes:video/mp4',
         ]);
-        $checkExist = MainPopup::where('shop_id',$current_shop->id)->first();
+        $checkExist = MainPopup::where('shop_id', $current_shop)->first();
         // dd($checkExist);
-        if($checkExist){
-            MainPopup::where('shop_id',$current_shop->id)->delete();
+        if ($checkExist) {
+            MainPopup::where('shop_id', $current_shop)->delete();
             File::delete($checkExist->video_path);
         }
         $file = $request->file('video');
         $fileName = $request->video->getClientOriginalName();
         $filePath = 'test/video/' . $fileName;
-        $shop_id = $current_shop->id;
+        $shop_id = $current_shop;
         $ad_title = $request->adTitle;
         $isFileUploaded = $file->move(public_path('test/video/'), $fileName);;
 
@@ -49,27 +55,18 @@ class PopupAdsController extends Controller
             $video->video_path = $filePath;
             $video->shop_id = $shop_id;
             $video->save();
-            return back()->with('success','Video has been successfully uploaded!');
+            return back()->with('success', 'Video has been successfully uploaded!');
         }
 
-        return back()->with('error','Unexpected error occured');
+        return back()->with('error', 'Unexpected error occured');
     }
 
-    public function main_popup_delete(){
-        $current_shop = $this->get_current_shop_id();
-        $video = MainPopup::where('shop_id',$current_shop->id)->first();
-        MainPopup::where('shop_id',$current_shop->id)->delete();
+    public function main_popup_delete()
+    {
+        $current_shop = $this->get_shopid();
+        $video = MainPopup::where('shop_id', $current_shop)->first();
+        MainPopup::where('shop_id', $current_shop)->delete();
         File::delete($video->video_path);
-        return back()->with('success','Video deleted successfully!');
-    }
-
-    private function get_current_shop_id(){
-        if(isset(Auth::guard('shop_owner')->user()->id)){
-            $current_shop=Shopowner::where('id',Auth::guard('shop_owner')->user()->id)->first();
-        }else{
-            $manager= Manager::where('id', Auth::guard('shop_role')->user()->id)->pluck('shop_id');
-            $current_shop=Shopowner::where('id',$manager)->first();
-        }
-        return $current_shop;
+        return back()->with('success', 'Video deleted successfully!');
     }
 }

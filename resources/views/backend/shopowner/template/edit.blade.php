@@ -40,8 +40,8 @@
                                     <label for="a-2" class="col-form-label">အထည်မပျက် ပြန်သွင်း %</label>
                                 </div>
                                 <div class="col-12">
-                                    <input type="text" min=0 class="form-control" name="undamaged_product"
-                                        id="a-2" value="{{ $template->undamaged_product }}">
+                                    <input type="text" min=0 class="form-control" name="undamaged_product" id="a-2"
+                                        value="{{ $template->undamaged_product }}">
                                 </div>
                             </div>
                             <div class="row g-3 align-items-center mb-3">
@@ -49,8 +49,8 @@
                                     <label for="a-3" class="col-form-label">အထည်ပျက်စီး ချို့ယွင်း %</label>
                                 </div>
                                 <div class="col-12">
-                                    <input type="text" min=0 class="form-control" name="damaged_product"
-                                        id="a-3" value="{{ $template->damaged_product }}">
+                                    <input type="text" min=0 class="form-control" name="damaged_product" id="a-3"
+                                        value="{{ $template->damaged_product }}">
                                 </div>
                             </div>
                             <div class="row g-3 align-items-center mb-3">
@@ -90,10 +90,11 @@
                 method: "PATCH",
                 data: {
                     _token: '{{ csrf_token() }}',
+
                     name: jQuery("input[name=name]").val(),
-                    အထည် မပျ က် ပြ န် သွ င်း: jQuery("input[name=undamaged_product]").val(),
-                    အထည် ပျ က် စီး ချို့ ယွ င်း: jQuery("input[name=damaged_product]").val(),
-                    တန် ဖိုး မြ င့်: jQuery("input[name=valuable_product]").val(),
+                    undamaged_product: jQuery("input[name=undamaged_product]").val(),
+                    damaged_product: jQuery("input[name=damaged_product]").val(),
+                    valuable_product: jQuery("input[name=valuable_product]").val(),
                 },
                 error: function(err) {
                     console.warn(err.responseJSON.errors);

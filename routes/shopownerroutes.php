@@ -369,16 +369,16 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         Route::post('/sell_flag_filter', [PosSecondPhaseController::class, 'filter_sell_flag'])->name('pos.sell_flag_filter');
         Route::post('/sold_filter', [PosSecondPhaseController::class, 'filter_sold'])->name('pos.sold_filter');
 
-// Credit List
+        // Credit List
         Route::get('/credit_list', [PosSecondPhaseController::class, 'credit_list'])->name('pos.credit_list');
         Route::post('/credit_type_filter', [PosSecondPhaseController::class, 'credit_type_filter'])->name('pos.credit_type_filter');
         Route::post('/delete_credit', [PosSecondPhaseController::class, 'delete_credit'])->name('pos.delete_credit');
 
         // Second Phase
-// Purchases
+        // Purchases
         Route::get('/purchase_lists', [PosSecondPhaseController::class, 'get_purchase_lists'])->name('pos.purchase_lists');
 
-// Sales
+        // Sales
         Route::get('/sale_lists', [PosSecondPhaseController::class, 'get_sale_lists'])->name('pos.sale_lists');
         Route::get('/famous_sale_lists', [PosSecondPhaseController::class, 'get_famous_sale_lists'])->name('pos.famous_sale_lists');
         Route::post('/date_famous', [PosSecondPhaseController::class, 'filter_famous_sale_lists'])->name('pos.date_famous'); // Filter Famous Sale Lists missing in Controller
@@ -390,7 +390,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         Route::get('/stock_lists', [PosSecondPhaseController::class, 'get_stock_lists'])->name('pos.stock_lists');
         Route::post('/tab_stocklists', [PosSecondPhaseController::class, 'tab_stock_lists'])->name('pos.tab_stocklists');
 
-// Shop Profile
+        // Shop Profile
         Route::get('/shop_profile', [PosSecondPhaseController::class, 'get_shop_profile'])->name('pos.shop_profile'); // Get Shop Profile missing in Controller
         Route::get('/shop_edit', [PosSecondPhaseController::class, 'get_shop_edit'])->name('pos.shop_edit'); // Get Shop Edit missing in Controller
         Route::put('/shop_edit/{id}', [PosSecondPhaseController::class, 'shop_update'])->name('pos.shop_update'); // Shop Update missing in Controller
@@ -398,7 +398,6 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         Route::post('pos-change-password', [PosSecondPhaseController::class, 'change_password'])->name('pos.change.password');
         Route::get('pos-update-password', [PosSecondPhaseController::class, 'edit_password']);
         Route::post('pos-update-password', [PosSecondPhaseController::class, 'store_new_password'])->name('pos.update.password');
-
     });
 
     // Activity
@@ -451,7 +450,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     // Firebase Notifications
     Route::post('/storefirebasetokenforshop', [MessageController::class, 'storefirebasetokenforshop']);
 
-// Activity
+    // Activity
     Route::get('/product/activity/item', [ItemsController::class, 'item_activity_index'])->name('so_activity.p_product');
     Route::get('/product/activity/multiprice', [ItemsController::class, 'multiprice_activity_index'])->name('so_activity.p_multiprice');
     Route::get('/product/activity/multidiscount', [ItemsController::class, 'multidiscount_activity_index'])->name('so_activity.p_multidiscount');
@@ -460,8 +459,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     Route::get('/user/activity/product', [ManagerController::class, 'u_product'])->name('so_activity.u_product');
     Route::get('/user/activity/role', [ManagerController::class, 'u_role'])->name('so_activity.u_role');
 
-// Point System
-// Route::get('/user_points/add_price/', [ShopownerController::class, 'add_price'])->name('add_price');
+    // Point System
+    // Route::get('/user_points/add_price/', [ShopownerController::class, 'add_price'])->name('add_price');
     Route::post('/user_points/add_price/', [ShopOwnerController::class, 'add_price_create'])->name('add_price.create');
-
 });

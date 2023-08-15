@@ -6,6 +6,7 @@ use App\Facade\TzGate;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\FacebookTraid;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\RedirectResponse;
 
 use App\Http\Controllers\Trait\UserRole;
 use App\Http\Controllers\Trait\YKImage;
@@ -29,8 +30,6 @@ use App\Models\MainCategory;
 use App\Models\MultipleDamageLogs;
 use App\Models\MultipleDiscountLogs;
 use App\Models\MultiplePriceLogs;
-use App\Models\ShopOwner;
-use App\Productdetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -39,11 +38,13 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Trait\MultipleItem;
-use App\Http\Requests\ItemsRecapUpdateRequest;
+use App\Http\Requests\ShopOwner\ItemsRecapUpdateRequest;
 use Illuminate\Validation\ValidationException;
-use App\Http\Requests\MultiplePriceUpdateRequest;
+use App\Http\Requests\ShopOwner\MultiplePriceUpdateRequest;
 use App\Http\Requests\ShopOwner\ItemcreateRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ItemsController extends Controller
@@ -57,7 +58,7 @@ class ItemsController extends Controller
         $this->middleware('auth:shop_owners_and_staffs');
     }
 
-    public function index()
+    public function index(): View
     {
 
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -69,7 +70,7 @@ class ItemsController extends Controller
 
 
 
-    public function item_activity_index()
+    public function item_activity_index(): View
     {
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
 
@@ -77,7 +78,7 @@ class ItemsController extends Controller
         return view('backend.shopowner.activity.product.item', ['items' => $items, 'shopowner' => $this->shop_owner]);
     }
 
-    public function multiprice_activity_index()
+    public function multiprice_activity_index(): View
     {
 
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -85,14 +86,14 @@ class ItemsController extends Controller
         return view('backend.shopowner.activity.product.multiprice', ['items' => $items, 'shopowner' => $this->shop_owner]);
     }
 
-    public function multidiscount_activity_index()
+    public function multidiscount_activity_index(): View
     {
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
 
         return view('backend.shopowner.activity.product.multidis', ['items' => $items, 'shopowner' => $this->shop_owner]);
     }
 
-    public function multipercent_activity_index()
+    public function multipercent_activity_index(): View
     {
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
 
@@ -664,7 +665,7 @@ class ItemsController extends Controller
     }
 
     //show create form
-    public function create()
+    public function create(): View
     {
 
         //tz
@@ -681,7 +682,7 @@ class ItemsController extends Controller
     }
 
     //start storing data
-    public function store(ItemcreateRequest $request)
+    public function store(ItemcreateRequest $request): JsonResponse
     {
 
         // \ShopownerLogActivity::ShopowneraddToLog($id);
@@ -797,7 +798,7 @@ class ItemsController extends Controller
     }
 
     //show edit form
-    public function edit($id)
+    public function edit($id): View
     {
 
 
@@ -824,7 +825,7 @@ class ItemsController extends Controller
         return view('backend.shopowner.item.edit', ['cat_list' => $cat_list, 'main_cat' => $main_cat, 'shopowner' => $this->current_shop_data(), 'item' => $item, 'collection' => $collection]);
     }
 
-    public function remove_image(Request $request)
+    public function remove_image(Request $request): JsonResponse
     {
         if (!$this->itisowneritem($request->id)) {
             return $this->unauthorize();
@@ -1509,14 +1510,18 @@ class ItemsController extends Controller
         return response()->json(['msg' => 'success', 'id' => $request->id]);
     }
 
-    public function multiple_update_minus(MultiplePriceUpdateRequest $request)
+
+
+    public function multiple_update_minus(MultiplePriceUpdateRequest $request): JsonResponse
     {
         $plus_price = $request->price;
+
+
         foreach ($request->id as $id) {
             $item = Item::findOrfail($id);
             $shop_id = $this->get_shopid();
 
-            \MultiplePriceLogs::MultipleMinusPriceLogs($item, $plus_price, $shop_id);
+            // \MultiplePriceLogs::MultipleMinusPriceLogs($item, $plus_price, $shop_id);
             $this->minus($item, $request);
         }
         $items = Item::whereIn('id', $request->id)->get();
@@ -1530,7 +1535,7 @@ class ItemsController extends Controller
         );
     }
 
-    public function multiple_update_recap(ItemsRecapUpdateRequest $request)
+    public function multiple_update_recap(ItemsRecapUpdateRequest $request): JsonResponse
     {
         $old_percent = $request;
         foreach ($request->id as $id) {
@@ -1538,7 +1543,7 @@ class ItemsController extends Controller
             $shop_id = $this->get_shopid();
 
             // return dd($item);
-            \MultipleDamageLogs::MultipleDamageLogs($item, $old_percent, $shop_id);
+            // \MultipleDamageLogs::MultipleDamageLogs($item, $old_percent, $shop_id);
             // $item->user_id = $user_id;
             $this->get_multiple_recap($item, $old_percent);
         }
@@ -1554,7 +1559,7 @@ class ItemsController extends Controller
         );
     }
 
-    public function multiple_update_plus(MultiplePriceUpdateRequest $request)
+    public function multiple_update_plus(MultiplePriceUpdateRequest $request): JsonResponse
     {
 
         $plus_price = $request->price;
@@ -1562,7 +1567,7 @@ class ItemsController extends Controller
             $item = Item::findOrfail($id);
             $shop_id = $this->get_shopid();
 
-            \MultiplePriceLogs::MultiplePlusPriceLogs($item, $plus_price, $shop_id);
+            // \MultiplePriceLogs::MultiplePlusPriceLogs($item, $plus_price, $shop_id);
             $this->plus($item, $request);
         }
         $items = Item::whereIn('id', $request->id)->get();
@@ -1578,13 +1583,13 @@ class ItemsController extends Controller
         );
     }
 
-    public function multiple_stock(Request $request)
+    public function multiple_stock(Request $request): RedirectResponse
     {
 
         if ($request->stock === "In Stock") {
 
             $request->validate([
-                "count" => "required|numeric|min:0",
+                "count" => "required|integer|min:0|max:1000",
             ]);
         }
 
@@ -1604,7 +1609,7 @@ class ItemsController extends Controller
         return redirect()->back();
     }
 
-    public function validatorformultiupdate($data)
+    public function validatorformultiupdate($data): mixed
     {
         $message = [
             'price.min' => 'Price သည် 1 ထပ် မငယ်ရ', 'price.numeric' => 'Price သည် number ဖြစ်ရမည်', 'အလျော့တွက်.min' => 'အလျော့တွက်သည် 0 ထပ် မငယ်ရ',
@@ -1633,10 +1638,9 @@ class ItemsController extends Controller
         ], $message);
     }
 
-    public function check_price_after_update_click(Request $request)
+    public function check_price_after_update_click(Request $request): JsonResponse
     {
 
-        // return dd($request);
         $validator = $this->validatorformultiupdate($request->all());
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'data' => $validator->errors()]);
@@ -1723,7 +1727,7 @@ class ItemsController extends Controller
     }
 
     //for delete function of specified item
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
 
         $item_id = Item::findOrFail($id)->shop_id;
@@ -1757,16 +1761,11 @@ class ItemsController extends Controller
         return redirect(url('backside/shop_owner/items'))->with(['status' => 'success', 'message' => 'Your Item was successfully Deleted']);
     }
 
-    public function trash()
+    public function trash(): View
     {
-        if (Auth::guard('shop_role')->check()) {
-            $this->role('shop_role');
-            $items = Item::onlyTrashed()->where('shop_id', $this->role_shop_id)->get();
-        } else {
-            $this->role('shop_owner');
-            $items = Item::onlyTrashed()->where('shop_id', $this->role)->get();
-        }
-        return view('backend.shopowner.item.trash', ['items' => $items, 'shopowner' => $this->shop_owner]);
+        $items = Item::onlyTrashed()->where('shop_id', $this->get_shopid())->get();
+
+        return view('backend.shopowner.item.trash', ['items' => $items, 'shopowner' => $this->current_shop_data()]);
     }
 
     public function get_items_trash(Request $request)
@@ -1786,13 +1785,9 @@ class ItemsController extends Controller
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
 
-        $shop_id = 1;
+        $shop_id = $this->get_shopid();
 
-        if (Auth::guard('shop_owner')->check()) {
-            $shop_id = Auth::guard('shop_owner')->user()->id;
-        } else {
-            $shop_id = Auth::guard('shop_role')->user()->shop_id;
-        }
+
 
         $totalRecords = Item::onlyTrashed()
             ->select('count(*) as allcount')
@@ -1832,24 +1827,11 @@ class ItemsController extends Controller
         echo json_encode($response);
     }
 
-    public function restore($id)
+    public function restore($id): RedirectResponse
     {
 
-        $item_id = Item::onlyTrashed()->findOrFail($id)->shop_id;
-
-        if (Auth::guard('shop_role')->check()) {
-            $this->role('shop_role');
-            if (TzGate::allows($this->role_shop_id == $item_id)) {
-                Item::onlyTrashed()->findOrFail($id)->restore();
-                discount::onlyTrashed()->where('item_id', $id)->restore();
-            }
-        } else {
-            $this->role('shop_owner');
-            if (TzGate::allows($this->role == $item_id)) {
-                Item::onlyTrashed()->findOrFail($id)->restore();
-                discount::onlyTrashed()->where('item_id', $id)->restore();
-            }
-        }
+        Item::onlyTrashed()->where('id', $id)->where('shop_id', $this->get_shopid())->restore();
+        discount::onlyTrashed()->where('item_id', $id)->where('shop_id', $this->get_shopid())->restore();
         Session::flash('message', 'Your item was successfully restored');
 
         return redirect('backside/shop_owner/items_trash');
@@ -1912,24 +1894,9 @@ class ItemsController extends Controller
 
     public function force_delete($id)
     {
-        $item_id = Item::onlyTrashed()->findOrFail($id)->shop_id;
-        if (Auth::guard('shop_role')->check()) {
-            $this->role('shop_role');
-            if (discount::where('item_id', $id)->count() > 0) {
-                $this->items_photos_delete($id);
-                discount::where('item_id', $id)->forceDelete();
-            }
-            if (TzGate::allows($this->role_shop_id == $item_id)) {
-                Item::onlyTrashed()->findOrFail($id)->forceDelete();
-            }
-        } else {
-            $this->role('shop_owner');
-            if (TzGate::allows($this->role == $item_id)) {
-                $this->items_photos_delete($id);
-                Item::onlyTrashed()->findOrFail($id)->forceDelete();
-                discount::onlyTrashed()->where('item_id', $id)->forceDelete();
-            }
-        }
+
+        Item::onlyTrashed()->where('id', $id)->where('shop_id', $this->get_shopid())->forceDelete();
+        discount::onlyTrashed()->where('item_id', $id)->where('shop_id', $this->get_shopid())->forceDelete();
         Session::flash('message', 'Your item was successfully hard deleted ');
 
         return redirect()->back();

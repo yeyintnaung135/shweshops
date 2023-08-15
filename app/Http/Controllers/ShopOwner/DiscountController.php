@@ -10,9 +10,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\UserRole;
+use GuzzleHttp\Middleware;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class DiscountController extends Controller
 {
@@ -20,11 +24,12 @@ class DiscountController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:shop_owner,shop_role');
+        $this->middleware('auth:shop_owners_and_staffs');
     }
 
-    public function validate_dis($data){
-        $message= [
+    public function validate_dis($data)
+    {
+        $message = [
             'percent.required' => 'Percent တန်ဖိုး ထည့်ပေးရန်',
             'percent.numeric' => 'Percent တန်ဖိုးသည် number ဖြစ်ရမည်',
             'percent.min' => 'Percent တန်ဖိုးသည် 0  ထပ် မငယ်ရ !',
@@ -35,57 +40,46 @@ class DiscountController extends Controller
         ], $message);
     }
 
-    public function check_price_after_discount_click(Request $request)
+    public function check_price_after_discount_click(Request $request): JsonResponse
     {
-        $validator = $this->validatedis($request->all());
+        $validator = $this->validate_dis($request->all());
         if ($validator->fails()) {
-            return response()->json(['status'=>'error','data'=>$validator->errors()]);
+            return response()->json(['status' => 'error', 'data' => $validator->errors()]);
         }
         $willupdatepricelist = [];
 
-        foreach($request->id as $key=>$value){
-            $item = Item::where('id', $value)->first();
-            $disprice=0;
-            $olddisprice='----';
-            if($item->price == 0){
-                $dis_min=$this->percent_calculate($item->min_price,$request->percent);
-                $dis_max=$this->percent_calculate($item->max_price,$request->percent);
-                $disprice=$dis_min .'--'.$dis_max;
-            }else{
-                $disprice=$this->percent_calculate($item->price,$request->percent);
-
+        foreach ($request->id as $key => $value) {
+            $item = Item::where('id', $value)->where('shop_id', $this->get_shopid())->first();
+            $disprice = 0;
+            $olddisprice = '----';
+            if ($item->price == 0) {
+                $dis_min = $this->percent_calculate($item->min_price, $request->percent);
+                $dis_max = $this->percent_calculate($item->max_price, $request->percent);
+                $disprice = $dis_min . '--' . $dis_max;
+            } else {
+                $disprice = $this->percent_calculate($item->price, $request->percent);
             }
             if ($item->ykget_discount !== 0) {
-                if($item->ykget_discount->discount_price != 0){
-                    $olddisprice=$item->ykget_discount->discount_price;
-                }else{
-                    $olddisprice=$item->ykget_discount->discount_min.'--'.$item->ykget_discount->discount_max;
-
+                if ($item->ykget_discount->discount_price != 0) {
+                    $olddisprice = $item->ykget_discount->discount_price;
+                } else {
+                    $olddisprice = $item->ykget_discount->discount_min . '--' . $item->ykget_discount->discount_max;
                 }
             }
             if ($item->price != 0) {
-                $willupdatepricelist[$key] = ['fromdisprice' => $olddisprice, 'disprice' => $disprice,  'id' => $item->id, 'name' => $item->name, 'product_code' => $item->product_code, 'orgprice' => $item->price, 'orgmin' => 0, 'orgmax' => 0 ];
+                $willupdatepricelist[$key] = ['fromdisprice' => $olddisprice, 'disprice' => $disprice,  'id' => $item->id, 'name' => $item->name, 'product_code' => $item->product_code, 'orgprice' => $item->price, 'orgmin' => 0, 'orgmax' => 0];
             } else {
                 $willupdatepricelist[$key] = ['fromdisprice' => $olddisprice, 'disprice' => $disprice,  'id' => $item->id, 'name' => $item->name, 'product_code' => $item->product_code, 'price' => 0,  'orgprice' => 0, 'orgmin' => $item->min_price, 'orgmax' => $item->max_price,];
-
-
             }
         }
-        return response()->json(['status'=>'success','data'=>$willupdatepricelist]);
+        return response()->json(['status' => 'success', 'data' => $willupdatepricelist]);
     }
 
-    public function list()
+    public function list(): View
     {
 
-        if (isset(Auth::guard('shop_role')->user()->id)) {
-            $this->role('shop_role');
-            $items = Discount::where('shop_id', $this->role_shop_id)->onlyTrashed()->get();
-            return view('backend.shopowner.item.discount.list', ['items' => $items, 'shopowner' => $this->shop_owner]);
-        } else {
-            $this->role('shop_owner'); 
-            $items = Discount::where('shop_id', $this->role)->onlyTrashed()->get();
-            return view('backend.shopowner.item.discount.list', ['items' => $items, 'shopowner' => $this->shop_owner]);
-        }
+        $items = Discount::where('shop_id', $this->get_shopid())->onlyTrashed()->get();
+        return view('backend.shopowner.item.discount.list', ['items' => $items, 'shopowner' => $this->current_shop_data()]);
     }
 
     public function get_discount_items(Request $request)
@@ -107,23 +101,22 @@ class DiscountController extends Controller
         $shop_id = 1;
         if (Auth::guard('shop_owner')->check()) {
             $shop_id = Auth::guard('shop_owner')->user()->id;
-
         } else {
             $shop_id = Auth::guard('shop_role')->user()->shop_id;
         }
 
         $totalRecords = discount::select('count(*) as allcount')
-                        ->join('items', 'discount.item_id', '=', 'items.id')
-                        ->where('discount.shop_id', $shop_id)
-                        ->where('items.product_code', 'like', '%' . $searchValue . '%')
-                        ->count();
+            ->join('items', 'discount.item_id', '=', 'items.id')
+            ->where('discount.shop_id', $shop_id)
+            ->where('items.product_code', 'like', '%' . $searchValue . '%')
+            ->count();
         $totalRecordswithFilter = $totalRecords;
 
         $records = discount::orderBy($columnName, $columnSortOrder)
             ->join('items', 'discount.item_id', '=', 'items.id')
             ->where('discount.shop_id', $shop_id)
             ->where('items.product_code', 'like', '%' . $searchValue . '%')
-             ->select('discount.*', 'items.product_code', 'items.default_photo', 'items.price', 'items.min_price', 'items.max_price')
+            ->select('discount.*', 'items.product_code', 'items.default_photo', 'items.price', 'items.min_price', 'items.max_price')
             ->skip($start)
             ->take($rowperpage)
             ->get();
@@ -140,7 +133,7 @@ class DiscountController extends Controller
                 "new_price" => ($record->discount_price != 0) ? $record->discount_price : ($record->discount_min . '-' . $record->discount_max),
                 "date_time" => $record->created_at,
                 "unset_discount" => $record->id,
-                "item_id"=>$record->item_id
+                "item_id" => $record->item_id
             );
         }
 
@@ -153,34 +146,14 @@ class DiscountController extends Controller
         echo json_encode($response);
     }
 
-    public function discount($id)
+    public function discount($id): View
     {
-        // $item_id = Item::findOrFail($id)->shop_id;
-        $role_users = Auth::guard('shop_role')->check();
-        if($role_users){
-            $hasdiscount = discount::where('item_id', $id);
-            if ($hasdiscount->count() > 0) {
-                return 'Already Has';
-            }
-            $item = Item::where('id', $id)->first();
+
+        $hasdiscount = discount::where('item_id', $id);
+        if ($hasdiscount->count() > 0) {
+            return 'Already Has';
         }
-         // if (Auth::guard('shop_role')->check()) {
-        //     $this->role('shop_role');
-        //     if (TzGate::allows($item_id == $this->role_shop_id)) {
-        //         $hasdiscount = discount::where('item_id', $id);
-        //         if ($hasdiscount->count() > 0) {
-        //             return 'Already Has';
-        //         }
-        //         $item = Item::where('id', $id)->first();
-        //     }
-        // } else {
-        //     $this->role('shop_owner');
-        //     if (TzGate::allows($item_id == $this->role)) {
-                $hasdiscount = discount::where('item_id', $id);
-                if ($hasdiscount->count() > 0) {
-                    return 'Already Has';
-                }
-                $item = Item::where('id', $id)->first();
+        $item = Item::where('id', $id)->first();
         //     }
         // }
 
@@ -188,11 +161,11 @@ class DiscountController extends Controller
         return view('backend.shopowner.item.discount.Setdiscount', ['item' => $item]);
     }
 
-    public function remove(Request $request)
+    public function remove(Request $request): RedirectResponse
     {
 
         $item = discount::where('id', $request->id)->forceDelete();
-        $discount = Item::where('id',$request->item_id)->with('tagged')->first();
+        $discount = Item::where('id', $request->item_id)->with('tagged')->first();
         $discount->untag('Discount');
 
 
@@ -203,11 +176,11 @@ class DiscountController extends Controller
     }
 
     //multiple discount unset
-    public function multiple_unset_discount(Request $request)
+    public function multiple_unset_discount(Request $request): RedirectResponse
     {
         $change_request_array = explode(",", $request->unsetItems);
-        foreach($change_request_array as $unset){
-            DB::table('discount')->where('id',$unset)->delete();
+        foreach ($change_request_array as $unset) {
+            DB::table('discount')->where('id', $unset)->delete();
         }
         Session::flash('message', 'Your Discount Item was successfully unset');
 
@@ -220,12 +193,13 @@ class DiscountController extends Controller
         return round($price - ($percent * $price / 100));
     }
 
-    public function multiple_discount(Request $request)
+    public function multiple_discount(Request $request): JsonResponse
     {
         $plus_price = $request->percent;
-        $request->validate([
-            'percent' => 'required|numeric|min:0|max:99'
-        ],
+        $request->validate(
+            [
+                'percent' => 'required|numeric|min:0|max:99'
+            ],
             [
                 'percent.required' => 'Percent တန်ဖိုး ထည့်ပေးရန်',
                 'percent.numeric' => 'Percent တန်ဖိုးသည် number ဖြစ်ရမည်',
@@ -234,11 +208,8 @@ class DiscountController extends Controller
             ]
         );
 
-        if (isset(Auth::guard('shop_role')->user()->id)) {
-            $shop_id = Auth::guard('shop_role')->user()->shop_id;
-        } else {
-            $shop_id = Auth::guard('shop_owner')->user()->id;
-        }
+        $shop_id = $this->get_shopid();
+
         foreach ($request->id as $id) {
             //for noti
             $checkShopOwnerFav = DB::table('shop_owners_fav')->where('fav_id', $id)->pluck('user_id');
@@ -248,19 +219,15 @@ class DiscountController extends Controller
             $message = "Item " . $id . " is on discount!";
             $read_by_receiver = 0;
             $item_id = intval($id);
-            if (isset(Auth::guard('shop_role')->user()->id)) {
-                $sender_id = Auth::guard('shop_role')->user()->shop_id;
-            } else {
-                $sender_id = Auth::guard('shop_owner')->user()->id;
-            };
+            $sender_id = $this->get_shopid();
             if (count($checkShopOwnerFav) != 0) {
                 $shop_owners = 'shop_owners';
                 for ($i = 0; $i < count($checkShopOwnerFav); $i++) {
                     $receiver_user_id = $checkShopOwnerFav[$i];
-                    $Usernoti = Usernoti::where('sender_shop_id', $sender_id)
+                    $UserNoti = UserNoti::where('sender_shop_id', $sender_id)
                         ->where('receiver_user_id', $receiver_user_id)
                         ->where('user_type', $shop_owners);
-                    $query = $Usernoti->updateOrInsert([
+                    $query = $UserNoti->updateOrInsert([
                         'sender_shop_id' => $sender_id,
                         'receiver_user_id' => $receiver_user_id,
                         'user_type' => $shop_owners,
@@ -274,9 +241,9 @@ class DiscountController extends Controller
                 $manager = 'manager';
                 for ($i = 0; $i < count($checkManagerFav); $i++) {
                     $receiver_user_id = $checkManagerFav[$i];
-                    $Usernoti = Usernoti::where('sender_shop_id', $sender_id)
+                    $UserNoti = UserNoti::where('sender_shop_id', $sender_id)
                         ->where('receiver_user_id', $receiver_user_id);
-                    $query = $Usernoti->updateOrInsert([
+                    $query = $UserNoti->updateOrInsert([
                         'sender_shop_id' => $sender_id,
                         'receiver_user_id' => $receiver_user_id,
                         'user_type' => $manager,
@@ -284,16 +251,15 @@ class DiscountController extends Controller
                         'message' => $message,
                         'read_by_receiver' => $read_by_receiver,
                     ]);
-
                 }
             }
             if (count($checkUserFav) != 0) {
                 $users = 'users';
                 for ($i = 0; $i < count($checkUserFav); $i++) {
                     $receiver_user_id = $checkUserFav[$i];
-                    $Usernoti = Usernoti::where('sender_shop_id', $sender_id)
+                    $UserNoti = UserNoti::where('sender_shop_id', $sender_id)
                         ->where('receiver_user_id', $receiver_user_id);
-                    $query = $Usernoti->updateOrInsert([
+                    $query = $UserNoti->updateOrInsert([
                         'sender_shop_id' => $sender_id,
                         'receiver_user_id' => $receiver_user_id,
                         'user_type' => $users,
@@ -301,7 +267,6 @@ class DiscountController extends Controller
                         'message' => $message,
                         'read_by_receiver' => $read_by_receiver,
                     ]);
-
                 }
             }
             $takecheckphoto = Item::where('id', $item_id)->first();
@@ -327,9 +292,8 @@ class DiscountController extends Controller
                         $discount->percent = $request->percent;
                         // return dd($discount);
                         $discount->update();
-                        \MultipleDiscountLogs:: MultipleDiscountLogs($p,$discount,$olddiscount,$shop_id);
+                        // \MultipleDiscountLogs::MultipleDiscountLogs($p, $discount, $olddiscount, $shop_id);
                     }
-
                 }
             } else {
                 foreach ($price as $p) {
@@ -343,20 +307,18 @@ class DiscountController extends Controller
                     $discount->item_id = $id;
                     $discount->shop_id = $shop_id;
                     $discount->percent = $request->percent;
-                    \MultipleDiscountLogs:: MultipleNoneDiscountLogs($p,$discount,$olddiscount,$shop_id);
+                    // \MultipleDiscountLogs::MultipleNoneDiscountLogs($p, $discount, $olddiscount, $shop_id);
 
                     $discount->save();
                 }
             }
-
-
         }
         Session::flash('message', 'Your Discount Item was successfully Set');
 
-        return response()->json(['status'=>'success']);
+        return response()->json(['status' => 'success']);
     }
 
-    public function discount_save(Request $request)
+    public function discount_save(Request $request): RedirectResponse
     {
 
 
@@ -382,10 +344,10 @@ class DiscountController extends Controller
             $shop_owners = 'shop_owners';
             for ($i = 0; $i < count($checkShopOwnerFav); $i++) {
                 $receiver_user_id = $checkShopOwnerFav[$i];
-                $Usernoti = Usernoti::where('sender_shop_id', $sender_id)
+                $UserNoti = UserNoti::where('sender_shop_id', $sender_id)
                     ->where('receiver_user_id', $receiver_user_id)
                     ->where('user_type', $shop_owners);
-                $query = $Usernoti->updateOrInsert([
+                $query = $UserNoti->updateOrInsert([
                     'sender_shop_id' => $sender_id,
                     'receiver_user_id' => $receiver_user_id,
                     'user_type' => $shop_owners,
@@ -399,9 +361,9 @@ class DiscountController extends Controller
             $manager = 'manager';
             for ($i = 0; $i < count($checkManagerFav); $i++) {
                 $receiver_user_id = $checkManagerFav[$i];
-                $Usernoti = Usernoti::where('sender_shop_id', $sender_id)
+                $UserNoti = UserNoti::where('sender_shop_id', $sender_id)
                     ->where('receiver_user_id', $receiver_user_id);
-                $query = $Usernoti->updateOrInsert([
+                $query = $UserNoti->updateOrInsert([
                     'sender_shop_id' => $sender_id,
                     'receiver_user_id' => $receiver_user_id,
                     'user_type' => $manager,
@@ -409,16 +371,15 @@ class DiscountController extends Controller
                     'message' => $message,
                     'read_by_receiver' => $read_by_receiver,
                 ]);
-
             }
         }
         if (count($checkUserFav) != 0) {
             $users = 'users';
             for ($i = 0; $i < count($checkUserFav); $i++) {
                 $receiver_user_id = $checkUserFav[$i];
-                $Usernoti = Usernoti::where('sender_shop_id', $sender_id)
+                $UserNoti = UserNoti::where('sender_shop_id', $sender_id)
                     ->where('receiver_user_id', $receiver_user_id);
-                $query = $Usernoti->updateOrInsert([
+                $query = $UserNoti->updateOrInsert([
                     'sender_shop_id' => $sender_id,
                     'receiver_user_id' => $receiver_user_id,
                     'user_type' => $users,
@@ -426,7 +387,6 @@ class DiscountController extends Controller
                     'message' => $message,
                     'read_by_receiver' => $read_by_receiver,
                 ]);
-
             }
         }
 
@@ -443,9 +403,9 @@ class DiscountController extends Controller
                 $input['dec_price'] = $input['price'];
             }
             $item = discount::create($input);
-             $discount = Item::where('id',$request->item_id)->first();
-            if($item){
-               $discount->tag('Discount');
+            $discount = Item::where('id', $request->item_id)->first();
+            if ($item) {
+                $discount->tag('Discount');
             }
 
             Session::flash('message', 'Your Discount Item was successfully Set');
@@ -463,21 +423,20 @@ class DiscountController extends Controller
         $input['shop_id'] = Auth::guard('shop_owner')->user()->id;
         $item = discount::create($input);
 
-        $discount = Item::where('id',$request->item_id)->first();
+        $discount = Item::where('id', $request->item_id)->first();
 
         $discount->tag('Discount');
 
-        if($item){
-           Session::flash('message', 'Your Discount Item was successfully Set');
+        if ($item) {
+            Session::flash('message', 'Your Discount Item was successfully Set');
         }
 
-        $getnoti = Usernoti::where([['item_id', '=', $request->item_id], ['read_by_receiver', '=', 0]])->get();
-//        foreach ($getnoti as $gn) {
-//            event(new Shopownermessage('fefe'));
-//
-//        }
+        $getnoti = UserNoti::where([['item_id', '=', $request->item_id], ['read_by_receiver', '=', 0]])->get();
+        //        foreach ($getnoti as $gn) {
+        //            event(new Shopownermessage('fefe'));
+        //
+        //        }
 
         return redirect('backside/shop_owner/items/' . $request->item_id);
     }
-
 }
