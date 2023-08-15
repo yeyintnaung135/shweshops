@@ -34,135 +34,53 @@ class SuperAdminRoleController extends Controller
     }
     public function get_all_admins(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        if ($request->ajax()) {
+            $data = SuperAdmin::select(['id', 'name', 'email', 'role', 'created_at']);
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
-
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $totalRecords = SuperAdmin::select('count(*) as allcount')
-            ->where('name', 'like', '%' . $searchValue . '%')
-            ->orWhere('email', 'like', '%' . $searchValue . '%')
-            ->orWhere('role', 'like', '%' . $searchValue . '%')
-            ->count();
-        $totalRecordswithFilter = $totalRecords;
-
-        $records = SuperAdmin::orderBy($columnName, $columnSortOrder)
-            ->orderBy('created_at', 'desc')
-            ->where('name', 'like', '%' . $searchValue . '%')
-            ->orWhere('email', 'like', '%' . $searchValue . '%')
-            ->orWhere('role', 'like', '%' . $searchValue . '%')
-            ->select('super_admins.*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "id" => $record->id,
-                "name" => $record->name,
-                "email" => $record->email,
-                "role" => $record->role,
-                "id" => $record->id,
-                "created_at" => $record->created_at,
-            );
+            return DataTables::of($data)
+                ->filter(function ($query) use ($request) {
+                    if ($request->has('search.value')) {
+                        $searchValue = $request->input('search.value');
+                        $query->where('name', 'like', '%' . $searchValue . '%')
+                              ->orWhere('email', 'like', '%' . $searchValue . '%')
+                              ->orWhere('role', 'like', '%' . $searchValue . '%');
+                    }
+                })
+                ->addColumn('action', function ($record) {
+                    // Add any additional columns or actions you need here
+                    return '<a href="#">Edit</a>';
+                })
+                ->rawColumns(['action'])
+                ->make(true);
         }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
     }
 
     public function get_admin_activity(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        if ($request->ajax()) {
+            $data = SuperAdminLogActivity::query();
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
-
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
-        }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-
-        $totalRecords = SuperAdminLogActivity::select('count(*) as allcount')
-            ->where(function ($query) use ($searchValue) {
+            $data->where(function ($query) use ($request) {
+                $searchValue = $request->input('search.value');
                 $query->where('name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('type', 'like', '%' . $searchValue . '%')
-                    ->orWhere('type_id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('type_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('role', 'like', '%' . $searchValue . '%')
-                    ->orWhere('status', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->count();
-        $totalRecordswithFilter = $totalRecords;
-        //   $admin = where('type',['admin'])->orWhere('type',['sub-admin'])->orderBy('created_at', 'desc')->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->get();
-        $records = SuperAdminLogActivity::orderBy($columnName, $columnSortOrder)
-            ->orderBy('created_at', 'desc')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('type', 'like', '%' . $searchValue . '%')
-                    ->orWhere('type_id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('type_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('role', 'like', '%' . $searchValue . '%')
-                    ->orWhere('status', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->select('superadmin_log_activities.*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
+                      ->orWhere('type', 'like', '%' . $searchValue . '%')
+                      ->orWhere('type_id', 'like', '%' . $searchValue . '%')
+                      ->orWhere('type_name', 'like', '%' . $searchValue . '%')
+                      ->orWhere('role', 'like', '%' . $searchValue . '%')
+                      ->orWhere('status', 'like', '%' . $searchValue . '%');
+            });
 
-        $data_arr = array();
+            $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
+            $searchByTodate = $request->input('searchByTodate', Carbon::now());
 
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "id" => $record->id,
-                "name" => $record->name,
-                "type" => $record->type,
-                "type_name" => $record->type_name,
-                "status" => $record->status,
-                "role" => $record->role,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->created_at)),
-            );
+            $data->whereBetween('created_at', [$searchByFromdate, $searchByTodate]);
+
+            return DataTables::of($data)
+                ->addColumn('created_at_formatted', function ($record) {
+                    return date('F d, Y ( h:i A )', strtotime($record->created_at));
+                })
+                ->make(true);
         }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
     }
 
     public function create()
