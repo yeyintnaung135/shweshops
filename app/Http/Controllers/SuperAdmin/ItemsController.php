@@ -38,7 +38,8 @@ class ItemsController extends Controller
 
         $recordsQuery = Item::leftJoin('shop_owners', 'items.shop_id', '=', 'shop_owners.id')
             ->select('shop_owners.*', DB::raw('count(*) as total'), 'items.created_at as ica')
-            ->whereBetween('items.created_at', [$searchByFromdate, $searchByTodate]);
+            ->whereBetween('items.created_at', [$searchByFromdate, $searchByTodate])
+            ->orderBy('created_at', 'desc');
 
         return DataTables::of($recordsQuery)
             ->addColumn('name', function ($record) {

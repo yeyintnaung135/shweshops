@@ -32,6 +32,7 @@ class DailyLogsController extends Controller
             ->where('action', 'Create')
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
             ->groupBy('shop_id')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return DataTables::of($totalRecordsQuery)

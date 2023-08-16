@@ -36,6 +36,7 @@ class DirectoryController extends Controller
             ->where('shop_id', '=', '0')
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
             ->selectRaw('count(*) as allcount')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return DataTables::of($totalRecordsQuery)
@@ -202,7 +203,7 @@ class DirectoryController extends Controller
 
     public function all(Request $request)
     {
-        $recordsQuery = Tooltips::select('*');
+        $recordsQuery = Tooltips::select('*')->orderBy('created_at', 'desc');
 
         return DataTables::of($recordsQuery)
             ->addColumn('url', function ($record) {

@@ -39,7 +39,7 @@ class SuperAdminMessage extends Controller
                     'messages.message',
                     DB::raw("CASE WHEN CHAR_LENGTH(messages.message) > 50 THEN CONCAT(LEFT(messages.message, 50), '...') ELSE messages.message END as truncated_message"),
                     DB::raw("CONCAT('message_created_at') as message_created_at"),
-                ]);
+                ])->orderBy('messages.created_at', 'desc');
 
             return DataTables::of($query)
                 ->addColumn('checkbox', function ($record) {

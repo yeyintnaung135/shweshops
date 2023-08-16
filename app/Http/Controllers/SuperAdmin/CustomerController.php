@@ -44,7 +44,8 @@ class CustomerController extends Controller
             'birthday',
             'active',
             'created_at',
-        ])->whereBetween('created_at', [$searchByFromdate, $searchByTodate]);
+        ])->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
+            ->orderBy('created_at', 'desc');
 
         return DataTables::of($recordsQuery)
             ->addColumn('birthday', function ($record) {
@@ -66,7 +67,8 @@ class CustomerController extends Controller
         $searchByTodate = $request->input('toDate') ?? Carbon::now();
 
         $recordsQuery = ItemLogActivity::select('item_log_activities.*')
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate]);
+            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
+            ->orderBy('created_at', 'desc');
 
         return DataTables::of($recordsQuery)
             ->addColumn('user_name', function ($record) {

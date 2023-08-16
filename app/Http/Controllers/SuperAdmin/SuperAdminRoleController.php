@@ -20,7 +20,7 @@ class SuperAdminRoleController extends Controller
         $this->middleware(['auth:super_admin']);
     }
 
-    function list() {
+    public function list() {
         $super_admin = SuperAdmin::all();
         $super_admin_log = SuperAdminLogActivity::all();
         return view('backend.super_admin_role.list', ['super_admin' => $super_admin, 'super_admin_log' => $super_admin_log]);
@@ -36,7 +36,7 @@ class SuperAdminRoleController extends Controller
     public function get_all_admins(Request $request)
     {
         if ($request->ajax()) {
-            $data = SuperAdmin::select(['id', 'name', 'email', 'role', 'created_at']);
+            $data = SuperAdmin::select(['id', 'name', 'email', 'role', 'created_at'])->orderBy('created_at', 'desc');
 
             return DataTables::of($data)
                 ->filter(function ($query) use ($request) {

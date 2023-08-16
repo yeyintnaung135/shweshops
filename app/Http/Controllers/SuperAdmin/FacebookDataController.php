@@ -90,7 +90,8 @@ class FacebookDataController extends Controller
 
         $recordsQuery = FacebookMessage::leftJoin('shop_owners', 'fb_messenger_click_log.shop_id', '=', 'shop_owners.id')
             ->select('*', 'fb_messenger_click_log.created_at as ff', DB::raw('count(*) as total'))
-            ->whereBetween('fb_messenger_click_log.created_at', [$searchByFromdate, $searchByTodate]);
+            ->whereBetween('fb_messenger_click_log.created_at', [$searchByFromdate, $searchByTodate])
+            ->orderBy('fb_messenger_click_log.created_at', 'desc');
 
         return DataTables::of($recordsQuery)
             ->addColumn('created_at', function ($record) {

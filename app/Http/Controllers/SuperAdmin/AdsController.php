@@ -48,7 +48,8 @@ class AdsController extends Controller
             $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
             $recordsQuery = SuperAdminLogActivity::where('type', 'ads')
-                ->whereBetween('created_at', [$searchByFromdate, $searchByTodate]);
+                ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
+                ->orderBy('created_at', 'desc');
 
             return DataTables::of($recordsQuery)
                 ->addColumn('created_at_formatted', function ($record) {
@@ -67,7 +68,8 @@ class AdsController extends Controller
 
         $recordsQuery = Ads::select('ads.*')
             ->withTrashed()
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate]);
+            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
+            ->orderBy('created_at', 'desc');
 
         return DataTables::of($recordsQuery)
             ->addColumn('start', function ($record) {

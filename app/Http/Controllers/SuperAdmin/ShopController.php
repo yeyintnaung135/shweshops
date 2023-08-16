@@ -181,7 +181,7 @@ class ShopController extends Controller
      */
     public function get_all_trash_shop(Request $request)
     {
-        $recordsQuery = Shops::where('deleted_at', '!=', null)->onlyTrashed();
+        $recordsQuery = Shops::where('deleted_at', '!=', null)->onlyTrashed()->orderBy('created_at', 'desc');
 
         return DataTables::of($recordsQuery)
             ->addColumn('checkbox', function ($record) {
@@ -214,7 +214,7 @@ class ShopController extends Controller
         $searchByTodate = $request->input('toDate') ?? Carbon::now();
 
         $recordsQuery = Shops::select('shops.*')
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate]);
+            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->orderBy('created_at', 'desc');
 
         return DataTables::of($recordsQuery)
             ->addColumn('shop_banner', function ($record) {
@@ -249,7 +249,7 @@ class ShopController extends Controller
 
         $recordsQuery = SuperAdminLogActivity::select('superadmin_log_activities.*')
             ->where('type', 'shop')
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate]);
+            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->orderBy('created_at', 'desc');
 
         return DataTables::of($recordsQuery)
             ->addColumn('created_at_formatted', function ($record) {
