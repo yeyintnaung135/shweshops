@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SuperAdmin\Event\StoreEventRequest;
 use App\Http\Requests\SuperAdmin\Event\UpdateEventRequest;
 use App\Models\Event;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class EventsController extends Controller
 {
@@ -15,22 +17,13 @@ class EventsController extends Controller
     {
         $this->middleware(['auth:super_admin', 'admin']);
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
 
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
         $events = Event::where('shop_id', 0)->latest()->paginate(5);
         return view('backend.super_admin.news_&_events.events.create', compact('events'));
@@ -42,7 +35,7 @@ class EventsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreEventRequest $request)
+    public function store(StoreEventRequest $request): RedirectResponse
     {
         $file = $request->file('file_upload');
         $dir = "images/news_&_events/event";
@@ -59,23 +52,12 @@ class EventsController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id): View
     {
         $events = Event::where('shop_id', 0)->latest()->paginate(5);
         $event = Event::findOrFail($id);
@@ -89,7 +71,7 @@ class EventsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateEventRequest $request, $id)
+    public function update(UpdateEventRequest $request, $id): RedirectResponse
     {
         $file = $request->file('file_upload');
         $dir = "images/news_&_events/event";
@@ -112,7 +94,7 @@ class EventsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
         Event::findOrFail($id)->delete();
         return redirect('backside/super_admin/events/create')->with('success', 'Event Delete Successfully');

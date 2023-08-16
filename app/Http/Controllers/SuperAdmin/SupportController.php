@@ -5,81 +5,75 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Models\CatSupport;
 use App\Models\Support;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
+use Yajra\DataTables\DataTables;
 
 class SupportController extends Controller
 {
-    //
     public function __construct()
     {
         $this->middleware(['auth:super_admin', 'admin']);
     }
-    public function create_form()
+
+    public function create_form(): View
     {
         $cats = CatSupport::all();
         return view('backend.super_admin.support.create', ['cats' => $cats]);
     }
-    public function list() {
+
+    function list(): View {
         return view('backend.super_admin.support.list');
     }
-    public function all(Request $request)
+
+    public function all(Request $request): mixed
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        if ($request->ajax()) {
+            $data = Support::query();
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+            $data->where('title', 'like', '%' . $request->input('search.value') . '%')
+                ->orWhere('id', $request->input('search.value'));
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
+            $totalRecords = $data->count();
+            $totalRecordswithFilter = $totalRecords;
 
-        $totalRecords = Support::select('count(*) as allcount')
-            ->where('title', 'like', '%' . $searchValue . '%')->orWhere('id', $searchValue)
-            ->count();
-        $totalRecordswithFilter = $totalRecords;
-        if ($columnName == 'category') {
-            $columnName = 'cat_id';
+            if ($request->input('order.0.column') == '1') {
+                $data->orderBy('cat_id', $request->input('order.0.dir'));
+            } else {
+                $data->orderBy($request->input('columns.' . $request->input('order.0.column') . '.data'), $request->input('order.0.dir'));
+            }
+
+            $records = $data->skip($request->input('start'))
+                ->take($request->input('length'))
+                ->get();
+
+            $data_arr = [];
+            foreach ($records as $record) {
+                $cat = CatSupport::where('id', $record->cat_id)->first()->title;
+
+                $data_arr[] = [
+                    "id" => $record->id,
+                    "title" => Str::limit($record->title, 100, '...'),
+                    "video" => $record->video,
+                    "action" => $record->id,
+                    'category' => $cat,
+                    "created_at" => $record->created_at,
+                ];
+            }
+
+            return DataTables::of($data_arr)
+                ->addColumn('action', function ($record) {
+                    return '<a href="#">Edit</a>'; // Add your action link here
+                })
+                ->rawColumns(['action'])
+                ->make(true);
         }
-
-        $records = Support::orderBy($columnName, $columnSortOrder)
-            ->orderBy('created_at', 'desc')
-            ->where('title', 'like', '%' . $searchValue . '%')->orWhere('id', $searchValue)
-            ->select('*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        $data_arr = array();
-        $id = 1;
-        foreach ($records as $record) {
-            $cat = CatSupport::where('id', $record->cat_id)->first()->title;
-
-            $data_arr[] = array(
-                "id" => $record->id,
-                "title" => Str::limit($record->title, 100, '...'),
-                "video" => $record->video,
-                "action" => $record->id,
-                'category' => $cat,
-                "created_at" => $record->created_at,
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
     }
-    public function delete($id)
+
+    public function delete($id): RedirectResponse
     {
         Support::findOrFail($id)->delete();
 
@@ -88,9 +82,9 @@ class SupportController extends Controller
         return redirect('backside/super_admin/support/list');
 
     }
-    public function detail($id)
-    {
 
+    public function detail($id): View
+    {
         $ttdata = Support::where('id', $id)->first();
         $ca = Catsupport::where('id', $ttdata->cat_id)->first()->title;
 
@@ -100,14 +94,16 @@ class SupportController extends Controller
         ]);
 
     }
-    public function edit($id)
+
+    public function edit($id): View
     {
         $cats = CatSupport::all();
 
         $tooltip = Support::findOrFail($id);
         return view('backend.super_admin.support.edit', ['tooltip' => $tooltip, 'cats' => $cats]);
     }
-    public function update(Request $request, $id)
+
+    public function update(Request $request, $id): RedirectResponse
     {
         $request->validate([
             'title' => ['string', 'required', 'max:22222'],
@@ -123,7 +119,8 @@ class SupportController extends Controller
         Session::flash('message', 'Update Successfully');
         return redirect('backside/super_admin/support/list');
     }
-    public function store(Request $request)
+
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'title' => ['required', 'string', 'max:222'],

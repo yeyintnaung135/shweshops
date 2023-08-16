@@ -2,25 +2,24 @@
 
 namespace App\Http\Controllers\ShopOwner;
 
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Trait\UserRole;
+use App\Models\BackroleEditDetail;
+use App\Models\BackroleLogActivity;
+use App\Models\ItemLogActivity;
+use App\Models\ItemsEditDetailLogs;
 use App\Models\Role;
+use App\Models\ShopownerLogActivity;
 use App\Models\ShopOwnersAndStaffs;
 use App\Models\Shops;
-use App\Models\ShopownerLogActivity;
-use App\Models\ItemLogActivity;
-use App\Models\BackroleLogActivity;
-use App\Models\BackroleEditDetail;
-use App\Models\ItemsEditDetailLogs;
-use App\Facade\TzGate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Validation\Rule;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\Trait\UserRole;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class ManagerController extends Controller
 {
@@ -31,9 +30,7 @@ class ManagerController extends Controller
         $this->middleware('auth:shop_owners_and_staffs');
     }
 
-
-    public function list()
-    {
+    public function list() {
         Gate::authorize('to_create_user', 3);
         $itemlogs = ItemLogActivity::all();
         $backrolelogs = BackroleLogActivity::all();
@@ -65,83 +62,25 @@ class ManagerController extends Controller
     }
     public function get_users_activity_log(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
-
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
-
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
-        }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-
         $shop_id = $this->get_shopid();
+        $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
+        $searchByTodate = $request->input('toDate') ?? Carbon::now();
 
-
-
-        $totalRecords = ShopownerLogActivity::select('count(*) as allcount')
+        $recordsQuery = ShopownerLogActivity::select('shopowner_log_activities.*')
             ->where('shop_id', $shop_id)
-            ->where(function ($query) use ($searchValue) {
-                $query->where('product_code', 'like', '%' . $searchValue . '%')
-                    ->orWhere('item_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('role', 'like', '%' . $searchValue . '%');
-            })
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->count();
-        $totalRecordswithFilter = $totalRecords;
+            ->orderBy('created_at', 'desc');
 
-        $records = ShopownerLogActivity::orderBy($columnName, $columnSortOrder)
-            ->where('shop_id', $shop_id)->orderBy('created_at', 'desc')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('product_code', 'like', '%' . $searchValue . '%')
-                    ->orWhere('item_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('role', 'like', '%' . $searchValue . '%');
+        return DataTables::of($recordsQuery)
+            ->addColumn('created_at_formatted', function ($record) {
+                return $record->created_at->format('d-m-Y H:i:s');
             })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->select('shopowner_log_activities.*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-        $data_arr = array();
+            ->addColumn('btn', function ($record) {
+                return $record->id;
+            })
+            ->rawColumns(['created_at_formatted', 'action', 'btn'])
+            ->make(true);
 
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "id" => $record->id,
-                "product_code" => $record->product_code,
-                "item_name" => $record->item_name,
-                "user_name" => $record->user_name,
-                "action" => $record->action,
-                "btn" => $record->id,
-                "role" => $record->role,
-                // "created_at" => date('F d, Y ( h:i A )',strtotime($record->created_at)),
-                "created_at" => $record->created_at->format('d-m-Y H:i:s'),
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
     }
 
     // datable for backrole log activity
@@ -164,7 +103,6 @@ class ManagerController extends Controller
         $searchByFromdate = $request->get('searchByFromdate');
         $searchByTodate = $request->get('searchByTodate');
 
-
         if ($searchByFromdate == null) {
             $searchByFromdate = '0-0-0 00:00:00';
         }
@@ -173,8 +111,6 @@ class ManagerController extends Controller
         }
 
         $shop_id = $this->get_shopid();
-
-
 
         $totalRecords = BackroleLogActivity::select('count(*) as allcount')
             ->where('shop_id', $shop_id)
@@ -187,7 +123,6 @@ class ManagerController extends Controller
             })
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->count();
         $totalRecordswithFilter = $totalRecords;
-
 
         $records = BackroleLogActivity::orderBy($columnName, $columnSortOrder)
             ->orderBy('created_at', 'desc')
@@ -204,7 +139,6 @@ class ManagerController extends Controller
             ->skip($start)
             ->take($rowperpage)
             ->get();
-
 
         $data_arr = array();
 
@@ -251,8 +185,6 @@ class ManagerController extends Controller
         $detail_id = BackroleEditdetail::findOrFail($id)->user_id;
         return view('backend.shopowner.manager.editdetail', ['detail_id' => $detail_id]);
     }
-
-
 
     public function get_users(Request $request)
     {
@@ -308,7 +240,7 @@ class ManagerController extends Controller
                 "phone" => $user->phone,
                 "role" => $user->role->name,
                 "action" => $user->id,
-                "created_at" => $user->created_at
+                "created_at" => $user->created_at,
             );
         }
 
@@ -344,7 +276,6 @@ class ManagerController extends Controller
 
     public function store(Request $request)
     {
-
 
         $input = $request->except('_token');
         $this->authorize('to_create_user', $input['role_id']);
@@ -398,9 +329,7 @@ class ManagerController extends Controller
         $shop_id = $this->get_shopid();
         $staffdata = ShopOwnersAndStaffs::where('shop_id', $shop_id)->where('id', $id)->first();
 
-
         $this->authorize('to_create_user', $staffdata->role_id);
-
 
         return view('backend.shopowner.manager.edit', ['shopowner' => $this->current_shop_data(), 'role' => $role, 'manager' => $staffdata]);
     }
@@ -414,8 +343,6 @@ class ManagerController extends Controller
 
         $manager = ShopOwnersAndStaffs::where('shop_id', $shop_id)->where('id', $id)->first();
         $this->authorize('to_create_user', $input['role_id']);
-
-
 
         $rules = [
             'name' => ['required', 'string', 'max:255'],
@@ -560,8 +487,6 @@ class ManagerController extends Controller
 
                 //     $back_role_edit_detail->save();
 
-
-
                 //     if ($input['role_id'] == 1) {
                 //         Session::flash('message', 'Your admin was successfully updated');
                 //         return redirect('/backside/shop_owner/users');
@@ -648,15 +573,12 @@ class ManagerController extends Controller
         return view('backend.shopowner.manager.restore_list', ['shopowner' => $this->current_shop_data(), 'manager' => $manager]);
     }
 
-
-
     public function restore($id)
     {
 
         $user_url = ShopOwnersAndStaffs::onlyTrashed()->findOrFail($id)->shop_id;
         $role_id = ShopOwnersAndStaffs::onlyTrashed()->findOrFail($id)->role_id;
         Gate::authorize('to_create_user', $role_id);
-
 
         return redirect()->back();
     }

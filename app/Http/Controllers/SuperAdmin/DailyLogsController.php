@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
+use Yajra\DataTables\DataTables;
 
 class DailyLogsController extends Controller
 {
@@ -15,85 +18,36 @@ class DailyLogsController extends Controller
         $this->middleware(['auth:super_admin']);
     }
 
-    public function daily_shop_create_log()
+    public function daily_shop_create_log(): View
     {
         return view('backend.super_admin.dailycount.productdailycount');
 
     }
 
-    public function get_all_daily_shop_create_counts(Request $request)
+    public function get_all_daily_shop_create_counts(Request $request): mixed
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
+        $searchByTodate = $request->input('toDate') ?? Carbon::now();
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
-
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = Carbon::now();
-        }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-
-        $totalRecords = DB::table('shopowner_log_activities')
+        $totalRecordsQuery = DB::table('shopowner_log_activities')
+            ->select('*', DB::raw('count(*) as total'))
             ->where('action', 'Create')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('shop_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_name', 'like', '%' . $searchValue . '%');
-            })
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->groupBy('shop_id')->get();
-        $totalRecordswithFilter = $totalRecords;
-
-        $getshopcreatecountbydateraw = DB::table('shopowner_log_activities')
-        //if u want to use both count use this query ex (create count and edit count and delete count)
-        //            ->select(['*',DB::raw("COUNT(CASE action WHEN 'Create' THEN 1 ELSE NULL END) as ctotal"),DB::raw("COUNT(CASE action WHEN 'Edit' THEN 1 ELSE NULL END) as etotal")])
-        //end
-            ->select('*', DB::raw("count('*') as total"))
-            ->where(function ($query) use ($searchValue) {
-                $query->where('shop_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_name', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->where('action', 'Create')
             ->groupBy('shop_id')
-            ->orderBy($columnName, $columnSortOrder);
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        $getshopcreatecountbydate = $getshopcreatecountbydateraw->skip($start)->take($rowperpage)->get();
-
-        $data_arr_for_datatable = array();
-
-        foreach ($getshopcreatecountbydate as $d) {
-            $data_arr_for_datatable[] = array(
-                "checkbox" => $d->shop_id,
-                "id" => $d->id,
-                "shop_name" => empty($d->shop_name) ? $d->user_name : $d->shop_name,
-                "product_count" => $d->total,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($d->created_at)),
-            );
-        }
-        $response = array(
-            "draw" => $draw,
-            "iTotalRecords" => count($totalRecords),
-            "iTotalDisplayRecords" => count($totalRecords),
-            "aaData" => $data_arr_for_datatable,
-        );
-        return json_encode($response);
+        return DataTables::of($totalRecordsQuery)
+            ->addColumn('shop_name', function ($record) {
+                return empty($record->shop_name) ? $record->user_name : $record->shop_name;
+            })
+            ->addColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->created_at));
+            })
+            ->make(true);
     }
 
-    public function daily_shop_create_del_selected(Request $request)
+    public function daily_shop_create_del_selected(Request $request): RedirectResponse
     {
         $shopids = explode(',', $request->delshopids);
 
@@ -103,7 +57,7 @@ class DailyLogsController extends Controller
         return redirect()->back();
     }
 
-    public function daily_shop_create_del_all(Request $request)
+    public function daily_shop_create_del_all(Request $request): RedirectResponse
     {
 
         $checkcount = DB::table('shopowner_log_activities')->where('action', 'Create')->whereBetween('created_at', [$request->cafromdate, $request->catodate]);
@@ -117,7 +71,7 @@ class DailyLogsController extends Controller
         }
 
     }
-    public function total_create_count(Request $request)
+    public function total_create_count(Request $request): string
     {
 
         $checkcount = DB::table('shopowner_log_activities')->where('action', 'Create')->whereBetween('created_at', [$request->from, $request->to]);

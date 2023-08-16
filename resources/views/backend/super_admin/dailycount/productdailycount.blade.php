@@ -107,7 +107,7 @@
                                     <thead>
                                         <tr>
                                             <td></td>
-                                            <td>id</td>
+                                            <td>Id</td>
                                             <td>Shop Name</td>
                                             <td>Products Create count</td>
 
@@ -118,7 +118,7 @@
                                         <tr>
                                             <td></td>
 
-                                            <td>id</td>
+                                            <td>Id</td>
                                             <td>Shop Name</td>
                                             <td>Products Create count</td>
 
@@ -136,13 +136,6 @@
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    {{-- <footer class="main-footer">
-        <div class="float-right d-none d-sm-block">
-            <b>Version</b> 3.2.0-rc
-        </div>
-        <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">MOE</a>.</strong> All rights
-        reserved.
-    </footer> --}}
 
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">
@@ -189,7 +182,10 @@
 
 
                 columns: [{
-                        data: 'checkbox',
+                        {
+                            data: 'checkbox',
+                            name: 'shop_id'
+                        },
                         render: function(data, type) {
 
                             let hasvalue = tmpshopidsarry.find(e => {
@@ -221,50 +217,9 @@
 
 
                 ],
-
-                responsive: true,
-                lengthChange: true,
-                autoWidth: false,
-                paging: true,
-
-                columnDefs: [{
-
-                        responsivePriority: 1,
-                        targets: 0
-                    },
-                    {
-                        responsivePriority: 2,
-                        targets: 1
-                    },
-                    {
-                        orderable: false,
-                        responsivePriority: 3,
-                        targets: 2
-                    },
-                    {
-                        responsivePriority: 4,
-                        targets: 3
-                    },
-                    {
-                        responsivePriority: 5,
-                        targets: 4
-                    },
-                ],
-
-                language: {
-                    "search": '<i class="fa-solid fa-search sn-search-icon" style="left: 12px;"></i>',
-                    "searchPlaceholder": 'Search...',
-                    paginate: {
-                        next: '<i class="fa fa-angle-right"></i>', // or '→'
-                        previous: '<i class="fa fa-angle-left"></i>' // or '←'
-                    }
-                },
-
-
-                "order": [
-                    [4, "desc"]
-                ],
-
+                dom: 'lBfrtip',
+                "responsive": true,
+                "autoWidth": false,
             });
 
             $(".addtocartdatepicker").datepicker({

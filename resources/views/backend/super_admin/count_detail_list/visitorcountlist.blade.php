@@ -124,40 +124,15 @@
                         data: 'user_id'
                     },
                     {
-                        data: 'created_at'
+                        data: 'created_at_formatted'
                     },
 
                 ],
-                responsive: true,
-                lengthChange: true,
-                autoWidth: false,
-                paging: true,
-
-                columnDefs: [{
-                        responsivePriority: 1,
-                        targets: 0
-                    },
-                    {
-                        responsivePriority: 2,
-                        targets: 2
-                    },
-                    {
-                        responsivePriority: 3,
-                        targets: 3
-                    },
-                ],
-                language: {
-                    "search": '<i class="fa-solid fa-search sn-search-icon" style="left: 12px;"></i>',
-                    "searchPlaceholder": 'Search...',
-                    paginate: {
-                        next: '<i class="fa fa-angle-right"></i>', // or '→'
-                        previous: '<i class="fa fa-angle-left"></i>' // or '←'
-                    }
-                },
-
-
-                "order": [
-                    [3, "desc"]
+                dom: 'lBfrtip',
+                "responsive": true,
+                "autoWidth": false,
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
             })
 

@@ -199,6 +199,7 @@
                 },
                 {
                     data: 'id',
+                    name: 'action',
                     render: function(data, type) {
                         var result =
                             `
@@ -225,59 +226,16 @@
                     }
                 },
                 {
-                    data: 'created_at'
+                    data: 'created_at_formatted'
                 }
 
             ],
-
-            responsive: true,
-            lengthChange: true,
-            autoWidth: false,
-            paging: true,
-            dom: 'Blfrtip',
-            buttons: ["copy", "csv", "excel", "pdf", "print"],
-            columnDefs: [{
-                    responsivePriority: 1,
-                    targets: 1
-                },
-                {
-                    responsivePriority: 2,
-                    targets: 2
-                },
-                {
-                    responsivePriority: 3,
-                    targets: 3
-                },
-                {
-                    responsivePriority: 4,
-                    targets: 4
-                },
-                {
-                    'targets': [6],
-                    'orderable': false,
-                },
-                {
-                    'targets': [0],
-                    'orderable': false,
-                },
-                {
-                    'targets': [8],
-                    'visible': false,
-                    'searchable': false,
-                }
-            ],
-            language: {
-                "search": '<i class="fa-solid fa-search"></i>',
-                "searchPlaceholder": 'Search Shop Name',
-                paginate: {
-                    next: '<i class="fa fa-angle-right"></i>', // or '→'
-                    previous: '<i class="fa fa-angle-left"></i>' // or '←'
-                }
-            },
-
-            "order": [
-                [7, "desc"]
-            ],
+            dom: 'lBfrtip',
+                "responsive": true,
+                "autoWidth": false,
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
         });
     </script>
 @endpush

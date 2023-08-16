@@ -10,10 +10,14 @@ use App\Http\Requests\SuperAdmin\Ads\UpdateAdsImageRequest;
 use App\Models\Ads;
 use App\Models\Shops;
 use App\Models\SuperAdminLogActivity;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
+use Yajra\DataTables\DataTables;
 
 class AdsController extends Controller
 {
@@ -22,7 +26,7 @@ class AdsController extends Controller
         $this->middleware(['auth:super_admin']);
     }
 
-    public function index()
+    public function index(): View
     {
         $now = Carbon::now()->format('Y-m-d H:i:s A');
         Ads::where('end', '<=', $now)->delete();
@@ -30,7 +34,7 @@ class AdsController extends Controller
         // $ads_role = SuperAdminLogActivity::where('type',['ads'])->orderBy('created_at', 'desc')->get();
         return view('backend.super_admin.ad.all', ['ads' => $ads]);
     }
-    public function activity_index()
+    public function activity_index(): View
     {
         $now = Carbon::now()->format('Y-m-d H:i:s A');
         Ads::where('end', '<=', $now)->delete();
@@ -40,160 +44,52 @@ class AdsController extends Controller
     }
 
     // datable for ads log activity
-    public function get_ads_activity(Request $request)
+    public function get_ads_activity(Request $request): mixed
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        if ($request->ajax()) {
+            $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
+            $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+            $recordsQuery = SuperAdminLogActivity::where('type', 'ads')
+                ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
+                ->orderBy('created_at', 'desc');
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
+            return DataTables::of($recordsQuery)
+                ->addColumn('created_at_formatted', function ($record) {
+                    return date('F d, Y ( h:i A )', strtotime($record->created_at));
+                })
+                ->editColumn('created_at', '{{ date("F d, Y ( h:i A )", strtotime($created_at)) }}')
+                ->rawColumns(['created_at_formatted'])
+                ->toJson();
         }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-
-        $totalRecords = SuperAdminLogActivity::select('count(*) as allcount')
-            ->where('type', 'ads')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('type', 'like', '%' . $searchValue . '%')
-                    ->orWhere('type_id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('type_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('role', 'like', '%' . $searchValue . '%')
-                    ->orWhere('status', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->count();
-        $totalRecordswithFilter = $totalRecords;
-        $ads = SuperAdminLogActivity::where('type', 'ads')->orderBy('created_at', 'desc')->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->get();
-        $records = SuperAdminLogActivity::orderBy($columnName, $columnSortOrder)
-            ->orderBy('created_at', 'desc')
-        // ->where('type',['ads'])
-            ->where(function ($query) use ($searchValue) {
-                $query->where('name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('type', 'like', '%' . $searchValue . '%')
-                    ->orWhere('type_id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('type_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('role', 'like', '%' . $searchValue . '%')
-                    ->orWhere('status', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->select('superadmin_log_activities.*')
-            ->where('type', 'ads')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "id" => $record->id,
-                "name" => $record->name,
-                "type" => $record->type,
-                "type_name" => $record->type_name,
-                "status" => $record->status,
-                "role" => $record->role,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->created_at)),
-                // "created_at" => $record->created_at,
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
     }
 
-    public function get_all_ads(Request $request)
+    public function get_all_ads(Request $request): mixed
     {
+        $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
+        $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
-
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
-
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
-        }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-
-        $totalRecords = Ads::select('count(*) as allcount')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('created_at', 'like', '%' . $searchValue . '%')
-                    ->orWhere('end', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->count();
-        $totalRecordswithFilter = $totalRecords;
-
-        $records = Ads::orderBy($columnName, $columnSortOrder)
-            ->orderBy('created_at', 'desc')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('created_at', 'like', '%' . $searchValue . '%')
-                    ->orWhere('end', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->select('ads.*')
+        $recordsQuery = Ads::select('ads.*')
             ->withTrashed()
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
+            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
+            ->orderBy('created_at', 'desc');
 
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "name" => $record->name,
-                "image" => $record->image,
-                "video" => $record->video,
-                "start" => date('F d, Y ( h:i A )', strtotime($record->start)),
-                "end" => date('F d, Y ( h:i A )', strtotime($record->end)),
-                "deleted_at" => $record->deleted_at ? '<span class="text-danger">' . $record->deleted_at->diffForHumans() . '</span>' : '',
-                "id" => $record->id,
-                "created_at" => $record->created_at,
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+        return DataTables::of($recordsQuery)
+            ->addColumn('start', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->start));
+            })
+            ->addColumn('end', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->end));
+            })
+            ->addColumn('deleted_at', function ($record) {
+                return $record->deleted_at ? '<span class="text-danger">' . $record->deleted_at->diffForHumans() . '</span>' : '';
+            })
+            ->addColumn('action', function ($record) {
+                return '<a href="' . route('edit_route', $record->id) . '">Edit</a>';
+                // Add more action links as needed
+            })
+            ->rawColumns(['deleted_at', 'action'])
+            ->make(true);
     }
 
     /**
@@ -201,7 +97,7 @@ class AdsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
         $shops = Shops::all();
         return view('backend.super_admin.ad.create', ['shops' => $shops]);
@@ -213,7 +109,7 @@ class AdsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreAdsImageRequest $request)
+    public function store(StoreAdsImageRequest $request): JsonResponse
     {
 
         $folderPath = 'images/banner/';
@@ -247,7 +143,7 @@ class AdsController extends Controller
 
     }
 
-    public function store_video(StoreAdsVideoFormRequest $request)
+    public function store_video(StoreAdsVideoFormRequest $request): RedirectResponse
     {
         $folderPath = 'images/banner';
         $mobileimgfolder = 'images/banner/thumbs/';
@@ -285,7 +181,7 @@ class AdsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id): View
     {
         $ad = Ads::withTrashed()->findOrFail($id);
         $shop = Shops::where('shop_name', $ad->name)->first();
@@ -325,7 +221,7 @@ class AdsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id): View
     {
         $ad = Ads::withTrashed()->findOrFail($id);
         $shops = Shops::all();
@@ -338,7 +234,7 @@ class AdsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateAdsImageRequest $request, $id)
+    public function update(UpdateAdsImageRequest $request, $id): RedirectResponse
     {
 //        return $request->shop_id;
         $shop_name = Shops::where('id', $request->shop_id)->first();
@@ -380,7 +276,7 @@ class AdsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
 
         $ad = Ads::withTrashed()->findOrFail($id);

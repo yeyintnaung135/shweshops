@@ -176,44 +176,10 @@
                 }
 
             ],
-
-            responsive: true,
-            lengthChange: true,
-            autoWidth: false,
-            paging: true,
-            dom: 'Blfrtip',
-            buttons: ["copy", "csv", "excel", "pdf", "print"],
-            columnDefs: [{
-                    responsivePriority: 1,
-                    targets: 1
-                },
-                {
-                    responsivePriority: 2,
-                    targets: 2
-                },
-                {
-                    responsivePriority: 3,
-                    targets: 3
-                },
-                {
-                    responsivePriority: 4,
-                    targets: 4
-                },
-            ],
-            language: {
-                "search": '<i class="fa fa-search"></i>',
-                "searchPlaceholder": 'Search ...',
-                paginate: {
-                    next: '<i class="fa fa-angle-right"></i>', // or '→'
-                    previous: '<i class="fa fa-angle-left"></i>' // or '←'
-                }
-            },
-            "order": [
-                [5, "desc"]
-            ],
-
-        });
-
+            dom: 'lBfrtip',
+                "responsive": true,
+                "autoWidth": false,
+            })
 
         $(document).ready(function() {
             $(".admindatepicker").datepicker({

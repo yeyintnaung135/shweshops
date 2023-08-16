@@ -4,8 +4,11 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tooltips;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
+use Yajra\DataTables\DataTables;
 
 class TooltipsController extends Controller
 {
@@ -14,11 +17,12 @@ class TooltipsController extends Controller
         $this->middleware(['auth:super_admin', 'admin']);
     }
 
-    public function create_form()
+    public function create_form(): View
     {
         return view('backend.super_admin.tooltips.create');
     }
-    public function store(Request $request)
+
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'endpoint' => ['required', 'string', 'max:222'],
@@ -29,87 +33,66 @@ class TooltipsController extends Controller
 
         return redirect('backside/super_admin/tooltips/list');
     }
-    public function detail($id)
+
+    public function detail($id): View
     {
         $ttdata = Tooltips::where('id', $id)->first();
         return view('backend.super_admin.tooltips.detail', ['ttdata' => $ttdata]);
-
     }
-    public function delete($id)
+
+    public function delete($id): RedirectResponse
     {
         Tooltips::findOrFail($id)->delete();
 
         Session::flash('message', 'Your Tooltips was successfully deleted');
 
         return redirect('backside/super_admin/tooltips/list');
-
     }
-    function list() {
+
+    public function list(): View {
         $alltt = Tooltips::all();
         return view('backend.super_admin.tooltips.list', ['alltt' => $alltt]);
     }
 
-    public function all(Request $request)
+    public function all(Request $request): mixed
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        if ($request->ajax()) {
+            $data = Tooltips::query();
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+            $searchValue = $request->input('search.value');
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-        if ($columnName == 'url') {
-            $columnName = 'endpoint';
+            $data->where('endpoint', 'like', '%' . $searchValue . '%')
+                ->orWhere('info', 'like', '%' . $searchValue . '%');
+
+            $totalRecords = $data->count();
+            $totalRecordswithFilter = $totalRecords;
+
+            $orderColumnIndex = $request->input('order.0.column');
+            $orderDirection = $request->input('order.0.dir');
+
+            $orderColumn = $orderColumnIndex == 1 ? 'endpoint' : $request->input('columns.' . $orderColumnIndex . '.data');
+
+            $data->orderBy($orderColumn, $orderDirection)
+                ->orderBy('created_at', 'desc')
+                ->skip($request->input('start'))
+                ->take($request->input('length'));
+
+            return DataTables::of($data)
+                ->addColumn('action', function ($record) {
+                    return '<a href="#">Edit</a>'; // Add your action link here
+                })
+                ->rawColumns(['action'])
+                ->make(true);
         }
-        $totalRecords = Tooltips::select('count(*) as allcount')
-            ->where('endpoint', 'like', '%' . $searchValue . '%')
-            ->orWhere('info', 'like', '%' . $searchValue . '%')
-            ->count();
-        $totalRecordswithFilter = $totalRecords;
-
-        $records = Tooltips::orderBy($columnName, $columnSortOrder)
-            ->orderBy('created_at', 'desc')
-            ->where('endpoint', 'like', '%' . $searchValue . '%')
-            ->orWhere('info', 'like', '%' . $searchValue . '%')
-            ->select('*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        $data_arr = array();
-        $id = 1;
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "id" => $id++,
-                "url" => $record->endpoint,
-                "info" => $record->info,
-                "action" => $record->id,
-                "created_at" => $record->created_at,
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
     }
 
-    public function edit($id)
+    public function edit($id): View
     {
         $tooltip = Tooltips::findOrFail($id);
         return view('backend.super_admin.tooltips.edit', compact('tooltip'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): RedirectResponse
     {
         $request->validate([
             'endpoint' => ['string', 'required', 'max:222'],
