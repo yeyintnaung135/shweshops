@@ -5,18 +5,20 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Models\CatSupport;
 use App\Models\Support;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
 
 class CatController extends Controller
 {
     //
-    public function create_form()
+    public function create_form(): View
     {
         return view('backend.super_admin.support.category.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'title' => ['required', 'string', 'max:222'],
@@ -43,13 +45,13 @@ class CatController extends Controller
 
     }
 
-    public function edit($id)
+    public function edit($id): View
     {
         $tooltip = CatSupport::findOrFail($id);
         return view('backend.super_admin.support.category.edit', compact('tooltip'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): RedirectResponse
     {
         $request->validate([
             'title' => ['string', 'required', 'max:22222'],

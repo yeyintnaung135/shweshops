@@ -6,40 +6,21 @@ use App\Facade\Repair;
 use App\Http\Controllers\Controller;
 use App\Models\Promotions;
 use App\Models\Shops;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class PromotionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function create(): View
     {
         $shopowners = Shops::all();
         $promotions = Promotions::latest()->paginate(5);
         return view('backend.super_admin.news_&_events.promotions.create', compact('shopowners', 'promotions'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'title' => 'required',
@@ -65,24 +46,7 @@ class PromotionController extends Controller
         return redirect()->back()->with('success', 'Promotion Create Successfully');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function edit($id): View
     {
         $promotion = Promotions::findOrFail($id);
         $shopowners = Shops::all();
@@ -97,7 +61,7 @@ class PromotionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): RedirectResponse
     {
         $request->validate([
             'title' => 'required',
@@ -124,13 +88,7 @@ class PromotionController extends Controller
         return redirect()->back()->with('success', 'Promotion Update Successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
         Promotions::findOrFail($id)->delete();
         return redirect('backside/super_admin/promotion/create')->with('success', 'Promotion Delete Successfully');

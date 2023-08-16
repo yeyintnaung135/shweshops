@@ -4,25 +4,27 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AppFile;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 class AppFileController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $appFiles = AppFile::all();
 
         return view('backend.super_admin.app-files.index', ['appFiles' => $appFiles]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('backend.super_admin.app-files.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         // dd($request->file('file')->getMimeType());
 
@@ -62,7 +64,7 @@ class AppFileController extends Controller
         return redirect()->route('backside.super_admin.app-files.index');
     }
 
-    public function destroy(AppFile $appFile)
+    public function destroy(AppFile $appFile): RedirectResponse
     {
         $filePath = "app_files/" . $appFile->file;
         Storage::delete($filePath);

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tooltips;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
 class TooltipsController extends Controller
@@ -15,11 +17,12 @@ class TooltipsController extends Controller
         $this->middleware(['auth:super_admin', 'admin']);
     }
 
-    public function create_form()
+    public function create_form(): View
     {
         return view('backend.super_admin.tooltips.create');
     }
-    public function store(Request $request)
+
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'endpoint' => ['required', 'string', 'max:222'],
@@ -30,27 +33,28 @@ class TooltipsController extends Controller
 
         return redirect('backside/super_admin/tooltips/list');
     }
-    public function detail($id)
+
+    public function detail($id): View
     {
         $ttdata = Tooltips::where('id', $id)->first();
         return view('backend.super_admin.tooltips.detail', ['ttdata' => $ttdata]);
-
     }
-    public function delete($id)
+
+    public function delete($id): RedirectResponse
     {
         Tooltips::findOrFail($id)->delete();
 
         Session::flash('message', 'Your Tooltips was successfully deleted');
 
         return redirect('backside/super_admin/tooltips/list');
-
     }
-    public function list() {
+
+    public function list(): View {
         $alltt = Tooltips::all();
         return view('backend.super_admin.tooltips.list', ['alltt' => $alltt]);
     }
 
-    public function all(Request $request)
+    public function all(Request $request): mixed
     {
         if ($request->ajax()) {
             $data = Tooltips::query();
@@ -82,13 +86,13 @@ class TooltipsController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit($id): View
     {
         $tooltip = Tooltips::findOrFail($id);
         return view('backend.super_admin.tooltips.edit', compact('tooltip'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): RedirectResponse
     {
         $request->validate([
             'endpoint' => ['string', 'required', 'max:222'],

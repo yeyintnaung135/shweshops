@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Item;
 use App\Models\ShopBanner;
 use App\Models\Shops;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class ItemsController extends Controller
 {
@@ -17,21 +19,21 @@ class ItemsController extends Controller
         $this->middleware(['auth:super_admin', 'admin']);
     }
 
-    public function total_create_count(Request $request)
+    public function total_create_count(Request $request): RedirectResponse
     {
         $allcount = Item::all();
         $allcountbydate = Item::whereBetween('created_at', [$request->from, $request->to])->get();
         return response()->json(['all' => count($allcount), 'alld' => count($allcountbydate)]);
     }
 
-    public function all()
+    public function all(): View
     {
         //TODO $shopOwner is not needed. Thus, we should remove this
         $shopOwner = Shops::all();
         return view('backend.super_admin.items.all', ['shopOwner' => $shopOwner]);
     }
 
-    public function get_items_ajax(Request $request)
+    public function get_items_ajax(Request $request): mixed
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();

@@ -8,8 +8,10 @@ use App\Models\GoldPoint;
 use App\Models\ItemLogActivity;
 use App\Models\Point;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
 class CustomerController extends Controller
@@ -19,19 +21,19 @@ class CustomerController extends Controller
         $this->middleware(['auth:super_admin']);
     }
 
-    public function index()
+    public function index(): View
     {
         $itemlogs = ItemLogActivity::whereBetween('created_at', [Carbon::now()->submonth(), Carbon::now()]);
         return view('backend.super_admin.customer.list', ['itemlogs' => $itemlogs]);
     }
 
-    public function activity_index()
+    public function activity_index(): View
     {
         $itemlogs = ItemLogActivity::whereBetween('created_at', [Carbon::now()->submonth(), Carbon::now()]);
         return view('backend.super_admin.activity_logs.customer', ['itemlogs' => $itemlogs]);
     }
 
-    public function get_customers(Request $request)
+    public function get_customers(Request $request): mixed
     {
         $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
@@ -61,7 +63,7 @@ class CustomerController extends Controller
             ->make(true);
     }
 
-    public function get_customer_activity(Request $request)
+    public function get_customer_activity(Request $request): mixed
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();
@@ -81,7 +83,7 @@ class CustomerController extends Controller
             ->make(true);
     }
 
-    public function point()
+    public function point(): View
     {
         $register_points = Point::where('status', 'Register')->first();
         $whislist_points = Point::where('status', 'Whislist')->first();
@@ -107,7 +109,7 @@ class CustomerController extends Controller
             "username" => $username,
         ]);
     }
-    public function point_update(PointUpdateRequest $request)
+    public function point_update(PointUpdateRequest $request): RedirectResponse
     {
         Point::where('status', $request->register)->update([
             'count' => $request->count1,
@@ -145,12 +147,12 @@ class CustomerController extends Controller
 
     /** Gold Point */
 
-    public function gold_point()
+    public function gold_point(): View
     {
         return view('backend.super_admin.point_system.gold_points_create');
     }
 
-    public function gold_point_store(Request $request)
+    public function gold_point_store(Request $request): RedirectResponse
     {
         $request->validate([
             'status' => 'required|numeric|unique:gold_points,status',
@@ -163,14 +165,14 @@ class CustomerController extends Controller
         return redirect()->back();
     }
 
-    public function gold_point_edit($id)
+    public function gold_point_edit($id): View
     {
         $gold_point = GoldPoint::findOrFail($id);
         $gold_points = GoldPoint::latest()->paginate(5);
         return view('backend.super_admin.point_system.gold_points_edit', compact('gold_point', 'gold_points'));
     }
 
-    public function gold_point_update(Request $request, $id)
+    public function gold_point_update(Request $request, $id): RedirectResponse
     {
         $request->validate([
             'status' => 'required|numeric|unique:gold_points,status,' . $id, // Rule::unique('gold_points', 'status')->ignore($this->status),

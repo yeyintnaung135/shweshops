@@ -9,10 +9,13 @@ use App\Models\ShopDirectory;
 use App\Models\State;
 use App\Models\Tooltips;
 use App\Models\Township;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
 class DirectoryController extends Controller
@@ -22,12 +25,12 @@ class DirectoryController extends Controller
         $this->middleware(['auth:super_admin']);
     }
 
-    public function all_table()
+    public function all_table(): View
     {
         return view('backend.super_admin.directory.list');
     }
 
-    public function all_directory(Request $request)
+    public function all_directory(Request $request): mixed
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();
@@ -58,7 +61,7 @@ class DirectoryController extends Controller
             ->make(true);
     }
 
-    public function get_township(Request $request)
+    public function get_township(Request $request): JsonResponse
     {
         if (is_array($request->id)) {
             $townships = Township::select('id', 'name', 'myan_name')->whereIn('state_id', $request->id)->get();
@@ -68,7 +71,7 @@ class DirectoryController extends Controller
         return response()->json($townships);
     }
 
-    public function check_shop_directory_name(Request $request)
+    public function check_shop_directory_name(Request $request): JsonResponse
     {
         if (ShopDirectory::where('shop_name', '=', $request->shopName)->exists()) {
             $isExit = true;
@@ -80,13 +83,13 @@ class DirectoryController extends Controller
         ]);
     }
 
-    public function create_form()
+    public function create_form(): View
     {
         $states = State::get();
         return view('backend.super_admin.directory.create', ['states' => $states]);
     }
 
-    public function store(StoreDirectoryRequest $request)
+    public function store(StoreDirectoryRequest $request): RedirectResponse
     {
         // dd($request);
         $data = $request->validated();
@@ -131,20 +134,20 @@ class DirectoryController extends Controller
 
         return redirect('backside/super_admin/directory/all');
     }
-    public function detail($id)
+    public function detail($id): View
     {
         $ttdata = ShopDirectory::where('id', $id)->first();
         return view('backend.super_admin.directory.detail', ['ttdata' => $ttdata]);
 
     }
-    public function edit_form($id)
+    public function edit_form($id): View
     {
         $states = State::get();
         $ttdata = ShopDirectory::where('id', $id)->first();
         return view('backend.super_admin.directory.edit', ['ttdata' => $ttdata, 'states' => $states]);
 
     }
-    public function update(UpdateDirectoryRequest $request)
+    public function update(UpdateDirectoryRequest $request): RedirectResponse
     {
         $sd = ShopDirectory::where('id', $request->id)->first();
         $data = $request->validated();
@@ -182,7 +185,7 @@ class DirectoryController extends Controller
         return redirect('backside/super_admin/directory/all');
 
     }
-    public function delete(Request $request)
+    public function delete(Request $request): RedirectResponse
     {
         $sd = ShopDirectory::where('id', $request->id)->first();
 
@@ -196,12 +199,12 @@ class DirectoryController extends Controller
         return redirect('backside/super_admin/directory/all');
 
     }
-    public function list() {
+    function list(): View {
         $alltt = Tooltips::all();
         return view('backend.super_admin.tooltips.list', ['alltt' => $alltt]);
     }
 
-    public function all(Request $request)
+    public function all(): mixed
     {
         $recordsQuery = Tooltips::select('*')->orderBy('created_at', 'desc');
 

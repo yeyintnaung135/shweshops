@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\FacebookMessage;
 use App\Models\FacebookTable;
 use App\Models\Item;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
 class FacebookDataController extends Controller
@@ -18,11 +20,11 @@ class FacebookDataController extends Controller
         $this->middleware(['auth:super_admin', 'admin']);
     }
 
-    public function list() {
+    public function list(): View {
         return view('backend.super_admin.fbdata.list');
     }
 
-    public function get_all(Request $request)
+    public function get_all(Request $request): mixed
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();
@@ -39,7 +41,7 @@ class FacebookDataController extends Controller
             ->make(true);
     }
 
-    public function get_count(Request $request)
+    public function get_count(Request $request): JsonResponse
     {
         $allcount = FacebookTable::all();
         $allcountbydate = FacebookTable::whereBetween('created_at', [$request->from, $request->to])->get();
@@ -51,7 +53,7 @@ class FacebookDataController extends Controller
         $allcountbydate = FacebookMessage::whereBetween('created_at', [$request->from, $request->to])->get();
         return response()->json(['all' => count($allcount), 'alld' => count($allcountbydate)]);
     }
-    public function messenger_log()
+    public function messenger_log(): View
     {
         return view('backend.super_admin.fbdata.msglog');
     }
@@ -59,7 +61,7 @@ class FacebookDataController extends Controller
     {
         return view('backend.super_admin.fbdata.msglogdetail', ['shop_id' => $shopid]);
     }
-    public function get_msg_log_detail(Request $request)
+    public function get_msg_log_detail(Request $request): mixed
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();
@@ -83,7 +85,7 @@ class FacebookDataController extends Controller
             ->make(true);
     }
 
-    public function get_msg_log(Request $request)
+    public function get_msg_log(Request $request): mixed
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();

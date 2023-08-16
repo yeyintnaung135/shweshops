@@ -5,27 +5,31 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Models\CatSupport;
 use App\Models\Support;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
 class SupportController extends Controller
 {
-    //
     public function __construct()
     {
         $this->middleware(['auth:super_admin', 'admin']);
     }
-    public function create_form()
+
+    public function create_form(): View
     {
         $cats = CatSupport::all();
         return view('backend.super_admin.support.create', ['cats' => $cats]);
     }
-    function list() {
+
+    function list(): View {
         return view('backend.super_admin.support.list');
     }
-    public function all(Request $request)
+
+    public function all(Request $request): mixed
     {
         if ($request->ajax()) {
             $data = Support::query();
@@ -67,9 +71,9 @@ class SupportController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-
     }
-    public function delete($id)
+
+    public function delete($id): RedirectResponse
     {
         Support::findOrFail($id)->delete();
 
@@ -78,9 +82,9 @@ class SupportController extends Controller
         return redirect('backside/super_admin/support/list');
 
     }
-    public function detail($id)
-    {
 
+    public function detail($id): View
+    {
         $ttdata = Support::where('id', $id)->first();
         $ca = Catsupport::where('id', $ttdata->cat_id)->first()->title;
 
@@ -90,14 +94,16 @@ class SupportController extends Controller
         ]);
 
     }
-    public function edit($id)
+
+    public function edit($id): View
     {
         $cats = CatSupport::all();
 
         $tooltip = Support::findOrFail($id);
         return view('backend.super_admin.support.edit', ['tooltip' => $tooltip, 'cats' => $cats]);
     }
-    public function update(Request $request, $id)
+
+    public function update(Request $request, $id): RedirectResponse
     {
         $request->validate([
             'title' => ['string', 'required', 'max:22222'],
@@ -113,7 +119,8 @@ class SupportController extends Controller
         Session::flash('message', 'Update Successfully');
         return redirect('backside/super_admin/support/list');
     }
-    public function store(Request $request)
+
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'title' => ['required', 'string', 'max:222'],
