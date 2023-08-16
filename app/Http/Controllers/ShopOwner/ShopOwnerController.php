@@ -209,91 +209,45 @@ class ShopOwnerController extends Controller
 
     public function get_shop_owner_view(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
+    $searchByTodate = $request->input('searchByTodate', Carbon::now());
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+    $shop_id = $this->get_shopid();
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
 
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
+    $records = $query->orderBy($columnName, $columnSortOrder)
+        ->orderBy('front_user_logs.created_at', 'desc')
+        ->select('*', 'front_user_logs.created_at as fulct', 'front_user_logs.id as fulid')
+        ->skip($request->input('start'))
+        ->take($request->input('length'))
+        ->get();
 
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
-        }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
+    $data_arr = [];
 
-        $totalRecords = frontuserlogs::select('count(*) as allcount')->where('status', 'shopdetail')->where('shop_id', $this->get_shopid())
-            ->where(function ($query) use ($searchValue) {
-                $query->where('id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('userorguestid', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->count();
-        $totalRecordswithFilter = $totalRecords;
-        if ($columnName == 'created_at') {
-            $columnName = 'front_user_logs.' . $columnName;
+    foreach ($records as $record) {
+        if ($record->user_id == 0) {
+            $getuser = 'guest';
+            $id = $record->guest_id;
+        } else {
+            $getuser = User::where('id', $record->user_id)->first()->username;
+            $id = $record->user_id;
         }
-        if ($columnName == 'user_name') {
-            $columnName = 'users.username';
-        }
-        if ($columnName == 'user_id') {
-            $columnName = 'guestoruserid.user_id';
-        }
-        if ($columnName == 'id') {
-            $columnName = 'front_user_logs.id';
-        }
-        if ($columnName == 'shop') {
-            $columnName = 'front_user_logs.shop_id';
-        }
-        $records = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->leftjoin('shop_owners', 'shop_owners.id', '=', 'front_user_logs.shop_id')->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')->orderBy($columnName, $columnSortOrder)
-            ->orderBy('front_user_logs.created_at', 'desc')->where('front_user_logs.status', 'shopdetail')->where('front_user_logs.shop_id', $this->get_shopid())
-            ->where(function ($query) use ($searchValue) {
-                $query->where('front_user_logs.id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('front_user_logs.userorguestid', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('front_user_logs.created_at', [$searchByFromdate, $searchByTodate])
-            ->select('*', 'front_user_logs.created_at as fulct', 'front_user_logs.id as fulid')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
+        $data_arr[] = [
+            "id" => $record->fulid,
+            "shop" => $record->shop_id,
+            "shop_name" => $record->shop_name,
+            "user_id" => $id,
+            "user_name" => $record->username,
+            "created_at" => $record->fulct->format('F d, Y ( h:i A )'),
+        ];
+    }
 
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            if ($record->user_id == 0) {
-                $getuser = 'guest';
-                $id = $record->guest_id;
-            } else {
-                $getuser = User::where('id', $record->user_id)->first()->username;
-                $id = $record->user_id;
-            }
-            $data_arr[] = array(
-                "id" => $record->fulid,
-                "shop" => $record->shop_id,
-                "shop_name" => $record->shop_name,
-                "user_id" => $id,
-                "user_name" => $record->username,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->fulct)),
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+    return DataTables::of($data_arr)
+        ->addColumn('DT_RowId', function ($record) {
+            return $record['id'];
+        })
+        ->rawColumns(['DT_RowId'])
+        ->make(true);
     }
 
     public function get_buy_now_click(Request $request)
@@ -743,63 +697,36 @@ class ShopOwnerController extends Controller
 
     public function unique_get_item_activity_log(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        $shop_id = $this->get_shopid();
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+        $query = ItemLogActivity::query()
+            ->where('shop_id', $shop_id);
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
+        $records = $query->select('item_log_activities.*')
+            ->get()
+            ->unique(function ($item) {
+                return $item['user_id'] . '-' . $item['guest_id'];
+            });
 
-        $shop_id = 1;
-
-        if (Auth::guard('shop_owner')->check()) {
-            $shop_id = Auth::guard('shop_owner')->user()->id;
-        } else {
-            $shop_id = Auth::guard('shop_role')->user()->shop_id;
-        }
-
-        $totalRecords = ItemLogActivity::select('count(*) as allcount')->where('shop_id', $shop_id)->count();
-        // $totalRecords = ItemLogActivity::select('count(*) as allcount')->count();
-        $totalRecordswithFilter = ItemLogActivity::select('count(*) as allcount')->where('shop_id', $shop_id)->count();
-        // $totalRecordswithFilter = ItemLogActivity::select('count(*) as allcount')->count();
-
-        $records = ItemLogActivity::orderBy($columnName, $columnSortOrder)
-            ->where('shop_id', $shop_id)->orderBy('created_at', 'desc')
-            // ->where('product_code', 'like', '%' . $searchValue . '%')
-            // ->orWhere('name', 'like', '%' . $searchValue . '%')
-            ->select('item_log_activities.*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get()->unique('user_id', 'guest_id');
-
-        //    return $records;
-        $data_arr = array();
+        $data_arr = [];
 
         foreach ($records as $record) {
-            $data_arr[] = array(
+            $data_arr[] = [
                 "id" => $record->id,
                 "item_code" => $record->item_code,
                 "name" => $record->name,
                 "user_id" => $record->user_id,
                 "user_name" => $record->user_name,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->created_at)),
-            );
+                "created_at" => $record->created_at->format('F d, Y ( h:i A )'),
+            ];
         }
 
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+        return DataTables::of($data_arr)
+            ->addColumn('DT_RowId', function ($record) {
+                return $record['id'];
+            })
+            ->rawColumns(['DT_RowId'])
+            ->make(true);
     }
 
     public function shop_detail()

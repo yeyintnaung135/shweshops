@@ -252,38 +252,9 @@
                     }
                 },
             ],
-            responsive: true,
-            lengthChange: true,
-            autoWidth: false,
-            columnDefs: [{
-                    responsivePriority: 1,
-                    targets: 0
-                },
-                {
-                    responsivePriority: 2,
-                    targets: 1
-                },
-                {
-                    responsivePriority: 3,
-                    targets: 4
-                },
-                {
-                    'targets': [1, 3, 4, 5, 6],
-                    'orderable': false,
-                },
-
-            ],
-            language: {
-                "search": '<i class="fa-solid fa-search"></i>',
-                "searchPlaceholder": 'Search by Product Code',
-                paginate: {
-                    next: '<i class="fa fa-angle-right"></i>', // or '→'
-                    previous: '<i class="fa fa-angle-left"></i>' // or '←'
-                }
-            },
-            "order": [
-                [0, "desc"]
-            ],
+            dom: 'lBfrtip',
+                "responsive": true,
+                "autoWidth": false,
         });
     </script>
 @endpush

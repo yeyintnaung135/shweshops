@@ -53,7 +53,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     Route::resource('/items', ItemsController::class);
 
     Route::get('/get_item_activity_log', [ItemsController::class, 'get_item_activity_log'])->name('items.getitems_activity_log');
-    Route::get('/unique_get_item_activity_log', [ShopOwnerController::class, 'uniquegetItemActivityLog'])->name('items.uniquegetitems_activity_log');
+    Route::get('/unique_get_item_activity_log', [ShopOwnerController::class, 'unique_get_item_activity_log'])->name('items.uniquegetitems_activity_log');
     Route::get('/get_multiple_price_activity_log', [ItemsController::class, 'get_multiple_price_activity_log'])->name('items.getmultiple_price_activity_log');
     Route::get('/get_multiple_discount_activity_log', [ItemsController::class, 'get_multiple_discount_activity_log'])->name('items.getmultiple_discount_activity_log');
     Route::get('/get_multiple_damage_activity_log', [ItemsController::class, 'get_multiple_damage_activity_log'])->name('items.getmultiple_damage_activity_log');
