@@ -16,9 +16,9 @@
             @csrf
             <!-- Main content -->
 
-            <yk-dropzone link="{{ url('backside/shop_owner/items') }}" :main_cat="{{ $main_cat }}"
+            <item-create link="{{ url('backside/shop_owner/items') }}" :main_cat="{{ $main_cat }}"
                 :catlist="{{ $cat_list }}" :collection="{{ $collection }}" :somedatafromshop="{{ $somedatafromshop }}"
-                :recap="{{ $recap }}"></yk-dropzone>
+                :percenttemplate="{{ $percenttemplate }}"></item-create>
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->

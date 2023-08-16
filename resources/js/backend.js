@@ -37,6 +37,10 @@ Vue.component(
     "supportso-help",
     require("./components/backend/SupportsoComponent.vue").default
 );
+Vue.component(
+    "item-create",
+    require("./components/backend/ItemCreate.vue").default
+);
 
 //services
 import { allfromfbjs } from "./components/forfacebook/facebook";

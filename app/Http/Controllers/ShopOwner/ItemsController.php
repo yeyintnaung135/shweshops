@@ -672,13 +672,13 @@ class ItemsController extends Controller
         $shop_id = $this->get_shopid();
         $collection = Collection::where('shop_id', $shop_id)->get();
         $somedatafromshop = Shops::where('id', $shop_id)->first();
-        $recap = PercentTemplate::where('shop_id', $shop_id)->get();
+        $percenttemplate = PercentTemplate::where('shop_id', $shop_id)->get();
         $main_cat = MainCategory::get();
         $cat_list = DB::table('categories')->leftjoin('items', 'categories.name', '=', 'items.category_id')->select('categories.*')->groupBy('categories.name')->orderByRaw("CASE
                         WHEN count(items.category_id) = 0 THEN categories.id END ASC,
             case when count(items.category_id) != 0 then count(categories.name) end DESC")->get();
 
-        return view('backend.shopowner.item.create', ['main_cat' => $main_cat, 'cat_list' => $cat_list, 'shopowner' => $this->current_shop_data(), 'collection' => $collection, 'product_details' => [], 'somedatafromshop' => $somedatafromshop, 'recap' => $recap]);
+        return view('backend.shopowner.item.create', ['main_cat' => $main_cat, 'cat_list' => $cat_list, 'shopowner' => $this->current_shop_data(), 'collection' => $collection, 'product_details' => [], 'somedatafromshop' => $somedatafromshop, 'percenttemplate' => $percenttemplate]);
     }
 
     //start storing data
