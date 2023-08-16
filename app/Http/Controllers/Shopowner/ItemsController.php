@@ -5,47 +5,34 @@ namespace App\Http\Controllers\ShopOwner;
 use App\Facade\TzGate;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\FacebookTraid;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\RedirectResponse;
-
+use App\Http\Controllers\Trait\MultipleItem;
 use App\Http\Controllers\Trait\UserRole;
 use App\Http\Controllers\Trait\YKImage;
-
-use App\Imports\ItemsImport;
-
-use App\Models\FacebookTable;
+use App\Http\Requests\ShopOwner\ItemcreateRequest;
+use App\Http\Requests\ShopOwner\ItemsRecapUpdateRequest;
+use App\Http\Requests\ShopOwner\MultiplePriceUpdateRequest;
+use App\Models\Collection;
+use App\Models\Discount;
 use App\Models\Gems;
 use App\Models\Item;
 use App\Models\ItemLogActivity;
-
-use App\Models\Recap;
-use App\Models\Discount;
-
-use App\Models\Shops;
-use App\Models\PercentTemplate;
-
-use App\Models\Collection;
 use App\Models\ItemsEditDetailLogs;
 use App\Models\MainCategory;
 use App\Models\MultipleDamageLogs;
 use App\Models\MultipleDiscountLogs;
 use App\Models\MultiplePriceLogs;
+use App\Models\PercentTemplate;
+use App\Models\Shops;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Trait\MultipleItem;
-use App\Http\Requests\ShopOwner\ItemsRecapUpdateRequest;
-use Illuminate\Validation\ValidationException;
-use App\Http\Requests\ShopOwner\MultiplePriceUpdateRequest;
-use App\Http\Requests\ShopOwner\ItemcreateRequest;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
-use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\DataTables;
 
 class ItemsController extends Controller
 {
@@ -66,14 +53,9 @@ class ItemsController extends Controller
         return view('backend.shopowner.item.list', ['items' => $items, 'shopowner' => $this->current_shop_data()]);
     }
 
-
-
-
-
     public function item_activity_index(): View
     {
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-
 
         return view('backend.shopowner.activity.product.item', ['items' => $items, 'shopowner' => $this->shop_owner]);
     }
@@ -102,465 +84,119 @@ class ItemsController extends Controller
 
     public function get_item_activity_log(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        if ($request->ajax()) {
+            $shop_id = $this->get_shopid();
+            $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
+            $searchByTodate = $request->input('searchByTodate', now());
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+            $query = ItemLogActivity::query()
+                ->where('shop_id', $shop_id)
+                ->orderByDesc('created_at')
+                ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
+                ->select('id', 'user_name', 'item_code', 'name', 'user_id', 'created_at');
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
+            return DataTables::of($query)
+                ->addColumn('created_at_formatted', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
+                ->toJson();
         }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-
-        $shop_id = $this->get_shopid();
-
-        $totalRecords = Itemlogactivity::select('count(*) as allcount')
-            ->where('shop_id', $shop_id)
-            ->where(function ($query) use ($searchValue) {
-                $query->where('id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('item_code', 'like', '%' . $searchValue . '%')
-                    ->orWhere('name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_name', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->count();
-        $totalRecordswithFilter = $totalRecords;
-
-        $records = ItemLogActivity::orderBy($columnName, $columnSortOrder)
-            ->where('shop_id', $shop_id)->orderBy('created_at', 'desc')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('item_code', 'like', '%' . $searchValue . '%')
-                    ->orWhere('name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_name', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->select('item_log_activities.*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "id" => $record->id,
-                "item_code" => $record->item_code,
-                "name" => $record->name,
-                "user_id" => $record->user_id,
-                "user_name" => $record->user_name,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->created_at)),
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
     }
 
     public function get_multiple_price_activity_log(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        if ($request->ajax()) {
+            $shop_id = $this->get_shopid();
+            $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
+            $searchByTodate = $request->input('searchByTodate', now());
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+            $query = MultiplePriceLogs::query()
+                ->where('shop_id', $shop_id)
+                ->orderByDesc('created_at')
+                ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
+                ->select(
+                    'id', 'product_code', 'name', 'user_id', 'user_name',
+                    'user_role', 'old_price', 'new_price', 'min_price',
+                    'max_price', 'new_min_price', 'new_max_price', 'created_at'
+                );
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
+            return DataTables::of($query)
+                ->addColumn('created_at_formatted', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
+                ->toJson();
         }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-
-        $shop_id = 1;
-
-        if (Auth::guard('shop_owner')->check()) {
-            $shop_id = Auth::guard('shop_owner')->user()->id;
-        } else {
-            $shop_id = Auth::guard('shop_role')->user()->shop_id;
-        }
-
-        $totalRecords = MultiplePriceLogs::select('count(*) as allcount')
-            ->where('shop_id', $shop_id)
-            ->where(function ($query) use ($searchValue) {
-                $query->where('id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('product_code', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_role', 'like', '%' . $searchValue . '%')
-                    ->orWhere('old_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('new_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('min_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('max_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('new_min_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('new_max_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('name', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->count();
-        $totalRecordswithFilter = $totalRecords;
-
-        $records = MultiplePriceLogs::orderBy($columnName, $columnSortOrder)
-            ->where('shop_id', $shop_id)->orderBy('created_at', 'desc')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('product_code', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_role', 'like', '%' . $searchValue . '%')
-                    ->orWhere('old_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('new_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('min_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('max_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('new_min_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('new_max_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('name', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->select('multiple_price_logs.*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        //    return $records;
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "id" => $record->id,
-                "product_code" => $record->product_code,
-                "name" => $record->name,
-                "user_id" => $record->user_id,
-                "user_name" => $record->user_name,
-                "user_role" => $record->user_role,
-                "old_price" => $record->old_price,
-                "new_price" => $record->new_price,
-                "min_price" => $record->min_price,
-                "max_price" => $record->max_price,
-                "new_min_price" => $record->new_min_price,
-                "new_max_price" => $record->new_max_price,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->created_at)),
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
     }
 
     public function get_multiple_discount_activity_log(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        if ($request->ajax()) {
+            $shop_id = $this->get_shopid();
+            $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
+            $searchByTodate = $request->input('searchByTodate', now());
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+            $query = MultipleDiscountLogs::query()
+                ->where('shop_id', $shop_id)
+                ->orderByDesc('created_at')
+                ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
+                ->select(
+                    'id', 'product_code', 'name', 'user_id', 'user_name',
+                    'user_role', 'old_price', 'old_min_price', 'old_max_price',
+                    'percent', 'old_discount_price', 'new_discount_price',
+                    'old_discount_min', 'old_discount_max', 'new_discount_min',
+                    'new_discount_max', 'created_at'
+                );
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
+            return DataTables::of($query)
+                ->addColumn('created_at_formatted', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
+                ->toJson();
         }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-
-        $shop_id = 1;
-
-        if (Auth::guard('shop_owner')->check()) {
-            $shop_id = Auth::guard('shop_owner')->user()->id;
-        } else {
-            $shop_id = Auth::guard('shop_role')->user()->shop_id;
-        }
-
-        $totalRecords = MultipleDiscountLogs::select('count(*) as allcount')
-            ->where('shop_id', $shop_id)
-            ->where(function ($query) use ($searchValue) {
-                $query->where('id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('product_code', 'like', '%' . $searchValue . '%')
-                    ->orWhere('name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_role', 'like', '%' . $searchValue . '%')
-                    ->orWhere('old_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('old_min_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('old_max_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('percent', 'like', '%' . $searchValue . '%')
-                    ->orWhere('old_discount_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('new_discount_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('old_discount_min', 'like', '%' . $searchValue . '%')
-                    ->orWhere('old_discount_max', 'like', '%' . $searchValue . '%')
-                    ->orWhere('new_discount_min', 'like', '%' . $searchValue . '%')
-                    ->orWhere('new_discount_max', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->count();
-        $totalRecordswithFilter = $totalRecords;
-
-        $records = MultipleDiscountLogs::orderBy($columnName, $columnSortOrder)
-            ->where('shop_id', $shop_id)->orderBy('created_at', 'desc')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('product_code', 'like', '%' . $searchValue . '%')
-                    ->orWhere('name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_role', 'like', '%' . $searchValue . '%')
-                    ->orWhere('old_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('old_min_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('old_max_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('percent', 'like', '%' . $searchValue . '%')
-                    ->orWhere('old_discount_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('new_discount_price', 'like', '%' . $searchValue . '%')
-                    ->orWhere('old_discount_min', 'like', '%' . $searchValue . '%')
-                    ->orWhere('old_discount_max', 'like', '%' . $searchValue . '%')
-                    ->orWhere('new_discount_min', 'like', '%' . $searchValue . '%')
-                    ->orWhere('new_discount_max', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->select('multiple_discount_logs.*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        //    return $records;
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "id" => $record->id,
-                "product_code" => $record->product_code,
-                "name" => $record->name,
-                "user_id" => $record->user_id,
-                "user_name" => $record->user_name,
-                "user_role" => $record->user_role,
-                "old_price" => $record->old_price,
-                "old_min_price" => $record->old_min_price,
-                "old_max_price" => $record->old_max_price,
-                "percent" => $record->percent,
-                "old_discount_price" => $record->old_discount_price,
-                "new_discount_price" => $record->new_discount_price,
-                "old_discount_min" => $record->old_discount_min,
-                "old_discount_max" => $record->old_discount_max,
-                "new_discount_min" => $record->new_discount_min,
-                "new_discount_max" => $record->new_discount_max,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->created_at)),
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
     }
 
     public function get_multiple_damage_activity_log(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        if ($request->ajax()) {
+            $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
+            $searchByTodate = $request->input('searchByTodate', now());
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+            $query = MultipleDamageLogs::query()
+                ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
+                ->select(
+                    'id', 'product_code', 'name', 'user_id', 'user_name',
+                    'user_role', 'name', 'decrease', 'fee', 'undamage',
+                    'damage', 'expensive_thing', 'new_decrease', 'new_fee',
+                    'new_undamage', 'new_damage', 'new_expensive_thing', 'created_at'
+                );
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
+            return DataTables::of($query)
+                ->addColumn('created_at_formatted', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
+                ->toJson();
         }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-
-        $shop_id = 1;
-
-        if (Auth::guard('shop_owner')->check()) {
-            $shop_id = Auth::guard('shop_owner')->user()->id;
-        } else {
-            $shop_id = Auth::guard('shop_role')->user()->shop_id;
-        }
-
-        $totalRecords = MultipleDamageLogs::select('count(*) as allcount')->where('shop_id', $shop_id)->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->count();
-        $totalRecordswithFilter = MultipleDamageLogs::select('count(*) as allcount')->where('shop_id', $shop_id)->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->count();
-
-        $records = MultipleDamageLogs::orderBy($columnName, $columnSortOrder)
-            ->where('shop_id', $shop_id)->orderBy('created_at', 'desc')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('product_code', 'like', '%' . $searchValue . '%')
-                    ->orWhere('name', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->select('multiple_damage_logs.*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        //    return $records;
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "id" => $record->id,
-                "product_code" => $record->product_code,
-                "name" => $record->name,
-                "user_id" => $record->user_id,
-                "user_name" => $record->user_name,
-                "user_role" => $record->user_role,
-                "name" => $record->name,
-                "decrease" => $record->decrease,
-                "fee" => $record->fee,
-                "undamage" => $record->undamage,
-                "damage" => $record->damage,
-                "expensive_thing" => $record->expensive_thing,
-                "new_decrease" => $record->new_decrease,
-                "new_fee" => $record->new_fee,
-                "new_undamage" => $record->new_undamage,
-                "new_damage" => $record->new_damage,
-                "new_expensive_thing" => $record->new_expensive_thing,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->created_at)),
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
     }
     //show create form
     //Process Ajax request
     public function get_items(Request $request)
     {
+        if ($request->ajax()) {
+            $shop_id = $this->get_shopid();
+            $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
+            $searchByTodate = $request->input('searchByTodate', now());
 
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+            $query = Item::query()
+                ->orderByDesc('created_at')
+                ->where('shop_id', $shop_id)
+                ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
+                ->select(
+                    'id', 'product_code', 'default_photo', 'name',
+                    'price', 'min_price', 'max_price', 'created_at'
+                );
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
-
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
+            return DataTables::of($query)
+                ->addColumn('checkbox', fn($record) => $record->id)
+                ->addColumn('check_discount', fn($record) => $record->YkGetDiscount)
+                ->addColumn('price_formatted', function ($record) {
+                    return ($record->price != 0) ? $record->price : $record->min_price . '-' . $record->max_price;
+                })
+                ->addColumn('action', fn($record) => $record->id)
+                ->addColumn('created_at_formatted', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
+                ->toJson();
         }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-
-        $shop_id = $this->get_shopid();
-
-        $totalRecords = Item::select('count(*) as allcount')
-            ->where('shop_id', $shop_id)
-            ->where(function ($query) use ($searchValue) {
-                $query->where('id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('product_code', 'like', '%' . $searchValue . '%')
-                    ->orWhere('name', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->count();
-        $totalRecordswithFilter = $totalRecords;
-
-        $records = Item::orderBy($columnName, $columnSortOrder)
-            ->orderBy('created_at', 'desc')
-            ->where('shop_id', $shop_id)
-            ->where(function ($query) use ($searchValue) {
-                $query->where('id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('product_code', 'like', '%' . $searchValue . '%')
-                    ->orWhere('name', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->select('items.*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-        //    return $records;
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "checkbox" => $record->id,
-                "id" => $record->id,
-                "check_discount" => $record->YkGetDiscount,
-                "product_code" => $record->product_code,
-                "image" => $record->default_photo,
-                "name" => $record->name,
-                // "description" => strlen($record->description)<=80 ? substr($record->description, 0, 80) :substr($record->description, 0, 80) . ' ...',
-                "description" => Str::length($record->description) <= 80 ? Str::substr($record->description, 0, 80) : Str::substr($record->description, 0, 80) . ' ...',
-                "price" => [($record->price != 0) ? $record->price : $record->min_price . '-' . $record->max_price, $record->id],
-                "action" => $record->id,
-                "created_at" => $record->created_at,
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
     }
 
     public function export_excel()
@@ -570,87 +206,29 @@ class ItemsController extends Controller
 
     public function post_export_excel(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        if ($request->ajax()) {
+            $shop_id = $this->get_shopid();
+            $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
+            $searchByTodate = $request->input('searchByTodate', now());
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+            $query = Item::query()
+                ->orderByDesc('created_at')
+                ->where('shop_id', $shop_id)
+                ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
+                ->select(
+                    'id', 'product_code', 'default_photo', 'name',
+                    'description', 'price', 'min_price', 'max_price', 'created_at'
+                );
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
+            return DataTables::of($query)
+                ->addColumn('check_discount', fn($record) => $record->YkGetDiscount)
+                ->addColumn('price_formatted', function ($record) {
+                    return ($record->price != 0) ? $record->price : $record->min_price . '-' . $record->max_price;
+                })
+                ->addColumn('action', fn($record) => $record->id)
+                ->addColumn('created_at_formatted', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
+                ->toJson();
         }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-
-        $shop_id = 1;
-
-        if (Auth::guard('shop_owner')->check()) {
-            $shop_id = Auth::guard('shop_owner')->user()->id;
-        } else {
-            $shop_id = Auth::guard('shop_role')->user()->shop_id;
-        }
-
-        $totalRecords = Item::select('count(*) as allcount')
-            ->where('shop_id', $shop_id)
-            ->where(function ($query) use ($searchValue) {
-                $query->where('id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('product_code', 'like', '%' . $searchValue . '%')
-                    ->orWhere('name', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->count();
-        $totalRecordswithFilter = $totalRecords;
-
-        $records = Item::orderBy($columnName, $columnSortOrder)
-            ->orderBy('created_at', 'desc')
-            ->where('shop_id', $shop_id)
-            ->where(function ($query) use ($searchValue) {
-                $query->where('id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('product_code', 'like', '%' . $searchValue . '%')
-                    ->orWhere('name', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->select('items.*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-        //    return $records;
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "id" => $record->id,
-                "check_discount" => $record->YkGetDiscount,
-                "product_code" => $record->product_code,
-                "image" => $record->default_photo,
-                "name" => $record->name,
-                // "description" => strlen($record->description)<=80 ? substr($record->description, 0, 80) :substr($record->description, 0, 80) . ' ...',
-                "description" => Str::length($record->description) <= 80 ? Str::substr($record->description, 0, 80) : Str::substr($record->description, 0, 80) . ' ...',
-                "price" => [($record->price != 0) ? $record->price : $record->short_price, $record->id],
-                "action" => $record->id,
-                "created_at" => $record->created_at,
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
     }
 
     public function get_product_code_by_typing(Request $request)
@@ -693,9 +271,6 @@ class ItemsController extends Controller
 
         $jdmidimage = json_decode($input['formidphotos'], true);
         $jdthumbimage = json_decode($input['forthumbphotos'], true);
-
-
-
 
         foreach ($request->file('file') as $key => $value) {
             $file = $request->file('file')[$key];
@@ -801,7 +376,6 @@ class ItemsController extends Controller
     public function edit($id): View
     {
 
-
         $shop_id = $this->get_shopid();
         $collection = Collection::where('shop_id', $this->role)->get();
 
@@ -815,12 +389,10 @@ class ItemsController extends Controller
             $item->weight = 'temp';
         }
 
-
         $cat_list = DB::table('categories')->leftjoin('items', 'categories.name', '=', 'items.category_id')->select('categories.*')->groupBy('categories.name')->orderByRaw("CASE
                                 WHEN count(items.category_id) = 0 THEN categories.id END ASC,
                     case when count(items.category_id) != 0 then count(categories.name) end DESC")->get();
         $main_cat = MainCategory::get();
-
 
         return view('backend.shopowner.item.edit', ['cat_list' => $cat_list, 'main_cat' => $main_cat, 'shopowner' => $this->current_shop_data(), 'item' => $item, 'collection' => $collection]);
     }
@@ -1510,12 +1082,9 @@ class ItemsController extends Controller
         return response()->json(['msg' => 'success', 'id' => $request->id]);
     }
 
-
-
     public function multiple_update_minus(MultiplePriceUpdateRequest $request): JsonResponse
     {
         $plus_price = $request->price;
-
 
         foreach ($request->id as $id) {
             $item = Item::findOrfail($id);
@@ -1625,7 +1194,7 @@ class ItemsController extends Controller
             'damaged_product.numeric' => 'အထည်ပျက်စီးချို့ယွင်းသည် number ဖြစ်ရမည်',
 
             'valuable_product.min' => 'တန်ဖိုးမြင့် အထည်နှင့်အထည်မပျက်ပြန်လဲသည် 0 ထပ် မငယ်ရ',
-            'valuable_product.numeric' => 'တန်ဖိုးမြင့် အထည်နှင့်အထည်မပျက်ပြန်လဲသည် number ဖြစ်ရမည်'
+            'valuable_product.numeric' => 'တန်ဖိုးမြင့် အထည်နှင့်အထည်မပျက်ပြန်လဲသည် number ဖြစ်ရမည်',
         ];
 
         return Validator::make($data, [
@@ -1770,61 +1339,25 @@ class ItemsController extends Controller
 
     public function get_items_trash(Request $request)
     {
+        if ($request->ajax()) {
+            $shop_id = $this->get_shopid();
+            $searchValue = $request->input('searchValue', '');
 
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+            $records = Item::onlyTrashed()
+                ->where('shop_id', $shop_id)
+                ->orderBy('created_at', 'desc')
+                ->select('id', 'product_code', 'default_photo', 'price', 'deleted_at');
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
-
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $shop_id = $this->get_shopid();
-
-
-
-        $totalRecords = Item::onlyTrashed()
-            ->select('count(*) as allcount')
-            ->where('shop_id', $shop_id)
-            ->where('product_code', 'like', '%' . $searchValue . '%')
-            ->count();
-        $totalRecordswithFilter = $totalRecords;
-
-        $records = Item::onlyTrashed()
-            ->orderBy($columnName, $columnSortOrder)
-            ->where('shop_id', $shop_id)->orderBy('created_at', 'desc')
-            ->where('product_code', 'like', '%' . $searchValue . '%')
-            ->select('items.*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-        //    return $records;
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "id" => $record->id,
-                "product_code" => $record->product_code,
-                "image" => $record->default_photo,
-                "price" => ($record->price != 0) ? $record->price : $record->short_price,
-                "action" => $record->id,
-                "deleted_at" => $record->delete_at,
-            );
+            return DataTables::of($records)
+                ->addColumn('price_formatted', function ($record) {
+                    return ($record->price != 0) ? $record->price : $record->short_price;
+                })
+                ->addColumn('action', fn($record) => $record->id)
+                ->addColumn('deleted_at_formatted', function ($record) {
+                    return $record->deleted_at ? $record->deleted_at->format('F d, Y ( h:i A )') : '';
+                })
+                ->toJson();
         }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
     }
 
     public function restore($id): RedirectResponse

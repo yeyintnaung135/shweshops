@@ -158,58 +158,36 @@
                         var to_date = $('#search_todate_itemact').val() ? $('#search_todate_itemact')
                             .val() + " 23:59:59" : null;
 
-                      // Append to data
-                      data.searchByFromdate = from_date;
-                      data.searchByTodate = to_date;
-                  }
-              },
-              columns: [
-                  {data: 'id',},
-                  {data: 'item_code'},
-                  {data: 'name'},
-                  {data: 'user_id'},
-                  {data: 'user_name'},
-                  {data: 'created_at'}
-              ],
-
-                responsive: true,
-                lengthChange: true,
-                // searching: false,
-                autoWidth: false,
-                paging: true,
-                dom: 'Blfrtip',
-                buttons: ["copy", "csv", "excel", "pdf", "print"],
-                columnDefs: [{
-                        responsivePriority: 1,
-                        targets: 0
-                    },
-                    {
-                        responsivePriority: 2,
-                        targets: 2
-                    },
-                    {
-                        responsivePriority: 3,
-                        targets: 3
-                    },
-                    {
-                        responsivePriority: 4,
-                        targets: 4
-                    },
-                ],
-                language: {
-                    "search": '<i class="fa-solid fa-search"></i>',
-                    "searchPlaceholder": 'Search...',
-                    paginate: {
-                        next: '<i class="fa fa-angle-right"></i>', // or '→'
-                        previous: '<i class="fa fa-angle-left"></i>' // or '←'
+                        // Append to data
+                        data.searchByFromdate = from_date;
+                        data.searchByTodate = to_date;
                     }
                 },
-
-
-                "order": [
-                    [5, "desc"]
+                columns: [{
+                        data: 'id',
+                    },
+                    {
+                        data: 'item_code'
+                    },
+                    {
+                        data: 'name'
+                    },
+                    {
+                        data: 'user_id'
+                    },
+                    {
+                        data: 'user_name'
+                    },
+                    {
+                        data: 'created_at_formatted'
+                    }
                 ],
-
+                dom: 'lBfrtip',
+                "responsive": true,
+                "autoWidth": false,
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
             });
             $(".itemdatepicker").datepicker({
                 "dateFormat": "yy-mm-dd",

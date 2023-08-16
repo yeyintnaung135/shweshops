@@ -2,57 +2,57 @@
 @section('content')
     @push('css')
         <style>
-            .priceInput{
+            .priceInput {
                 height: 30px;
-                border:0px !important;
+                border: 0px !important;
             }
-            .priceInput-invalid{
+
+            .priceInput-invalid {
                 border: 3px solid red !important;
             }
 
-            .priceInput:focus{
+            .priceInput:focus {
                 /* border: 1px solid blueviolet !important; */
                 background-color: #efefef;
 
             }
-            #itemsTable thead>tr>td:nth-child(6){
+
+            #itemsTable thead>tr>td:nth-child(6) {
                 width: 250px;
             }
 
-            .price{
+            .price {
                 text-align: left !important;
             }
-
-
         </style>
     @endpush
 
     <div class="wrapper">
-    @include('backend.shopowner.loading')
-    @include('layouts.backend.navbar')
+        @include('backend.shopowner.loading')
+        @include('layouts.backend.navbar')
 
 
-    <!-- Main Sidebar Container -->
-    @include('layouts.backend.sidebar')
-    <!-- Content Wrapper. Contains page content -->
+        <!-- Main Sidebar Container -->
+        @include('layouts.backend.sidebar')
+        <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper sn-background-light-blue">
             <!-- Content Header (Page header) -->
-            @if(Session::has('message'))
+            @if (Session::has('message'))
                 <x-alert>
 
                 </x-alert>
-        @endif
-        <!-- zhheader shopname -->
-        {{-- <x-header>
-        @foreach($shopowner as $shopowner )
+            @endif
+            <!-- zhheader shopname -->
+            {{-- <x-header>
+        @foreach ($shopowner as $shopowner)
                 @endforeach
                 {{$shopowner->shop_name}}
         </x-header> --}}
-        <!-- end zh header shopname -->
-        {{-- <x-title>
+            <!-- end zh header shopname -->
+            {{-- <x-title>
             Items list
         </x-title> --}}
-        <!-- Main content -->
+            <!-- Main content -->
             <section class="content pt-3">
                 {{-- <div class="sn-tab-panel">
                     <ul>
@@ -70,8 +70,9 @@
 
                             <div class="sn-table-list-wrapper">
                                 <div class="border-bottom-0 mt-4 mr-2">
-                                    <a href="{{url('backside/shop_owner/items/create')}}"
-                                       class="btn btn-primary float-right"><span class="fa fa-plus-circle"></span>&nbsp;&nbsp;Add
+                                    <a href="{{ url('backside/shop_owner/items/create') }}"
+                                        class="btn btn-primary float-right"><span
+                                            class="fa fa-plus-circle"></span>&nbsp;&nbsp;Add
                                         New Item
                                     </a>
                                     <br><br>
@@ -80,12 +81,12 @@
                                 <div class="card shadow-none border-0 rounded-5 pb-2">
                                     <div class="card-header">
                                         @error('percent')
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
                                         @enderror
                                         <div class="">
                                             <h2>Today's Update Products @include('backend.shopowner.toottips')
@@ -97,7 +98,8 @@
                                             </button>
                                             <button class="btn btn-warning setDiscount ml-2" id="set-discount">Set Discount
                                             </button>
-                                            <button class="btn btn-danger multiple_stock  ml-2" id="multipleStock">Stock</button>
+                                            <button class="btn btn-danger multiple_stock  ml-2"
+                                                id="multipleStock">Stock</button>
                                         </div>
                                     </div>
 
@@ -105,46 +107,51 @@
                                         <div class="form-group mr-md-2">
                                             <fieldset>
                                                 <legend>From Date</legend>
-                                                <input type="text" id='search_fromdate_item' class="itemdatepicker form-control" placeholder='Choose date' autocomplete="off"/>
+                                                <input type="text" id='search_fromdate_item'
+                                                    class="itemdatepicker form-control" placeholder='Choose date'
+                                                    autocomplete="off" />
                                             </fieldset>
                                         </div>
                                         <div class="form-group mr-md-2">
                                             <fieldset>
                                                 <legend>To Date</legend>
-                                                <input type="text" id='search_todate_item' class="itemdatepicker form-control" placeholder='Choose date' autocomplete="off"/>
+                                                <input type="text" id='search_todate_item'
+                                                    class="itemdatepicker form-control" placeholder='Choose date'
+                                                    autocomplete="off" />
                                             </fieldset>
                                         </div>
                                         <div class="pr-md-4">
-                                            <input type='button' id="item_search_button" value="Search" class="btn bg-info"  >
+                                            <input type='button' id="item_search_button" value="Search"
+                                                class="btn bg-info">
                                         </div>
                                     </div>
 
                                     <table id="itemsTable" class="table table-borderless">
                                         <thead>
-                                        <tr>
-                                            <td>Select</td>
+                                            <tr>
+                                                <td>Select</td>
 
-                                            <td>Name</td>
-                                            <td>Discount</td>
-                                            <td>Image</td>
-                                            <td>Product Code</td>
-                                            <td class="price">Price</td>
-                                            <td>Action</td>
-                                            <td>Date</td>
-                                        </tr>
+                                                <td>Name</td>
+                                                <td>Discount</td>
+                                                <td>Image</td>
+                                                <td>Product Code</td>
+                                                <td class="price">Price</td>
+                                                <td>Action</td>
+                                                <td>Date</td>
+                                            </tr>
                                         </thead>
                                         <tfoot>
-                                        <tr>
-                                            <td>Select</td>
+                                            <tr>
+                                                <td>Select</td>
 
-                                            <td>Name</td>
-                                            <td>Discount</td>
-                                            <td>Image</td>
-                                            <td>Product Code</td>
-                                            <td>Price</td>
-                                            <td>Action</td>
-                                            <td>Date</td>
-                                        </tr>
+                                                <td>Name</td>
+                                                <td>Discount</td>
+                                                <td>Image</td>
+                                                <td>Product Code</td>
+                                                <td>Price</td>
+                                                <td>Action</td>
+                                                <td>Date</td>
+                                            </tr>
                                         </tfoot>
                                     </table>
 
@@ -185,7 +192,7 @@
                     <div class="hidden-input"></div>
                     <div class="form-group">
                         <label class="control-label ">Price : </label>
-                        <input type="text" name="price"  id="changepricebox" class="form-control"/>
+                        <input type="text" name="price" id="changepricebox" class="form-control" />
                         <span id="error_price" class="text-danger d-none">error</span>
 
                     </div>
@@ -193,12 +200,13 @@
                         <div class="col-3">
                             <div class="form-check">
                                 <input class="form-check-input " type="radio" name="oper" value='plus' id="plus"
-                                       checked> ပေါင်း
+                                    checked> ပေါင်း
                             </div>
                         </div>
                         <div class="col-3">
                             <div class="form-check">
-                                <input class="form-check-input " type="radio" name="oper" value='minus' id="minus">
+                                <input class="form-check-input " type="radio" name="oper" value='minus'
+                                    id="minus">
                                 နှုတ်
                             </div>
                         </div>
@@ -207,37 +215,37 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label">အလျော့တွက် % : </label>
-                        <input type="number" name="အလျော့တွက်" id="first_name" value="" class="form-control "/>
+                        <input type="number" name="အလျော့တွက်" id="first_name" value="" class="form-control " />
                         <span id="error_အလျော့တွက်" class="text-danger d-none">error</span>
                     </div>
                     <div class="form-group">
                         <label class="control-label">လက်ခ % : </label>
-                        <input type="text" name="လက်ခ" id="first_name" class="form-control"/>
+                        <input type="text" name="လက်ခ" id="first_name" class="form-control" />
                         <span id="error_လက်ခ" class="text-danger d-none">error</span>
 
                     </div>
                     <div class="form-group">
                         <label class="control-label">အထည်မပျက် ပြန်သွင်း % : </label>
-                        <input type="text" name="undamaged_product" id="first_name" class="form-control"/>
+                        <input type="text" name="undamaged_product" id="first_name" class="form-control" />
                         <span id="error_undamaged_product" class="text-danger d-none">error</span>
 
                     </div>
                     <div class="form-group">
                         <label class="control-label">အထည်ပျက်စီး ချို့ယွင်း % : </label>
-                        <input type="text" name="damaged_product" id="first_name" class="form-control"/>
+                        <input type="text" name="damaged_product" id="first_name" class="form-control" />
                         <span id="error_damaged_product" class="text-danger d-none">error</span>
 
                     </div>
                     <div class="form-group ">
                         <label class="control-label">တန်ဖိုးမြင့် အထည်နှင့်အထည်မပျက်ပြန်လဲ % : </label>
-                        <input type="text" name="valuable_product" id="first_name" class="form-control"/>
+                        <input type="text" name="valuable_product" id="first_name" class="form-control" />
                         <span id="error_valuable_product" class="text-danger d-none sop-font">error</span>
 
                     </div>
-                    <br/>
+                    <br />
                     <div class="form-group">
                         <button class="btn btn-warning update"> Update</button>
-                        <br/>
+                        <br />
                     </div>
                 </div>
             </div>
@@ -252,7 +260,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body sop-font">
-                    <form action="{{route('backside.shop_owner.multiple.stock.items')}}" method="post">
+                    <form action="{{ route('backside.shop_owner.multiple.stock.items') }}" method="post">
                         @csrf
                         <input type="hidden" name="multipleStockId" value="" class="multipleStock">
                         <div class="form-group">
@@ -265,10 +273,12 @@
                         <div class="form-group multipleStockCount">
                             <label class="control-label">Counts</label>
                             <input type="number" class="form-control multipleStockCountVal" name="count">
-                            <span class="font-weight-bolder text-danger multipleCountValidate">In stock count required*</span>
+                            <span class="font-weight-bolder text-danger multipleCountValidate">In stock count
+                                required*</span>
                         </div>
                         <div class="form-group">
-                            <button type="button" class="btn btn-warning" onclick="multipleStockBtn(this)">Update</button>
+                            <button type="button" class="btn btn-warning"
+                                onclick="multipleStockBtn(this)">Update</button>
                         </div>
                     </form>
                 </div>
@@ -284,16 +294,16 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    {{--            <form action="{{ route('backside.shop_owner.items.multiple.discount')}}" method="post">--}}
+                    {{--            <form action="{{ route('backside.shop_owner.items.multiple.discount')}}" method="post"> --}}
                     @csrf
                     <div class="hidden-input"></div>
                     <div class="form-group">
                         <label class="control-label ">Percent : </label>
-                        <input type="text" name="percent" id="tochangeper" class="form-control"/>
+                        <input type="text" name="percent" id="tochangeper" class="form-control" />
                         <span id="error_percent" class="text-danger d-none">error</span>
 
                     </div>
-                    <br/>
+                    <br />
                     <div class="form-group">
                         <button class="btn btn-warning discount_check"> Discount</button>
                     </div>
@@ -304,13 +314,13 @@
     </div>
 
     <div id="updatedsuccess" class="modal sop-font fade" data-controls-modal="updatedsuccess" data-backdrop="static"
-         data-keyboard="false">
+        data-keyboard="false">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4>Please check your change price</h4>
                     <button type="button" class="success-close cross-close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span><br/>
+                        <span aria-hidden="true">&times;</span><br />
                     </button>
                 </div>
                 <div class="modal-body">
@@ -329,13 +339,13 @@
     </div>
 
     <div id="discountcheck" class="modal sop-font fade " data-controls-modal="discountcheck" data-backdrop="static"
-         data-keyboard="false">
+        data-keyboard="false">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4>Please check your change price</h4>
                     <button type="button" class="success-close cross-close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span><br/>
+                        <span aria-hidden="true">&times;</span><br />
                     </button>
                 </div>
                 <div class="modal-body">
@@ -358,31 +368,31 @@
 @endsection
 @push('scripts')
     <script>
-
         $("#loader").hide();
+
         function priceUpdate(e) {
             e = e || window.event;
-            return(e.keyCode || e.which);
+            return (e.keyCode || e.which);
         }
 
-        window.onload = function(){
-            document.onkeypress = function(e){
+        window.onload = function() {
+            document.onkeypress = function(e) {
                 var key = priceUpdate(e);
-                if(key === 13){
+                if (key === 13) {
                     var input = e.srcElement.value;
                     let regex = /^([_\-\.0-9]+){2,7}$/;
                     let number = regex.test(input);
-                    if(input == '' || input == 0 || number === false ){
+                    if (input == '' || input == 0 || number === false) {
                         $(e.srcElement).addClass('priceInput-invalid')
                         return false;
-                    }else{
+                    } else {
                         $.ajax({
                             method: "POST",
-                            url: " {{ route('backside.shop_owner.price_only_update')}}",
+                            url: " {{ route('backside.shop_owner.price_only_update') }}",
                             cache: false,
                             dataType: "json",
                             data: {
-                                _token: '{{csrf_token()}}',
+                                _token: '{{ csrf_token() }}',
                                 price: e.srcElement.value,
                                 id: e.target.nextElementSibling.value,
 
@@ -391,12 +401,12 @@
                                 $("#loader").show();
                             },
 
-                            error: function (err) {
+                            error: function(err) {
                                 console.log(err)
                                 $(e.originalTarget).addClass('priceInput-invalid');
                                 $("#loader").hide();
                             },
-                            success: function (response) {
+                            success: function(response) {
                                 console.log(response['data'])
                                 $(e.originalTarget).removeClass('priceInput-invalid');
                                 $(e.srcElement).removeClass('priceInput-invalid')
@@ -417,62 +427,71 @@
                 serverSide: true,
                 ajax: {
                     "url": "{{ route('backside.shop_owner.items.getItems') }}",
-                    'data': function (data) {
+                    'data': function(data) {
                         // Read values
-                        var from_date = $('#search_fromdate_item').val() ? $('#search_fromdate_item').val() + " 00:00:00" : null;
-                        var to_date = $('#search_todate_item').val() ? $('#search_todate_item').val() + " 23:59:59" : null;
+                        var from_date = $('#search_fromdate_item').val() ? $('#search_fromdate_item')
+                            .val() + " 00:00:00" : null;
+                        var to_date = $('#search_todate_item').val() ? $('#search_todate_item').val() +
+                            " 23:59:59" : null;
 
                         // Append to data
                         data.searchByFromdate = from_date;
                         data.searchByTodate = to_date;
                     }
                 },
-                columns: [
-                    {
+                columns: [{
                         data: 'checkbox',
-                        render: function (data, type) {
-                            let localRetri = JSON.parse(window.localStorage.getItem("localData")) || [];
-                            return (localRetri.length == 0) ? `<input type="checkbox" value="${data}" onclick='checkbox(this)' id="1_${data}">`
-                                : (localRetri.find(element => element == data) == data)
-                                    ? `<input type="checkbox" value="${data}" onclick='checkbox(this)' id="1_${data}" checked>`
-                                    : `<input type="checkbox" value="${data}" onclick='checkbox(this)' id="1_${data}">`
+                        render: function(data, type) {
+                            let localRetri = JSON.parse(window.localStorage.getItem("localData")) ||
+                                [];
+                            return (localRetri.length == 0) ?
+                                `<input type="checkbox" value="${data}" onclick='checkbox(this)' id="1_${data}">` :
+                                (localRetri.find(element => element == data) == data) ?
+                                `<input type="checkbox" value="${data}" onclick='checkbox(this)' id="1_${data}" checked>` :
+                                `<input type="checkbox" value="${data}" onclick='checkbox(this)' id="1_${data}">`
                         }
                     },
-                    {data: 'name',},
+                    {
+                        data: 'name',
+                    },
 
                     {
                         data: 'check_discount',
 
-                        render: function (data, type) {
-                            const discount = (data == 0) ? `----` : `<span class="badge bg-success">${data.percent}%</span>`;
+                        render: function(data, type) {
+                            const discount = (data == 0) ? `----` :
+                                `<span class="badge bg-success">${data.percent}%</span>`;
                             return discount;
                         }
                     },
                     {
 
-                        data: 'image',
-                        render: function (data, type) {
-                            const image = `<img src= "{{ filedopath ('/items/'.'${data}')}}"/>`;
+                        data: 'default_photo',
+                        render: function(data, type) {
+                            const image = `<img src= "{{ filedopath('/items/' . '${data}') }}"/>`;
                             return image;
                         }
                     },
-                    {data: 'product_code'},
                     {
-                        data: 'price',
-                        render: function (data,type,row) {
+                        data: 'product_code'
+                    },
+                    {
+                        data: 'price_formatted',
+                        render: function(data, type, row) {
 
-                            let getErrData = JSON.parse(window.localStorage.getItem("errData")) || [];
+                            let getErrData = JSON.parse(window.localStorage.getItem("errData")) ||
+                            [];
                             return (getErrData.length == 0) ? `
                                 <div class="tz-error-${data[1]}">
                                     <input type="text" name="price" value="${data[0]}" onkeypress="priceUpdate(this)" class="priceInput">
                                     <input type="hidden" name="id" value="${row.id}" class="shop_id">
-                                </div>`
-                                : (getErrData.find(element => element == data[1]) == data[1])
-                                    ? `<div class="tz-error-${data[1]} text-danger">
+                                </div>` :
+                                (getErrData.find(element => element == data[1]) == data[1]) ?
+                                `<div class="tz-error-${data[1]} text-danger">
                                          <input type="text" name="price" value="${data[0]}" onkeypress="priceUpdate(this)" class="priceInput">
                                          <input type="hidden" name="id" value="${row.id}" class="shop_id">
-                                       </div><span class="text-danger">*မှားနေပါတယ်</span>`
-                                    : `<div class="tz-error-${data[1]}">
+                                       </div><span class="text-danger">*မှားနေပါတယ်</span>` :
+                                `<div class="tz-error-${data[1]}">
                                          <input type="text" name="price" value="${data[0]}" onkeypress="priceUpdate(this)" class="priceInput">
                                          <input type="hidden" name="id" value="${row.id}" class="shop_id">
                                      </div>`
@@ -480,128 +499,87 @@
                     },
                     {
                         data: 'action',
-                        render: function (data, type) {
-                            var info = `<a style="margin-right: 5px;" class="btn btn-sm btn-success" href="{{ route ('backside.shop_owner.items.show',['item'=>':id'])}}"><span class="fa fa-info-circle"></span></a>`;
+                        render: function(data, type) {
+                            var info =
+                                `<a style="margin-right: 5px;" class="btn btn-sm btn-success" href="{{ route('backside.shop_owner.items.show', ['item' => ':id']) }}"><span class="fa fa-info-circle"></span></a>`;
                             info = info.replace(':id', data);
-                            var edit = `<a class="btn btn-sm btn-primary" href="{{ route ('backside.shop_owner.items.edit',['item'=>':id'])}}"><span class="fa fa-edit"></span></a>`;
+                            var edit =
+                                `<a class="btn btn-sm btn-primary" href="{{ route('backside.shop_owner.items.edit', ['item' => ':id']) }}"><span class="fa fa-edit"></span></a>`;
                             edit = edit.replace(':id', data);
                             return info + edit;
 
                         }
                     },
-                    {data: 'created_at'}
+                    {
+                        data: 'created_at_formatted'
+                    }
 
                 ],
-
-                responsive: true,
-                lengthChange: true,
-                autoWidth: false,
-                paging: true,
-                dom: 'Blfrtip',
-                buttons: ["copy", "csv",  {
-                    extend: 'excelHtml5',
-                    exportOptions: {
-                        columns: [  1, 4, 5 ]
-                    }
-                }, "pdf", "print"],
-                columnDefs: [
-                    {responsivePriority: 1, targets: 0},
-                    {responsivePriority: 2, targets: 2},
-                    {responsivePriority: 3, targets: 3},
-                    {responsivePriority: 4, targets: 4},
-                    {
-                        'targets': [0, 2, 5],
-                        'orderable': false,
-                    },
-                    {
-                        'orderable': false,
-                        'className': 'select-checkbox',
-                        'targets': 2
-                    },
-                    {
-
-                        'targets': [7],
-                        'visible': false,
-                        'searchable': false,
-                    },
-                    {
-
-'targets': [3],
-'orderable': false,
-},
-{
-
-'targets': [6],
-'orderable': false,
-}
+                dom: 'lBfrtip',
+                "responsive": true,
+                "autoWidth": false,
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
-                language: {
-                    "search": '<i class="fa-solid fa-search"></i>',
-                    "searchPlaceholder": 'Search...',
-                    paginate: {
-                        next: '<i class="fa fa-angle-right"></i>', // or '→'
-                        previous: '<i class="fa fa-angle-left"></i>' // or '←'
-                    }
-                },
-
-
-                "order": [[7, "desc"]],
-
             });
 
 
 
-            $( ".itemdatepicker" ).datepicker({
+            $(".itemdatepicker").datepicker({
                 "dateFormat": "yy-mm-dd",
                 changeYear: true
             });
 
-            $('#item_search_button').click(function(){
-                if($('#search_fromdate_item').val() != null && $('#search_todate_item').val() != null) {
+            $('#item_search_button').click(function() {
+                if ($('#search_fromdate_item').val() != null && $('#search_todate_item').val() != null) {
                     itemsTable.draw();
                 }
             });
 
-            $( ".itemactdatepicker" ).datepicker({
+            $(".itemactdatepicker").datepicker({
                 "dateFormat": "yy-mm-dd",
                 changeYear: true
             });
 
-            $('#itemact_search_button').click(function(){
-                if($('#search_fromdate_itemact').val() != null && $('#search_todate_itemact').val() != null) {
+            $('#itemact_search_button').click(function() {
+                if ($('#search_fromdate_itemact').val() != null && $('#search_todate_itemact').val() !=
+                    null) {
                     itemsActivityTable.draw();
                 }
             });
 
-            $( ".mulpriceactdatepicker" ).datepicker({
+            $(".mulpriceactdatepicker").datepicker({
                 "dateFormat": "yy-mm-dd",
                 changeYear: true
             });
 
-            $('#mulpriceact_search_button').click(function(){
-                if($('#search_fromdate_mulpriceact').val() != null && $('#search_todate_mulpriceact').val() != null) {
+            $('#mulpriceact_search_button').click(function() {
+                if ($('#search_fromdate_mulpriceact').val() != null && $('#search_todate_mulpriceact')
+                .val() != null) {
                     multiplePriceLogsActivityTable.draw();
                 }
             });
 
-            $( ".muldisactdatepicker" ).datepicker({
+            $(".muldisactdatepicker").datepicker({
                 "dateFormat": "yy-mm-dd",
                 changeYear: true
             });
 
-            $('#muldisact_search_button').click(function(){
-                if($('#search_fromdate_muldisact').val() != null && $('#search_todate_muldisact').val() != null) {
+            $('#muldisact_search_button').click(function() {
+                if ($('#search_fromdate_muldisact').val() != null && $('#search_todate_muldisact').val() !=
+                    null) {
                     multipleDiscountActivityTable.draw();
                 }
             });
 
-            $( ".mulperactdatepicker" ).datepicker({
+            $(".mulperactdatepicker").datepicker({
                 "dateFormat": "yy-mm-dd",
                 changeYear: true
             });
 
-            $('#mulperact_search_button').click(function(){
-                if($('#search_fromdate_mulperact').val() != null && $('#search_todate_mulperact').val() != null) {
+            $('#mulperact_search_button').click(function() {
+                if ($('#search_fromdate_mulperact').val() != null && $('#search_todate_mulperact').val() !=
+                    null) {
                     multipleDamageActivityTable.draw();
                 }
             });
@@ -616,16 +594,15 @@
         var STOPCLICK_DISCOUNT = false;
         var oper = 'plus';
         var temptodis = {};
-        $("input[name=oper]").on('change', function () {
+        $("input[name=oper]").on('change', function() {
             oper = $(this).val();
         });
         var unsetdiscountitemlist = [];
         //we cannot use some jquery code in this fn beacause it conflict with bootstrap model
         //okay pr :p
-        $(document).on('change', '.ff', function (e) {
+        $(document).on('change', '.ff', function(e) {
             if (!e.target.checked) {
-                temptodis[e.target.value] = $('#' + e.target.value).text();
-                ;
+                temptodis[e.target.value] = $('#' + e.target.value).text();;
                 console.log(temptodis);
                 $('#' + e.target.value).html('------');
 
@@ -678,9 +655,11 @@
                 localData = localStorage.removeItem("localData", JSON.stringify(data));
             }
         }
+
         function location_href() {
-            return window.location.href = "{{route('backside.shop_owner.items.index')}}";
+            return window.location.href = "{{ route('backside.shop_owner.items.index') }}";
         }
+
         function radio_error_check() {
             $('.radio-error').append(`
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -692,16 +671,16 @@
         `);
         }
 
-        $('.success-close').click(function () {
+        $('.success-close').click(function() {
             location_href();
         })
 
-        $('.multi-btn').on('click', function (e) {
+        $('.multi-btn').on('click', function(e) {
 
             e.preventDefault();
             $('#multipleModal').modal('show');
             console.log(data)
-            data.map(function (el, index) {
+            data.map(function(el, index) {
 
                 $('.hidden-input').append(`
                 <input type="hidden" name="id[]" value="${el}" id="get_id-${el}" class="form-control"/>
@@ -716,16 +695,16 @@
             item_id = data;
         });
 
-        $('#multipleStock').click(function () {
+        $('#multipleStock').click(function() {
             $(".multipleStockCount").hide();
             $(".multipleCountValidate").hide();
 
-            $("#multipleStockSelect").on('change', ()=>{
+            $("#multipleStockSelect").on('change', () => {
 
-                if( $("#multipleStockSelect").val() === "In Stock"){
+                if ($("#multipleStockSelect").val() === "In Stock") {
                     $(".multipleStockCount").fadeIn();
 
-                }else{
+                } else {
                     $(".multipleStockCount").fadeOut();
                 }
             })
@@ -733,20 +712,20 @@
             $('#multipleStockModal').modal('show');
         });
 
-        function multipleStockBtn(e){
+        function multipleStockBtn(e) {
             var countVal = $(".multipleStockCountVal").val();
-            if($("#multipleStockSelect").val() === "Out Of Stock"){
+            if ($("#multipleStockSelect").val() === "Out Of Stock") {
                 $(e.form).submit();
-            }else if(countVal.length > 0){
+            } else if (countVal.length > 0) {
                 $(e.form).submit();
-            }else{
+            } else {
                 $(".multipleCountValidate").show();
             }
         }
 
-        $('.setDiscount').click(function () {
+        $('.setDiscount').click(function() {
             $('#discountModal').modal('show');
-            data.map(function (el, index) {
+            data.map(function(el, index) {
                 $('.hidden-input').find($('input[type=hidden]')).remove();
                 $('.hidden-input').append(`
                 <input type="hidden" name="id[]" value="${el}" id="get_id-${el}" class="form-control"/>
@@ -756,7 +735,7 @@
 
         });
 
-        $('.update').on('click', function (e) {
+        $('.update').on('click', function(e) {
             if (STOPCLICK) return;
             STOPCLICK = true;
             e.preventDefault();
@@ -764,7 +743,7 @@
 
         });
 
-        $('.discount_check').on('click', function (e) {
+        $('.discount_check').on('click', function(e) {
             if (STOPCLICK_DISCOUNT) return;
             STOPCLICK_DISCOUNT = true;
 
@@ -827,7 +806,8 @@
                     var unsetdiscount = `----`;
 
                     if (discount == 'yes') {
-                        unsetdiscount = `<input type="checkbox" class='ff' data-toggle="toogle" checked data-size="mini" value='${item.id}' data-offstyle="danger" data-width="100">`;
+                        unsetdiscount =
+                            `<input type="checkbox" class='ff' data-toggle="toogle" checked data-size="mini" value='${item.id}' data-offstyle="danger" data-width="100">`;
 
                         var todisprice = item.disprice != 0 ? item.disprice : item.dismin + '--' + item.dismax;
                     } else {
@@ -837,7 +817,8 @@
                     }
 
 
-                    result += `<tr> <td>${item.product_code}</td> <td>${item.name}</td> <td>${fromprice}</td><td>${toprice}</td><td >${unsetdiscount}</td><td>${fromdisprice}</td><td id="${item.id}">${todisprice}</td></tr>`
+                    result +=
+                        `<tr> <td>${item.product_code}</td> <td>${item.name}</td> <td>${fromprice}</td><td>${toprice}</td><td >${unsetdiscount}</td><td>${fromdisprice}</td><td id="${item.id}">${todisprice}</td></tr>`
 
 
                 });
@@ -874,7 +855,8 @@
                 var todisprice = item.disprice;
 
 
-                result += `<tr> <td>${item.product_code}</td> <td>${item.name}</td> <td>${fromprice}</td><td>${fromdisprice}</td><td id="${item.id}">${todisprice}</td></tr>`
+                result +=
+                    `<tr> <td>${item.product_code}</td> <td>${item.name}</td> <td>${fromprice}</td><td>${fromdisprice}</td><td id="${item.id}">${todisprice}</td></tr>`
 
 
             });
@@ -883,24 +865,24 @@
 
         }
 
-        $('.confirm_disc').one('click', function (e) {
+        $('.confirm_disc').one('click', function(e) {
             $.ajax({
                 method: "POST",
-                url: " {{ route('backside.shop_owner.items.multiple.discount')}}",
+                url: " {{ route('backside.shop_owner.items.multiple.discount') }}",
                 cache: false,
                 dataType: "json",
                 data: {
-                    _token: '{{csrf_token()}}',
+                    _token: '{{ csrf_token() }}',
                     percent: jQuery('#tochangeper').val(),
                     id: item_id,
 
 
                 },
-                error: function (err) {
+                error: function(err) {
 
 
                 },
-                success: function (response) {
+                success: function(response) {
                     // console.log(response['data'])
                     if (response['status'] == 'success') {
                         window.location.assign(location_href());
@@ -922,15 +904,14 @@
                 cache: false,
                 dataType: "json",
                 data: {
-                    _token: '{{csrf_token()}}',
+                    _token: '{{ csrf_token() }}',
                     percent: jQuery('#tochangeper').val(),
                     id: item_id,
 
 
                 },
-                error: function (err) {
-                },
-                success: function (response) {
+                error: function(err) {},
+                success: function(response) {
                     // console.log(response['data'])
                     if (response['status'] == 'success') {
                         showdismodelbeforediscount(response['data'])
@@ -943,8 +924,8 @@
                             $("#error_percent").html(response['data'].percent);
                         }
 
-                        setTimeout(function(){
-                            STOPCLICK_DISCOUNT=false;
+                        setTimeout(function() {
+                            STOPCLICK_DISCOUNT = false;
                         }, 1000)
                     }
 
@@ -954,7 +935,9 @@
 
         function checkpriceafterupdateclick() {
 
-            let temppercent = {'အလျော့တွက်': $("input[name=အလျော့တွက်]").val()};
+            let temppercent = {
+                'အလျော့တွက်': $("input[name=အလျော့တွက်]").val()
+            };
 
             $.ajax({
                 method: "POST",
@@ -962,48 +945,54 @@
                 cache: false,
                 dataType: "json",
                 data: {
-                    _token: '{{csrf_token()}}',
+                    _token: '{{ csrf_token() }}',
                     price: jQuery('#changepricebox').val(),
                     id: item_id,
                     oper: oper,
-                    အလျော့တွက်: $("input[name=အလျော့တွက်]").val(),
-                    လက်ခ: $("input[name=လက်ခ]").val(),
+                    အလျော့ တွ က်: $("input[name=အလျော့တွက်]").val(),
+                    လက် ခ: $("input[name=လက်ခ]").val(),
                     undamaged_product: $("input[name=undamaged_product]").val(),
                     damaged_product: $("input[name=damaged_product]").val(),
                     valuable_product: $("input[name=valuable_product]").val()
 
                 },
-                error: function (err) {
+                error: function(err) {
                     STOPCLICK = false;
 
 
                 },
-                success: function (response) {
+                success: function(response) {
                     console.log(response);
                     if (response['status'] == 'success') {
                         updatedSuccess(response['data'], 'test msg', 'price');
                         // for percent template
-                        if ($("input[name=အလျော့တွက်]").val() !== '' || $("input[name=လက်ခ]").val() !== '' || $("input[name=undamaged_product]").val() !== '' || $("input[name=damaged_product]").val() !== '' || $("input[name=valuable_product]").val() !== '') {
+                        if ($("input[name=အလျော့တွက်]").val() !== '' || $("input[name=လက်ခ]").val() !== '' || $(
+                                "input[name=undamaged_product]").val() !== '' || $(
+                                "input[name=damaged_product]").val() !== '' || $("input[name=valuable_product]")
+                            .val() !== '') {
                             updatedSuccess('recap', 'test msg', 'recap')
 
                         }
                     } else if (response['status'] == 'onlypercent') {
-                        if ($("input[name=အလျော့တွက်]").val() !== '' || $("input[name=လက်ခ]").val() !== '' || $("input[name=undamaged_product]").val() !== '' || $("input[name=damaged_product]").val() !== '' || $("input[name=valuable_product]").val() !== '') {
+                        if ($("input[name=အလျော့တွက်]").val() !== '' || $("input[name=လက်ခ]").val() !== '' || $(
+                                "input[name=undamaged_product]").val() !== '' || $(
+                                "input[name=damaged_product]").val() !== '' || $("input[name=valuable_product]")
+                            .val() !== '') {
                             updatedSuccess('recap', 'test msg', 'recap')
 
                         }
                     } else {
-                        if (response['data'].အလျော့တွက် != undefined) {
+                        if (response['data'].အလျော့ တွ က် != undefined) {
                             $("input[name=အလျော့တွက်]").addClass('is-invalid');
                             $("#error_အလျော့တွက်").removeClass('d-none');
                             $("#error_အလျော့တွက်").addClass('d-block');
-                            $("#error_အလျော့တွက်").html(response['data'].အလျော့တွက်[0]);
+                            $("#error_အလျော့တွက်").html(response['data'].အလျော့ တွ က်[0]);
                         }
-                        if (response['data'].လက်ခ != undefined) {
+                        if (response['data'].လက် ခ != undefined) {
                             $("input[name=လက်ခ]").addClass('is-invalid');
                             $("#error_လက်ခ").removeClass('d-none');
                             $("#error_လက်ခ").addClass('d-block');
-                            $("#error_လက်ခ").html(response['data'].လက်ခ[0]);
+                            $("#error_လက်ခ").html(response['data'].လက် ခ[0]);
                         }
                         if (response['data'].undamaged_product != undefined) {
                             $("input[name=undamaged_product]").addClass('is-invalid');
@@ -1031,8 +1020,8 @@
                         }
 
                     }
-                    setTimeout(function(){
-                        STOPCLICK=false;
+                    setTimeout(function() {
+                        STOPCLICK = false;
                     }, 1000)
 
                 },
@@ -1040,12 +1029,16 @@
         }
 
 
-        $('.confirm').one('click', function (e) {
+        $('.confirm').one('click', function(e) {
 
             let price = $("#changepricebox").val();
             e.preventDefault();
-            if (price !== '' || $("input[name=အလျော့တွက်]").val() !== '' || $("input[name=လက်ခ]").val() !== '' || $("input[name=undamaged_product]").val() !== '' || $("input[name=damaged_product]").val() !== '' || $("input[name=valuable_product]").val() !== '') {
-                if ($("input[name=အလျော့တွက်]").val() !== '' || $("input[name=လက်ခ]").val() !== '' || $("input[name=undamaged_product]").val() !== '' || $("input[name=damaged_product]").val() !== '' || $("input[name=valuable_product]").val() !== '') {
+            if (price !== '' || $("input[name=အလျော့တွက်]").val() !== '' || $("input[name=လက်ခ]").val() !== '' || $(
+                    "input[name=undamaged_product]").val() !== '' || $("input[name=damaged_product]").val() !==
+                '' || $("input[name=valuable_product]").val() !== '') {
+                if ($("input[name=အလျော့တွက်]").val() !== '' || $("input[name=လက်ခ]").val() !== '' || $(
+                        "input[name=undamaged_product]").val() !== '' || $("input[name=damaged_product]").val() !==
+                    '' || $("input[name=valuable_product]").val() !== '') {
                     if (price !== '') {
                         if (oper == 'plus') {
                             plus();
@@ -1095,23 +1088,28 @@
         }
 
         function itemTabSwitchOne() {
-            itemTab_Panel("item-tab-1","item-tab-2","item-tab-3","item-tab-4", "item-tab-5","item-panel-1","item-panel-2","item-panel-3", "item-panel-4", "item-panel-5");
+            itemTab_Panel("item-tab-1", "item-tab-2", "item-tab-3", "item-tab-4", "item-tab-5", "item-panel-1",
+                "item-panel-2", "item-panel-3", "item-panel-4", "item-panel-5");
         }
 
         function itemTabSwitchTwo() {
-            itemTab_Panel("item-tab-2","item-tab-1","item-tab-3","item-tab-4", "item-tab-5","item-panel-2","item-panel-1","item-panel-3", "item-panel-4", "item-panel-5");
+            itemTab_Panel("item-tab-2", "item-tab-1", "item-tab-3", "item-tab-4", "item-tab-5", "item-panel-2",
+                "item-panel-1", "item-panel-3", "item-panel-4", "item-panel-5");
         }
 
         function itemTabSwitchThree() {
-            itemTab_Panel("item-tab-3","item-tab-1","item-tab-2","item-tab-4", "item-tab-5","item-panel-3","item-panel-1","item-panel-2", "item-panel-4", "item-panel-5");
+            itemTab_Panel("item-tab-3", "item-tab-1", "item-tab-2", "item-tab-4", "item-tab-5", "item-panel-3",
+                "item-panel-1", "item-panel-2", "item-panel-4", "item-panel-5");
         }
 
         function itemTabSwitchFour() {
-            itemTab_Panel("item-tab-4","item-tab-1","item-tab-2","item-tab-3", "item-tab-5","item-panel-4","item-panel-1","item-panel-2", "item-panel-3", "item-panel-5");
+            itemTab_Panel("item-tab-4", "item-tab-1", "item-tab-2", "item-tab-3", "item-tab-5", "item-panel-4",
+                "item-panel-1", "item-panel-2", "item-panel-3", "item-panel-5");
         }
 
         function itemTabSwitchFive() {
-            itemTab_Panel("item-tab-5","item-tab-1","item-tab-2","item-tab-3", "item-tab-4","item-panel-5","item-panel-1","item-panel-2", "item-panel-3", "item-panel-4");
+            itemTab_Panel("item-tab-5", "item-tab-1", "item-tab-2", "item-tab-3", "item-tab-4", "item-panel-5",
+                "item-panel-1", "item-panel-2", "item-panel-3", "item-panel-4");
         }
 
         function plus() {
@@ -1121,7 +1119,7 @@
                 cache: false,
                 dataType: "json",
                 data: {
-                    _token: '{{csrf_token()}}',
+                    _token: '{{ csrf_token() }}',
                     price: jQuery('#changepricebox').val(),
                     id: item_id,
                     unsetdiscountitems: unsetdiscountitemlist
@@ -1129,8 +1127,8 @@
 
                 },
 
-                error: function (err) {
-                    $.each(err.responseJSON.errors, function (i, error) {
+                error: function(err) {
+                    $.each(err.responseJSON.errors, function(i, error) {
                         currentError.push(error);
                         var el = $(document).find('[name="' + i + '"]');
                         el.after($('<span class="invalid-feedback">' + error[0] + '</span>'));
@@ -1138,7 +1136,7 @@
                     });
 
                 },
-                success: function (response) {
+                success: function(response) {
                     location.assign(window.location.href)
 
 
@@ -1153,16 +1151,16 @@
                 cache: false,
                 dataType: "json",
                 data: {
-                    _token: '{{csrf_token()}}',
+                    _token: '{{ csrf_token() }}',
 
                     price: jQuery('#changepricebox').val(),
                     id: item_id,
                     unsetdiscountitems: unsetdiscountitemlist
 
                 },
-                error: function (err) {
+                error: function(err) {
 
-                    $.each(err.responseJSON.errors, function (i, error) {
+                    $.each(err.responseJSON.errors, function(i, error) {
 
                         currentError.push(error);
                         var el = $(document).find('[name="' + i + '"]');
@@ -1170,7 +1168,7 @@
                         el.addClass('is-invalid');
                     });
                 },
-                success: function (response) {
+                success: function(response) {
                     location.assign(window.location.href)
 
 
@@ -1185,17 +1183,17 @@
                 cache: false,
                 dataType: "json",
                 data: {
-                    _token: '{{csrf_token()}}',
+                    _token: '{{ csrf_token() }}',
                     id: item_id,
-                    အလျော့တွက်: jQuery("input[name=အလျော့တွက်]").val(),
-                    လက်ခ: jQuery("input[name=လက်ခ]").val(),
+                    အလျော့ တွ က်: jQuery("input[name=အလျော့တွက်]").val(),
+                    လက် ခ: jQuery("input[name=လက်ခ]").val(),
                     undamaged_product: jQuery("input[name=undamaged_product]").val(),
                     damaged_product: jQuery("input[name=damaged_product]").val(),
-                    တန်ဖိုးမြင့်: jQuery("input[name=valuable_product]").val(),
+                    တန် ဖိုး မြ င့်: jQuery("input[name=valuable_product]").val(),
 
                 },
-                error: function (err) {
-                    $.each(err.responseJSON.errors, function (i, error) {
+                error: function(err) {
+                    $.each(err.responseJSON.errors, function(i, error) {
                         currentError.push(error);
                         var el = $(document).find('[name="' + i + '"]');
                         el.after($('<span class="invalid-feedback">' + error[0] + '</span>'));
@@ -1205,7 +1203,7 @@
                 },
 
 
-                success: function (response) {
+                success: function(response) {
                     if (currentError.length <= 0) {
                         $('.update').attr('disabled', 'disabled');
                         var text = `ရွေးချယ်ထားသော ပစ္စည်းများအား ပြင်ဆင်ပြီးပါပြီ`;
@@ -1232,9 +1230,5 @@
 
             }
         }
-
     </script>
 @endpush
-
-
-
