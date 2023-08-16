@@ -10,10 +10,13 @@ use App\Http\Requests\SuperAdmin\Ads\UpdateAdsImageRequest;
 use App\Models\Ads;
 use App\Models\Shops;
 use App\Models\SuperAdminLogActivity;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
 class AdsController extends Controller
@@ -23,7 +26,7 @@ class AdsController extends Controller
         $this->middleware(['auth:super_admin']);
     }
 
-    public function index()
+    public function index(): View
     {
         $now = Carbon::now()->format('Y-m-d H:i:s A');
         Ads::where('end', '<=', $now)->delete();
@@ -31,7 +34,7 @@ class AdsController extends Controller
         // $ads_role = SuperAdminLogActivity::where('type',['ads'])->orderBy('created_at', 'desc')->get();
         return view('backend.super_admin.ad.all', ['ads' => $ads]);
     }
-    public function activity_index()
+    public function activity_index(): View
     {
         $now = Carbon::now()->format('Y-m-d H:i:s A');
         Ads::where('end', '<=', $now)->delete();
@@ -41,7 +44,7 @@ class AdsController extends Controller
     }
 
     // datable for ads log activity
-    public function get_ads_activity(Request $request)
+    public function get_ads_activity(Request $request): mixed
     {
         if ($request->ajax()) {
             $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
@@ -61,7 +64,7 @@ class AdsController extends Controller
         }
     }
 
-    public function get_all_ads(Request $request)
+    public function get_all_ads(Request $request): mixed
     {
         $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
@@ -94,7 +97,7 @@ class AdsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
         $shops = Shops::all();
         return view('backend.super_admin.ad.create', ['shops' => $shops]);
@@ -106,7 +109,7 @@ class AdsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreAdsImageRequest $request)
+    public function store(StoreAdsImageRequest $request): JsonResponse
     {
 
         $folderPath = 'images/banner/';
@@ -140,7 +143,7 @@ class AdsController extends Controller
 
     }
 
-    public function store_video(StoreAdsVideoFormRequest $request)
+    public function store_video(StoreAdsVideoFormRequest $request): RedirectResponse
     {
         $folderPath = 'images/banner';
         $mobileimgfolder = 'images/banner/thumbs/';
@@ -178,7 +181,7 @@ class AdsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id): View
     {
         $ad = Ads::withTrashed()->findOrFail($id);
         $shop = Shops::where('shop_name', $ad->name)->first();
@@ -218,7 +221,7 @@ class AdsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id): View
     {
         $ad = Ads::withTrashed()->findOrFail($id);
         $shops = Shops::all();
@@ -231,7 +234,7 @@ class AdsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateAdsImageRequest $request, $id)
+    public function update(UpdateAdsImageRequest $request, $id): RedirectResponse
     {
 //        return $request->shop_id;
         $shop_name = Shops::where('id', $request->shop_id)->first();
@@ -273,7 +276,7 @@ class AdsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
 
         $ad = Ads::withTrashed()->findOrFail($id);

@@ -10,9 +10,11 @@ use App\Models\GuestOrUserId;
 use App\Models\Shops;
 use App\Models\User;
 use App\Models\WishlistClickLog;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class DangerZoneController extends Controller
 {
@@ -21,7 +23,7 @@ class DangerZoneController extends Controller
         $this->middleware(['auth:super_admin']);
     }
 
-    public function show_delete_logs()
+    public function show_delete_logs(): View
     {
 
         //base on day count
@@ -93,7 +95,7 @@ class DangerZoneController extends Controller
 
     }
 
-    public function delete_logs(Request $request)
+    public function delete_logs(Request $request): JsonResponse
     {
         $deletelogs = FrontUserLogs::whereBetween('created_at', [$request->from, $request->to])->delete();
         $wdeletelogs = WishlistClickLog::whereBetween('created_at', [$request->from, $request->to])->delete();

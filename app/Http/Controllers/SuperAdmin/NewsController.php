@@ -7,7 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SuperAdmin\News\StoreNewsRequest;
 use App\Http\Requests\SuperAdmin\News\UpdateNewsRequest;
 use App\Models\News;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class NewsController extends Controller
 {
@@ -15,34 +16,14 @@ class NewsController extends Controller
     {
         $this->middleware(['auth:super_admin', 'admin']);
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function create(): View
     {
         $news_all = News::where('shop_id', 0)->latest()->paginate(5);
         return view('backend.super_admin.news_&_events.news.create', compact('news_all'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreNewsRequest $request)
+    public function store(StoreNewsRequest $request): RedirectResponse
     {
         $file = $request->file('file_upload');
         $dir = "images/news_&_events/news";
@@ -57,38 +38,14 @@ class NewsController extends Controller
         return redirect()->back()->with('success', 'News Create Successfully');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function edit($id): View
     {
         $news = News::findOrFail($id);
         $news_all = News::where('shop_id', 0)->latest()->paginate(5);
         return view('backend.super_admin.news_&_events.news.edit', compact('news', 'news_all'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateNewsRequest $request, $id)
+    public function update(UpdateNewsRequest $request, $id): RedirectResponse
     {
         $file = $request->file('file_upload');
         $dir = "images/news_&_events/news";
@@ -110,7 +67,7 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
         News::findOrFail($id)->delete();
         return redirect('backside/super_admin/news/create')->with('success', 'News Delete Successfully');

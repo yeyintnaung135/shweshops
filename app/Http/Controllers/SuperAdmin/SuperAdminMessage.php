@@ -4,8 +4,10 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Messages;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
 class SuperAdminMessage extends Controller
@@ -15,18 +17,18 @@ class SuperAdminMessage extends Controller
         $this->middleware(['auth:super_admin', 'admin']);
     }
 
-    public function show_all_expire()
+    public function show_all_expire(): View
     {
         return view('backend.super_admin.message.expire');
     }
 
-    public function delete_by_one(Request $request)
+    public function delete_by_one(Request $request): RedirectResponse
     {
         Messages::destroy($request->id);
         return redirect()->back();
     }
 
-    public function get_expire(Request $request)
+    public function get_expire(Request $request): mixed
     {
         if ($request->ajax()) {
             $query = Messages::leftJoin('users', 'users.id', '=', 'message_user_id')

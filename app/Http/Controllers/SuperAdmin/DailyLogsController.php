@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
 class DailyLogsController extends Controller
@@ -16,13 +18,13 @@ class DailyLogsController extends Controller
         $this->middleware(['auth:super_admin']);
     }
 
-    public function daily_shop_create_log()
+    public function daily_shop_create_log(): View
     {
         return view('backend.super_admin.dailycount.productdailycount');
 
     }
 
-    public function get_all_daily_shop_create_counts(Request $request)
+    public function get_all_daily_shop_create_counts(Request $request): mixed
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();
@@ -45,7 +47,7 @@ class DailyLogsController extends Controller
             ->make(true);
     }
 
-    public function daily_shop_create_del_selected(Request $request)
+    public function daily_shop_create_del_selected(Request $request): RedirectResponse
     {
         $shopids = explode(',', $request->delshopids);
 
@@ -55,7 +57,7 @@ class DailyLogsController extends Controller
         return redirect()->back();
     }
 
-    public function daily_shop_create_del_all(Request $request)
+    public function daily_shop_create_del_all(Request $request): RedirectResponse
     {
 
         $checkcount = DB::table('shopowner_log_activities')->where('action', 'Create')->whereBetween('created_at', [$request->cafromdate, $request->catodate]);
@@ -69,7 +71,7 @@ class DailyLogsController extends Controller
         }
 
     }
-    public function total_create_count(Request $request)
+    public function total_create_count(Request $request): string
     {
 
         $checkcount = DB::table('shopowner_log_activities')->where('action', 'Create')->whereBetween('created_at', [$request->from, $request->to]);

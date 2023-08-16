@@ -7,10 +7,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SuperAdmin\SuperAdminRole\UpdateSuperAdminRoleRequest;
 use App\Models\SuperAdmin;
 use App\Models\SuperAdminLogActivity;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
 class SuperAdminRoleController extends Controller
@@ -20,20 +22,19 @@ class SuperAdminRoleController extends Controller
         $this->middleware(['auth:super_admin']);
     }
 
-    public function list() {
+    function list(): View {
         $super_admin = SuperAdmin::all();
         $super_admin_log = SuperAdminLogActivity::all();
         return view('backend.super_admin_role.list', ['super_admin' => $super_admin, 'super_admin_log' => $super_admin_log]);
 
     }
-    public function activity_index()
+    public function activity_index(): View
     {
         $super_admin = SuperAdmin::all();
         $super_admin_log = SuperAdminLogActivity::all();
         return view('backend.super_admin.activity_logs.admin', ['super_admin' => $super_admin, 'super_admin_log' => $super_admin_log]);
-
     }
-    public function get_all_admins(Request $request)
+    public function get_all_admins(Request $request): mixed
     {
         if ($request->ajax()) {
             $data = SuperAdmin::select(['id', 'name', 'email', 'role', 'created_at'])->orderBy('created_at', 'desc');
@@ -56,7 +57,7 @@ class SuperAdminRoleController extends Controller
         }
     }
 
-    public function get_admin_activity(Request $request)
+    public function get_admin_activity(Request $request): mixed
     {
         if ($request->ajax()) {
             $data = SuperAdminLogActivity::query();
@@ -84,12 +85,12 @@ class SuperAdminRoleController extends Controller
         }
     }
 
-    public function create()
+    public function create(): View
     {
         return view('backend.super_admin_role.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -115,7 +116,7 @@ class SuperAdminRoleController extends Controller
 
     }
 
-    public function edit($id)
+    public function edit($id): View
     {
 
         if (TzGate::super_admin_allows($id)) {
@@ -125,7 +126,7 @@ class SuperAdminRoleController extends Controller
 
     }
 
-    public function update(UpdateSuperAdminRoleRequest $request, $id)
+    public function update(UpdateSuperAdminRoleRequest $request, $id): RedirectResponse
     {
         if (!TzGate::super_admin_allows($id)) {
             abort(403, 'You are not authorized to perform this action.');

@@ -6,47 +6,32 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SuperAdmin\Sign\StoreSignRequest;
 use App\Http\Requests\SuperAdmin\Sign\UpdateSignRequest;
 use App\Models\Sign;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\View\View;
 
 class SignController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
     public function __construct()
     {
         $this->middleware(['auth:super_admin', 'admin']);
     }
 
-    public function index()
+    public function index(): View
     {
         //
         $signs = Sign::all();
         return view('backend.super_admin.sign.list', compact('signs'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function create(): View
     {
         //
         return view('backend.super_admin.sign.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreSignRequest $request)
+    public function store(StoreSignRequest $request): RedirectResponse
     {
         if ($request->hasFile('photo')) {
             $photo = $request->photo;
@@ -79,34 +64,20 @@ class SignController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id): View
     {
         //
         $sign = Sign::findOrFail($id);
         return view('backend.super_admin.sign.detail', compact('sign'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function edit($id): View
     {
-        //
         $sign = Sign::findOrFail($id);
         return view('backend.super_admin.sign.edit', compact('sign'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateSignRequest $request, $id)
+    public function update(UpdateSignRequest $request, $id): RedirectResponse
     {
         $update_sign = Sign::findOrFail($id);
         $update_sign->name = $request->name;
@@ -140,13 +111,7 @@ class SignController extends Controller
         return redirect()->route('baydins.index')->with('success', 'Your Baydin is successfully Updated');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
         $delete_sign = Sign::findOrFail($id);
         $delete_sign->delete();
@@ -154,11 +119,10 @@ class SignController extends Controller
         //
     }
 
-    public function delete_sign(Request $request)
+    public function delete_sign(Request $request): RedirectResponse
     {
         $delete_sign = Sign::find($request->sign_id);
         $delete_sign->delete();
         return response()->json("success");
-        //
     }
 }
