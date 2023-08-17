@@ -26,7 +26,7 @@ use App\Http\Controllers\SuperAdmin\SupportController;
 use App\Http\Controllers\SuperAdmin\TooltipsController;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['prefix' => 'backside/super_admin', 'as' => 'backside.super_admin.'], function () {
+Route::prefix('backside/super_admin')->name('backside.super_admin.')->group(function () {
 
     //superadmin forgot password
     Route::middleware('guest')->group(function () {

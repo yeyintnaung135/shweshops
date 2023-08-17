@@ -13,7 +13,6 @@ use App\Models\FrontUserLogs;
 use App\Models\GoldPrice;
 use App\Models\GuestOrUserId;
 use App\Models\Item;
-use App\Models\ShopOwner;
 use App\Models\ShopOwnerLogActivity;
 use App\Models\Shops;
 use App\Models\SuperAdmin;
@@ -174,38 +173,51 @@ class SuperAdminController extends Controller
 
     public function get_all_visitor(Request $request): mixed
     {
-        if ($request->ajax()) {
-            $searchByFromdate = $request->get('searchByFromdate') ?? '0-0-0 00:00:00';
-            $searchByTodate = $request->get('searchByTodate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
 
-            $recordsQuery = FrontUserLogs::leftJoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
-                ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
-                ->leftJoin('items', 'front_user_logs.product_id', '=', 'items.id')
-                ->whereBetween('front_user_logs.created_at', [$searchByFromdate, $searchByTodate])
-                ->selectRaw("front_user_logs.id as fulid, COALESCE(guestoruserid.user_id, 0) as gouid, items.product_code, items.name, users.username, front_user_logs.created_at as fulct")
-                ->orderBy($request->input('columns')[$request->input('order')[0]['column']]['data'], $request->input('order')[0]['dir'])
-                ->orderBy('front_user_logs.created_at', 'desc');
+        $records = DB::table('front_user_logs')
+            ->leftJoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
+            ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
+            ->leftJoin('items', 'front_user_logs.product_id', '=', 'items.id')
+            ->select(
+                'front_user_logs.product_id',
+                'front_user_logs.shop_id',
+                'front_user_logs.status',
+                'front_user_logs.created_at',
+                'front_user_logs.id',
+                'guestoruserid.user_id as guest_or_user_id',
+                'items.name as item_name',
+                'items.product_code as product_code'
+            )->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
-            return DataTables::of($recordsQuery)
-                ->addColumn('user_name', function ($record) {
-                    return ($record->gouid == 0) ? 'Guest' : User::find($record->gouid)->username;
-                })
-                ->addColumn('status', function ($record) {
-                    if ($record->product_id != 0) {
-                        return $record->name . ' (P)';
+        return DataTables::of($records)
+            ->editColumn('user_name', function ($record) {
+                if ($record->guest_or_user_id == 0) {
+                    return 'Guest';
+                } else {
+                    return User::where('id', $record->guest_or_user_id)->value('username');
+                }
+            })
+            ->editColumn('status', function ($record) {
+                if ($record->product_id != 0) {
+                    return $record->item_name . ' (P)';
+                } else {
+                    if ($record->shop_id != 0) {
+                        return Shops::where('id', $record->shop_id)->value('shop_name') . ' (S)';
                     } else {
                         return strtoupper($record->status);
                     }
-                })
-                ->addColumn('product_code', function ($record) {
-                    return ($record->product_id != 0) ? $record->product_code : 0;
-                })
-                ->addColumn('created_at_formatted', function ($record) {
-                    return date('F d, Y ( h:i A )', strtotime($record->fulct));
-                })
-                ->rawColumns(['status', 'created_at_formatted'])
-                ->make(true);
-        }
+                }
+            })
+            ->editColumn('product_code', function ($record) {
+                return $record->product_code ?? 0;
+            })
+            ->editColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->created_at));
+            })
+            ->toJson();
     }
 
     public function ads_count(): View

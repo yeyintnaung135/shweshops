@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Events\Activeusers;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use NotificationChannels\WebPush\HasPushSubscriptions;
 
 class User extends Authenticatable
 {
@@ -20,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'id', 'username', 'phone', 'gender', 'birth_day', 'password', 'otp', 'active', 'photo', 'send_baydin',
+        'id', 'username', 'phone', 'gender', 'birthday', 'password', 'otp', 'active', 'photo', 'send_baydin',
     ];
 
     /**
@@ -44,17 +43,17 @@ class User extends Authenticatable
 
     public function getFavIdsAttribute()
     {
-        $fav_ids = Users_fav::where('user_id', $this->id)->get();
+        $fav_ids = UsersFav::where('user_id', $this->id)->get();
         return $fav_ids;
     }
     public function getSelectionIdsAttribute()
     {
-        $selection_ids = Users_selection::where('user_id', $this->id)->get();
+        $selection_ids = UsersSelection::where('user_id', $this->id)->get();
         return $selection_ids;
     }
     public function getNotificationAttribute()
     {
-        $noti = Usernoti::where('receiver_user_id', $this->id)->where('user_type', 'users')->where('read_by_receiver', 0)->get();
+        $noti = UserNoti::where('receiver_user_id', $this->id)->where('user_type', 'users')->where('read_by_receiver', 0)->get();
         return $noti;
     }
     public function isonline()

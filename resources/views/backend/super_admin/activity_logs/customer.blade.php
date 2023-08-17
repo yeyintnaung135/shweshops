@@ -104,7 +104,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    "url": "{{ route('visitorcount.getAllVisitor') }}",
+                    "url": "{{ route('backside.super_admin.visitorcount.getAllVisitor') }}",
                     'data': function(data) {
                         // Read values
                         var from_date = $('#search_fromdate_visitor').val() ? $(
@@ -125,22 +125,25 @@
                         data: 'user_name'
                     },
                     {
-                        data: 'status'
+                        data: 'status',
                     },
                     {
                         data: 'product_code'
                     },
                     {
-                        data: 'user_id'
+                        data: 'guest_or_user_id'
                     },
                     {
-                        data: 'created_at_formatted'
+                        data: 'created_at'
                     },
 
                 ],
                 dom: 'lBfrtip',
                 "responsive": true,
                 "autoWidth": false,
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
             })
 
             $('#visitor_search_button').click(function() {

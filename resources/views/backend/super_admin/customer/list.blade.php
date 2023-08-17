@@ -206,7 +206,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                'url': "{{ route('customers.getCustomers') }}",
+                'url': "{{ route('backside.super_admin.customers.getCustomers') }}",
                 'data': function(data) {
                     // Read values
                     var from_date = $('#search_fromdate_customer').val() ? $('#search_fromdate_customer')
