@@ -35,7 +35,7 @@ class TemplateController extends Controller
         return view('backend.shopowner.template.list', ['templates' => $templates, 'shopowner' => $this->current_shop_data()]);
     }
 
-    public function get_template(Request $request)
+    public function get_template(Request $request): JsonResponse
     {
         $shop_id = $this->get_shopid();
 

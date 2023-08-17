@@ -11,7 +11,10 @@ use App\Http\Requests\ShopOwner\UpdateNewsRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Trait\ShopTrait;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class NewsController extends Controller
 {
@@ -28,17 +31,17 @@ class NewsController extends Controller
         });
     }
 
-    public function index()
+    public function index(): View
     {
         return view('backend.shopowner.news.index');
     }
 
-    public function create()
+    public function create(): View
     {
         return view('backend.shopowner.news.create');
     }
 
-    public function store(StoreNewsRequest $request)
+    public function store(StoreNewsRequest $request): RedirectResponse
     {
         $baseDirectory = 'shop_owner';
         $subDirectory = 'news';
@@ -65,12 +68,12 @@ class NewsController extends Controller
             ->with('message', 'Your news was successfully created');
     }
 
-    public function edit(News $news)
+    public function edit(News $news): View
     {
         return view('backend.shopowner.news.edit', compact('news'));
     }
 
-    public function update(UpdateNewsRequest $request, News $news)
+    public function update(UpdateNewsRequest $request, News $news): RedirectResponse
     {
         $image = $news->image;
         $baseDirectory = 'shop_owner';
@@ -116,7 +119,7 @@ class NewsController extends Controller
             ->with('message', 'Your news was successfully updated');
     }
 
-    public function destroy(News $news)
+    public function destroy(News $news): RedirectResponse
     {
         $news->delete();
         $baseDirectory = 'shop_owner';
@@ -135,7 +138,7 @@ class NewsController extends Controller
         return redirect()->route('backside.shop_owner.news.index')->with('message', 'News deleted successfully.');
     }
 
-    public function get_all_news(Request $request)
+    public function get_all_news(Request $request): JsonResponse
     {
         $fromDate = $request->input('fromDate');
         $toDate = $request->input('toDate');

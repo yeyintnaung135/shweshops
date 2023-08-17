@@ -11,6 +11,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\Trait\ShopTrait;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
 class CollectionController extends Controller
@@ -24,12 +27,12 @@ class CollectionController extends Controller
         });
     }
 
-    public function index()
+    public function index(): View
     {
         return view('backend.shopowner.item.collection.index');
     }
 
-    public function show(Collection $collection)
+    public function show(Collection $collection): View
     {
         $collectionItems = Item::where([
             ['shop_id', $this->getShopId()],
@@ -42,12 +45,12 @@ class CollectionController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('backend.shopowner.item.collection.create');
     }
 
-    public function store(StoreCollectionRequest $request)
+    public function store(StoreCollectionRequest $request): RedirectResponse
     {
         $collection = $request->validated();
 
@@ -59,19 +62,19 @@ class CollectionController extends Controller
     }
 
 
-    public function edit(Collection $collection)
+    public function edit(Collection $collection): View
     {
         return view('backend.shopowner.item.collection.edit', ['collection' => $collection]);
     }
 
-    public function update(UpdateCollectionRequest $request, Collection $collection)
+    public function update(UpdateCollectionRequest $request, Collection $collection): RedirectResponse
     {
         return $collection->update($request->validated())
             ? redirect()->route('backside.shop_owner.collections.index')->with('message', 'Your collection was successfully updated')
             : redirect()->back()->with('message', 'Failed to update collection');
     }
 
-    public function destroy(Collection $collection)
+    public function destroy(Collection $collection): RedirectResponse
     {
         $items = Item::where([
             ['shop_id', $this->getShopId()],
@@ -91,7 +94,7 @@ class CollectionController extends Controller
             ->with('message', 'Failed to update collection');
     }
 
-    public function collection_items(Collection $collection)
+    public function collection_items(Collection $collection): View
     {
         $collectionItems = Item::where([
             ['shop_id', $this->getShopId()],
@@ -104,7 +107,7 @@ class CollectionController extends Controller
         ]);
     }
 
-    public function add_item(Collection $collection, Request $request)
+    public function add_item(Collection $collection, Request $request): RedirectResponse
     {
         Item::where([
             ['shop_id', $this->getShopId()],
@@ -116,7 +119,7 @@ class CollectionController extends Controller
         return redirect()->route('backside.shop_owner.collections.show', ['collection' => $collection]);
     }
 
-    public function remove_item(Request $request)
+    public function remove_item(Request $request): RedirectResponse
     {
         $item = Item::where([
             ['shop_id', $this->getShopId()],
@@ -137,7 +140,7 @@ class CollectionController extends Controller
         }
     }
 
-    public function get_collections(Request $request)
+    public function get_collections(Request $request): JsonResponse
     {
         $fromDate = $request->input('fromDate');
         $toDate = $request->input('toDate');
@@ -166,7 +169,7 @@ class CollectionController extends Controller
             ->toJson();
     }
 
-    private function calculate_item_counts($collections)
+    private function calculate_item_counts($collections): array
     {
         $itemCounts = [];
 
@@ -179,7 +182,7 @@ class CollectionController extends Controller
         return $itemCounts;
     }
 
-    public function get_collection_items(Request $request)
+    public function get_collection_items(Request $request): JsonResponse
     {
         $collectionId = $request->input('collection');
         $collectionItems = Item::where([
@@ -201,7 +204,7 @@ class CollectionController extends Controller
             ->make(true);
     }
 
-    public function get_items(Request $request)
+    public function get_items(Request $request): JsonResponse
     {
         $collectionId = $request->input('collection');
         $collectionItems = Item::where([

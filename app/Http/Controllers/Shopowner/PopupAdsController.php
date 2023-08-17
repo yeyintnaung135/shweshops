@@ -11,13 +11,14 @@ use App\Models\Manager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Trait\UserRole;
-
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class PopupAdsController extends Controller
 {
     use UserRole;
 
-    public function main_popup()
+    public function main_popup(): View
     {
         $current_shop = $this->get_shopid();
 
@@ -25,7 +26,7 @@ class PopupAdsController extends Controller
         return view('backend.shopowner.ads.main_popup', ["shop_id" => $current_shop, "popup" => $popup]);
     }
 
-    public function main_popup_upload(Request $request)
+    public function main_popup_upload(Request $request): RedirectResponse
     {
         $current_shop = $this->get_shopid();
 
@@ -61,7 +62,7 @@ class PopupAdsController extends Controller
         return back()->with('error', 'Unexpected error occured');
     }
 
-    public function main_popup_delete()
+    public function main_popup_delete(): RedirectResponse
     {
         $current_shop = $this->get_shopid();
         $video = MainPopup::where('shop_id', $current_shop)->first();

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Support;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ShopOwnerSupportController extends Controller
 {
@@ -15,7 +16,7 @@ class ShopOwnerSupportController extends Controller
     {
         $this->middleware('auth:shop_owners_and_staffs');
     }
-    public function index()
+    public function index(): View
     {
         $data = Support::where('for_what', 'for_so')->limit(6)->get();
         $cats = Catsupport::all();

@@ -12,6 +12,8 @@ use App\Models\Role;
 use App\Models\ShopownerLogActivity;
 use App\Models\ShopOwnersAndStaffs;
 use App\Models\Shops;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +22,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class ManagerController extends Controller
 {
@@ -30,7 +33,8 @@ class ManagerController extends Controller
         $this->middleware('auth:shop_owners_and_staffs');
     }
 
-    public function list() {
+    public function list(): View
+    {
         Gate::authorize('to_create_user', 3);
         $itemlogs = ItemLogActivity::all();
         $backrolelogs = BackroleLogActivity::all();
@@ -38,7 +42,7 @@ class ManagerController extends Controller
         $shopdata = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.manager.list', ['shopowner' => $shopdata, 'itemlogs' => $itemlogs, 'manager' => $this->getuserlistbyrolelevel()]);
     }
-    public function u_product()
+    public function u_product(): View
     {
         Gate::authorize('to_create_user', 3);
 
@@ -49,7 +53,7 @@ class ManagerController extends Controller
         $shopdata = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.activity.user.product', ['shopowner' => $shopdata, 'itemlogs' => $itemlogs, 'manager' => $this->getuserlistbyrolelevel()]);
     }
-    public function u_role()
+    public function u_role(): View
     {
         Gate::authorize('to_create_user', 3);
 
@@ -60,7 +64,7 @@ class ManagerController extends Controller
         $shopdata = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.activity.user.role', ['shopowner' => $shopdata, 'itemlogs' => $itemlogs, 'manager' => $this->getuserlistbyrolelevel()]);
     }
-    public function get_users_activity_log(Request $request)
+    public function get_users_activity_log(Request $request): RedirectResponse
     {
         $shop_id = $this->get_shopid();
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
@@ -84,7 +88,7 @@ class ManagerController extends Controller
     }
 
     // datable for backrole log activity
-    public function get_back_role_activity(Request $request)
+    public function get_back_role_activity(Request $request): RedirectResponse
     {
         $shop_id = $this->get_shopid();
 
@@ -122,13 +126,13 @@ class ManagerController extends Controller
         echo json_encode($detail);
     }
 
-    public function back_role_edit_detail($id)
+    public function back_role_edit_detail($id): View
     {
         $detail_id = BackroleEditdetail::findOrFail($id)->user_id;
         return view('backend.shopowner.manager.editdetail', ['detail_id' => $detail_id]);
     }
 
-    public function get_users(Request $request)
+    public function get_users(Request $request): RedirectResponse
     {
 
         if (Auth::guard('shop_role')->check()) {
@@ -166,7 +170,7 @@ class ManagerController extends Controller
             ->make(true);
     }
 
-    public function create()
+    public function create(): View
     {
         $this->authorize('to_create_user', 3);
 
@@ -187,7 +191,7 @@ class ManagerController extends Controller
         return view('backend.shopowner.manager.create', ['shopowner' => $this->get_currentauthdata(), 'role' => $role]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
 
         $input = $request->except('_token');
@@ -224,7 +228,7 @@ class ManagerController extends Controller
         }
     }
 
-    public function detail($id)
+    public function detail($id): View
     {
         $staffdata = ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->where('id', $id)->first();
         $role_id = $staffdata->role_id;
@@ -236,7 +240,7 @@ class ManagerController extends Controller
         return view('backend.shopowner.manager.detail', ['shopowner' => $this->current_shop_data(), 'role' => $role, 'manager' => $staffdata]);
     }
 
-    public function edit($id)
+    public function edit($id): View
     {
         $role = $this->get_role_list();
         $shop_id = $this->get_shopid();
@@ -247,7 +251,7 @@ class ManagerController extends Controller
         return view('backend.shopowner.manager.edit', ['shopowner' => $this->current_shop_data(), 'role' => $role, 'manager' => $staffdata]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): RedirectResponse
     {
         $shop_id = $this->get_shopid();
 
@@ -460,7 +464,7 @@ class ManagerController extends Controller
         }
     }
 
-    public function remove_user($id)
+    public function remove_user($id): RedirectResponse
     {
         $shop_id = $this->get_shopid();
 
@@ -474,7 +478,7 @@ class ManagerController extends Controller
         return redirect('/backside/shop_owner/users');
     }
 
-    public function trash()
+    public function trash(): View
     {
         if (Auth::guard('shop_role')->check()) {
             $this->role('shop_role');
@@ -486,7 +490,7 @@ class ManagerController extends Controller
         return view('backend.shopowner.manager.restore_list', ['shopowner' => $this->current_shop_data(), 'manager' => $manager]);
     }
 
-    public function restore($id)
+    public function restore($id): RedirectResponse
     {
 
         $user_url = ShopOwnersAndStaffs::onlyTrashed()->findOrFail($id)->shop_id;

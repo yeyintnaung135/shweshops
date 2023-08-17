@@ -15,7 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Validator;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
@@ -28,7 +28,7 @@ class DiscountController extends Controller
         $this->middleware('auth:shop_owners_and_staffs');
     }
 
-    public function validate_dis($data)
+    public function validate_dis($data): Validator
     {
         $message = [
             'percent.required' => 'Percent တန်ဖိုး ထည့်ပေးရန်',

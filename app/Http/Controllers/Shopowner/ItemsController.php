@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Validator;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
@@ -82,9 +82,9 @@ class ItemsController extends Controller
         return view('backend.shopowner.activity.product.multipercent', ['items' => $items, 'shopowner' => $this->shop_owner]);
     }
 
-    public function get_item_activity_log(Request $request)
+    public function get_item_activity_log(Request $request): JsonResponse
     {
-        if ($request->ajax()) {
+
             $shop_id = $this->get_shopid();
             $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
             $searchByTodate = $request->input('searchByTodate', now());
@@ -98,12 +98,12 @@ class ItemsController extends Controller
             return DataTables::of($query)
                 ->addColumn('created_at_formatted', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
                 ->toJson();
-        }
+
     }
 
-    public function get_multiple_price_activity_log(Request $request)
+    public function get_multiple_price_activity_log(Request $request): JsonResponse
     {
-        if ($request->ajax()) {
+
             $shop_id = $this->get_shopid();
             $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
             $searchByTodate = $request->input('searchByTodate', now());
@@ -121,12 +121,11 @@ class ItemsController extends Controller
             return DataTables::of($query)
                 ->addColumn('created_at_formatted', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
                 ->toJson();
-        }
+
     }
 
-    public function get_multiple_discount_activity_log(Request $request)
+    public function get_multiple_discount_activity_log(Request $request): JsonResponse
     {
-        if ($request->ajax()) {
             $shop_id = $this->get_shopid();
             $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
             $searchByTodate = $request->input('searchByTodate', now());
@@ -146,12 +145,10 @@ class ItemsController extends Controller
             return DataTables::of($query)
                 ->addColumn('created_at_formatted', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
                 ->toJson();
-        }
     }
 
-    public function get_multiple_damage_activity_log(Request $request)
+    public function get_multiple_damage_activity_log(Request $request): JsonResponse
     {
-        if ($request->ajax()) {
             $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
             $searchByTodate = $request->input('searchByTodate', now());
 
@@ -167,13 +164,11 @@ class ItemsController extends Controller
             return DataTables::of($query)
                 ->addColumn('created_at_formatted', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
                 ->toJson();
-        }
     }
     //show create form
     //Process Ajax request
-    public function get_items(Request $request)
+    public function get_items(Request $request): JsonResponse
     {
-        if ($request->ajax()) {
             $shop_id = $this->get_shopid();
             $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
             $searchByTodate = $request->input('searchByTodate', now());
@@ -196,17 +191,15 @@ class ItemsController extends Controller
                 ->addColumn('action', fn($record) => $record->id)
                 ->addColumn('created_at_formatted', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
                 ->toJson();
-        }
     }
 
-    public function export_excel()
+    public function export_excel(): View
     {
         return view('backend.shopowner.item.exportexcel');
     }
 
-    public function post_export_excel(Request $request)
+    public function post_export_excel(Request $request): JsonResponse
     {
-        if ($request->ajax()) {
             $shop_id = $this->get_shopid();
             $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
             $searchByTodate = $request->input('searchByTodate', now());
@@ -228,7 +221,6 @@ class ItemsController extends Controller
                 ->addColumn('action', fn($record) => $record->id)
                 ->addColumn('created_at_formatted', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
                 ->toJson();
-        }
     }
 
     public function get_product_code_by_typing(Request $request)
@@ -420,7 +412,7 @@ class ItemsController extends Controller
     }
 
     //edit but custom upload not from dropzone
-    public function custom_edit(Request $request)
+    public function custom_edit(Request $request): RedirectResponse
     {
         // if (!$this->itisowneritem($request->id)) {
         //      return $this->unauthorize();
@@ -1178,7 +1170,7 @@ class ItemsController extends Controller
         return redirect()->back();
     }
 
-    public function validatorformultiupdate($data): mixed
+    public function validatorformultiupdate($data): Validator
     {
         $message = [
             'price.min' => 'Price သည် 1 ထပ် မငယ်ရ', 'price.numeric' => 'Price သည် number ဖြစ်ရမည်', 'အလျော့တွက်.min' => 'အလျော့တွက်သည် 0 ထပ် မငယ်ရ',
@@ -1283,7 +1275,7 @@ class ItemsController extends Controller
     }
 
     //for detail of specified item
-    public function show($id)
+    public function show($id): View
     {
         $slides = Item::select('photo_one', 'photo_two', 'photo_three', 'photo_four', 'photo_five', 'photo_six', 'photo_seven', 'photo_eight', 'photo_nine', 'photo_ten')->get();
         $photo = Item::where('id', $id)->get(['photo_one', 'photo_two', 'photo_three', 'photo_four', 'photo_five', 'photo_six', 'photo_seven', 'photo_eight', 'photo_nine', 'photo_ten']);
@@ -1337,9 +1329,8 @@ class ItemsController extends Controller
         return view('backend.shopowner.item.trash', ['items' => $items, 'shopowner' => $this->current_shop_data()]);
     }
 
-    public function get_items_trash(Request $request)
+    public function get_items_trash(Request $request): JsonResponse
     {
-        if ($request->ajax()) {
             $shop_id = $this->get_shopid();
             $searchValue = $request->input('searchValue', '');
 
@@ -1357,7 +1348,6 @@ class ItemsController extends Controller
                     return $record->deleted_at ? $record->deleted_at->format('F d, Y ( h:i A )') : '';
                 })
                 ->toJson();
-        }
     }
 
     public function restore($id): RedirectResponse
@@ -1425,7 +1415,7 @@ class ItemsController extends Controller
         }
     }
 
-    public function force_delete($id)
+    public function force_delete($id): RedirectResponse
     {
 
         Item::onlyTrashed()->where('id', $id)->where('shop_id', $this->get_shopid())->forceDelete();
@@ -1459,7 +1449,7 @@ class ItemsController extends Controller
         return redirect()->back();
     }
 
-    public function only_price_update(Request $request)
+    public function only_price_update(Request $request): JsonResponse
     {
 
         $request->validate([

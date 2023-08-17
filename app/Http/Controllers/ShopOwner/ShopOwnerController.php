@@ -22,6 +22,8 @@ use App\Models\ShopOwnerGoldPoint;
 use App\Models\Shops;
 use App\Models\User;
 use App\Models\WishlistClickLog;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -139,14 +141,14 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function product_view()
+    public function product_view(): View
     {
 
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.count.product_view', ['shopowner' => $shopowner]);
     }
 
-    public function unique_product_view()
+    public function unique_product_view(): View
     {
 
         if (count($this->uniqueProductViewCheck($this->get_shopid())) != 0) {
@@ -157,7 +159,7 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function buy_now_click()
+    public function buy_now_click(): View
     {
         if (count($this->buyNowClickViewCheck($this->get_shopid())) != 0) {
             $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -167,7 +169,7 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function unique_add_to_cart_click()
+    public function unique_add_to_cart_click(): View
     {
         if (count($this->uniqueAddToCartViewCheck($this->get_shopid())) != 0) {
             $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -177,7 +179,7 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function unique_whishlist_click()
+    public function unique_whishlist_click(): View
     {
         if (count($this->uniqueWhishlistViewCheck($this->get_shopid())) != 0) {
             $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -187,7 +189,7 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function unique_ads_view()
+    public function unique_ads_view(): View
     {
         if (count($this->uniqueAdsViewCheck($this->get_shopid())) != 0) {
             $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -197,7 +199,7 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function discount_product_view()
+    public function discount_product_view(): View
     {
         if (count($this->uniqueDiscountCheck($this->get_shopid())) != 0) {
             $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -207,9 +209,8 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function get_shop_owner_view(Request $request)
+    public function get_shop_owner_view(Request $request): JsonResponse
     {
-        if ($request->ajax()) {
 
             $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
             $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
@@ -233,12 +234,10 @@ class ShopOwnerController extends Controller
                     return date('F d, Y ( h:i A )', strtotime($record->fulct));
                 })
                 ->toJson();
-        }
     }
 
-    public function get_buy_now_click(Request $request)
+    public function get_buy_now_click(Request $request): JsonResponse
     {
-        if ($request->ajax()) {
             $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
             $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
@@ -268,12 +267,10 @@ class ShopOwnerController extends Controller
                     return date('F d, Y ( h:i A )', strtotime($record->fulct));
                 })
                 ->toJson();
-        }
     }
 
-    public function get_unique_add_to_cart_click(Request $request)
+    public function get_unique_add_to_cart_click(Request $request): JsonResponse
     {
-        if ($request->ajax()) {
             $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
             $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
@@ -303,12 +300,10 @@ class ShopOwnerController extends Controller
                     return date('F d, Y ( h:i A )', strtotime($record->fulct));
                 })
                 ->toJson();
-        }
     }
 
-    public function get_unique_wishlist_click(Request $request)
+    public function get_unique_wishlist_click(Request $request): JsonResponse
     {
-        if ($request->ajax()) {
             $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
             $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
@@ -338,12 +333,10 @@ class ShopOwnerController extends Controller
                     return date('F d, Y ( h:i A )', strtotime($record->fulct));
                 })
                 ->toJson();
-        }
     }
 
-    public function get_unique_ads_view(Request $request)
+    public function get_unique_ads_view(Request $request): JsonResponse
     {
-        if ($request->ajax()) {
             $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
             $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
@@ -374,12 +367,10 @@ class ShopOwnerController extends Controller
                     return date('F d, Y ( h:i A )', strtotime($record->fulct));
                 })
                 ->toJson();
-        }
     }
 
-    public function get_discount_product_view(Request $request)
+    public function get_discount_product_view(Request $request): JsonResponse
     {
-        if ($request->ajax()) {
             $users = ItemLogActivity::where('shop_id', $this->get_shopid())
                 ->whereIn('item_id', Discount::pluck('item_id'))
                 ->orderBy('created_at', 'desc')
@@ -398,10 +389,9 @@ class ShopOwnerController extends Controller
                     return date('F d, Y ( h:i A )', strtotime($user->created_at));
                 })
                 ->toJson();
-        }
     }
 
-    public function unique_get_item_activity_log(Request $request)
+    public function unique_get_item_activity_log(Request $request): JsonResponse
     {
         $shop_id = $this->get_shopid();
 
@@ -435,7 +425,7 @@ class ShopOwnerController extends Controller
             ->make(true);
     }
 
-    public function shop_detail()
+    public function shop_detail(): View
     {
 
         $users_list = $this->getuserlistbyrolelevel();
@@ -567,7 +557,7 @@ class ShopOwnerController extends Controller
      *
      */
 
-    public function add_price()
+    public function add_price(): View
     {
         $goldPoint = GoldPoint::latest()->first();
         return view('backend.shopowner.points.add_price', compact('goldPoint'));

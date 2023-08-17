@@ -11,6 +11,7 @@ use App\Http\Requests\ShopOwner\UpdateEventRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Trait\ShopTrait;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
@@ -36,7 +37,7 @@ class EventController extends Controller
         return view('backend.shopowner.event.index');
     }
 
-    public function create()
+    public function create(): View
     {
         return view('backend.shopowner.event.create');
     }
@@ -139,7 +140,7 @@ class EventController extends Controller
         return redirect()->route('backside.shop_owner.events.index')->with('message', 'event deleted successfully.');
     }
 
-    public function get_events(Request $request)
+    public function get_events(Request $request): JsonResponse
     {
         $fromDate = $request->input('fromDate');
         $toDate = $request->input('toDate');
