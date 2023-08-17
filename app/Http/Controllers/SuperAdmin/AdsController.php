@@ -69,9 +69,10 @@ class AdsController extends Controller
         $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
-        $recordsQuery = Ads::select('ads.*')
+        $recordsQuery = Ads::select('id', 'name', 'image', 'start', 'end', 'created_at', 'deleted_at', 'video')
             ->withTrashed()
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate))
             ->orderBy('created_at', 'desc');
 
         return DataTables::of($recordsQuery)
@@ -84,11 +85,11 @@ class AdsController extends Controller
             ->addColumn('deleted_at', function ($record) {
                 return $record->deleted_at ? '<span class="text-danger">' . $record->deleted_at->diffForHumans() . '</span>' : '';
             })
-            ->addColumn('action', function ($record) {
-                return '<a href="' . route('edit_route', $record->id) . '">Edit</a>';
-                // Add more action links as needed
+            ->addColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
-            ->rawColumns(['deleted_at', 'action'])
+            ->addColumn('action', fn($record) => $record->id)
+            ->rawColumns(['deleted_at'])
             ->make(true);
     }
 

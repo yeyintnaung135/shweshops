@@ -15,8 +15,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Validator;
 use Illuminate\View\View;
+use Yajra\DataTables\DataTables;
 
 class DiscountController extends Controller
 {
@@ -27,7 +28,7 @@ class DiscountController extends Controller
         $this->middleware('auth:shop_owners_and_staffs');
     }
 
-    public function validate_dis($data)
+    public function validate_dis($data): Validator
     {
         $message = [
             'percent.required' => 'Percent တန်ဖိုး ထည့်ပေးရန်',
@@ -84,66 +85,41 @@ class DiscountController extends Controller
 
     public function get_discount_items(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        if ($request->ajax()) {
+            $shop_id = $this->get_shopid();
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+            $records = Discount::join('items', 'discount.item_id', '=', 'items.id')
+                ->select('discount.*', 'items.product_code', 'items.default_photo', 'items.price', 'items.min_price', 'items.max_price')
+                ->where('discount.shop_id', $shop_id)
+                ->where('items.product_code', 'like', '%' . $request->input('search.value') . '%')
+                ->orderBy($request->input('columns.' . $request->input('order.0.column') . '.data'), $request->input('order.0.dir'))
+                ->orderBy('created_at', 'desc')
+                ->get();
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
+            $data_arr = [];
+            foreach ($records as $record) {
+                $old_price = ($record->price != 0) ? $record->price : ($record->min_price . '-' . $record->max_price);
+                $new_price = ($record->discount_price != 0) ? $record->discount_price : ($record->discount_min . '-' . $record->discount_max);
 
-        $shop_id = 1;
-        if (Auth::guard('shop_owner')->check()) {
-            $shop_id = Auth::guard('shop_owner')->user()->id;
-        } else {
-            $shop_id = Auth::guard('shop_role')->user()->shop_id;
+                $data_arr[] = [
+                    "id" => $record->id,
+                    "product_code" => $record->product_code,
+                    "image" => $record->default_photo,
+                    "old_price" => $old_price,
+                    "new_price" => $new_price,
+                    "date_time" => $record->created_at,
+                    "unset_discount" => $record->id,
+                    "item_id" => $record->item_id
+                ];
+            }
+
+            return DataTables::of($data_arr)
+                    ->addColumn('action', function ($record) {
+                        return '<a href="#">Edit</a>'; // Add your action link here
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
         }
-
-        $totalRecords = discount::select('count(*) as allcount')
-            ->join('items', 'discount.item_id', '=', 'items.id')
-            ->where('discount.shop_id', $shop_id)
-            ->where('items.product_code', 'like', '%' . $searchValue . '%')
-            ->count();
-        $totalRecordswithFilter = $totalRecords;
-
-        $records = discount::orderBy($columnName, $columnSortOrder)
-            ->join('items', 'discount.item_id', '=', 'items.id')
-            ->where('discount.shop_id', $shop_id)
-            ->where('items.product_code', 'like', '%' . $searchValue . '%')
-            ->select('discount.*', 'items.product_code', 'items.default_photo', 'items.price', 'items.min_price', 'items.max_price')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "id" => $record->id,
-                "product_code" => $record->product_code,
-                "image" => $record->default_photo,
-                "old_price" => ($record->price != 0) ? $record->price : ($record->min_price . '-' . $record->max_price),
-                "new_price" => ($record->discount_price != 0) ? $record->discount_price : ($record->discount_min . '-' . $record->discount_max),
-                "date_time" => $record->created_at,
-                "unset_discount" => $record->id,
-                "item_id" => $record->item_id
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
     }
 
     public function discount($id): View

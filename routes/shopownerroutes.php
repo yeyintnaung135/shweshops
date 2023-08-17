@@ -53,7 +53,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     Route::resource('/items', ItemsController::class);
 
     Route::get('/get_item_activity_log', [ItemsController::class, 'get_item_activity_log'])->name('items.getitems_activity_log');
-    Route::get('/unique_get_item_activity_log', [ShopOwnerController::class, 'uniquegetItemActivityLog'])->name('items.uniquegetitems_activity_log');
+    Route::get('/unique_get_item_activity_log', [ShopOwnerController::class, 'unique_get_item_activity_log'])->name('items.uniquegetitems_activity_log');
     Route::get('/get_multiple_price_activity_log', [ItemsController::class, 'get_multiple_price_activity_log'])->name('items.getmultiple_price_activity_log');
     Route::get('/get_multiple_discount_activity_log', [ItemsController::class, 'get_multiple_discount_activity_log'])->name('items.getmultiple_discount_activity_log');
     Route::get('/get_multiple_damage_activity_log', [ItemsController::class, 'get_multiple_damage_activity_log'])->name('items.getmultiple_damage_activity_log');
@@ -107,21 +107,21 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     Route::get('/users/restore/{id}', [ManagerController::class, 'restore'])->name('managers.restore');
 
     Route::get('/detail', [ShopOwnerController::class, 'detail'])->name('detail');
-    Route::get('/detail/shop_view', [ShopOwnerController::class, 'shopview'])->name('detail.shop_view');
-    Route::get('/detail/product_view', [ShopOwnerController::class, 'productview'])->name('detail.product_view');
-    Route::get('/detail/buy_now_click', [ShopOwnerController::class, 'buynowclick'])->name('detail.buy_now_click');
-    Route::get('/detail/unique_add_to_cart_click', [ShopOwnerController::class, 'uniqueaddtocartclick'])->name('detail.unique_add_to_cart_click');
-    Route::get('/detail/unique_whishlist_click', [ShopOwnerController::class, 'uniquewhishlistclick'])->name('detail.unique_whishlist_click');
-    Route::get('/detail/unique_ads_view', [ShopOwnerController::class, 'uniqueadsview'])->name('detail.unique_ads_view');
-    Route::get('/detail/unique_product_view', [ShopOwnerController::class, 'uniqueproductview'])->name('detail.unique_product_view');
-    Route::get('/detail/product_discount_view', [ShopOwnerController::class, 'discountproductview'])->name('detail.product_discount_view');
-    Route::get('/detail/get_shop_view', [ShopOwnerController::class, 'getshopownerview'])->name('detail.get_shop_view');
-    Route::get('/detail/get_buy_now_click', [ShopOwnerController::class, 'getbuynowclick'])->name('detail.get_buy_now_click');
-    Route::get('/detail/get_unique_add_to_cart_click', [ShopOwnerController::class, 'getuniqueaddtocartclick'])->name('detail.get_unique_add_to_cart_click');
-    Route::get('/detail/get_unique_whishlist_click', [ShopOwnerController::class, 'getuniquewhishlistclick'])->name('detail.get_unique_whishlist_click');
-    Route::get('/detail/get_unique_ads_view', [ShopOwnerController::class, 'getuniqueadsview'])->name('detail.get_unique_ads_view');
-    Route::get('/detail/get_discount_product_view', [ShopOwnerController::class, 'getdiscountproductview'])->name('detail.get_discount_product_view');
-    Route::get('/shop', [ShopOwnerController::class, 'shopdetail'])->name('shop_detail');
+    Route::get('/detail/shop_view', [ShopOwnerController::class, 'shop_view'])->name('detail.shop_view');
+    Route::get('/detail/product_view', [ShopOwnerController::class, 'product_view'])->name('detail.product_view');
+    Route::get('/detail/buy_now_click', [ShopOwnerController::class, 'buy_now_click'])->name('detail.buy_now_click');
+    Route::get('/detail/unique_add_to_cart_click', [ShopOwnerController::class, 'unique_add_to_cart_click'])->name('detail.unique_add_to_cart_click');
+    Route::get('/detail/unique_whishlist_click', [ShopOwnerController::class, 'unique_whish_list_click'])->name('detail.unique_whishlist_click');
+    Route::get('/detail/unique_ads_view', [ShopOwnerController::class, 'unique_ads_view'])->name('detail.unique_ads_view');
+    Route::get('/detail/unique_product_view', [ShopOwnerController::class, 'unique_product_view'])->name('detail.unique_product_view');
+    Route::get('/detail/product_discount_view', [ShopOwnerController::class, 'discount_product_view'])->name('detail.product_discount_view');
+    Route::get('/detail/get_shop_view', [ShopOwnerController::class, 'get_shop_owner_view'])->name('detail.get_shop_view');
+    Route::get('/detail/get_buy_now_click', [ShopOwnerController::class, 'get_buy_now_click'])->name('detail.get_buy_now_click');
+    Route::get('/detail/get_unique_add_to_cart_click', [ShopOwnerController::class, 'get_unique_add_to_cart_click'])->name('detail.get_unique_add_to_cart_click');
+    Route::get('/detail/get_unique_wishlist_click', [ShopOwnerController::class, 'get_unique_whish_list_click'])->name('detail.get_unique_wishlist_click');
+    Route::get('/detail/get_unique_ads_view', [ShopOwnerController::class, 'get_unique_ads_view'])->name('detail.get_unique_ads_view');
+    Route::get('/detail/get_discount_product_view', [ShopOwnerController::class, 'get_discount_product_view'])->name('detail.get_discount_product_view');
+    Route::get('/shop', [ShopOwnerController::class, 'shop_detail'])->name('shop_detail');
     Route::put('/detail', [ItemsController::class, 'from_detail_edit'])->name('detail.update');
 
     Route::get('/edit', [ShopOwnerController::class, 'edit'])->name('edit');

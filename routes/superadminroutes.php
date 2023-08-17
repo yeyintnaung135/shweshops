@@ -104,7 +104,7 @@ Route::group(['prefix' => 'backside/super_admin', 'as' => 'backside.super_admin.
     Route::get('login', [SuperadminLoginController::class, 'loginform']);
     Route::post('login', [SuperadminLoginController::class, 'login'])->name('login');
 
-    Route::post('logout', [SuperadminLoginController::class, 'logout']);
+    Route::post('logout', [SuperadminLoginController::class, 'logout'])->name('logout');
     Route::get('items/getitemsajax', [ItemsController::class, 'get_items_ajax']);
     Route::post('items/total_create_count', [ItemsController::class, 'total_create_count']);
     Route::get('items/all', [ItemsController::class, 'all']);

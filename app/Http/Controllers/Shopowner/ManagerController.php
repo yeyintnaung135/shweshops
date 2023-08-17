@@ -12,6 +12,8 @@ use App\Models\Role;
 use App\Models\ShopownerLogActivity;
 use App\Models\ShopOwnersAndStaffs;
 use App\Models\Shops;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +22,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class ManagerController extends Controller
 {
@@ -30,7 +33,8 @@ class ManagerController extends Controller
         $this->middleware('auth:shop_owners_and_staffs');
     }
 
-    public function list() {
+    public function list(): View
+    {
         Gate::authorize('to_create_user', 3);
         $itemlogs = ItemLogActivity::all();
         $backrolelogs = BackroleLogActivity::all();
@@ -38,7 +42,7 @@ class ManagerController extends Controller
         $shopdata = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.manager.list', ['shopowner' => $shopdata, 'itemlogs' => $itemlogs, 'manager' => $this->getuserlistbyrolelevel()]);
     }
-    public function u_product()
+    public function u_product(): View
     {
         Gate::authorize('to_create_user', 3);
 
@@ -49,7 +53,7 @@ class ManagerController extends Controller
         $shopdata = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.activity.user.product', ['shopowner' => $shopdata, 'itemlogs' => $itemlogs, 'manager' => $this->getuserlistbyrolelevel()]);
     }
-    public function u_role()
+    public function u_role(): View
     {
         Gate::authorize('to_create_user', 3);
 
@@ -60,7 +64,7 @@ class ManagerController extends Controller
         $shopdata = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.activity.user.role', ['shopowner' => $shopdata, 'itemlogs' => $itemlogs, 'manager' => $this->getuserlistbyrolelevel()]);
     }
-    public function get_users_activity_log(Request $request)
+    public function get_users_activity_log(Request $request): RedirectResponse
     {
         $shop_id = $this->get_shopid();
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
@@ -84,85 +88,27 @@ class ManagerController extends Controller
     }
 
     // datable for backrole log activity
-    public function get_back_role_activity(Request $request)
+    public function get_back_role_activity(Request $request): RedirectResponse
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
-
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
-
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
-        }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-
         $shop_id = $this->get_shopid();
 
-        $totalRecords = BackroleLogActivity::select('count(*) as allcount')
-            ->where('shop_id', $shop_id)
-            ->where(function ($query) use ($searchValue) {
-                $query->where('user_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_role', 'like', '%' . $searchValue . '%')
-                    ->orWhere('action', 'like', '%' . $searchValue . '%')
-                    ->orWhere('name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('role', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->count();
-        $totalRecordswithFilter = $totalRecords;
+    $query = BackroleLogActivity::query()
+        ->where('shop_id', $shop_id)
+        ->whereBetween('created_at', [
+            $request->input('searchByFromdate', '0-0-0 00:00:00'),
+            $request->input('searchByTodate', Carbon::now())
+        ]);
 
-        $records = BackroleLogActivity::orderBy($columnName, $columnSortOrder)
-            ->orderBy('created_at', 'desc')
-            ->where('shop_id', $shop_id)
-            ->where(function ($query) use ($searchValue) {
-                $query->where('user_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('user_role', 'like', '%' . $searchValue . '%')
-                    ->orWhere('action', 'like', '%' . $searchValue . '%')
-                    ->orWhere('name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('role', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->select('backrole_log_activities.*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
+    return DataTables::of($query)
+    ->addColumn('created_at_formatted', function ($record) {
+        return $record->created_at->format('d-m-Y H:i:s');
+    })
+    ->addColumn('btn', function ($record) {
+        return $record->id;
+    })
+    ->rawColumns(['created_at_formatted', 'action', 'btn'])
+    ->make(true);
 
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "id" => $record->id,
-                "user_name" => $record->user_name,
-                "user_role" => $record->user_role,
-                "action" => $record->action,
-                "name" => $record->name,
-                "role" => $record->role,
-                "btn" => $record->id,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->created_at)),
-                // "created_at" => $record->created_at,
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
     }
 
     public function get_back_role_activity_detail(Request $request)
@@ -180,80 +126,51 @@ class ManagerController extends Controller
         echo json_encode($detail);
     }
 
-    public function back_role_edit_detail($id)
+    public function back_role_edit_detail($id): View
     {
         $detail_id = BackroleEditdetail::findOrFail($id)->user_id;
         return view('backend.shopowner.manager.editdetail', ['detail_id' => $detail_id]);
     }
 
-    public function get_users(Request $request)
+    public function get_users(Request $request): RedirectResponse
     {
 
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
-
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
-
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
         if (Auth::guard('shop_role')->check()) {
-            $users = ShopOwnersAndStaffs::orderBy($columnName, $columnSortOrder)
+            $query = ShopOwnersAndStaffs::query()
+                ->orderBy($request->input('columns')[0]['data'], $request->input('order')[0]['dir'])
                 ->where('shop_id', Auth::user()->role_id)
                 ->whereIn('role_id', [3])
-                ->where('name', 'like', '%' . $searchValue . '%')
-                ->orWhere('phone', 'like', '%' . $searchValue . '%')
-                ->select('manager.*')
-                ->skip($start)
-                ->take($rowperpage)
-                ->orderBy('created_at', 'desc')
-                ->get();
+                ->where(function ($query) use ($request) {
+                    $searchValue = $request->input('search.value', '');
+                    $query->where('name', 'like', '%' . $searchValue . '%')
+                        ->orWhere('phone', 'like', '%' . $searchValue . '%');
+                });
         } else {
             $this->role('shop_owner');
-            $users = ShopOwnersAndStaffs::orderBy($columnName, $columnSortOrder)
+            $query = ShopOwnersAndStaffs::query()
+                ->orderBy($request->input('columns')[0]['data'], $request->input('order')[0]['dir'])
                 ->where('shop_id', $this->role)
-                ->where('name', 'like', '%' . $searchValue . '%')
-                ->orWhere('phone', 'like', '%' . $searchValue . '%')
-                ->select('manager.*')
-                ->skip($start)
-                ->take($rowperpage)
-                ->get();
-            // $shopowner = $this->current_shop_data();
-            // $users = $role_users;
+                ->where(function ($query) use ($request) {
+                    $searchValue = $request->input('search.value', '');
+                    $query->where('name', 'like', '%' . $searchValue . '%')
+                        ->orWhere('phone', 'like', '%' . $searchValue . '%');
+                });
         }
 
-        $totalRecords = count($users);
-        $totalRecordswithFilter = count($users);
-
-        $data_arr = array();
-
-        foreach ($users as $user) {
-            $data_arr[] = array(
-                "id" => $user->id,
-                "name" => $user->name,
-                "phone" => $user->phone,
-                "role" => $user->role->name,
-                "action" => $user->id,
-                "created_at" => $user->created_at,
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+        return DataTables::of($query)
+            ->addColumn('action', function ($user) {
+                return $user->id;
+            })
+            ->addColumn('role_name', function ($user) {
+                return $user->role->name;
+            })
+            ->addColumn('created_at_formatted', function ($user) {
+                return $user->created_at->format('Y-m-d H:i:s');
+            })
+            ->make(true);
     }
 
-    public function create()
+    public function create(): View
     {
         $this->authorize('to_create_user', 3);
 
@@ -274,7 +191,7 @@ class ManagerController extends Controller
         return view('backend.shopowner.manager.create', ['shopowner' => $this->get_currentauthdata(), 'role' => $role]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
 
         $input = $request->except('_token');
@@ -311,7 +228,7 @@ class ManagerController extends Controller
         }
     }
 
-    public function detail($id)
+    public function detail($id): View
     {
         $staffdata = ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->where('id', $id)->first();
         $role_id = $staffdata->role_id;
@@ -323,7 +240,7 @@ class ManagerController extends Controller
         return view('backend.shopowner.manager.detail', ['shopowner' => $this->current_shop_data(), 'role' => $role, 'manager' => $staffdata]);
     }
 
-    public function edit($id)
+    public function edit($id): View
     {
         $role = $this->get_role_list();
         $shop_id = $this->get_shopid();
@@ -334,7 +251,7 @@ class ManagerController extends Controller
         return view('backend.shopowner.manager.edit', ['shopowner' => $this->current_shop_data(), 'role' => $role, 'manager' => $staffdata]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): RedirectResponse
     {
         $shop_id = $this->get_shopid();
 
@@ -547,7 +464,7 @@ class ManagerController extends Controller
         }
     }
 
-    public function remove_user($id)
+    public function remove_user($id): RedirectResponse
     {
         $shop_id = $this->get_shopid();
 
@@ -561,7 +478,7 @@ class ManagerController extends Controller
         return redirect('/backside/shop_owner/users');
     }
 
-    public function trash()
+    public function trash(): View
     {
         if (Auth::guard('shop_role')->check()) {
             $this->role('shop_role');
@@ -573,7 +490,7 @@ class ManagerController extends Controller
         return view('backend.shopowner.manager.restore_list', ['shopowner' => $this->current_shop_data(), 'manager' => $manager]);
     }
 
-    public function restore($id)
+    public function restore($id): RedirectResponse
     {
 
         $user_url = ShopOwnersAndStaffs::onlyTrashed()->findOrFail($id)->shop_id;

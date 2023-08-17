@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Js;
 use Illuminate\View\View;
+use Yajra\DataTables\DataTables;
 
 class TemplateController extends Controller
 {
@@ -34,59 +35,27 @@ class TemplateController extends Controller
         return view('backend.shopowner.template.list', ['templates' => $templates, 'shopowner' => $this->current_shop_data()]);
     }
 
-    public function get_template(Request $request)
+    public function get_template(Request $request): JsonResponse
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length");
-
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
-
-        $columnIndex = $columnIndex_arr[0]['column'];
-        $columnName = $columnName_arr[$columnIndex]['data'];
-        $columnSortOrder = $order_arr[0]['dir'];
-        $searchValue = $search_arr['value'];
-
         $shop_id = $this->get_shopid();
 
-        $totalRecords = PercentTemplate::select('count(*) as allcount')
-            ->where('shop_id', $shop_id)
-            ->where('name', 'like', '%' . $searchValue . '%')
-            ->count();
-        $totalRecordswithFilter = $totalRecords;
+    $query = PercentTemplate::query()->where('shop_id', $shop_id);
 
-        $records = PercentTemplate::orderBy($columnName, $columnSortOrder)
-            ->where('shop_id', $shop_id)->orderBy('created_at', 'desc')
-            ->where('name', 'like', '%' . $searchValue . '%')
-            ->select('percent_template.*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            $data_arr[] = array(
-                "id" => $record->id,
-                "name" => $record->name,
-                "undamaged_product" => $record->undamaged_product,
-                "damaged_product" => $record->damaged_product,
-                "valuable_product" => $record->valuable_product,
-                "action" => $record->id,
-                "created_at" => $record->created_at,
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+    return DataTables::of($query)
+        ->filter(function ($query) use ($request) {
+            if ($request->has('search.value') && !empty($request->input('search.value'))) {
+                $query->where('name', 'like', '%' . $request->input('search.value') . '%');
+            }
+        })
+        ->addColumn('action', function ($record) {
+            // Customize your action column here
+            return $record->id;
+        })
+        ->addColumn('created_at', function ($record) {
+            return $record->created_at->format('Y-m-d H:i:s');
+        })
+        ->rawColumns(['action'])
+        ->make(true);
     }
 
     public function create(): View

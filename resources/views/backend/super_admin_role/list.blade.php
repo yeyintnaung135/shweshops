@@ -38,7 +38,7 @@
                                     <div class="card-header">
                                         <div class=" d-flex justify-content-between align-items-center">
                                             <h2><i class="fas fa-users"></i> Admins Lists </h2>
-                                            <a href="{{ route('super_admin_role.create') }}" role="button"
+                                            <a href="{{ route('backside.super_admin.super_admin_role.create') }}" role="button"
                                                 class="btn btn-primary"> Create Admin </a>
                                         </div>
                                     </div>
@@ -129,7 +129,7 @@
         $('#superAdminTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('super_admin_role.getAllAdmins') }}",
+            ajax: "{{ route('backside.super_admin.super_admin_role.getAllAdmins') }}",
 
             columns: [{
                     data: 'id'
@@ -209,7 +209,7 @@
                         if (`{{ Auth::guard('super_admin')->user()->id }}` &&
                             `{{ Auth::guard('super_admin')->user()->id }}` == row.id) {
                             var edit = `
-                  <a href="{{ route('super_admin_role.edit', ':id') }}">
+                  <a href="{{ route('backside.super_admin.super_admin_role.edit', ':id') }}">
                     <i class="fas fa-edit"></i>
                   </a>
                 `;

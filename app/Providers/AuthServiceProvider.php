@@ -43,12 +43,12 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         Gate::define('can_show_dashboard', function () {
-            return 
+            return
             Auth::guard('shop_owners_and_staffs')->user()->role_id == 1 ||
             Auth::guard('shop_owners_and_staffs')->user()->role_id == 2  ||
             Auth::guard('shop_owners_and_staffs')->user()->role_id == 4;
         });
-      
+
         Gate::define('can_use_pos', function () {
             $checkpos = Featuresforshops::where([['shop_id', '=', $this->get_shopid()], ['feature', '=', 'pos']])->first();
             $sitesetting = sitesettings::where('name', 'pos')->first();
@@ -71,7 +71,7 @@ class AuthServiceProvider extends ServiceProvider
         });
         Gate::define('to_create_user',[ShopOwnersAndStaffsPolicy::class, 'create']);
         Gate::define('access-shop-role-premium', function ($user) {
-            $shopRole = Shops::where('id', $user->shop_id)->first();
+            $shopRole = ShopOwnersAndStaffs::where('id', $user->shop_id)->first();
 
             if ($shopRole && $shopRole->premium === 'yes') {
                 return true;

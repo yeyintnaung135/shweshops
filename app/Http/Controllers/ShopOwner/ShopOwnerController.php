@@ -22,11 +22,13 @@ use App\Models\ShopOwnerGoldPoint;
 use App\Models\Shops;
 use App\Models\User;
 use App\Models\WishlistClickLog;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
+use Yajra\DataTables\DataTables;
 
 class ShopOwnerController extends Controller
 {
@@ -139,14 +141,14 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function product_view()
+    public function product_view(): View
     {
 
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.count.product_view', ['shopowner' => $shopowner]);
     }
 
-    public function unique_product_view()
+    public function unique_product_view(): View
     {
 
         if (count($this->uniqueProductViewCheck($this->get_shopid())) != 0) {
@@ -157,7 +159,7 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function buy_now_click()
+    public function buy_now_click(): View
     {
         if (count($this->buyNowClickViewCheck($this->get_shopid())) != 0) {
             $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -167,7 +169,7 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function unique_add_to_cart_click()
+    public function unique_add_to_cart_click(): View
     {
         if (count($this->uniqueAddToCartViewCheck($this->get_shopid())) != 0) {
             $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -177,7 +179,7 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function unique_whishlist_click()
+    public function unique_whishlist_click(): View
     {
         if (count($this->uniqueWhishlistViewCheck($this->get_shopid())) != 0) {
             $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -187,7 +189,7 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function unique_ads_view()
+    public function unique_ads_view(): View
     {
         if (count($this->uniqueAdsViewCheck($this->get_shopid())) != 0) {
             $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -197,7 +199,7 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function discount_product_view()
+    public function discount_product_view(): View
     {
         if (count($this->uniqueDiscountCheck($this->get_shopid())) != 0) {
             $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -207,602 +209,223 @@ class ShopOwnerController extends Controller
         }
     }
 
-    public function get_shop_owner_view(Request $request)
+    public function get_shop_owner_view(Request $request): JsonResponse
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+            $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
+            $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
+            $shop_id = $this->get_shopid();
 
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
+            $query = FrontUserLogs::leftJoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
+                ->leftJoin('shop_owners', 'shop_owners.id', '=', 'front_user_logs.shop_id')
+                ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
+                ->orderBy('front_user_logs.created_at', 'desc')
+                ->where('front_user_logs.status', 'shopdetail')
+                ->where('front_user_logs.shop_id', $shop_id)
+                ->whereBetween('front_user_logs.created_at', [$searchByFromdate, $searchByTodate])
+                ->select('*', 'front_user_logs.created_at as fulct', 'front_user_logs.id as fulid');
 
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
-        }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-
-        $totalRecords = frontuserlogs::select('count(*) as allcount')->where('status', 'shopdetail')->where('shop_id', $this->get_shopid())
-            ->where(function ($query) use ($searchValue) {
-                $query->where('id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('userorguestid', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->count();
-        $totalRecordswithFilter = $totalRecords;
-        if ($columnName == 'created_at') {
-            $columnName = 'front_user_logs.' . $columnName;
-        }
-        if ($columnName == 'user_name') {
-            $columnName = 'users.username';
-        }
-        if ($columnName == 'user_id') {
-            $columnName = 'guestoruserid.user_id';
-        }
-        if ($columnName == 'id') {
-            $columnName = 'front_user_logs.id';
-        }
-        if ($columnName == 'shop') {
-            $columnName = 'front_user_logs.shop_id';
-        }
-        $records = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->leftjoin('shop_owners', 'shop_owners.id', '=', 'front_user_logs.shop_id')->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')->orderBy($columnName, $columnSortOrder)
-            ->orderBy('front_user_logs.created_at', 'desc')->where('front_user_logs.status', 'shopdetail')->where('front_user_logs.shop_id', $this->get_shopid())
-            ->where(function ($query) use ($searchValue) {
-                $query->where('front_user_logs.id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('front_user_logs.userorguestid', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('front_user_logs.created_at', [$searchByFromdate, $searchByTodate])
-            ->select('*', 'front_user_logs.created_at as fulct', 'front_user_logs.id as fulid')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            if ($record->user_id == 0) {
-                $getuser = 'guest';
-                $id = $record->guest_id;
-            } else {
-                $getuser = User::where('id', $record->user_id)->first()->username;
-                $id = $record->user_id;
-            }
-            $data_arr[] = array(
-                "id" => $record->fulid,
-                "shop" => $record->shop_id,
-                "shop_name" => $record->shop_name,
-                "user_id" => $id,
-                "user_name" => $record->username,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->fulct)),
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+            return DataTables::of($query)
+                ->addColumn('user_id', function ($record) {
+                    return $record->user_id == 0 ? $record->guest_id : $record->user_id;
+                })
+                ->addColumn('created_at', function ($record) {
+                    return date('F d, Y ( h:i A )', strtotime($record->fulct));
+                })
+                ->toJson();
     }
 
-    public function get_buy_now_click(Request $request)
+    public function get_buy_now_click(Request $request): JsonResponse
     {
+            $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
+            $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+            $shop_id = $this->get_shopid();
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+            $query = BuyNowClickLog::leftJoin('guestoruserid', 'buy_now_click_logs.userorguestid', '=', 'guestoruserid.id')
+                ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
+                ->leftJoin('items', 'items.id', '=', 'buy_now_click_logs.item_id')
+                ->leftJoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
+                ->orderBy('buy_now_click_logs.created_at', 'desc')
+                ->select('*', 'buy_now_click_logs.created_at as fulct', 'buy_now_click_logs.id as fulid', 'guestoruserid.user_id as goruserid')
+                ->where('items.shop_id', $shop_id)
+                ->whereBetween('buy_now_click_logs.created_at', [$searchByFromdate, $searchByTodate]);
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
-        }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-        if ($columnName == 'created_at') {
-            $columnName = 'buy_now_click_logs.' . $columnName;
-        }
-        if ($columnName == 'user_name') {
-            $columnName = 'users.username';
-        }
-        if ($columnName == 'user_id') {
-            $columnName = 'guestoruserid.user_id';
-        }
-        if ($columnName == 'id') {
-            $columnName = 'buy_now_click_logs.id';
-        }
-        if ($columnName == 'shop') {
-            $columnName = 'buy_now_click_logs.shop_id';
-        }
-        $totalRecords = BuyNowClickLog::select('count(*) as allcount')
-            ->leftjoin('guestoruserid', 'buy_now_click_logs.userorguestid', '=', 'guestoruserid.id')
-
-            ->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')
-            ->leftjoin('items', 'items.id', '=', 'buy_now_click_logs.item_id')
-            ->leftjoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')->where('items.shop_id', $this->get_shopid())
-            ->where(function ($query) use ($searchValue) {
-                $query->where('buy_now_click_logs.id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('users.username', 'like', '%' . $searchValue . '%')
-                    ->orWhere('guestoruserid.user_id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('items.shop_id', 'like', '%' . $searchValue . '%');
-            })
-            ->whereBetween('guestoruserid.created_at', [$searchByFromdate, $searchByTodate])->count();
-        $totalRecordswithFilter = $totalRecords;
-        $records = BuyNowClickLog::leftjoin('guestoruserid', 'buy_now_click_logs.userorguestid', '=', 'guestoruserid.id')
-
-            ->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')
-            ->leftjoin('items', 'items.id', '=', 'buy_now_click_logs.item_id')
-            ->leftjoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
-            ->orderBy($columnName, $columnSortOrder)
-            ->orderBy('buy_now_click_logs.created_at', 'desc')
-            ->select('*', 'buy_now_click_logs.created_at as fulct', 'buy_now_click_logs.id as fulid', 'guestoruserid.user_id as goruserid')
-
-            ->where(function ($query) use ($searchValue) {
-                $query->where('buy_now_click_logs.id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('users.username', 'like', '%' . $searchValue . '%')
-                    ->orWhere('guestoruserid.user_id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('items.shop_id', 'like', '%' . $searchValue . '%');
-            })->where('items.shop_id', $this->get_shopid())
-            ->whereBetween('buy_now_click_logs.created_at', [$searchByFromdate, $searchByTodate])
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            if ($record->goruserid == 0) {
-                $getuser = 'guest';
-                $id = $record->guest_id;
-            } else {
-                $getuser = User::where('id', $record->goruserid)->first()->username;
-                $id = $record->goruserid;
-            }
-            $data_arr[] = array(
-                "id" => $record->fulid,
-                "user_name" => $getuser,
-                "user_id" => $id,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->fulct)),
-                // "deleted_at" => date('F d, Y ( h:i A )',strtotime($record->deleted_at)),
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+            return DataTables::of($query)
+                ->addColumn('user_name', function ($record) {
+                    if ($record->goruserid == 0) {
+                        return 'guest';
+                    } else {
+                        return User::where('id', $record->goruserid)->value('username');
+                    }
+                })
+                ->addColumn('user_id', function ($record) {
+                    return $record->goruserid == 0 ? $record->guest_id : $record->goruserid;
+                })
+                ->addColumn('created_at', function ($record) {
+                    return date('F d, Y ( h:i A )', strtotime($record->fulct));
+                })
+                ->toJson();
     }
 
-    public function get_unique_add_to_cart_click(Request $request)
+    public function get_unique_add_to_cart_click(Request $request): JsonResponse
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+            $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
+            $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+            $shop_id = $this->get_shopid();
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
+            $query = AddToCartClickLog::leftJoin('items', 'items.id', '=', 'add_to_cart_click_logs.item_id')
+                ->leftJoin('guestoruserid', 'add_to_cart_click_logs.userorguestid', '=', 'guestoruserid.id')
+                ->leftJoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
+                ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
+                ->orderBy('add_to_cart_click_logs.created_at', 'desc')
+                ->where('items.shop_id', $shop_id)
+                ->whereBetween('add_to_cart_click_logs.created_at', [$searchByFromdate, $searchByTodate])
+                ->select('*', 'add_to_cart_click_logs.created_at as fulct', 'add_to_cart_click_logs.id as fulid');
 
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
-        }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-        if ($columnName == 'created_at') {
-            $columnName = 'add_to_cart_click_logs.' . $columnName;
-        }
-        if ($columnName == 'user_name') {
-            $columnName = 'users.username';
-        }
-        if ($columnName == 'user_id') {
-            $columnName = 'guestoruserid.user_id';
-        }
-        if ($columnName == 'id') {
-            $columnName = 'add_to_cart_click_logs.id';
-        }
-        if ($columnName == 'shop') {
-            $columnName = 'items.shop_id';
-        }
-        $totalRecords = AddToCartClickLog::leftjoin('items', 'items.id', '=', 'add_to_cart_click_logs.item_id')
-            ->leftjoin('guestoruserid', 'add_to_cart_click_logs.userorguestid', '=', 'guestoruserid.id')
-            ->leftjoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
-            ->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')->select('count(*) as allcount')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('add_to_cart_click_logs.id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('users.username', 'like', '%' . $searchValue . '%')
-                    ->orWhere('guestoruserid.user_id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('items.shop_id', 'like', '%' . $searchValue . '%');
-            })->where('items.shop_id', $this->get_shopid())
-            ->whereBetween('add_to_cart_click_logs.created_at', [$searchByFromdate, $searchByTodate])->count();
-        $totalRecordswithFilter = $totalRecords;
-        $records = AddToCartClickLog::leftjoin('items', 'items.id', '=', 'add_to_cart_click_logs.item_id')
-            ->leftjoin('guestoruserid', 'add_to_cart_click_logs.userorguestid', '=', 'guestoruserid.id')
-            ->leftjoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
-            ->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')
-            ->orderBy($columnName, $columnSortOrder)
-            ->orderBy('add_to_cart_click_logs.created_at', 'desc')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('add_to_cart_click_logs.id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('users.username', 'like', '%' . $searchValue . '%')
-                    ->orWhere('users.id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('items.shop_id', 'like', '%' . $searchValue . '%');
-            })->where('items.shop_id', $this->get_shopid())
-            ->whereBetween('add_to_cart_click_logs.created_at', [$searchByFromdate, $searchByTodate])
-            ->select('*', 'add_to_cart_click_logs.created_at as fulct', 'add_to_cart_click_logs.id as fulid')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            if ($record->user_id == 0) {
-                $getuser = 'guest';
-                $id = $record->guest_id;
-            } else {
-                $getuser = User::where('id', $record->user_id)->first()->username;
-                $id = $record->user_id;
-            }
-            $data_arr[] = array(
-                "id" => $record->fulid,
-                "user_name" => $getuser,
-                "user_id" => $id,
-                "shop_id" => $record->shop_id,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->fulct)),
-                // "deleted_at" => date('F d, Y ( h:i A )',strtotime($record->deleted_at)),
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+            return DataTables::of($query)
+                ->addColumn('user_name', function ($record) {
+                    if ($record->user_id == 0) {
+                        return 'guest';
+                    } else {
+                        return User::where('id', $record->user_id)->value('username');
+                    }
+                })
+                ->addColumn('user_id', function ($record) {
+                    return $record->user_id == 0 ? $record->guest_id : $record->user_id;
+                })
+                ->addColumn('created_at', function ($record) {
+                    return date('F d, Y ( h:i A )', strtotime($record->fulct));
+                })
+                ->toJson();
     }
 
-    public function get_unique_whishlist_click(Request $request)
+    public function get_unique_wishlist_click(Request $request): JsonResponse
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+            $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
+            $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+            $shop_id = $this->get_shopid();
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
+            $query = WhislistClickLog::leftJoin('items', 'items.id', '=', 'whislist_click_logs.item_id')
+                ->leftJoin('guestoruserid', 'whislist_click_logs.userorguestid', '=', 'guestoruserid.id')
+                ->leftJoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
+                ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
+                ->orderBy('whislist_click_logs.created_at', 'desc')
+                ->where('items.shop_id', $shop_id)
+                ->whereBetween('whislist_click_logs.created_at', [$searchByFromdate, $searchByTodate])
+                ->select('*', 'whislist_click_logs.created_at as fulct', 'whislist_click_logs.id as fulid');
 
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
-        }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-        if ($columnName == 'created_at') {
-            $columnName = 'whislist_click_logs.' . $columnName;
-        }
-        if ($columnName == 'user_name') {
-            $columnName = 'users.username';
-        }
-        if ($columnName == 'user_id') {
-            $columnName = 'guestoruserid.user_id';
-        }
-        if ($columnName == 'id') {
-            $columnName = 'whislist_click_logs.id';
-        }
-        if ($columnName == 'shop') {
-            $columnName = 'items.shop_id';
-        }
-        $totalRecords = WhislistClickLog::leftjoin('items', 'items.id', '=', 'whislist_click_logs.item_id')
-            ->leftjoin('guestoruserid', 'whislist_click_logs.userorguestid', '=', 'guestoruserid.id')
-            ->leftjoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
-            ->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')->select('count(*) as allcount')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('whislist_click_logs.id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('users.username', 'like', '%' . $searchValue . '%')
-                    ->orWhere('guestoruserid.user_id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('items.shop_id', 'like', '%' . $searchValue . '%');
-            })->where('items.shop_id', $this->get_shopid())
-            ->whereBetween('whislist_click_logs.created_at', [$searchByFromdate, $searchByTodate])->count();
-        $totalRecordswithFilter = $totalRecords;
-        $records = WhislistClickLog::leftjoin('items', 'items.id', '=', 'whislist_click_logs.item_id')
-            ->leftjoin('guestoruserid', 'whislist_click_logs.userorguestid', '=', 'guestoruserid.id')
-            ->leftjoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
-            ->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')
-            ->orderBy($columnName, $columnSortOrder)
-            ->orderBy('whislist_click_logs.created_at', 'desc')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('whislist_click_logs.id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('users.username', 'like', '%' . $searchValue . '%')
-                    ->orWhere('users.id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('items.shop_id', 'like', '%' . $searchValue . '%');
-            })->where('items.shop_id', $this->get_shopid())
-            ->whereBetween('whislist_click_logs.created_at', [$searchByFromdate, $searchByTodate])
-            ->select('*', 'whislist_click_logs.created_at as fulct', 'whislist_click_logs.id as fulid')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            if ($record->user_id == 0) {
-                $getuser = 'guest';
-                $id = $record->guest_id;
-            } else {
-                $getuser = User::where('id', $record->user_id)->first()->username;
-                $id = $record->user_id;
-            }
-            $data_arr[] = array(
-                "id" => $record->fulid,
-                "user_name" => $getuser,
-                "user_id" => $id,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->fulct)),
-                // "deleted_at" => date('F d, Y ( h:i A )',strtotime($record->deleted_at)),
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+            return DataTables::of($query)
+                ->addColumn('user_name', function ($record) {
+                    if ($record->user_id == 0) {
+                        return 'guest';
+                    } else {
+                        return User::where('id', $record->user_id)->value('username');
+                    }
+                })
+                ->addColumn('user_id', function ($record) {
+                    return $record->user_id == 0 ? $record->guest_id : $record->user_id;
+                })
+                ->addColumn('created_at', function ($record) {
+                    return date('F d, Y ( h:i A )', strtotime($record->fulct));
+                })
+                ->toJson();
     }
 
-    public function get_unique_ads_view(Request $request)
+    public function get_unique_ads_view(Request $request): JsonResponse
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+            $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
+            $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+            $shop_id = $this->get_shopid();
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
+            $query = FrontUserLogs::leftJoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
+                ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
+                ->leftJoin('ads', 'front_user_logs.ads_id', '=', 'ads.id')
+                ->leftJoin('shop_owners', 'shop_owners.id', '=', 'ads.shop_id')
+                ->orderBy('front_user_logs.created_at', 'desc')
+                ->where('front_user_logs.status', 'adsclick')
+                ->where('ads.shop_id', $shop_id)
+                ->whereBetween('front_user_logs.created_at', [$searchByFromdate, $searchByTodate])
+                ->select('*', 'front_user_logs.created_at as fulct', 'front_user_logs.id as fulid');
 
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
-
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
-        }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-        if ($columnName == 'created_at') {
-            $columnName = 'front_user_logs.' . $columnName;
-        }
-        if ($columnName == 'user_name') {
-            $columnName = 'users.username';
-        }
-        if ($columnName == 'user_id') {
-            $columnName = 'guestoruserid.user_id';
-        }
-        if ($columnName == 'id') {
-            $columnName = 'front_user_logs.id';
-        }
-        if ($columnName == 'shop') {
-            $columnName = 'front_user_logs.shop_id';
-        }
-        $totalRecords = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->select('count(*) as allcount')->leftjoin('ads', 'front_user_logs.ads_id', '=', 'ads.id')
-            ->leftjoin('shop_owners', 'shop_owners.id', '=', 'ads.shop_id')
-
-            ->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')->where('status', 'adsclick')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('front_user_logs.id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('front_user_logs.userorguestid', 'like', '%' . $searchValue . '%');
-            })->where('ads.shop_id', $this->get_shopid())
-            ->whereBetween('front_user_logs.created_at', [$searchByFromdate, $searchByTodate])->count();
-        $totalRecordswithFilter = $totalRecords;
-
-        $records = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->leftjoin('users', 'users.id', '=', 'guestoruserid.user_id')
-            ->leftjoin('ads', 'front_user_logs.ads_id', '=', 'ads.id')
-            ->leftjoin('shop_owners', 'shop_owners.id', '=', 'ads.shop_id')
-
-            ->orderBy($columnName, $columnSortOrder)
-            ->orderBy('front_user_logs.created_at', 'desc')->where('front_user_logs.status', 'adsclick')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('front_user_logs.id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('front_user_logs.userorguestid', 'like', '%' . $searchValue . '%');
-            })->where('ads.shop_id', $this->get_shopid())
-            ->whereBetween('front_user_logs.created_at', [$searchByFromdate, $searchByTodate])
-            ->select('*', 'front_user_logs.created_at as fulct', 'front_user_logs.id as fulid')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get();
-
-        $data_arr = array();
-
-        foreach ($records as $record) {
-            if ($record->user_id == 0) {
-                $getuser = 'guest';
-                $id = $record->guest_id;
-            } else {
-                $getuser = User::where('id', $record->user_id)->first()->username;
-                $id = $record->user_id;
-            }
-            $data_arr[] = array(
-                "id" => $record->fulid,
-                "shop" => $record->shop_id,
-                "shop_name" => $record->name,
-                "user_id" => $id,
-                "user_name" => $record->username,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->fulct)),
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+            return DataTables::of($query)
+                ->addColumn('user_name', function ($record) {
+                    if ($record->user_id == 0) {
+                        return 'guest';
+                    } else {
+                        return User::where('id', $record->user_id)->value('username');
+                    }
+                })
+                ->addColumn('user_id', function ($record) {
+                    return $record->user_id == 0 ? $record->guest_id : $record->user_id;
+                })
+                ->addColumn('created_at', function ($record) {
+                    return date('F d, Y ( h:i A )', strtotime($record->fulct));
+                })
+                ->toJson();
     }
 
-    public function get_discount_product_view(Request $request)
+    public function get_discount_product_view(Request $request): JsonResponse
     {
+            $users = ItemLogActivity::where('shop_id', $this->get_shopid())
+                ->whereIn('item_id', Discount::pluck('item_id'))
+                ->orderBy('created_at', 'desc')
+                ->select('item_log_activities.*')
+                ->get()
+                ->unique('guest_id', 'user_id');
 
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
-
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
-
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $totalRecords = ItemLogActivity::select('count(*) as allcount')->where('shop_id', $this->get_shopid())->count();
-        $totalRecordswithFilter = ItemLogActivity::select('count(*) as allcount')->where('shop_id', $this->get_shopid())->count();
-
-        $users = ItemLogActivity::orderBy($columnName, $columnSortOrder)
-            ->where('shop_id', $this->get_shopid())
-            ->whereIn('item_id', Discount::pluck('item_id'))
-            ->orderBy('created_at', 'desc')
-            ->select('item_log_activities.*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get()->unique('guest_id', 'user_id');
-
-        $data_arr = array();
-
-        foreach ($users as $user) {
-            $data_arr[] = array(
-                "id" => $user->id,
-                "user_id" => $user->user_id,
-                "user_name" => $user->user_name,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($user->created_at)),
-            );
-        }
-
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+            return DataTables::of($users)
+                ->addColumn('user_id', function ($user) {
+                    return $user->user_id;
+                })
+                ->addColumn('user_name', function ($user) {
+                    return $user->user_name;
+                })
+                ->addColumn('created_at', function ($user) {
+                    return date('F d, Y ( h:i A )', strtotime($user->created_at));
+                })
+                ->toJson();
     }
 
-    public function unique_get_item_activity_log(Request $request)
+    public function unique_get_item_activity_log(Request $request): JsonResponse
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // total number of rows per page
+        $shop_id = $this->get_shopid();
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+        $query = ItemLogActivity::query()
+            ->where('shop_id', $shop_id);
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
+        $records = $query->select('item_log_activities.*')
+            ->get()
+            ->unique(function ($item) {
+                return $item['user_id'] . '-' . $item['guest_id'];
+            });
 
-        $shop_id = 1;
-
-        if (Auth::guard('shop_owner')->check()) {
-            $shop_id = Auth::guard('shop_owner')->user()->id;
-        } else {
-            $shop_id = Auth::guard('shop_role')->user()->shop_id;
-        }
-
-        $totalRecords = ItemLogActivity::select('count(*) as allcount')->where('shop_id', $shop_id)->count();
-        // $totalRecords = ItemLogActivity::select('count(*) as allcount')->count();
-        $totalRecordswithFilter = ItemLogActivity::select('count(*) as allcount')->where('shop_id', $shop_id)->count();
-        // $totalRecordswithFilter = ItemLogActivity::select('count(*) as allcount')->count();
-
-        $records = ItemLogActivity::orderBy($columnName, $columnSortOrder)
-            ->where('shop_id', $shop_id)->orderBy('created_at', 'desc')
-            // ->where('product_code', 'like', '%' . $searchValue . '%')
-            // ->orWhere('name', 'like', '%' . $searchValue . '%')
-            ->select('item_log_activities.*')
-            ->skip($start)
-            ->take($rowperpage)
-            ->get()->unique('user_id', 'guest_id');
-
-        //    return $records;
-        $data_arr = array();
+        $data_arr = [];
 
         foreach ($records as $record) {
-            $data_arr[] = array(
+            $data_arr[] = [
                 "id" => $record->id,
                 "item_code" => $record->item_code,
                 "name" => $record->name,
                 "user_id" => $record->user_id,
                 "user_name" => $record->user_name,
-                "created_at" => date('F d, Y ( h:i A )', strtotime($record->created_at)),
-            );
+                "created_at" => $record->created_at->format('F d, Y ( h:i A )'),
+            ];
         }
 
-        $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $data_arr,
-        );
-        echo json_encode($response);
+        return DataTables::of($data_arr)
+            ->addColumn('DT_RowId', function ($record) {
+                return $record['id'];
+            })
+            ->rawColumns(['DT_RowId'])
+            ->make(true);
     }
 
-    public function shop_detail()
+    public function shop_detail(): View
     {
 
         $users_list = $this->getuserlistbyrolelevel();
@@ -934,7 +557,7 @@ class ShopOwnerController extends Controller
      *
      */
 
-    public function add_price()
+    public function add_price(): View
     {
         $goldPoint = GoldPoint::latest()->first();
         return view('backend.shopowner.points.add_price', compact('goldPoint'));

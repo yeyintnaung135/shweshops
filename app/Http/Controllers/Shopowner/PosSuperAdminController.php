@@ -14,6 +14,8 @@ use App\Models\Township;
 use App\Providers\RouteServiceProvider;
 use App\Rules\MatchOldPassword;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -22,18 +24,19 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class PosSuperAdminController extends Controller
 {
     //use default auth class
     use AuthenticatesUsers;
-    public function login_form(Request $request)
+    public function login_form(Request $request): View
     {
         return view('auth.pos_super_admin_login');
     }
 
     //if user emial and password is correct loginned
-    public function login(Request $request)
+    public function login(Request $request): mixed
     {
         $data = $request->except('_token');
         $validator = Validator::make($data, [
@@ -53,7 +56,7 @@ class PosSuperAdminController extends Controller
         }
     }
     //if user emial and password is correct loginned
-    public function logout(Request $request)
+    public function logout(Request $request): RedirectResponse
     {
         //custom code by yk
         $guest = Session::get('guest_id');
@@ -70,14 +73,14 @@ class PosSuperAdminController extends Controller
     //end auth
 
     //Shops
-    public function all()
+    public function all(): View
     {
         $shopowner = ShopOwner::all();
         // dd($shopowner);
         $features = FeaturesForShops::all();
         return view('backend.pos_super_admin.shops.all', ['shopowner' => $shopowner, 'features' => $features]);
     }
-    public function get_all_shops(Request $request)
+    public function get_all_shops(Request $request): JsonResponse
     {
         $searchByFromdate = $request->start;
         $searchByTodate = $request->end;
@@ -98,14 +101,14 @@ class PosSuperAdminController extends Controller
             'features' => $features,
         ]);
     }
-    protected function shop_create()
+    protected function shop_create(): View
     {
         $states = State::get();
         return view('backend.pos_super_admin.shops.create', ['states' => $states]);
     }
 
     //getTownship
-    public function get_township(Request $request)
+    public function get_township(Request $request): JsonResponse
     {
         if (is_array($request->id)) {
             $townships = Township::select('id', 'name', 'myan_name')->whereIn('state_id', $request->id)->get();
@@ -114,7 +117,7 @@ class PosSuperAdminController extends Controller
         }
         return response()->json($townships);
     }
-    protected function shop_store(Request $request)
+    protected function shop_store(Request $request): RedirectResponse
     {
         if ($request->premium == 'yes') {
             if (!$request->hasFile('banner')) {
@@ -208,7 +211,7 @@ class PosSuperAdminController extends Controller
             return 'false';
         }
     }
-    public function shop_edit($id)
+    public function shop_edit($id): View
     {
         $states = State::get();
         $shopowner = ShopOwner::findOrFail($id);
@@ -322,7 +325,7 @@ class PosSuperAdminController extends Controller
             return redirect()->route('pos_super_admin_shops.all');
         }
     }
-    public function shop_trash($id)
+    public function shop_trash($id): RedirectResponse
     {
         // dd($id);
         $shop_owner = ShopOwner::findOrFail($id);
@@ -333,7 +336,7 @@ class PosSuperAdminController extends Controller
         $shop_owner->delete();
         return redirect()->route('pos_super_admin_shops.all')->with(['status' => 'success', 'message' => 'Your Shop was successfully Deleted']);
     }
-    public function shop_show($id)
+    public function shop_show($id): View
     {
         $shop = ShopOwner::findOrFail($id);
         $all = CountSetting::where('shop_id', $shop->id)->where('name', 'all')->get();
@@ -369,15 +372,16 @@ class PosSuperAdminController extends Controller
     //End Shops
 
     //Admins
-    public function list() {
+    public function list(): View
+    {
         $super_admin = PosSuperAdmin::all();
         return view('backend.pos_super_admin.list', ['super_admin' => $super_admin]);
     }
-    public function create()
+    public function create(): View
     {
         return view('backend.pos_super_admin.create');
     }
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
 
         $data = $request->except('_token');
@@ -399,14 +403,14 @@ class PosSuperAdminController extends Controller
 
         return redirect()->route('pos_super_admin_role.list')->with(['status' => 'success', 'message' => 'Sub Admin was successfully created']);
     }
-    public function edit($id)
+    public function edit($id): View
     {
 
         $super_admin = PosSuperAdmin::findOrFail($id);
         return view('backend.pos_super_admin.edit', ['super_admin' => $super_admin]);
 
     }
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): RedirectResponse
     {
 
         $admin = PosSuperAdmin::findOrFail($id);
@@ -440,14 +444,14 @@ class PosSuperAdminController extends Controller
             return redirect()->route('pos_super_admin_role.list');
         }
     }
-    public function delete(Request $request, $id)
+    public function delete(Request $request, $id): RedirectResponse
     {
         PosSuperAdmin::find($id)->delete();
         return redirect()->route('pos_super_admin_role.list')->with(['status' => 'success', 'message' => 'Sub Admin was successfully deleted']);
     }
     //end admins
 
-    public function get_dashboard()
+    public function get_dashboard(): View
     {
         return view('backend.pos_super_admin.dashboard');
     }

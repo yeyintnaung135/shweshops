@@ -128,14 +128,14 @@
                 },
 
                 {
-                    data: 'image',
+                    data: 'default_photo',
                     render: function(data, type) {
                         const image = `<img src= "{{ filedopath('/items/' . '${data}') }}"/>`;
                         return image;
                     }
                 },
                 {
-                    data: 'price'
+                    data: 'price_formatted'
                 },
                 {
                     data: 'action',
@@ -163,56 +163,16 @@
                     }
                 },
                 {
-                    data: 'deleted_at'
+                    data: 'deleted_at_formatted'
                 }
 
             ],
-            responsive: true,
-            lengthChange: true,
-            autoWidth: false,
-            paging: true,
-            dom: 'Blfrtip',
-            buttons: ["copy", "csv", "excel", "pdf", "print"],
-            columnDefs: [{
-                    responsivePriority: 0,
-                    targets: 0
-                },
-                {
-                    responsivePriority: 1,
-                    targets: 1
-                },
-                {
-                    responsivePriority: 2,
-                    targets: 2
-                },
-                {
-                    responsivePriority: 3,
-                    targets: 3
-                },
-                {
-                    'targets': [2, 4],
-                    'orderable': false,
-                },
-                {
-                    'targets': [5],
-                    'visible': false,
-                    'searchable': false,
-                },
+            dom: 'lBfrtip',
+            "responsive": true,
+            "autoWidth": false,
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
             ],
-            language: {
-                "search": '<i class="fa-solid fa-search sn-search-icon" style="left: 12px;"></i>',
-                "searchPlaceholder": 'Search...',
-                paginate: {
-                    next: '<i class="fa fa-angle-right"></i>', // or '→'
-                    previous: '<i class="fa fa-angle-left"></i>' // or '←'
-                }
-            },
-
-
-            "order": [
-                [5, "desc"]
-            ],
-
         });
 
 

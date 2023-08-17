@@ -4,11 +4,12 @@ namespace App\Http\Controllers\ShopOwner;
 
 use App\Models\AppFile;
 use App\Http\Controllers\Controller;
+use Illuminate\View\View;
 
 class AppDownloadController extends Controller
 {
     //NOTE return view for android apk
-    public function android()
+    public function android(): View
     {
         $appFile = AppFile::where('user_type', 'Shop User')
             ->where('operating_system', 'Android')

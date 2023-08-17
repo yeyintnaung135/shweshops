@@ -369,7 +369,7 @@
                     },
                     {
 
-                        data: 'image',
+                        data: 'default_photo',
                         render: function(data, type) {
                             const image = `<img src= "{{ url('images/items/' . '${data}') }}"/>`;
                             return image;
@@ -379,7 +379,7 @@
                         data: 'product_code'
                     },
                     {
-                        data: 'price',
+                        data: 'price_formatted',
 
 
                     },
@@ -397,78 +397,16 @@
                         }
                     },
                     {
-                        data: 'created_at'
+                        data: 'created_at_formatted'
                     }
 
                 ],
-
-                responsive: true,
-                lengthChange: true,
-                autoWidth: false,
-                paging: true,
-                dom: 'Blfrtip',
+                dom: 'lBfrtip',
+                "responsive": true,
+                "autoWidth": false,
                 buttons: [
-                    'copy',
-                    'csv',
-                    'excel',
-                    'pdf',
-                    {
-                        extend: 'print',
-                        text: 'Print all (not just selected)',
-                        exportOptions: {
-                            modifier: {
-                                selected: null
-                            }
-                        }
-                    }
+                    'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
-                select: true,
-                columnDefs: [{
-                        responsivePriority: 1,
-                        targets: 0
-                    },
-                    {
-                        responsivePriority: 2,
-                        targets: 2
-                    },
-                    {
-                        responsivePriority: 3,
-                        targets: 3
-                    },
-                    {
-                        responsivePriority: 4,
-                        targets: 4
-                    },
-                    {
-                        'targets': [0, 2, 5],
-                        'orderable': false,
-                    },
-                    {
-                        'orderable': false,
-                        'className': 'select-checkbox',
-                        'targets': 2
-                    },
-                    {
-
-                        'targets': [6],
-                        'visible': false,
-                        'searchable': false,
-                    }
-                ],
-                language: {
-                    "search": '<i class="fa-solid fa-search"></i>',
-                    "searchPlaceholder": 'Search...',
-                    paginate: {
-                        next: '<i class="fa fa-angle-right"></i>', // or '→'
-                        previous: '<i class="fa fa-angle-left"></i>' // or '←'
-                    }
-                },
-
-
-                "order": [
-                    [6, "desc"]
-                ],
-
             });
 
             $(".itemdatepicker").datepicker({

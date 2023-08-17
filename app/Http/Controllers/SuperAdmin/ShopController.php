@@ -18,7 +18,6 @@ use App\Models\PremiumTemplate;
 use App\Models\ShopBanner;
 use App\Models\ShopDirectory;
 use App\Models\Shops;
-use App\Models\Shops;
 use App\Models\State;
 use App\Models\SuperAdminLogActivity;
 use App\Models\User;
@@ -51,7 +50,7 @@ class ShopController extends Controller
      * @var array
      */
 
-    public function show_owner_using_chat():View
+    public function show_owner_using_chat(): View
     {
 
         $shopowner_only_count = Messages::where('from_role', 'shopowner')->groupBy('message_shop_id')->get();
@@ -59,7 +58,7 @@ class ShopController extends Controller
     }
 
     // NOTE : This method has a model which uses MongoDB
-    public function show_owner_using_chat_all(Request $request):mixed
+    public function show_owner_using_chat_all(Request $request): mixed
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();
@@ -98,7 +97,7 @@ class ShopController extends Controller
         return DataTables::of(collect($data_arr))->make(true);
     }
 
-    public function show_owner_using_chat_detail($id):View
+    public function show_owner_using_chat_detail($id): View
     {
         $get_message_shops = Messages::where('message_shop_id', (int) $id)
             ->groupBy('message_user_id')
@@ -131,7 +130,7 @@ class ShopController extends Controller
         return new LengthAwarePaginator($messages->forPage($page, $perPage), $messages->count(), $perPage, $page, ['path' => Paginator::resolveCurrentPath()]);
     }
 
-    public function shop_owner_chat_product_code_search(Request $request):View
+    public function shop_owner_chat_product_code_search(Request $request): View
     {
         // return $request;
         // return Messages::where('message_shop_id',(int)$request->id)->get();
@@ -173,7 +172,7 @@ class ShopController extends Controller
  * @var array
  */
 
-    public function all():View
+    public function all(): View
     {
         $shopowner = Shops::all();
         return view('backend.super_admin.shops.all', ['shopowner' => $shopowner]);
@@ -182,7 +181,7 @@ class ShopController extends Controller
     /**
      * super_admin\shops\trash.blade.php
      */
-    public function get_all_trash_shop(Request $request):mixed
+    public function get_all_trash_shop(Request $request): mixed
     {
         $recordsQuery = Shops::where('deleted_at', '!=', null)->onlyTrashed()->orderBy('created_at', 'desc');
 
@@ -245,7 +244,7 @@ class ShopController extends Controller
     }
 
 // datable for shop log activity
-    public function get_shop_activity(Request $request):mixed
+    public function get_shop_activity(Request $request): mixed
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();
@@ -262,7 +261,7 @@ class ShopController extends Controller
             ->make(true);
     }
 
-    public function show($id):View
+    public function show($id): View
     {
         $shop = Shops::findOrFail($id);
         $all = CountSetting::where('shop_id', $shop->id)->where('name', 'all')->get();
@@ -299,7 +298,7 @@ class ShopController extends Controller
         ]);
     }
 
-    public function counts_setting(Request $request):JsonResponse
+    public function counts_setting(Request $request): JsonResponse
     {
         if ($request->setting == 0) {
             if ($request->action == 0) {
@@ -426,7 +425,7 @@ class ShopController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    public function all_counts_setting(Request $request):JsonResponse
+    public function all_counts_setting(Request $request): JsonResponse
     {
 
         $array = ["item", "users", "shop_view", "items_view", "item_unique_view", "buyNowClick", "addToCartClick", "whislistclick", "discountview", "adsview", "inquiry", "pos"];
@@ -461,7 +460,7 @@ class ShopController extends Controller
 
 //Shop Owner Monthly Report
 
-    public function report($id):View
+    public function report($id): View
     {
         $start_date = Carbon::now()->firstOfMonth();
         $last_date = Carbon::now()->lastOfMonth();
@@ -567,7 +566,7 @@ class ShopController extends Controller
         ]);
     }
 
-    public function count_date_filter(Request $request):JsonResponse
+    public function count_date_filter(Request $request): JsonResponse
     {
 
         $id = $request->id;
@@ -816,7 +815,7 @@ class ShopController extends Controller
 
 /** shop delete section */
 
-    public function trash($id):RedirectResponse
+    public function trash($id): RedirectResponse
     {
 
         $shop_owner = Shops::findOrFail($id);
@@ -832,13 +831,13 @@ class ShopController extends Controller
         return redirect()->route('shops.all')->with(['status' => 'success', 'message' => 'Your Shop was successfully Deleted']);
     }
 
-    public function get_trash():View
+    public function get_trash(): View
     {
         $shops = Shops::onlyTrashed()->get();
         return view('backend.super_admin.shops.trash', compact('shops'));
     }
 
-    public function restore($id):RedirectResponse
+    public function restore($id): RedirectResponse
     {
         $shop_owner = ShopBanner::where('shop_owner_id', $id)->withTrashed()->pluck("id");
         Shops::onlyTrashed()->where('id', $id)->restore();
@@ -856,7 +855,7 @@ class ShopController extends Controller
         return redirect()->route('shops.all')->with(['status' => 'success', 'message' => 'Your SHOP was restore']);
     }
 
-    public function force_delete($id):RedirectResponse
+    public function force_delete($id): RedirectResponse
     {
         $shop_owner = Shops::onlyTrashed()->with('getPhotos')->findOrFail($id);
 
@@ -881,7 +880,7 @@ class ShopController extends Controller
         return redirect()->route('shops.all_trash')->with(['status' => 'success', 'message' => 'Your SHOP was Delete']);
     }
 
-    public function shops_multiple_delete(Request $request):RedirectResponse
+    public function shops_multiple_delete(Request $request): RedirectResponse
     {
 
         $change_request_array = explode(",", $request->deleted_shops);

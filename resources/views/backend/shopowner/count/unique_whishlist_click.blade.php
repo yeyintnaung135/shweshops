@@ -50,7 +50,7 @@
                                         <p>Check your Whishlist Click</p>
                                     </div>
                                     <!--{{-- <div class="table-responsive"> --}}-->
-                                    <table id="uniquewhishlistTable" class="table table-borderless">
+                                    <table id="uniqueWishListTable" class="table table-borderless">
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
