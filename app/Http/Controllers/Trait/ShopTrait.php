@@ -8,12 +8,14 @@ use App\Models\ShopRole;
 
 trait ShopTrait
 {
-    public function getShopId()
+    public function get_current_auth_data()
     {
-        $shopId = Auth::guard('shop_owner')->check()
-            ? Shopowner::find(Auth::guard('shop_owner')->id())->id
-            : ShopRole::find(Auth::guard('shop_role')->id())->shop_id;
+        return Auth::guard('shop_owners_and_staffs')->user();
+    }
+    public function get_shop_id()
+    {
+        $shop_id = $this->get_current_auth_data()->shop_id;
 
-        return $shopId;
+        return $shop_id;
     }
 }

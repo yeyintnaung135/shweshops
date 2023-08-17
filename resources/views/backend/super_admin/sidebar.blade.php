@@ -93,7 +93,7 @@
                     </ul>  --}}
                 </li>
                 <li class="nav-item">
-                    <a href="{{route('superAdmin.gold_price_get')}}" class="mobile-nav nav-link">
+                    <a href="{{route('backside.super_admin.superAdmin.gold_price_get')}}" class="mobile-nav nav-link">
                         <!-- <i class="nav-icon fas fa-chart-line"></i> -->
                         <img id="logo" class="logo rounded-5 ml-1" src="{{'/images/logo/super_admin_logo/Gold Price.svg'}}" alt="" style="width: 22px"/>
                         <img id="mobile" class="logo rounded-5 ml-1 pb-1" src="{{'/images/logo/super_admin_mobile_logo/Gold Price.svg'}}" alt="" style="width: 22px;
@@ -119,7 +119,7 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{route('super_admin_role.list')}}" class="nav-link border-0">
+                                <a href="{{route('backside.super_admin.super_admin_role.list')}}" class="nav-link border-0">
                                     {{--                                <i class="far fa-circle nav-icon"></i>--}}
                                     <i class="fa fa-circle pl-5"></i>
                                     <p class="ml-3">Lists</p>
@@ -129,7 +129,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('super_admin_role.create') }}" class="nav-link border-0">
+                                <a href="{{ route('backside.super_admin.super_admin_role.create') }}" class="nav-link border-0">
                                     {{--                                <i class="far fa-circle nav-icon"></i>--}}
                                     <i class="fa fa-circle pl-5"></i>
                                     <p class="ml-3">Create Admin</p>
@@ -141,7 +141,7 @@
                 @endisset
                 {{--All User--}}
                 <li class="nav-item">
-                    <a href="{{route('customers.index')}}" class="mobile-nav nav-link">
+                    <a href="{{route('backside.super_admin.customers.index')}}" class="mobile-nav nav-link">
                         <!-- <i class="nav-icon fa fa-user"></i> -->
                         <img id="logo" class="logo rounded-5" src="{{'/images/logo/super_admin_logo/All users.svg'}}" alt=""/>
                         <img id="mobile" class="logo mobile d-none rounded-5" src="{{'/images/logo/super_admin_mobile_logo/All users.svg'}}" alt=""/>
@@ -186,7 +186,7 @@
                 </li>
                 <!-- zh_shos -->
                 <li class="nav-item">
-                    <a href="{{route('shops.all')}}" class="mobile-nav nav-link">
+                    <a href="{{route('backside.super_admin.shops.all')}}" class="mobile-nav nav-link">
                         <!-- <i class="nav-icon fas fa-store"></i> -->
                         <img id="logo" class="logo rounded-5" src="{{'/images/logo/super_admin_logo/Shops.svg'}}" alt=""/>
                         <img id="mobile" class="logo mobile d-none rounded-5" src="{{'/images/logo/super_admin_mobile_logo/Shops.svg'}}" alt=""/>
@@ -200,7 +200,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{route('shops.all')}}" class="nav-link border-0">
+                            <a href="{{route('backside.super_admin.shops.all')}}" class="nav-link border-0">
                                 {{--                                <i class="far fa-circle nav-icon"></i>--}}
                                 <i class="fa fa-circle pl-5"></i>
                                 <p class="ml-3">All Shops</p>
@@ -210,14 +210,14 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('shops.create') }}" class="nav-link border-0">
+                            <a href="{{ route('backside.super_admin.shops.create') }}" class="nav-link border-0">
                                 {{--                                <i class="far fa-circle nav-icon"></i>--}}
                                 <i class="fa fa-circle pl-5"></i>
                                 <p class="ml-3">Add Shop</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('shops.all_trash')}}" class="nav-link border-0">
+                            <a href="{{ route('backside.super_admin.shops.all_trash')}}" class="nav-link border-0">
                                 {{--                                <i class="far fa-circle nav-icon"></i>--}}
                                 <i class="fa fa-circle pl-5"></i>
                                 <p class="ml-3">Trash</p>
@@ -339,7 +339,7 @@
                 {{--Contact us--}}
                 @isset(Auth::guard('super_admin')->user()->id)
                     <li class="nav-item">
-                        <a href="{{route('superAdmin.contactus_get')}}" class="mobile-nav nav-link">
+                        <a href="{{route('backside.super_admin.superAdmin.contactus_get')}}" class="mobile-nav nav-link">
                             <!-- <i class="fas fa-edit  nav-icon"></i> -->
                             <img id="logo" class="logo rounded-5" src="{{'/images/logo/super_admin_logo/Contact.svg'}}" alt=""/>
                             <img id="mobile" class="logo mobile d-none rounded-5" src="{{'/images/logo/super_admin_mobile_logo/Contact.svg'}}" alt=""/>
@@ -390,28 +390,28 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{route('activity.customer')}}" class="nav-link border-0">
+                            <a href="{{route('backside.super_admin.activity.customer')}}" class="nav-link border-0">
                                 {{--                                <i class="far fa-circle nav-icon"></i>--}}
                                 <i class="fa fa-circle pl-5"></i>
                                 <p class="ml-3">Viewers Activities</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{route('activity.ads')}}" class="nav-link border-0">
+                            <a href="{{route('backside.super_admin.activity.ads')}}" class="nav-link border-0">
                                 {{--                                <i class="far fa-circle nav-icon"></i>--}}
                                 <i class="fa fa-circle pl-5"></i>
                                 <p class="ml-3">Ads Activities</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{route('activity.shop')}}" class="nav-link border-0">
+                            <a href="{{route('backside.super_admin.activity.shop')}}" class="nav-link border-0">
                                 {{--                                <i class="far fa-circle nav-icon"></i>--}}
                                 <i class="fa fa-circle pl-5"></i>
                                 <p class="ml-3">Shop Activities</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{route('activity.admin')}}" class="nav-link border-0">
+                            <a href="{{route('backside.super_admin.activity.admin')}}" class="nav-link border-0">
                                 {{--                                <i class="far fa-circle nav-icon"></i>--}}
                                 <i class="fa fa-circle pl-5"></i>
                                 <p class="ml-3">Admin Activities</p>
@@ -542,7 +542,7 @@
                 <li class="nav-item">
                     {{-- <a href="{{url('backside/super_admin')}}" class="nav-link"> --}}
                     {{-- <a href="{{url('backside/super_admin/sitesetting')}}" class="nav-link"> --}}
-                    <a href="{{route('superadmin.sitesetting')}}" class="mobile-nav nav-link">
+                    <a href="{{route('backside.super_admin.superadmin.sitesetting')}}" class="mobile-nav nav-link">
                         <!-- <i class="nav-icon fas fa-cog"></i> -->
                         <img id="logo" class="logo rounded-5" src="{{'/images/logo/super_admin_logo/Site setting.svg'}}" alt=""/>
                         <img id="mobile" class="logo mobile rounded-5" src="{{'/images/logo/super_admin_mobile_logo/Site setting.svg'}}" alt=""/>

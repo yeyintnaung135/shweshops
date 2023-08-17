@@ -10,7 +10,7 @@ use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\Trait\ShopTrait;
+use App\Http\Controllers\Trait\UserRole;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -18,7 +18,7 @@ use Yajra\DataTables\DataTables;
 
 class CollectionController extends Controller
 {
-    use ShopTrait;
+    use UserRole;
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
@@ -35,7 +35,7 @@ class CollectionController extends Controller
     public function show(Collection $collection): View
     {
         $collectionItems = Item::where([
-            ['shop_id', $this->getShopId()],
+            ['shop_id', $this->get_shopid()],
             ['collection_id', $collection->id]
         ])->get();
 
@@ -54,7 +54,7 @@ class CollectionController extends Controller
     {
         $collection = $request->validated();
 
-        $collection['shop_id'] = $this->getShopId();
+        $collection['shop_id'] = $this->get_shopid();
 
         return Collection::create($collection)
             ? redirect()->route('backside.shop_owner.collections.index')->with('message', 'Your collection was successfully added')
@@ -77,7 +77,7 @@ class CollectionController extends Controller
     public function destroy(Collection $collection): RedirectResponse
     {
         $items = Item::where([
-            ['shop_id', $this->getShopId()],
+            ['shop_id', $this->get_shopid()],
             ['collection_id', $collection->id]
         ])->get();
 
@@ -97,7 +97,7 @@ class CollectionController extends Controller
     public function collection_items(Collection $collection): View
     {
         $collectionItems = Item::where([
-            ['shop_id', $this->getShopId()],
+            ['shop_id', $this->get_shopid()],
             ['collection_id', 0]
         ])->get();
 
@@ -110,7 +110,7 @@ class CollectionController extends Controller
     public function add_item(Collection $collection, Request $request): RedirectResponse
     {
         Item::where([
-            ['shop_id', $this->getShopId()],
+            ['shop_id', $this->get_shopid()],
             ['id', $request->itemID]
         ])->update(['collection_id' => $collection->id]);
 
@@ -122,7 +122,7 @@ class CollectionController extends Controller
     public function remove_item(Request $request): RedirectResponse
     {
         $item = Item::where([
-            ['shop_id', $this->getShopId()],
+            ['shop_id', $this->get_shopid()],
             ['id', $request->item_id]
         ])->first();
 
@@ -145,7 +145,7 @@ class CollectionController extends Controller
         $fromDate = $request->input('fromDate');
         $toDate = $request->input('toDate');
 
-        $collectionsQuery = Collection::where('shop_id', $this->getShopId())
+        $collectionsQuery = Collection::where('shop_id', $this->get_shopid())
             ->select('id', 'name')
             ->when($fromDate, fn ($query) => $query->whereDate('created_at', '>=', $fromDate))
             ->when($toDate, fn ($query) => $query->whereDate('created_at', '<=', $toDate));
@@ -186,7 +186,7 @@ class CollectionController extends Controller
     {
         $collectionId = $request->input('collection');
         $collectionItems = Item::where([
-            ['shop_id', $this->getShopId()],
+            ['shop_id', $this->get_shopid()],
             ['collection_id',  $collectionId]
         ])->select('id', 'name', 'product_code', 'price', 'min_price', 'max_price');
 
@@ -208,7 +208,7 @@ class CollectionController extends Controller
     {
         $collectionId = $request->input('collection');
         $collectionItems = Item::where([
-            ['shop_id', $this->getShopId()],
+            ['shop_id', $this->get_shopid()],
             ['collection_id', 0]
         ])->select('id', 'name', 'product_code', 'price', 'min_price', 'max_price');
 

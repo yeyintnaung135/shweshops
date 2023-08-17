@@ -11,7 +11,7 @@
             </section>
             <div class="col-md-12 mb-3">
 
-                <form class="sop-form" method="post" action="{{ route('superAdmin.gold_price_update') }}"
+                <form class="sop-form" method="post" action="{{ route('backside.super_admin.superAdmin.gold_price_update') }}"
                     enctype="multipart/form-data">
                     @csrf
                     @method('PUT')

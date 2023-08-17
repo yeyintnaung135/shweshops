@@ -69,19 +69,20 @@ class AdsController extends Controller
         $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
-        $recordsQuery = Ads::select('ads.*')
+        $recordsQuery = Ads::select('start', 'image', 'end', 'id', 'created_at', 'deleted_at')
             ->withTrashed()
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->orderBy('created_at', 'desc');
+            ->orderBy('created_at', 'desc')->get();
+            // dd($recordsQuery);
 
         return DataTables::of($recordsQuery)
-            ->addColumn('start', function ($record) {
+            ->addColumn('start_formatted', function ($record) {
                 return date('F d, Y ( h:i A )', strtotime($record->start));
             })
-            ->addColumn('end', function ($record) {
+            ->addColumn('end_formatted', function ($record) {
                 return date('F d, Y ( h:i A )', strtotime($record->end));
             })
-            ->addColumn('deleted_at', function ($record) {
+            ->addColumn('deleted_at_formatted', function ($record) {
                 return $record->deleted_at ? '<span class="text-danger">' . $record->deleted_at->diffForHumans() . '</span>' : '';
             })
             ->addColumn('action', function ($record) {

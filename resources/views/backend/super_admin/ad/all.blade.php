@@ -179,7 +179,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                'url': "{{ route('ads.getAllAds') }}",
+                'url': "{{ route('backside.super_admin.ads.getAllAds') }}",
                 'data': function(data) {
                     // Read values
                     var from_date = $('#search_fromdate_ads').val() ? $('#search_fromdate_ads').val() +
@@ -219,28 +219,28 @@
                     }
                 },
                 {
-                    data: 'start',
+                    data: 'start_formatted',
                     render: function(data, type, row) {
                         var result = row.deleted_at ? `<span class="deleted">${data}</span>` : data;
                         return result;
                     }
                 },
                 {
-                    data: 'end',
+                    data: 'end_formatted',
                     render: function(data, type, row) {
                         var result = row.deleted_at ? `<span class="deleted">${data}</span>` : data;
                         return result;
                     }
                 },
                 {
-                    data: 'deleted_at',
+                    data: 'deleted_at_formatted',
                     render: function(data, type, row) {
                         var result = data ? data : "-";
                         return result;
                     }
                 },
                 {
-                    data: 'id',
+                    data: 'action',
                     render: function(data, type, row) {
                         if (row.video === null) {
                             var detail = `<a href="{{ route('backside.super_admin.ads.show', ':id') }}" class="btn btn-sm btn-warning mr-2">

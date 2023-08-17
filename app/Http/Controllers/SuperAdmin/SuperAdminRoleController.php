@@ -36,7 +36,6 @@ class SuperAdminRoleController extends Controller
     }
     public function get_all_admins(Request $request): mixed
     {
-        if ($request->ajax()) {
             $data = SuperAdmin::select(['id', 'name', 'email', 'role', 'created_at'])->orderBy('created_at', 'desc');
 
             return DataTables::of($data)
@@ -54,12 +53,10 @@ class SuperAdminRoleController extends Controller
                 })
                 ->rawColumns(['action'])
                 ->make(true);
-        }
     }
 
     public function get_admin_activity(Request $request): mixed
     {
-        if ($request->ajax()) {
             $data = SuperAdminLogActivity::query();
 
             $data->where(function ($query) use ($request) {
@@ -82,7 +79,6 @@ class SuperAdminRoleController extends Controller
                     return date('F d, Y ( h:i A )', strtotime($record->created_at));
                 })
                 ->make(true);
-        }
     }
 
     public function create(): View
