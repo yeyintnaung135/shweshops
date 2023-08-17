@@ -67,10 +67,12 @@ export default {
       "percenttemplate",
       "main_cat",
   ],
+  mounted(){
+
+  },
   name: "YkDropzone",
   data: function () {
       return {
-          submittedLoading: 0,
     
           mid_photos: [],
           thumb_photos: [],
@@ -81,6 +83,7 @@ export default {
           //for default icon
           displaynone: false,
           //for default icon
+
          
           dzerror: "",
           tempphotonames: [],
@@ -162,14 +165,13 @@ export default {
 
           // check require error array has data show model
 
-          if (tmperrorcounts == 0) {
               // start dz process queue
-              this.$refs.myVueDropzone.processQueue();
-              this.submittedLoading = 1;
-          } else {
-              var alertText = new Array();
-              var i = 0;
 
+           
+              this.$refs.myVueDropzone.processQueue();
+              this.$parent.submittedLoading = 1;
+            
+        
               // if (this.requireerroryk.name) {
               //     alertText[i] = "ပစ္စည်းနာမည် ဖြည့်သွင်းပေးရန် လိုအပ်ပါသည်။";
               //     i++;
@@ -229,12 +231,13 @@ export default {
               //         }
               //     }
               // }
-          }
+          
           //processqueue is call sendevent and real sent to server
       },
       callaftermounted() {
           $(".dz-message").addClass("yk-width-full");
       },
+
    
     
 
@@ -552,6 +555,8 @@ this.gold_colour          );
 
       // after send
       successEvent(files, response) {
+        this.$parent.submittedLoading = 0;
+
           console.log(response);
 
           if (response.msg == "success") {
