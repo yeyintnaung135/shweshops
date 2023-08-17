@@ -22,7 +22,7 @@ class SuperAdminRoleController extends Controller
         $this->middleware(['auth:super_admin']);
     }
 
-    function list(): View {
+    public function list(): View {
         $super_admin = SuperAdmin::all();
         $super_admin_log = SuperAdminLogActivity::all();
         return view('backend.super_admin_role.list', ['super_admin' => $super_admin, 'super_admin_log' => $super_admin_log]);
@@ -36,49 +36,41 @@ class SuperAdminRoleController extends Controller
     }
     public function get_all_admins(Request $request): mixed
     {
-            $data = SuperAdmin::select(['id', 'name', 'email', 'role', 'created_at'])->orderBy('created_at', 'desc');
+        $data = SuperAdmin::select(['id', 'name', 'email', 'role', 'created_at'])->orderBy('created_at', 'desc');
 
-            return DataTables::of($data)
-                ->filter(function ($query) use ($request) {
-                    if ($request->has('search.value')) {
-                        $searchValue = $request->input('search.value');
-                        $query->where('name', 'like', '%' . $searchValue . '%')
-                            ->orWhere('email', 'like', '%' . $searchValue . '%')
-                            ->orWhere('role', 'like', '%' . $searchValue . '%');
-                    }
-                })
-                ->addColumn('action', function ($record) {
-                    // Add any additional columns or actions you need here
-                    return '<a href="#">Edit</a>';
-                })
-                ->rawColumns(['action'])
-                ->make(true);
+        return DataTables::of($data)
+            ->addColumn('action', function ($record) {
+                // Add any additional columns or actions you need here
+                return '<a href="#">Edit</a>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
 
     public function get_admin_activity(Request $request): mixed
     {
-            $data = SuperAdminLogActivity::query();
+        $data = SuperAdminLogActivity::query();
 
-            $data->where(function ($query) use ($request) {
-                $searchValue = $request->input('search.value');
-                $query->where('name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('type', 'like', '%' . $searchValue . '%')
-                    ->orWhere('type_id', 'like', '%' . $searchValue . '%')
-                    ->orWhere('type_name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('role', 'like', '%' . $searchValue . '%')
-                    ->orWhere('status', 'like', '%' . $searchValue . '%');
-            });
+        $data->where(function ($query) use ($request) {
+            $searchValue = $request->input('search.value');
+            $query->where('name', 'like', '%' . $searchValue . '%')
+                ->orWhere('type', 'like', '%' . $searchValue . '%')
+                ->orWhere('type_id', 'like', '%' . $searchValue . '%')
+                ->orWhere('type_name', 'like', '%' . $searchValue . '%')
+                ->orWhere('role', 'like', '%' . $searchValue . '%')
+                ->orWhere('status', 'like', '%' . $searchValue . '%');
+        });
 
-            $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
-            $searchByTodate = $request->input('searchByTodate', Carbon::now());
+        $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
+        $searchByTodate = $request->input('searchByTodate', Carbon::now());
 
-            $data->whereBetween('created_at', [$searchByFromdate, $searchByTodate]);
+        $data->whereBetween('created_at', [$searchByFromdate, $searchByTodate]);
 
-            return DataTables::of($data)
-                ->addColumn('created_at_formatted', function ($record) {
-                    return date('F d, Y ( h:i A )', strtotime($record->created_at));
-                })
-                ->make(true);
+        return DataTables::of($data)
+            ->addColumn('created_at_formatted', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->created_at));
+            })
+            ->make(true);
     }
 
     public function create(): View

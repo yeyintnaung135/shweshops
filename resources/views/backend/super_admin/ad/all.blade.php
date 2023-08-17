@@ -219,21 +219,21 @@
                     }
                 },
                 {
-                    data: 'start_formatted',
+                    data: 'start',
                     render: function(data, type, row) {
                         var result = row.deleted_at ? `<span class="deleted">${data}</span>` : data;
                         return result;
                     }
                 },
                 {
-                    data: 'end_formatted',
+                    data: 'end',
                     render: function(data, type, row) {
                         var result = row.deleted_at ? `<span class="deleted">${data}</span>` : data;
                         return result;
                     }
                 },
                 {
-                    data: 'deleted_at_formatted',
+                    data: 'deleted_at',
                     render: function(data, type, row) {
                         var result = data ? data : "-";
                         return result;
@@ -294,11 +294,11 @@
 
             ],
             dom: 'lBfrtip',
-                "responsive": true,
-                "autoWidth": false,
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ],
+            "responsive": true,
+            "autoWidth": false,
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
         });
     </script>
 @endpush
