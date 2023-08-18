@@ -184,7 +184,9 @@ class ShopController extends Controller
      */
     public function get_all_trash_shop(Request $request): JsonResponse
     {
-        $recordsQuery = Shops::where('deleted_at', '!=', null)->onlyTrashed()->orderBy('created_at', 'desc');
+        $recordsQuery = Shops::
+        select( 'id','name', 'shop_name', 'shop_name_myan', 'created_at', 'email','deleted_at')
+        ->where('deleted_at', '!=', null)->onlyTrashed();
 
         return DataTables::of($recordsQuery)
             ->addColumn('checkbox', function ($record) {
@@ -196,19 +198,18 @@ class ShopController extends Controller
                 $diff = $expiredMonth->diffInDays($deleteDate);
                 return $record->deleted_at < Carbon::now()->subMonths(3) ? 'expired' : $diff;
             })
-            ->addColumn('shop_name', function ($record) {
+            ->editColumn('shop_name', function ($record) {
                 return $record->shop_name ?: '-';
             })
-            ->addColumn('shop_name_myan', function ($record) {
-                return $record->shop_name_myan ?: '-';
+            ->editColumn('shop_name_myan', function ($record) {
+                return Str::limit($record->shop_name_myan, 14, '...');
             })
             ->addColumn('action', function ($record) {
                 return $record->id;
             })
-            ->addColumn('created_at_formatted', function ($record) {
+            ->editColumn('created_at', function ($record) {
                 return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
-            ->rawColumns(['expired', 'shop_name', 'shop_name_myan', 'created_at_formatted'])
             ->make(true);
     }
     public function get_all_shops(Request $request)

@@ -38,7 +38,7 @@ Route::prefix('backside/super_admin')->name('backside.super_admin.')->group(func
 
     //for facebook data
     Route::get('fbdata/messenger/list', [FacebookDataController::class, 'list']);
-    Route::get('fbdata/messenger/getall', [FacebookDataController::class, 'get_all']);
+    Route::get('fbdata/messenger/getAll', [FacebookDataController::class, 'get_all'])->name('fbdata.messenger.getAll');
     Route::post('fbdata/messenger/getcount', [FacebookDataController::class, 'get_count']);
     Route::post('fbdata/messenger/getmsglogcount', [FacebookDataController::class, 'get_msg_log_count']);
     Route::get('fbdata/messenger/log', [FacebookDataController::class, 'get_msg_log']);
@@ -105,7 +105,7 @@ Route::prefix('backside/super_admin')->name('backside.super_admin.')->group(func
     Route::post('login', [SuperadminLoginController::class, 'login'])->name('login');
 
     Route::post('logout', [SuperadminLoginController::class, 'logout'])->name('logout');
-    Route::get('items/getitemsajax', [ItemsController::class, 'get_items_ajax']);
+    Route::get('items/get_items_ajax', [ItemsController::class, 'get_items_ajax'])->name('items.getItemsAjax');
     Route::post('items/total_create_count', [ItemsController::class, 'total_create_count']);
     Route::get('items/all', [ItemsController::class, 'all']);
 

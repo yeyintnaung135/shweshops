@@ -47,13 +47,13 @@
                                                 <legend>From Date</legend>
                                                 <input type="text" id='search_fromdate_shop'
                                                     class="shopdatepicker form-control" placeholder='Choose date'
-                                                    value="{{ date('Y-m-d') }}" autocomplete="off" />
+                                                     autocomplete="off" />
                                             </fieldset>
                                         </div>
                                         <div class="form-group mr-md-2">
                                             <fieldset>
                                                 <legend>To Date</legend>
-                                                <input type="text" id='search_todate_shop' value="{{ date('Y-m-d') }}"
+                                                <input type="text" id='search_todate_shop' 
                                                     class="shopdatepicker form-control" placeholder='Choose date'
                                                     autocomplete="off" />
                                             </fieldset>
@@ -69,22 +69,13 @@
                                             <tr>
                                                 <th>Id</th>
                                                 <th>Name</th>
-                                                <!-- <th>Myanamr Name</th> -->
                                                 <th>Shop Logo</th>
                                                 <th>Shop Banner</th>
                                                 <th>Type</th>
-                                                <!-- <th>Description</th> -->
                                                 <th>Total Product Counts</th>
-                                                <!-- <th>undamaged_product</th>
-                                              <th>valuable_product</th>
-                                              <th>damaged_product</th> -->
-                                                <!-- <th>Messanger Link</th>
-                                              <th>Page Link</th> -->
-                                                <!-- <th>Address</th> -->
                                                 <th>Main Phone</th>
                                                 <th>Created At</th>
 
-                                                <!--<th>Action</th> -->
                                             </tr>
                                         </thead>
                                     </table>
@@ -190,7 +181,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                "url": "{{ url('backside/super_admin/items/getitemsajax') }}",
+                "url": "{{ route('backside.super_admin.items.getItemsAjax') }}",
                 'data': function(data) {
                     // Read values
                     var from_date = $('#search_fromdate_shop').val() ? $('#search_fromdate_shop').val() +
@@ -208,9 +199,8 @@
                     data: 'id'
                 },
                 {
-                    data: 'name'
+                    data: 'shop_name'
                 },
-                // {data: 'shop_name_myan'},
                 {
                     data: 'shop_logo',
                     render: function(data, type) {
@@ -242,16 +232,9 @@
                         }
                     }
                 },
-                // {data: 'description'},
                 {
-                    data: 'email'
+                    data: 'items_count'
                 },
-                // {data: 'undamaged_product'},
-                // {data: 'valuable_product'},
-                // {data: 'damaged_product'},
-                // {data: 'messenger_link'},
-                // {data: 'page_link'},
-                // {data: 'address'},
                 {
                     data: 'main_phone'
                 },

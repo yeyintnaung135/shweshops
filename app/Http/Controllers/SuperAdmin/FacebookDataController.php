@@ -26,17 +26,17 @@ class FacebookDataController extends Controller
 
     public function get_all(Request $request): JsonResponse
     {
-        $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
-        $searchByTodate = $request->input('toDate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
 
-        $recordsQuery = FacebookTable::leftJoin('shop_owners', 'facebook.shop_owner_id', '=', 'shop_owners.id')
-            ->select('*', 'facebook.created_at as ff')
-            ->orderBy('facebook.created_at', 'desc')
-            ->whereBetween('facebook.created_at', [$searchByFromdate, $searchByTodate]);
+        $recordsQuery = FacebookTable::leftJoin('shops', 'facebook.shop_owner_id', '=', 'shops.id')
+            ->select('shops.id','shops.shop_name','facebook.pagename','facebook.created_at')
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
         return DataTables::of($recordsQuery)
-            ->addColumn('created_at', function ($record) {
-                return date('F d, Y ( h:i A )', strtotime($record->ff));
+            ->editColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
             ->make(true);
     }

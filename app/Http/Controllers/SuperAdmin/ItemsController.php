@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Yajra\DataTables\DataTables;
 
 class ItemsController extends Controller
 {
@@ -20,11 +21,11 @@ class ItemsController extends Controller
         $this->middleware(['auth:super_admin']);
     }
 
-    public function total_create_count(Request $request): RedirectResponse
+    public function total_create_count(Request $request): JsonResponse
     {
-        $allcount = Item::all();
-        $allcountbydate = Item::whereBetween('created_at', [$request->from, $request->to])->get();
-        return response()->json(['all' => count($allcount), 'alld' => count($allcountbydate)]);
+        $allcount = Item::count();
+        $allcountbydate = Item::whereBetween('created_at', [$request->from, $request->to])->count();
+        return response()->json(['all' => $allcount, 'alld' => $allcountbydate]);
     }
 
     public function all(): View
@@ -36,64 +37,38 @@ class ItemsController extends Controller
 
     public function get_items_ajax(Request $request): JsonResponse
     {
-        $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
-        $searchByTodate = $request->input('toDate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
+        $shopsQuery = Shops::select('id','shop_name','shop_logo', 'shop_banner', 'premium', 'main_phone', 'created_at')
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
+        $shops = $shopsQuery->get();
+        $itemCounts = $this->calculate_item_counts($shops);
 
-        $recordsQuery = Item::leftJoin('shop_owners', 'items.shop_id', '=', 'shop_owners.id')
-            ->select('shop_owners.*', DB::raw('count(*) as total'), 'items.created_at as ica')
-            ->whereBetween('items.created_at', [$searchByFromdate, $searchByTodate])
-            ->orderBy('created_at', 'desc');
-
-        return DataTables::of($recordsQuery)
-            ->addColumn('name', function ($record) {
-                return Shops::where('id', $record->id)->first()->shop_name;
-            })
-            ->addColumn('shop_name_myan', function ($record) {
-                return $record->shop_name_myan ? $record->shop_name_myan : '-';
-            })
-            ->addColumn('shop_logo', function ($record) {
-                return $record->shop_logo;
-            })
-            ->addColumn('shop_banner', function ($record) {
+        return DataTables::of($shopsQuery)
+            ->editColumn('shop_banner', function ($record) {
                 $checkbanner = ShopBanner::where('shop_owner_id', $record->id)->first();
                 return empty($checkbanner) ? '' : $checkbanner->location;
             })
-            ->addColumn('premium', function ($record) {
-                return $record->premium;
+            ->editColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
-            ->addColumn('description', function ($record) {
-                return Str::limit($record->description, 50, ' ...');
-            })
-            ->addColumn('email', function ($record) {
-                return $record->total;
-            })
-            ->addColumn('undamaged_product', function ($record) {
-                return $record->undamaged_product;
-            })
-            ->addColumn('valuable_product', function ($record) {
-                return $record->valuable_product;
-            })
-            ->addColumn('damaged_product', function ($record) {
-                return $record->damaged_product;
-            })
-            ->addColumn('messenger_link', function ($record) {
-                return $record->messenger_link;
-            })
-            ->addColumn('page_link', function ($record) {
-                return $record->page_link;
-            })
-            ->addColumn('address', function ($record) {
-                return $record->address;
-            })
-            ->addColumn('main_phone', function ($record) {
-                return $record->main_phone;
-            })
-            ->addColumn('action', function ($record) {
-                return $record->id;
-            })
-            ->addColumn('created_at', function ($record) {
-                return date('F d, Y ( h:i A )', strtotime($record->ica));
+            ->addColumn('items_count', function ($shop) use ($itemCounts) {
+                return $itemCounts[$shop->id];
             })
             ->make(true);
+    }
+
+    private function calculate_item_counts($shops): array
+    {
+        $itemCounts = [];
+
+        foreach ($shops as $shop) {
+            $itemCount = Item::where('shop_id', $shop->id)
+                ->count();
+            $itemCounts[$shop->id] = $itemCount;
+        }
+
+        return $itemCounts;
     }
 }

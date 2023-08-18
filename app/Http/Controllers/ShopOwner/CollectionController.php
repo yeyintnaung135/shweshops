@@ -151,7 +151,7 @@ class CollectionController extends Controller
             ->when($toDate, fn ($query) => $query->whereDate('created_at', '<=', $toDate));
 
         $collections = $collectionsQuery->get();
-        $itemCounts = $this->calculateItemCounts($collections);
+        $itemCounts = $this->calculate_item_counts($collections);
 
         return datatables($collections)
             ->addColumn('items_count', function ($collection) use ($itemCounts) {

@@ -35,7 +35,7 @@
                                         </div>
                                         <div class="d-flex">
 
-                                            <form action="{{ route('shops.multiple_delete') }}" method="post">
+                                            <form action="{{ route('backside.super_admin.shops.multiple_delete') }}" method="post">
                                                 @csrf
 
                                                 <input type="hidden" name="deleted_shops" value=""
@@ -151,7 +151,7 @@
         $('#shopTrashTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('shops.get_all_trash_shop') }}",
+            ajax: "{{ route('backside.super_admin.shops.get_all_trash_shop') }}",
 
             columns: [{
                     data: 'checkbox',
@@ -198,22 +198,21 @@
 
                 },
                 {
-                    data: 'id',
-                    name: 'action',
+                    data: 'action',
                     render: function(data, type) {
                         var result =
                             `
-                <form action="{{ route('shops.restore', ':id') }}" method="POST">
+                <form action="{{ route('backside.super_admin.shops.restore', ':id') }}" method="POST">
                         @csrf
-                        <button class="btn btn-sm btn-success mr-2"><i class="fas fa-trash-restore"></i> Restore from trash</button>
+                        <button class="btn btn-sm btn-success mr-2"><i class="fas fa-trash-restore"></i> Restore</button>
                 </form>
                 `;
                         var result = result.replace(':id', data);
 
-                        var del = `<form action="{{ route('shops.force_delete', ':id') }}" method="post" >
+                        var del = `<form action="{{ route('backside.super_admin.shops.force_delete', ':id') }}" method="post" >
                         @csrf
                         @method('DELETE')
-                        <button type="button" class="btn btn-sm btn-danger" onclick="shopForceDelete(this)"><i class="fa fa-trash"> Delete from trash</i></button>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="shopForceDelete(this)"><i class="fa fa-trash"> Delete</i></button>
                         </form>
             `;
                         var del = del.replace(':id', data);
@@ -226,7 +225,7 @@
                     }
                 },
                 {
-                    data: 'created_at_formatted'
+                    data: 'created_at'
                 }
 
             ],
