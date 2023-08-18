@@ -126,7 +126,9 @@
                             </form>
                                 </div>
                         </div>`;
-                        }
+                        },
+                        orderable: false,
+                        searchable: false
                     }
                 ],
                 dom: 'lBfrtip',

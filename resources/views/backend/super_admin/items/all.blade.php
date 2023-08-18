@@ -47,13 +47,13 @@
                                                 <legend>From Date</legend>
                                                 <input type="text" id='search_fromdate_shop'
                                                     class="shopdatepicker form-control" placeholder='Choose date'
-                                                     autocomplete="off" />
+                                                    autocomplete="off" />
                                             </fieldset>
                                         </div>
                                         <div class="form-group mr-md-2">
                                             <fieldset>
                                                 <legend>To Date</legend>
-                                                <input type="text" id='search_todate_shop' 
+                                                <input type="text" id='search_todate_shop'
                                                     class="shopdatepicker form-control" placeholder='Choose date'
                                                     autocomplete="off" />
                                             </fieldset>
@@ -72,10 +72,9 @@
                                                 <th>Shop Logo</th>
                                                 <th>Shop Banner</th>
                                                 <th>Type</th>
-                                                <th>Total Product Counts</th>
+                                                <th>Product Counts</th>
                                                 <th>Main Phone</th>
                                                 <th>Created At</th>
-
                                             </tr>
                                         </thead>
                                     </table>
@@ -88,64 +87,6 @@
                     </div>
                     <!-- /.row -->
                 </div>
-                <?php /*
-                <div id="item-panel-2" class="container-fluid sn-panel-hide">
-                    <div class="row">
-                        <div class="col-12">
-
-                          <div class="sn-table-list-wrapper">
-                            <div class="card shadow-none border-0 rounded-5 pb-2 mt-5">
-                              <div class="card-header">
-                                  <h2>Shops Activity List</h2>
-                                  <p>Check your Shops Activities</p>
-                                  <a href=" {{ route('shops.create') }} " class="btn btn-primary">Add Shop</a>
-
-                              </div>
-                              <div class="d-flex justify-content-end my-3">
-                                <div class="form-group mr-md-2">
-                                  <fieldset>
-                                    <legend>From Date</legend>
-                                    <input type="text" id='search_fromdate_shopact' class="shopactdatepicker form-control" placeholder='Choose date' autocomplete="off"/>
-                                  </fieldset>
-                                </div>
-                                <div class="form-group mr-md-2">
-                                  <fieldset>
-                                    <legend>To Date</legend>
-                                    <input type="text" id='search_todate_shopact' class="shopactdatepicker form-control" placeholder='Choose date' autocomplete="off"/>
-                                  </fieldset>
-                                </div>
-                                <div class="pr-md-4">
-                                  <input type='button' id="shopact_search_button" value="Search" class="form-control bg-info" style="margin-top: 25px;">
-                                </div>
-                              </div>
-                              <!-- /.card-header -->
-                                  <table id="shopActivityTable" class="table table-borderless p-2">
-                                      <thead>
-                                      <tr>
-                                          <th>id</th>
-                                          <th>Name</th>
-                                          <th>Type</th>
-                                          <th>Type Name</th>
-                                          <th>Status</th>
-                                          <th>Role</th>
-                                          <th>Date</th>
-                                      </tr>
-                                      </thead>
-
-
-                                  </table>
-
-                              <!-- /.card-body -->
-                            </div>
-                          </div>
-                            <!-- /.card -->
-                        </div>
-                        <!-- /.col -->
-                    </div>
-                    <!-- /.row -->
-                </div>
-                */
-                ?>
                 <!-- /.container-fluid -->
             </section>
             <!-- /.content -->
@@ -210,7 +151,9 @@
                           height="45" alt="Logo" />`;
                         image = image.replace(':img', data);
                         return image;
-                    }
+                    },
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'shop_banner',
@@ -220,7 +163,9 @@
                           height="45"/>`;
                         image = image.replace(':img', data);
                         return image;
-                    }
+                    },
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'premium',
@@ -233,7 +178,8 @@
                     }
                 },
                 {
-                    data: 'items_count'
+                    data: 'items',
+                    name: 'items_count',
                 },
                 {
                     data: 'main_phone'
@@ -244,11 +190,11 @@
 
             ],
             dom: 'lBfrtip',
-                "responsive": true,
-                "autoWidth": false,
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ],
+            "responsive": true,
+            "autoWidth": false,
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
         });
 
         $(document).ready(function() {

@@ -7,10 +7,7 @@ use App\Models\Item;
 use App\Models\ShopBanner;
 use App\Models\Shops;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
@@ -39,22 +36,22 @@ class ItemsController extends Controller
     {
         $searchByFromdate = $request->input('searchByFromdate');
         $searchByTodate = $request->input('searchByTodate');
-        $shopsQuery = Shops::select('id','shop_name','shop_logo', 'shop_banner', 'premium', 'main_phone', 'created_at')
+
+        $shopsQuery = Shops::select('id', 'shop_name', 'shop_logo', 'shop_banner', 'premium', 'main_phone', 'created_at')
+            ->withCount('items')
             ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
             ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
-        $shops = $shopsQuery->get();
-        $itemCounts = $this->calculate_item_counts($shops);
 
         return DataTables::of($shopsQuery)
-            ->editColumn('shop_banner', function ($record) {
-                $checkbanner = ShopBanner::where('shop_owner_id', $record->id)->first();
+            ->editColumn('shop_banner', function ($shop) {
+                $checkbanner = ShopBanner::where('shop_owner_id', $shop->id)->first();
                 return empty($checkbanner) ? '' : $checkbanner->location;
             })
-            ->editColumn('created_at', function ($record) {
-                return date('F d, Y ( h:i A )', strtotime($record->created_at));
+            ->editColumn('created_at', function ($shop) {
+                return date('F d, Y ( h:i A )', strtotime($shop->created_at));
             })
-            ->addColumn('items_count', function ($shop) use ($itemCounts) {
-                return $itemCounts[$shop->id];
+            ->addColumn('items', function ($shop) {
+                return $shop->items_count;
             })
             ->make(true);
     }
@@ -64,8 +61,7 @@ class ItemsController extends Controller
         $itemCounts = [];
 
         foreach ($shops as $shop) {
-            $itemCount = Item::where('shop_id', $shop->id)
-                ->count();
+            $itemCount = Item::where('shop_id', $shop->id)->count();
             $itemCounts[$shop->id] = $itemCount;
         }
 
