@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tooltips;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -14,7 +15,7 @@ class TooltipsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:super_admin', 'admin']);
+        $this->middleware(['auth:super_admin']);
     }
 
     public function create_form(): View
@@ -49,12 +50,12 @@ class TooltipsController extends Controller
         return redirect('backside/super_admin/tooltips/list');
     }
 
-    public function list(): View {
+    function list(): View {
         $alltt = Tooltips::all();
         return view('backend.super_admin.tooltips.list', ['alltt' => $alltt]);
     }
 
-    public function all(Request $request): mixed
+    public function all(Request $request): JsonResponse
     {
         if ($request->ajax()) {
             $data = Tooltips::query();

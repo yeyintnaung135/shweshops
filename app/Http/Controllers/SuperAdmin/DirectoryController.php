@@ -30,7 +30,7 @@ class DirectoryController extends Controller
         return view('backend.super_admin.directory.list');
     }
 
-    public function all_directory(Request $request): mixed
+    public function all_directory(Request $request): JsonResponse
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();
@@ -199,7 +199,7 @@ class DirectoryController extends Controller
         return redirect('backside/super_admin/directory/all');
 
     }
-    function list(): View {
+    public function list(): View {
         $alltt = Tooltips::all();
         return view('backend.super_admin.tooltips.list', ['alltt' => $alltt]);
     }

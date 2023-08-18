@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Yajra\DataTables\DataTables;
 
 class ShopController extends Controller
 {
@@ -41,7 +42,7 @@ class ShopController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['auth:super_admin', 'admin']);
+        $this->middleware(['auth:super_admin']);
     }
 
     /**
@@ -58,7 +59,7 @@ class ShopController extends Controller
     }
 
     // NOTE : This method has a model which uses MongoDB
-    public function show_owner_using_chat_all(Request $request): mixed
+    public function show_owner_using_chat_all(Request $request): JsonResponse
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();
@@ -181,7 +182,7 @@ class ShopController extends Controller
     /**
      * super_admin\shops\trash.blade.php
      */
-    public function get_all_trash_shop(Request $request): mixed
+    public function get_all_trash_shop(Request $request): JsonResponse
     {
         $recordsQuery = Shops::where('deleted_at', '!=', null)->onlyTrashed()->orderBy('created_at', 'desc');
 
@@ -212,39 +213,42 @@ class ShopController extends Controller
     }
     public function get_all_shops(Request $request)
     {
-        $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
-        $searchByTodate = $request->input('toDate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
 
-        $recordsQuery = Shops::select('shops.*')
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->orderBy('created_at', 'desc');
+        $recordsQuery = Shops::select(
+            'id', 'shop_name_myan', 'shop_logo',
+            'shop_banner', 'premium', 'email',
+            'main_phone', 'state', 'pos_only', 'created_at',
+        )->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
         return DataTables::of($recordsQuery)
-            ->addColumn('shop_banner', function ($record) {
+            ->editColumn('shop_banner', function ($record) {
                 $checkbanner = ShopBanner::where('shop_owner_id', $record->id)->first();
                 return empty($checkbanner) ? '' : $checkbanner->location;
             })
-            ->addColumn('description', function ($record) {
-                return Str::limit($record->description, 50, ' ...');
-            })
-            ->addColumn('shop_name_myan', function ($record) {
+            ->editColumn('shop_name_myan', function ($record) {
                 return $record->shop_name_myan ?: '-';
             })
-            ->addColumn('state', function ($record) {
+            ->editColumn('state', function ($record) {
                 $state = State::where('id', $record->state)->value('name');
                 return $state;
+            })
+            ->editColumn('pos_only', function ($record) {
+                return Str::ucfirst($record->pos_only);
             })
             ->addColumn('action', function ($record) {
                 return $record->id;
             })
-            ->addColumn('created_at_formatted', function ($record) {
+            ->editColumn('created_at', function ($record) {
                 return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
-            ->rawColumns(['shop_banner', 'description', 'shop_name_myan', 'state', 'created_at_formatted'])
             ->make(true);
     }
 
 // datable for shop log activity
-    public function get_shop_activity(Request $request): mixed
+    public function get_shop_activity(Request $request): JsonResponse
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();

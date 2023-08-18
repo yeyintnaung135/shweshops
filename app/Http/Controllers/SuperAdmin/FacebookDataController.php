@@ -17,14 +17,14 @@ class FacebookDataController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:super_admin', 'admin']);
+        $this->middleware(['auth:super_admin']);
     }
 
     public function list(): View {
         return view('backend.super_admin.fbdata.list');
     }
 
-    public function get_all(Request $request): mixed
+    public function get_all(Request $request): JsonResponse
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();
@@ -61,7 +61,7 @@ class FacebookDataController extends Controller
     {
         return view('backend.super_admin.fbdata.msglogdetail', ['shop_id' => $shopid]);
     }
-    public function get_msg_log_detail(Request $request): mixed
+    public function get_msg_log_detail(Request $request): JsonResponse
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();
@@ -85,7 +85,7 @@ class FacebookDataController extends Controller
             ->make(true);
     }
 
-    public function get_msg_log(Request $request): mixed
+    public function get_msg_log(Request $request): JsonResponse
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();

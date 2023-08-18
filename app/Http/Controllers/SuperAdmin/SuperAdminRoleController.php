@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SuperAdmin\SuperAdminRole\UpdateSuperAdminRoleRequest;
 use App\Models\SuperAdmin;
 use App\Models\SuperAdminLogActivity;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -34,37 +35,25 @@ class SuperAdminRoleController extends Controller
         $super_admin_log = SuperAdminLogActivity::all();
         return view('backend.super_admin.activity_logs.admin', ['super_admin' => $super_admin, 'super_admin_log' => $super_admin_log]);
     }
-    public function get_all_admins(Request $request): mixed
+    public function get_all_admins(): JsonResponse
     {
-        $data = SuperAdmin::select(['id', 'name', 'email', 'role', 'created_at'])->orderBy('created_at', 'desc');
+        $data = SuperAdmin::select(['id', 'name', 'email', 'role', 'created_at']);
 
         return DataTables::of($data)
-            ->addColumn('action', function ($record) {
-                // Add any additional columns or actions you need here
-                return '<a href="#">Edit</a>';
+            ->addColumn('action', fn($record) => $record->id)
+            ->editColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'created_at'])
             ->make(true);
     }
 
-    public function get_admin_activity(Request $request): mixed
+    public function get_admin_activity(Request $request): JsonResponse
     {
-        $data = SuperAdminLogActivity::query();
-
-        $data->where(function ($query) use ($request) {
-            $searchValue = $request->input('search.value');
-            $query->where('name', 'like', '%' . $searchValue . '%')
-                ->orWhere('type', 'like', '%' . $searchValue . '%')
-                ->orWhere('type_id', 'like', '%' . $searchValue . '%')
-                ->orWhere('type_name', 'like', '%' . $searchValue . '%')
-                ->orWhere('role', 'like', '%' . $searchValue . '%')
-                ->orWhere('status', 'like', '%' . $searchValue . '%');
-        });
+        $data = SuperAdminLogActivity::select();
 
         $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
         $searchByTodate = $request->input('searchByTodate', Carbon::now());
-
-        $data->whereBetween('created_at', [$searchByFromdate, $searchByTodate]);
 
         return DataTables::of($data)
             ->addColumn('created_at_formatted', function ($record) {

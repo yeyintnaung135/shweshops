@@ -153,10 +153,10 @@
                             var result = '<span class="badge badge-primary">Request</span>'
                         }
                         return result;
-                    }
+                    }, searchable: false
                 },
                 {
-                    data: 'id',
+                    data: 'action',
                     render: function(data, type, row, meta) {
                         if (row.role != 4) {
                             var remove = ``;
@@ -225,10 +225,10 @@
               ${ remove }
            </div>
           `;
-                    }
+                    },orderable: false, searchable: false
                 },
                 {
-                    data: 'created_at'
+                    data: 'created_at',
                 }
 
             ],

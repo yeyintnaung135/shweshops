@@ -171,7 +171,7 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.activity_logs.customer');
     }
 
-    public function get_all_visitor(Request $request): mixed
+    public function get_all_visitor(Request $request): JsonResponse
     {
         $searchByFromdate = $request->input('searchByFromdate');
         $searchByTodate = $request->input('searchByTodate');
@@ -225,7 +225,7 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.count_detail_list.adscountlist');
     }
 
-    public function get_all_ads_count(Request $request): mixed
+    public function get_all_ads_count(Request $request): JsonResponse
     {
         if ($request->ajax()) {
             $searchByFromdate = $request->get('searchByFromdate') ?? '0-0-0 00:00:00';
@@ -264,7 +264,7 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.count_detail_list.shopviewercountlist');
     }
 
-    public function get_all_shop_viewer_count(Request $request): mixed
+    public function get_all_shop_viewer_count(Request $request): JsonResponse
     {
         if ($request->ajax()) {
             $searchByFromdate = $request->get('searchByFromdate') ?? '0-0-0 00:00:00';
@@ -299,7 +299,7 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.count_detail_list.buynowcountlist');
     }
 
-    public function get_all_buy_now_count(Request $request): mixed
+    public function get_all_buy_now_count(Request $request): JsonResponse
     {
         if ($request->ajax()) {
             $searchByFromdate = $request->get('searchByFromdate') ?? '0-0-0 00:00:00';
@@ -333,7 +333,7 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.count_detail_list.addtocartcountlist');
     }
 
-    public function get_all_add_to_cart_count(Request $request): mixed
+    public function get_all_add_to_cart_count(Request $request): JsonResponse
     {
         if ($request->ajax()) {
             $searchByFromdate = $request->get('searchByFromdate') ?? '0-0-0 00:00:00';
@@ -367,7 +367,7 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.count_detail_list.wishlistcountlist');
     }
 
-    public function get_all_wishlist_count(Request $request): mixed
+    public function get_all_wishlist_count(Request $request): JsonResponse
     {
         if ($request->ajax()) {
             $searchByFromdate = $request->get('searchByFromdate') ?? '0-0-0 00:00:00';

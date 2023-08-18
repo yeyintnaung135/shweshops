@@ -5,6 +5,7 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Models\CatSupport;
 use App\Models\Support;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -16,7 +17,7 @@ class SupportController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:super_admin', 'admin']);
+        $this->middleware(['auth:super_admin']);
     }
 
     public function create_form(): View
@@ -25,11 +26,11 @@ class SupportController extends Controller
         return view('backend.super_admin.support.create', ['cats' => $cats]);
     }
 
-    function list(): View {
+    public function list(): View {
         return view('backend.super_admin.support.list');
     }
 
-    public function all(Request $request): mixed
+    public function all(Request $request): JsonResponse
     {
         if ($request->ajax()) {
             $data = Support::query();

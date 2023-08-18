@@ -24,7 +24,7 @@ class DailyLogsController extends Controller
 
     }
 
-    public function get_all_daily_shop_create_counts(Request $request): mixed
+    public function get_all_daily_shop_create_counts(Request $request): JsonResponse
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();

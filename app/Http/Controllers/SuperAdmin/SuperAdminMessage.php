@@ -14,7 +14,7 @@ class SuperAdminMessage extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:super_admin', 'admin']);
+        $this->middleware(['auth:super_admin']);
     }
 
     public function show_all_expire(): View
@@ -28,7 +28,7 @@ class SuperAdminMessage extends Controller
         return redirect()->back();
     }
 
-    public function get_expire(Request $request): mixed
+    public function get_expire(Request $request): JsonResponse
     {
         if ($request->ajax()) {
             $query = Messages::leftJoin('users', 'users.id', '=', 'message_user_id')

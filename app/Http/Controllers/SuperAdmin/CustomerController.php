@@ -8,6 +8,7 @@ use App\Models\GoldPoint;
 use App\Models\ItemLogActivity;
 use App\Models\Point;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -33,7 +34,7 @@ class CustomerController extends Controller
         return view('backend.super_admin.activity_logs.customer');
     }
 
-    public function get_customers(Request $request): mixed
+    public function get_customers(Request $request): JsonResponse
     {
         $searchByFromdate = $request->input('searchByFromdate');
         $searchByTodate = $request->input('searchByTodate');
@@ -52,11 +53,11 @@ class CustomerController extends Controller
             ->editColumn('created_at', function ($record) {
                 return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
-            ->rawColumns(['created_at'])
             ->make(true);
     }
 
-    public function get_customer_activity(Request $request): mixed
+    //WARNING Code has not been used
+    public function get_customer_activity(Request $request): JsonResponse
     {
         $searchByFromdate = $request->input('searchByFromdate');
         $searchByTodate = $request->input('searchByTodate');
@@ -69,7 +70,6 @@ class CustomerController extends Controller
             ->editColumn('created_at', function ($record) {
                 return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
-            ->rawColumns(['created_at'])
             ->make(true);
     }
 

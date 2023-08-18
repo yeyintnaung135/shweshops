@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Item;
 use App\Models\ShopBanner;
 use App\Models\Shops;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +17,7 @@ class ItemsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:super_admin', 'admin']);
+        $this->middleware(['auth:super_admin']);
     }
 
     public function total_create_count(Request $request): RedirectResponse
@@ -33,7 +34,7 @@ class ItemsController extends Controller
         return view('backend.super_admin.items.all', ['shopOwner' => $shopOwner]);
     }
 
-    public function get_items_ajax(Request $request): mixed
+    public function get_items_ajax(Request $request): JsonResponse
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();

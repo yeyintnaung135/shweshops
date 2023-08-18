@@ -44,7 +44,7 @@ class AdsController extends Controller
     }
 
     // datable for ads log activity
-    public function get_ads_activity(Request $request): mixed
+    public function get_ads_activity(Request $request): JsonResponse
     {
         $searchByFromdate = $request->input('searchByFromdate');
         $searchByTodate = $request->input('searchByTodate');
@@ -58,12 +58,11 @@ class AdsController extends Controller
             ->editColumn('created_at', function ($record) {
                 return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
-            ->rawColumns(['created_at'])
             ->toJson();
 
     }
 
-    public function get_all_ads(Request $request): mixed
+    public function get_all_ads(Request $request): JsonResponse
     {
         $searchByFromdate = $request->input('searchByFromdate');
         $searchByTodate = $request->input('searchByTodate');
