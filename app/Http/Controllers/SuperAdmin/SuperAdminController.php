@@ -532,7 +532,7 @@ class SuperAdminController extends Controller
 
         if ($result) {
 
-            return redirect()->route('superAdmin.gold_price_get')->with(['status' => 'success', 'message' => 'Gold price was successfully Edited']);
+            return redirect()->route('backside.super_admin.superAdmin.gold_price_get')->with(['status' => 'success', 'message' => 'Gold price was successfully Edited']);
         }
     }
 

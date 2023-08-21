@@ -9,7 +9,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
@@ -26,52 +25,28 @@ class SupportController extends Controller
         return view('backend.super_admin.support.create', ['cats' => $cats]);
     }
 
-    public function list(): View {
+    function list(): View {
         return view('backend.super_admin.support.list');
     }
 
-    public function all(Request $request): JsonResponse
+    public function get_all_support(): JsonResponse
     {
-        if ($request->ajax()) {
-            $data = Support::query();
+        $supportQuery = Support::select(
+            'id', 'title', 'cat_id',
+            'video', 'created_at',
+        );
 
-            $data->where('title', 'like', '%' . $request->input('search.value') . '%')
-                ->orWhere('id', $request->input('search.value'));
-
-            $totalRecords = $data->count();
-            $totalRecordswithFilter = $totalRecords;
-
-            if ($request->input('order.0.column') == '1') {
-                $data->orderBy('cat_id', $request->input('order.0.dir'));
-            } else {
-                $data->orderBy($request->input('columns.' . $request->input('order.0.column') . '.data'), $request->input('order.0.dir'));
-            }
-
-            $records = $data->skip($request->input('start'))
-                ->take($request->input('length'))
-                ->get();
-
-            $data_arr = [];
-            foreach ($records as $record) {
-                $cat = CatSupport::where('id', $record->cat_id)->first()->title;
-
-                $data_arr[] = [
-                    "id" => $record->id,
-                    "title" => Str::limit($record->title, 100, '...'),
-                    "video" => $record->video,
-                    "action" => $record->id,
-                    'category' => $cat,
-                    "created_at" => $record->created_at,
-                ];
-            }
-
-            return DataTables::of($data_arr)
-                ->addColumn('action', function ($record) {
-                    return '<a href="#">Edit</a>'; // Add your action link here
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-        }
+        return DataTables::of($supportQuery)
+            ->editColumn('created_at', function ($support) {
+                return date('F d, Y ( h:i A )', strtotime($support->created_at));
+            })
+            ->addColumn('category', function ($support) {
+                return CatSupport::where('id', $support->cat_id)->first()->title;
+            })
+            ->addColumn('action', function ($support) {
+                return $support->id;
+            })
+            ->make(true);
     }
 
     public function delete($id): RedirectResponse

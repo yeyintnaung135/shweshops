@@ -46,7 +46,7 @@
                                             <fieldset>
                                                 <legend>From Date</legend>
                                                 <input type="text" id='search_fromdate_shop'
-                                                    class="shopdatepicker form-control" placeholder='Choose date'
+                                                value="{{ date('Y-m-d') }}" class="shopdatepicker form-control" placeholder='Choose date'
                                                     autocomplete="off" />
                                             </fieldset>
                                         </div>
@@ -54,7 +54,7 @@
                                             <fieldset>
                                                 <legend>To Date</legend>
                                                 <input type="text" id='search_todate_shop'
-                                                    class="shopdatepicker form-control" placeholder='Choose date'
+                                                value="{{ date('Y-m-d') }}" class="shopdatepicker form-control" placeholder='Choose date'
                                                     autocomplete="off" />
                                             </fieldset>
                                         </div>

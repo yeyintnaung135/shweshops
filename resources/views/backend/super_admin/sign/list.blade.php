@@ -27,7 +27,7 @@
 
                             <div class="card">
                                 <div class="card-header">
-                                    <a href=" {{ route('baydins.create') }} " class="btn btn-primary">Add Baydin</a>
+                                    <a href=" {{ route('backside.super_admin.baydins.create') }} " class="btn btn-primary">Add Baydin</a>
 
                                 </div>
                                 <!-- /.card-header -->
@@ -66,14 +66,14 @@
                                                             <div class="edit-section p-2 ">
                                                                 <div
                                                                     class="d-block d-lg-flex align-items-center justify-content-around">
-                                                                    <a href="{{ route('baydins.edit', $sign->id) }}"
+                                                                    <a href="{{ route('backside.super_admin.baydins.edit', $sign->id) }}"
                                                                         class="btn btn-sm btn-info"><i
                                                                             class="far fa-edit"></i></a> |
 
                                                                             <button type="button" onclick="delete_sign('delete_sign', '{{ $sign->id }}')" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>
 
 
-                                                                    | <a href="{{ route('baydins.show', $sign->id) }}"
+                                                                    | <a href="{{ route('backside.super_admin.baydins.show', $sign->id) }}"
                                                                         class="btn btn-sm btn-warning"><i
                                                                             class="far fa-eye"></i></a>
                                                                 </div>

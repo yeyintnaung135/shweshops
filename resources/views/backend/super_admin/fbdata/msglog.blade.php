@@ -121,7 +121,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                "url": "{{ url('backside/super_admin/fbdata/messenger/log') }}",
+                "url": "{{ route('backside.super_admin.fbdata.messenger.log') }}",
                 'data': function(data) {
                     // Read values
                     var from_date = $('#search_fromdate_shop').val() ? $('#search_fromdate_shop').val() +
@@ -142,7 +142,7 @@
                     data: 'shop_name'
                 },
                 {
-                    data: 'click_count'
+                    data: 'facebook_message_clicks_count', searchable:false,
                 },
 
                 {
@@ -150,7 +150,7 @@
                 },
 
                 {
-                    data: 'detail',
+                    data: 'action',
                     render: function(data, type) {
                         var detail = ` <a href="{{ url('backside/super_admin/activity_logs/messenger/detail/:id') }}" role="button" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Shop Detail">
                         <i class="fa fa-eye"></i>

@@ -10,7 +10,6 @@ use App\Models\SuperAdminLogActivity;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
@@ -50,13 +49,18 @@ class SuperAdminRoleController extends Controller
 
     public function get_admin_activity(Request $request): JsonResponse
     {
-        $data = SuperAdminLogActivity::select();
 
-        $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
-        $searchByTodate = $request->input('searchByTodate', Carbon::now());
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
+
+        $data = SuperAdminLogActivity::select(
+            'id', 'name', 'type',
+            'type_name', 'status', 'role', 'created_at',
+        )->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
         return DataTables::of($data)
-            ->addColumn('created_at_formatted', function ($record) {
+            ->editColumn('created_at', function ($record) {
                 return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
             ->make(true);

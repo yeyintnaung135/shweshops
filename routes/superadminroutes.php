@@ -41,7 +41,7 @@ Route::prefix('backside/super_admin')->name('backside.super_admin.')->group(func
     Route::get('fbdata/messenger/getAll', [FacebookDataController::class, 'get_all'])->name('fbdata.messenger.getAll');
     Route::post('fbdata/messenger/getcount', [FacebookDataController::class, 'get_count']);
     Route::post('fbdata/messenger/getmsglogcount', [FacebookDataController::class, 'get_msg_log_count']);
-    Route::get('fbdata/messenger/log', [FacebookDataController::class, 'get_msg_log']);
+    Route::get('fbdata/messenger/log', [FacebookDataController::class, 'get_msg_log'])->name('fbdata.messenger.log');
     Route::get('fbdata/messenger/log/detail', [FacebookDataController::class, 'get_msg_log_detail']);
     Route::get('activity_logs/messenger/detail/{shopid}', [FacebookDataController::class, 'messenger_log_detail']);
     Route::get('activity_logs/messenger', [FacebookDataController::class, 'messenger_log'])->name('activity.messenger');
@@ -63,7 +63,7 @@ Route::prefix('backside/super_admin')->name('backside.super_admin.')->group(func
     Route::get('support/create', [SupportController::class, 'create_form']);
     Route::post('support/create', [SupportController::class, 'store']);
     Route::get('support/list', [SupportController::class, 'list']);
-    Route::get('support/all', [SupportController::class, 'all']);
+    Route::get('support/get_all_support', [SupportController::class, 'get_all_support'])->name('support.get_all_support');
     Route::get('support/detail/{id}', [SupportController::class, 'detail']);
     Route::post('support/delete/{id}', [SupportController::class, 'delete']);
     Route::get('support/edit/{id}', [SupportController::class, 'edit']);
@@ -73,7 +73,7 @@ Route::prefix('backside/super_admin')->name('backside.super_admin.')->group(func
     Route::get('tooltips/create', [TooltipsController::class, 'create_form']);
     Route::post('tooltips/create', [TooltipsController::class, 'store']);
     Route::get('tooltips/list', [TooltipsController::class, 'list']);
-    Route::get('tooltips/all', [TooltipsController::class, 'all']);
+    Route::get('tooltips/get_all_tooltips', [TooltipsController::class, 'get_all_tooltips'])->name('tooltips.get_all_tooltips');
     Route::get('tooltips/detail/{id}', [TooltipsController::class, 'detail']);
     Route::post('tooltips/delete/{id}', [TooltipsController::class, 'delete']);
     Route::get('tooltips/edit/{id}', [TooltipsController::class, 'edit']);
@@ -83,7 +83,7 @@ Route::prefix('backside/super_admin')->name('backside.super_admin.')->group(func
 
     Route::get('directory/create', [DirectoryController::class, 'create_form']);
     Route::post('directory/create', [DirectoryController::class, 'store']);
-    Route::get('directory/alldirect', [DirectoryController::class, 'all_directory']);
+    Route::get('directory/alldirect', [DirectoryController::class, 'all_directory'])->name('directory.all_directory');
     Route::get('directory/detail/{id}', [DirectoryController::class, 'detail']);
     Route::get('directory/edit/{id}', [DirectoryController::class, 'edit_form']);
     Route::post('directory/edit', [DirectoryController::class, 'update']);
@@ -118,9 +118,9 @@ Route::prefix('backside/super_admin')->name('backside.super_admin.')->group(func
     ]);
 
     //for message
-    Route::prefix('messages')->group(function () {
+    Route::prefix('messages')->name('messages.')->group(function () {
         Route::get('showexpire', [SuperAdminMessage::class, 'show_all_expire']);
-        Route::get('getexpire', [SuperAdminMessage::class, 'get_expire']);
+        Route::get('getexpire', [SuperAdminMessage::class, 'get_expire'])->name('getexpire');
         Route::delete('deletebyone/{id}', [SuperAdminMessage::class, 'delete_by_one'])->name('delete');
         Route::post('deletemultiple', [SuperAdminMessage::class, 'delete_by_one']);
     });

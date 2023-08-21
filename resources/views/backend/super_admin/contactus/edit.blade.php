@@ -12,7 +12,7 @@
             </section>
             <div class="col-md-12 mb-3  d-flex justify-content-center">
 
-                <form class="sop-form" method="post" action="{{ route('superAdmin.contactus_update') }}"
+                <form class="sop-form" method="post" action="{{ route('backside.super_admin.superAdmin.contactus_update') }}"
                     enctype="multipart/form-data">
                     @csrf
                     @method('PUT')

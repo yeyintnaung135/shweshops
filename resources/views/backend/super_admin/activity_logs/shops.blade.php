@@ -15,21 +15,9 @@
         <div class="content-wrapper">
             <x-alert> </x-alert>
 
-            <!-- Content Header (Page header) -->
-            {{-- <section class="content-header">
-                <x-title>All Shops</x-title>
-            </section> --}}
-
             <!-- Main content -->
             <section class="content pt-3">
-                {{-- <div class="sn-tab-panel">
-                  <ul>
-                    <a href="{{route('activity.customer')}}"><li>User Activities</li></a>
-                    <a href="{{route('activity.ads')}}"><li>Ads Activities</li></a>
-                    <a href="{{route('activity.shop')}}"  class="active-panel"><li>Shop Activities</li></a>
-                    <a href="{{route('activity.admin')}}"><li>Admin Activities</li></a>
-                  </ul>
-              </div> --}}
+
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
@@ -39,7 +27,7 @@
                                     <div class="card-header">
                                         <h2>Shops Activity List</h2>
                                         <p>Check your Shops Activities</p>
-                                        <a href=" {{ route('shops.create') }} " class="btn btn-primary">Add Shop</a>
+                                        <a href=" {{ route('backside.super_admin.shops.create') }} " class="btn btn-primary">Add Shop</a>
 
                                     </div>
                                     <div class="d-flex justify-content-end my-3 align-items-center">
@@ -133,7 +121,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    "url": "{{ route('shops.getShopActivity') }}",
+                    "url": "{{ route('backside.super_admin.shops.getShopActivity') }}",
                     'data': function(data) {
                         // Read values
                         var from_date = $('#search_fromdate_shopact').val() ? $(
@@ -165,7 +153,7 @@
                         data: 'role'
                     },
                     {
-                        data: 'created_at_formatted'
+                        data: 'created_at'
                     }
 
                 ],

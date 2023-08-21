@@ -26,9 +26,9 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-6">
-                   
+
                     <div class="d-flex justify-content-end my-3 align-items-center">
-                      
+
                         <div class="form-group mr-md-2">
                             &nbsp;
                         </div>
@@ -302,7 +302,7 @@
                         <div class="sn-card" style="background-color: #4E73F8;color: white;">
 
                             <div class="card-body">
-                                <a href="{{ route('visitorcount.all') }}" style="color: #ffffff;">
+                                <a href="{{ route('backside.super_admin.visitorcount.all') }}" style="color: #ffffff;">
                                     <h5 class="card-title"
                                         style="
                                       font-size: 1.3rem;
@@ -318,7 +318,7 @@
                         </div>
                         <div class="sn-card" style="background-color: #f84e4e;color: white;">
                             <div class="card-body">
-                                <a href="{{ route('adscount.all') }}" style="color: #ffffff;">
+                                <a href="{{ route('backside.super_admin.adscount.all') }}" style="color: #ffffff;">
                                     <h5 class="card-title"
                                         style="
                                       font-size: 1.3rem;
@@ -334,7 +334,7 @@
                         </div>
                         <div class="sn-card" style="background-color: #e64ef8;color: white;">
                             <div class="card-body">
-                                <a href="{{ route('shopviewercount.all') }}" style="color: #ffffff;">
+                                <a href="{{ route('backside.super_admin.shopviewercount.all') }}" style="color: #ffffff;">
                                     <h5 class="card-title"
                                         style="
                                       font-size: 1.3rem;
@@ -350,7 +350,7 @@
                         </div>
                         <div class="sn-card" style="background-color: #4E73F8;color: white;">
                             <div class="card-body">
-                                <a href="{{ route('buynowcount.all') }}" style="color: #ffffff;">
+                                <a href="{{ route('backside.super_admin.buynowcount.all') }}" style="color: #ffffff;">
                                     <h5 class="card-title"
                                         style="
                                       font-size: 1.3rem;

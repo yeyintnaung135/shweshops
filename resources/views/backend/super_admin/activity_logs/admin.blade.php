@@ -13,21 +13,8 @@
         <div class="content-wrapper">
             <x-alert></x-alert>
 
-            <!-- Content Header (Page header) -->
-            {{-- <section class="content-header">
-                <x-title>All Admin</x-title>
-            </section> --}}
-
             <!-- Main content -->
             <section class="content pt-3">
-                {{-- <div class="sn-tab-panel">
-                  <ul>
-                    <a href="{{route('activity.customer')}}"><li>User Activities</li></a>
-                    <a href="{{route('activity.ads')}}"><li>Ads Activities</li></a>
-                    <a href="{{route('activity.shop')}}"><li>Shop Activities</li></a>
-                    <a href="{{route('activity.admin')}}" class="active-panel"><li>Admin Activities</li></a>
-                  </ul>
-              </div> --}}
 
                 <div id="item-panel-2" class="container-fluid">
                     <div class="row">
@@ -136,7 +123,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                'url': "{{ route('super_admin_role.getAdminActivity') }}",
+                'url': "{{ route('backside.super_admin.super_admin_role.getAdminActivity') }}",
                 'data': function(data) {
                     // Read values
                     var from_date = $('#search_fromdate_adminsact').val() ? $('#search_fromdate_adminsact')
@@ -150,8 +137,6 @@
 
                 }
             },
-
-            // ajax: "{{ route('super_admin_role.getAdminActivity') }}",
 
             columns: [{
                     data: 'id'

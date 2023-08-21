@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\traid\ykimage;
-use App\Percent_template;
-use App\PremiumTemplate;
-use App\ShopBanner;
-use App\Shopdirectory;
-use App\Shopowner;
-use App\State;
+use App\Http\Controllers\Trait\YkImage;
+use App\Models\PercentTemplate;
+use App\Models\PremiumTemplate;
+use App\Models\ShopBanner;
+use App\Models\Shopdirectory;
+use App\Models\Shops;
+use App\Models\State;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -25,12 +25,12 @@ class ShopownerRegisterController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['auth:super_admin', 'admin']);
+        $this->middleware(['auth:super_admin']);
     }
 
     public function activity_index()
     {
-        $shopowner = Shopowner::all();
+        $shopowner = Shops::all();
         return view('backend.super_admin.activity_logs.shops', ['shopowner' => $shopowner]);
     }
 
@@ -127,7 +127,7 @@ class ShopownerRegisterController extends Controller
         $data['additional_phones'] = json_encode($add_ph_array);
         // $data['state']=$request->state;
         // $data['township']=$request->township;
-        $shopdata = Shopowner::create($data);
+        $shopdata = Shops::create($data);
 
         foreach ($fileNameArr as $f) {
             $banner = new ShopBanner();
@@ -150,10 +150,10 @@ class ShopownerRegisterController extends Controller
                 'valuable_product' => $data['valuable_product'],
             ];
 
-            Percent_template::create($template_percent);
+            PercentTemplate::create($template_percent);
 
             $shop_dir['shop_id'] = $shop_id;
-            Shopdirectory::updateOrCreate($shop_dir);
+            ShopDirectory::updateOrCreate($shop_dir);
 
             Session::flash('message', 'Your Shop was successfully created');
 
@@ -166,7 +166,7 @@ class ShopownerRegisterController extends Controller
     public function edit($id)
     {
         $states = State::get();
-        $shopowner = Shopowner::findOrFail($id);
+        $shopowner = Shops::findOrFail($id);
         $premium_templates = PremiumTemplate::get();
         return view('backend.super_admin.shops.edit', ['shopowner' => $shopowner, 'states' => $states, 'premium_templates' => $premium_templates]);
     }
@@ -174,7 +174,7 @@ class ShopownerRegisterController extends Controller
     public function update(Request $request, $id)
     {
         $input = $request->except('_token', '_method');
-        $shopowner = Shopowner::findOrFail($id);
+        $shopowner = Shops::findOrFail($id);
         //        return $shopowner;
         $request->validate(
             [
@@ -244,7 +244,7 @@ class ShopownerRegisterController extends Controller
         $updateSuccess = $shopowner->update();
 
         $shop_dir['shop_id'] = $id;
-        Shopdirectory::updateOrCreate($shop_dir);
+        ShopDirectory::updateOrCreate($shop_dir);
 
         if ($request->hasFile('banner')) {
             $shop_banner = ShopBanner::where('shop_owner_id', $id)->get();

@@ -12,7 +12,6 @@ use App\Models\Township;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
@@ -32,26 +31,15 @@ class DirectoryController extends Controller
 
     public function all_directory(Request $request): JsonResponse
     {
-        $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
-        $searchByTodate = $request->input('toDate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
 
-        $totalRecordsQuery = ShopDirectory::select('shop_directory.*')
-            ->where('shop_id', '=', '0')
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->selectRaw('count(*) as allcount')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $totalRecordsQuery = ShopDirectory::select('id', 'shop_name', 'shop_logo', 'main_phone', 'created_at')
+            ->where('shop_id', '0')
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
         return DataTables::of($totalRecordsQuery)
-            ->addColumn('shop_name', function ($record) {
-                return $record->shop_name;
-            })
-            ->addColumn('shop_logo', function ($record) {
-                return $record->shop_logo;
-            })
-            ->addColumn('main_phone', function ($record) {
-                return $record->main_phone;
-            })
             ->addColumn('created_at', function ($record) {
                 return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })

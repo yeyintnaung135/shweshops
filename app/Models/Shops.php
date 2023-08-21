@@ -37,6 +37,11 @@ class Shops extends Authenticatable
         return $this->hasMany(Item::class, 'shop_id');
     }
 
+    public function facebook_message_clicks()
+    {
+        return $this->hasMany(FacebookMessage::class, 'shop_id');
+    }
+
     public function premiumTemplate()
     {
         return $this->belongsTo(PremiumTemplate::class);

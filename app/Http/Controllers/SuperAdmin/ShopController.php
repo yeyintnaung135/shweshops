@@ -185,8 +185,8 @@ class ShopController extends Controller
     public function get_all_trash_shop(Request $request): JsonResponse
     {
         $recordsQuery = Shops::
-        select( 'id','name', 'shop_name', 'shop_name_myan', 'created_at', 'email','deleted_at')
-        ->where('deleted_at', '!=', null)->onlyTrashed();
+            select('id', 'name', 'shop_name', 'shop_name_myan', 'created_at', 'email', 'deleted_at')
+            ->where('deleted_at', '!=', null)->onlyTrashed();
 
         return DataTables::of($recordsQuery)
             ->addColumn('checkbox', function ($record) {
@@ -251,18 +251,21 @@ class ShopController extends Controller
 // datable for shop log activity
     public function get_shop_activity(Request $request): JsonResponse
     {
-        $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
-        $searchByTodate = $request->input('toDate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
 
-        $recordsQuery = SuperAdminLogActivity::select('superadmin_log_activities.*')
+        $shopActivityQuery = SuperAdminLogActivity::select(
+            'id', 'name', 'type',
+            'type_name', 'status', 'role', 'created_at',
+        )
             ->where('type', 'shop')
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])->orderBy('created_at', 'desc');
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
-        return DataTables::of($recordsQuery)
-            ->addColumn('created_at_formatted', function ($record) {
-                return date('F d, Y ( h:i A )', strtotime($record->created_at));
+        return DataTables::of($shopActivityQuery)
+            ->editColumn('created_at', function ($shopActivity) {
+                return date('F d, Y ( h:i A )', strtotime($shopActivity->created_at));
             })
-            ->rawColumns(['created_at_formatted'])
             ->make(true);
     }
 

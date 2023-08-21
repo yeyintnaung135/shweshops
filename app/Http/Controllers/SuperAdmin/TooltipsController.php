@@ -55,36 +55,20 @@ class TooltipsController extends Controller
         return view('backend.super_admin.tooltips.list', ['alltt' => $alltt]);
     }
 
-    public function all(Request $request): JsonResponse
+    public function get_all_tooltips(Request $request): JsonResponse
     {
-        if ($request->ajax()) {
-            $data = Tooltips::query();
+        $tooltipsQuery = Tooltips::select(
+            'id', 'endpoint', 'info', 'created_at',
+        );
 
-            $searchValue = $request->input('search.value');
-
-            $data->where('endpoint', 'like', '%' . $searchValue . '%')
-                ->orWhere('info', 'like', '%' . $searchValue . '%');
-
-            $totalRecords = $data->count();
-            $totalRecordswithFilter = $totalRecords;
-
-            $orderColumnIndex = $request->input('order.0.column');
-            $orderDirection = $request->input('order.0.dir');
-
-            $orderColumn = $orderColumnIndex == 1 ? 'endpoint' : $request->input('columns.' . $orderColumnIndex . '.data');
-
-            $data->orderBy($orderColumn, $orderDirection)
-                ->orderBy('created_at', 'desc')
-                ->skip($request->input('start'))
-                ->take($request->input('length'));
-
-            return DataTables::of($data)
-                ->addColumn('action', function ($record) {
-                    return '<a href="#">Edit</a>'; // Add your action link here
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-        }
+        return DataTables::of($tooltipsQuery)
+            ->editColumn('created_at', function ($tooltips) {
+                return date('F d, Y ( h:i A )', strtotime($tooltips->created_at));
+            })
+            ->addColumn('action', function ($tooltips) {
+                return $tooltips->id;
+            })
+            ->make(true);
     }
 
     public function edit($id): View

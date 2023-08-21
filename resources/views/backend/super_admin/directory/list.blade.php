@@ -129,7 +129,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                "url": "{{ url('backside/super_admin/directory/alldirect') }}",
+                "url": "{{ route('backside.super_admin.directory.all_directory') }}",
                 'data': function(data) {
                     // Read values
                     var from_date = $('#search_fromdate_shop').val() ? $('#search_fromdate_shop').val() +
@@ -164,20 +164,11 @@
                         }
                     }
                 },
-
-                // {data: 'description'},
-                // {data: 'undamaged_product'},
-                // {data: 'valuable_product'},
-                // {data: 'damaged_product'},
-                // {data: 'messenger_link'},
-                // {data: 'page_link'},
-
                 {
                     data: 'main_phone'
                 },
                 {
-                    data: 'id',
-                    name: 'action',
+                    data: 'action',
                     render: function(data, type) {
                         var edit = `<a href="{{ url('backside/super_admin/directory/edit/' . ':id') }}" role="button" class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="top" title="Shop Edit">
                         <i class="fa fa-edit"></i>

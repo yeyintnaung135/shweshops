@@ -14,19 +14,8 @@
         <div class="content-wrapper">
             <x-alert></x-alert>
 
-            <!-- Content Header (Page header) -->
-            {{-- <section class="content-header">
-            <x-title>All Admin</x-title>
-        </section> --}}
-
             <!-- Main content -->
             <section class="content pt-3">
-                {{-- <div class="sn-tab-panel">
-                    <ul>
-                    <li id="item-tab-1" class="active-panel" onclick="superAdminTabSwitchOne()">Admin List</li>
-                    <li id="item-tab-2" onclick="superAdminTabSwitchTwo()">Admin Activity</li>
-                    </ul>
-                </div> --}}
                 <div id="item-panel-1" class="container-fluid">
                     <div class="row">
                         <div class="col-12">
@@ -49,13 +38,11 @@
                                         <table id="superAdminTable" class="table table-borderless">
                                             <thead>
                                                 <tr>
-                                                    <td>id</td>
-                                                    <td>title</td>
+                                                    <td>Id</td>
+                                                    <td>Title</td>
                                                     <td>Category</td>
                                                     <td>Video</td>
-
                                                     <td>Action</td>
-                                                    <!-- <td>Created Date</td> -->
                                                 </tr>
                                             </thead>
                                         </table>
@@ -114,7 +101,7 @@
         $('#superAdminTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ url('backside/super_admin/support/all') }}",
+            ajax: "{{ route('backside.super_admin.support.get_all_support') }}",
 
             columns: [{
                     data: 'id'
