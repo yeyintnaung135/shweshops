@@ -17,17 +17,7 @@
 
                 </x-alert>
             @endif
-            <!-- zhheader shopname -->
-            {{-- <x-header>
-        @foreach ($shopowner as $shopowner)
-                @endforeach
-                {{$shopowner->shop_name}}
-        </x-header> --}}
-            <!-- end zh header shopname -->
-            {{-- <x-title>
-            Items list
-        </x-title> --}}
-            <!-- Main content -->
+
             <section class="content pt-3">
                 <div class="sn-tab-panel">
                     <ul>
@@ -95,17 +85,6 @@
                                                     <th>Created Date</th>
                                                 </tr>
                                             </thead>
-
-                                            <tfoot>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Product Code</th>
-                                                    <th>Product Name</th>
-                                                    <th>User Id</th>
-                                                    <th>User Name</th>
-                                                    <th>Created Date</th>
-                                                </tr>
-                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>
@@ -179,7 +158,7 @@
                         data: 'user_name'
                     },
                     {
-                        data: 'created_at_formatted'
+                        data: 'created_at'
                     }
                 ],
                 dom: 'lBfrtip',

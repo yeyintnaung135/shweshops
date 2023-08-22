@@ -74,6 +74,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Select</th>
+                                                <th>Id</th>
                                                 <th>Image</th>
                                                 <th>Product Code</th>
                                                 <th>Old Price</th>
@@ -81,16 +82,6 @@
                                                 <th>Date Time</th>
                                                 <th>Action</th>
                                         </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th>Select</th>
-                                                <th>Image</th>
-                                                <th>Product Code</th>
-                                                <th>Old Price</th>
-                                                <th>New Price</th>
-                                                <th>Date Time</th>
-                                                <th>Action</th>
-                                        </tfoot>
                                     </table>
                                 </div>
                                 <!-- /.card-body -->
@@ -200,7 +191,7 @@
             serverSide: true,
             ajax: "{{ route('backside.shop_owner.getDiscountItems') }}",
             columns: [{
-                    data: 'id',
+                    data: 'checkbox',
                     render: function(data, type) {
                         let localRetri = JSON.parse(window.localStorage.getItem("localData")) || [];
                         return (localRetri.length == 0) ?
@@ -209,7 +200,9 @@
                             `<input type="checkbox" value="${data}" onclick='checkBox(this)' id="1_${data}" checked>` :
                             `<input type="checkbox" value="${data}" onclick='checkBox(this)' id="1_${data}">`
                     }
-
+                },
+                {
+                    data: 'id'
                 },
                 {
                     data: 'image',
@@ -229,7 +222,7 @@
                     data: 'new_price'
                 },
                 {
-                    data: 'date_time',
+                    data: 'created_at',
                 },
                 {
                     data: 'unset_discount',
@@ -253,8 +246,8 @@
                 },
             ],
             dom: 'lBfrtip',
-                "responsive": true,
-                "autoWidth": false,
+            "responsive": true,
+            "autoWidth": false,
         });
     </script>
 @endpush

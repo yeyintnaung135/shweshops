@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\ShopOwner;
 
-use App\Services\ImageService;
-use App\Models\Event;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Trait\ShopTrait;
 use App\Http\Controllers\Trait\YKImage;
 use App\Http\Requests\ShopOwner\StoreEventRequest;
 use App\Http\Requests\ShopOwner\UpdateEventRequest;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-use App\Http\Controllers\Trait\ShopTrait;
+use App\Models\Event;
+use App\Services\ImageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -59,7 +59,7 @@ class EventController extends Controller
         }
 
         Event::create([
-            'shop_id' => $this->getShopId(),
+            'shop_id' => $this->get_shop_id(),
             'title' => $request->input('title'),
             'description' => $request->input('description'),
             'photo' => $fileName,
@@ -145,10 +145,10 @@ class EventController extends Controller
         $fromDate = $request->input('fromDate');
         $toDate = $request->input('toDate');
 
-        $events = Event::where('shop_id', $this->getShopId())
+        $events = Event::where('shop_id', $this->get_shop_id())
             ->select('id', 'title', 'description', 'photo')
-            ->when($fromDate, fn ($query) => $query->whereDate('created_at', '>=', $fromDate))
-            ->when($toDate, fn ($query) => $query->whereDate('created_at', '<=', $toDate));
+            ->when($fromDate, fn($query) => $query->whereDate('created_at', '>=', $fromDate))
+            ->when($toDate, fn($query) => $query->whereDate('created_at', '<=', $toDate));
 
         return datatables($events)
             ->addColumn('description', function ($news) {
@@ -157,7 +157,7 @@ class EventController extends Controller
             ->addColumn('actions', function ($events) {
                 $urls = [
                     'edit_url' => route('backside.shop_owner.events.edit', $events->id),
-                    'delete_url' => route('backside.shop_owner.events.destroy',  $events->id)
+                    'delete_url' => route('backside.shop_owner.events.destroy', $events->id),
                 ];
 
                 return $urls;

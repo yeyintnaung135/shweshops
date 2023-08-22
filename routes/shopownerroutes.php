@@ -20,7 +20,7 @@ use App\Http\Controllers\ShopOwner\ShopOwnerSupportController;
 use App\Http\Controllers\ShopOwner\TemplateController;
 use App\Http\Controllers\UpdatePasswordController;
 
-Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.'], function () {
+Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.', 'middleware' => ['auth:shop_owners_and_staffs']], function () {
 
     // Authentication Routes
     // Route::get('register', [ShopownerRegisterController::class, 'create'])->name('register');
@@ -61,13 +61,9 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     Route::post('/getproductcodebytyping', [ItemsController::class, 'get_product_code_by_typing']);
 
     Route::get('/items_trash', [ItemsController::class, 'trash'])->name('items.trash');
-    Route::get('/get_items_trash', [ItemsController::class, 'getitemsTrash'])->name('items.getitemsTrash');
+    Route::get('/get_items_trash', [ItemsController::class, 'get_items_trash'])->name('items.getitemsTrash');
     Route::get('/items_trash/{id}', [ItemsController::class, 'restore'])->name('items.restore');
     Route::delete('/items_trash_delete/{id}', [ItemsController::class, 'force_delete'])->name('items.forcedelete');
-
-    // Route::get('/items_trash','Shopowner\ItemsController@trash')->name('items.trash');
-    // Route::get('/items_trash/{id}','Shopowner\ItemsController@restore')->name('items.restore');
-    // Route::get('/items_trash_delete/{id}','Shopowner\ItemsController@forceDelete')->name('items.forcedelete');
 
     Route::post('/multipe_discount', [DiscountController::class, 'multiple_discount'])->name('items.multiple.discount');
     Route::post('/multipe_unset_discount', [DiscountController::class, 'multiple_unset_discount']);
@@ -147,54 +143,45 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     Route::delete('/item/discount_remove', [DiscountController::class, 'remove']);
     Route::get('/item/get_discount_items', [DiscountController::class, 'get_discount_items'])->name('getDiscountItems');
 
-    //Premium Features
-    Route::middleware(['auth:shop_owner,shop_role'])->group(function () {
-        //collection
-        Route::get('/collections/items/{collection}', [CollectionController::class, 'collection_items'])
-            ->name('collections.items');
+    //INFO Premium Features
+    //collection
+    Route::get('/collections/items/{collection}', [CollectionController::class, 'collection_items'])
+        ->name('collections.items');
 
-        Route::post('/collections/items/add/{collection}', [CollectionController::class, 'add_item'])->name('collections.item.add');
+    Route::post('/collections/items/add/{collection}', [CollectionController::class, 'add_item'])
+        ->name('collections.item.add');
 
-        Route::delete('/collections/remove-item', [CollectionController::class, 'remove_item'])
-            ->name('collections.remove.item');
+    Route::delete('/collections/remove-item', [CollectionController::class, 'remove_item'])
+        ->name('collections.remove.item');
 
-        //collection datatable
-        Route::get('/collections/get-collections', [CollectionController::class, 'get_collections'])
-            ->name('collections.getCollections');
+    //collection datatable
+    Route::get('/collections/get-collections', [CollectionController::class, 'get_collections'])
+        ->name('collections.getCollections');
 
-        Route::get('/collections/get-collection-items', [CollectionController::class, 'get_collection_items'])
-            ->name('collections.getCollectionItems');
+    Route::get('/collections/get-collection-items', [CollectionController::class, 'get_collection_items'])
+        ->name('collections.getCollectionItems');
 
-        Route::get('/collections/get-items', [CollectionController::class, 'get_items'])
-            ->name('collections.getItems');
+    Route::get('/collections/get-items', [CollectionController::class, 'get_items'])
+        ->name('collections.getItems');
 
-        //news datatable
-        Route::get('/news/get-all-news', [NewsController::class, 'get_all_news'])
-            ->name('news.getAllNews');
+    //news datatable
+    Route::get('/news/get-all-news', [NewsController::class, 'get_all_news'])
+        ->name('news.getAllNews');
 
-        //event datatable
-        Route::get('/events/get-events', [EventController::class, 'get_events'])
-            ->name('events.getEvents');
+    //event datatable
+    Route::get('/events/get-events', [EventController::class, 'get_events'])
+        ->name('events.getEvents');
 
-        Route::resources([
-            'collections' => CollectionController::class,
-            'news' => NewsController::class,
-            'events' => EventController::class,
-        ]);
+    Route::resources([
+        'collections' => CollectionController::class,
+        'news' => NewsController::class,
+        'events' => EventController::class,
+    ]);
 
-        //activity
-        Route::get('/product/activity/item', [ItemsController::class, 'item_activity_index'])->name('so_activity.p_product');
-        Route::get('/product/activity/multiprice', [ItemsController::class, 'multiprice_activity_index'])->name('so_activity.p_multiprice');
-        Route::get('/product/activity/multidiscount', [ItemsController::class, 'multidiscount_activity_index'])->name('so_activity.p_multidiscount');
-        Route::get('/product/activity/multipercent', [ItemsController::class, 'multipercent_activity_index'])->name('so_activity.p_multipercent');
+    /** Point System */
+    // Route::get('/user_points/add_price/','Shopowner\ShopownerController@add_price')->name('add_price');
+    Route::post('/user_points/add_price/', [ShopOwnerController::class, 'add_price_create'])->name('add_price.create');
 
-        Route::get('/user/activity/product', [ManagerController::class, 'u_product'])->name('so_activity.u_product');
-        Route::get('/user/activity/role', [ManagerController::class, 'u_role'])->name('so_activity.u_role');
-
-        /** Point System */
-        // Route::get('/user_points/add_price/','Shopowner\ShopownerController@add_price')->name('add_price');
-        Route::post('/user_points/add_price/', [ShopOwnerController::class, 'add_price_create'])->name('add_price.create');
-    });
     //Start POS//
     Route::middleware(['web', 'foratc'])->group(function () {
         Route::get('/dashboard', [PosController::class, 'get_dashboard'])->name('pos.dashboard');
@@ -406,8 +393,8 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     Route::get('/product/activity/multidiscount', [ItemsController::class, 'multidiscount_activity_index'])->name('so_activity.p_multidiscount');
     Route::get('/product/activity/multipercent', [ItemsController::class, 'multipercent_activity_index'])->name('so_activity.p_multipercent');
 
-    Route::get('/user/activity/product', [ManagerController::class, 'u_product'])->name('so_activity.u_product');
-    Route::get('/user/activity/role', [ManagerController::class, 'u_role'])->name('so_activity.u_role');
+    Route::get('/user/activity/product', [ManagerController::class, 'user_activity_product'])->name('so_activity.u_product');
+    Route::get('/user/activity/role', [ManagerController::class, 'user_activity_role'])->name('so_activity.u_role');
 
     // Popup Ads
     Route::get('/ads/main_popup', [PopupAdsController::class, 'main_popup'])->name('ads.main_popup');
@@ -449,15 +436,6 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
 
     // Firebase Notifications
     Route::post('/storefirebasetokenforshop', [MessageController::class, 'storefirebasetokenforshop']);
-
-    // Activity
-    Route::get('/product/activity/item', [ItemsController::class, 'item_activity_index'])->name('so_activity.p_product');
-    Route::get('/product/activity/multiprice', [ItemsController::class, 'multiprice_activity_index'])->name('so_activity.p_multiprice');
-    Route::get('/product/activity/multidiscount', [ItemsController::class, 'multidiscount_activity_index'])->name('so_activity.p_multidiscount');
-    Route::get('/product/activity/multipercent', [ItemsController::class, 'multipercent_activity_index'])->name('so_activity.p_multipercent');
-
-    Route::get('/user/activity/product', [ManagerController::class, 'u_product'])->name('so_activity.u_product');
-    Route::get('/user/activity/role', [ManagerController::class, 'u_role'])->name('so_activity.u_role');
 
     // Point System
     // Route::get('/user_points/add_price/', [ShopownerController::class, 'add_price'])->name('add_price');

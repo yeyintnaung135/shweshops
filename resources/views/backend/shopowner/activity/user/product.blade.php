@@ -87,25 +87,11 @@
                                                 <th>Item name</th>
                                                 <th>User name</th>
                                                 <th>Action</th>
-                                                <th>Check</th>
+                                                <th>Check Edit</th>
                                                 <th>Role</th>
                                                 <th>Date</th>
                                             </tr>
                                         </thead>
-
-                                        <tfoot>
-                                            <tr>
-
-                                                <th>ID</th>
-                                                <th>Product code</th>
-                                                <th>Item name</th>
-                                                <th>User name</th>
-                                                <th>Action</th>
-                                                <th>Check</th>
-                                                <th>Role</th>
-                                                <th>Date</th>
-                                            </tr>
-                                        </tfoot>
                                     </table>
                                 </div>
                                 <!-- /.card-body -->
@@ -146,6 +132,69 @@
 
 @push('scripts')
     <script>
+        var usersActivityTable = $('#usersActivityTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'url': "{{ route('backside.shop_owner.users.getusers_activity_Log') }}",
+                'data': function(data) {
+                    // Read values
+                    var from_date = $('#search_fromdate_user').val() ? $('#search_fromdate_user').val() +
+                        " 00:00:00" : null;
+                    var to_date = $('#search_todate_user').val() ? $('#search_todate_user').val() +
+                        " 23:59:59" : null;
+
+                    // Append to data
+                    data.searchByFromdate = from_date;
+                    data.searchByTodate = to_date;
+                }
+            },
+            columns: [{
+                    data: 'id'
+                },
+                {
+                    data: 'product_code'
+                },
+                {
+                    data: 'item_name'
+                },
+                {
+                    data: 'user_name'
+                },
+                {
+                    data: 'action'
+                },
+                {
+                    data: 'check',
+                    render: function(data, type, row) {
+                        if (row.action == 'Edit') {
+                            var detail =
+                                `<button class="btn btn-primary" data-toggle="modal" data-target="#item_myModal" onclick="checkItemDetail(:id, :action)"><span class="fa fa-eye"></span></button>`;
+                            detail = detail.replace(':id', data);
+                            detail = detail.replace(':action', "'" + row.action + "'");
+                        } else {
+                            detail = null;
+                        }
+                        return detail;
+                    },
+                    orderable: false
+                },
+                {
+                    data: 'role'
+                },
+                {
+                    data: 'created_at'
+                }
+
+            ],
+            dom: 'lBfrtip',
+            "responsive": true,
+            "autoWidth": false,
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+        });
+
         $(document).ready(function() {
             $(".userdatepicker").datepicker({
                 "dateFormat": "yy-mm-dd",

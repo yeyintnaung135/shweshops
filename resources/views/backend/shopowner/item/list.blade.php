@@ -42,16 +42,7 @@
 
                 </x-alert>
             @endif
-            <!-- zhheader shopname -->
-            {{-- <x-header>
-        @foreach ($shopowner as $shopowner)
-                @endforeach
-                {{$shopowner->shop_name}}
-        </x-header> --}}
-            <!-- end zh header shopname -->
-            {{-- <x-title>
-            Items list
-        </x-title> --}}
+
             <!-- Main content -->
             <section class="content pt-3">
                 {{-- <div class="sn-tab-panel">
@@ -130,7 +121,6 @@
                                         <thead>
                                             <tr>
                                                 <td>Select</td>
-
                                                 <td>Name</td>
                                                 <td>Discount</td>
                                                 <td>Image</td>
@@ -143,7 +133,6 @@
                                         <tfoot>
                                             <tr>
                                                 <td>Select</td>
-
                                                 <td>Name</td>
                                                 <td>Discount</td>
                                                 <td>Image</td>
@@ -465,7 +454,6 @@
                         }
                     },
                     {
-
                         data: 'default_photo',
                         render: function(data, type) {
                             const image = `<img src= "{{ filedopath('/items/' . '${data}') }}"/>`;
@@ -511,7 +499,7 @@
                         }
                     },
                     {
-                        data: 'created_at_formatted'
+                        data: 'created_at'
                     }
 
                 ],

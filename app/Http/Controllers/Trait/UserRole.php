@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Trait;
 
 use App\Models\Item;
+use App\Models\Role;
 use App\Models\ShopOwnersAndStaffs;
 use App\Models\Shops;
-use App\Models\Role;
-
 use Illuminate\Support\Facades\Auth;
 
 trait UserRole
@@ -34,7 +33,6 @@ trait UserRole
         }
     }
 
-
     public function itisowneritem($itemid)
     {
         $tmpdata = 0;
@@ -57,6 +55,7 @@ trait UserRole
             return false;
         }
     }
+
     public function is_manager()
     {
         if (Auth::guard('shop_owners_and_staffs')->user()->role->id == 2) {
@@ -65,6 +64,7 @@ trait UserRole
             return false;
         }
     }
+
     public function is_owner()
     {
         if (Auth::guard('shop_owners_and_staffs')->user()->role->id == 4) {
@@ -101,22 +101,71 @@ trait UserRole
             return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         }
     }
+
+    public function get_user_list_by_role_level_select()
+    {
+        if ($this->is_manager()) {
+            return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->whereIn('role_id', [3])->orderBy('created_at', 'desc');
+        }
+        if ($this->is_admin()) {
+            return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->whereIn('role_id', [2, 3])->orderBy('created_at', 'desc');
+        }
+        if ($this->is_owner()) {
+            return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid());
+        }
+        if ($this->is_staff()) {
+
+            return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc');
+        }
+    }
+
+    public function get_user_list_by_role_level_count()
+    {
+        if ($this->is_manager()) {
+            return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->whereIn('role_id', [3])->orderBy('created_at', 'desc')->count();
+        }
+        if ($this->is_admin()) {
+            return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->whereIn('role_id', [2, 3])->orderBy('created_at', 'desc')->count();
+        }
+        if ($this->is_owner()) {
+            return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->count();
+        }
+        if ($this->is_staff()) {
+
+            return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->count();
+        }
+    }
+
     public function get_role_list()
     {
         if ($this->is_manager()) {
             return Role::whereIn('id', [3])->get();
         }
         if ($this->is_admin()) {
-            return Role::whereIn('id',  [2, 3])->get();
+            return Role::whereIn('id', [2, 3])->get();
         }
         if ($this->is_owner()) {
-            return Role::whereIn('id',  [1, 2, 3])->get();
+            return Role::whereIn('id', [1, 2, 3])->get();
         }
         if ($this->is_staff()) {
 
             return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         }
     }
+
+    public function trash_list_by_role()
+    {
+        if ($this->is_owner()) {
+            return ShopOwnersAndStaffs::select('id', 'name', 'phone', 'created_at', 'shop_id', 'role_id')->onlyTrashed();
+        }
+        if ($this->is_admin()) {
+            return ShopOwnersAndStaffs::select('id', 'name', 'phone', 'created_at', 'shop_id', 'role_id')->onlyTrashed()->whereIn('role_id', [2, 3])->orderBy('created_at', 'desc');
+        }
+        if ($this->is_manager()) {
+            return ShopOwnersAndStaffs::select('id', 'name', 'phone', 'created_at', 'shop_id', 'role_id')->onlyTrashed()->where('role_id', 3)->orderBy('created_at', 'desc');
+        }
+    }
+
     public function get_currentauthdata()
     {
         return Auth::guard('shop_owners_and_staffs')->user();

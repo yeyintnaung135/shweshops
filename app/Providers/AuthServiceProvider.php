@@ -2,25 +2,16 @@
 
 namespace App\Providers;
 
-use App\Models\Featuresforshops;
 use App\Http\Controllers\Trait\UserRole;
-use App\Policies\ItemYkPolicy;
-use Illuminate\Auth\Access\Response;
-
-use App\Models\Item;
-use App\Models\Role;
+use App\Models\Featuresforshops;
+use App\Models\ShopOwnersAndStaffs;
+use App\Models\Shops;
 use App\Models\sitesettings;
 use App\Models\User;
-use App\Models\Manager;
-use App\Models\Shops;
 use App\Policies\ShopOwnersAndStaffsPolicy;
-use App\Models\ShopOwnersAndStaffs;
-
-use App\Models\ShweNews\Post;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -45,7 +36,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('can_show_dashboard', function () {
             return
             Auth::guard('shop_owners_and_staffs')->user()->role_id == 1 ||
-            Auth::guard('shop_owners_and_staffs')->user()->role_id == 2  ||
+            Auth::guard('shop_owners_and_staffs')->user()->role_id == 2 ||
             Auth::guard('shop_owners_and_staffs')->user()->role_id == 4;
         });
 
@@ -66,14 +57,16 @@ class AuthServiceProvider extends ServiceProvider
         //     return $user->role_id === 2;
         // });
 
+        Gate::define('to_create_user', [ShopOwnersAndStaffsPolicy::class, 'create']);
+
         Gate::define('access-shop-owner-premium', function ($user) {
             return $user->premium === 'yes';
         });
-        Gate::define('to_create_user',[ShopOwnersAndStaffsPolicy::class, 'create']);
-        Gate::define('access-shop-role-premium', function ($user) {
-            $shopRole = ShopOwnersAndStaffs::where('id', $user->shop_id)->first();
 
-            if ($shopRole && $shopRole->premium === 'yes') {
+        Gate::define('access-shop-role-premium', function ($user) {
+            $premiumShop = Shops::where('id', $user->shop_id)->first();
+
+            if ($premiumShop && $premiumShop->premium === 'yes') {
                 return true;
             }
 

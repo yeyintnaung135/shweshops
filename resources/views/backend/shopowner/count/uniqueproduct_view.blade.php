@@ -101,26 +101,37 @@
 
 @push('scripts')
     <script>
-        function get(obj) {
-            return document.getElementById(obj);
-        }
-        // function itemTab_Panel (tab_active, tab2, tab3, panel_remove, panel2, panel3) {
-        //   get(tab_active).classList.add("active-panel");
-        //   get(tab2).classList.remove("active-panel");
-        //   get(tab3).classList.remove("active-panel");
+        $('#uniqueitemsActivityTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('backside.shop_owner.items.uniquegetitems_activity_log') }}",
 
-        //   get(panel_remove).classList.remove("sn-panel-hide");
-        //   get(panel2).classList.add("sn-panel-hide");
-        //   get(panel3).classList.add("sn-panel-hide");
-        // }
-        // function itemTabSwitchOne() {
-        //   itemTab_Panel("item-tab-1", "item-tab-2", "item-tab-3", "item-panel-1", "item-panel-2", "item-panel-3");
-        // }
-        // function itemTabSwitchTwo() {
-        //   itemTab_Panel("item-tab-2", "item-tab-1", "item-tab-3", "item-panel-2", "item-panel-1", "item-panel-3");
-        // }
-        // function itemTabSwitchThree() {
-        //   itemTab_Panel("item-tab-3", "item-tab-1", "item-tab-2", "item-panel-3", "item-panel-1", "item-panel-2");
-        // }
+                columns: [{
+                        data: 'id',
+                    },
+                    {
+                        data: 'item_code'
+                    },
+                    {
+                        data: 'name'
+                    },
+                    {
+                        data: 'user_id'
+                    },
+                    {
+                        data: 'user_name'
+                    },
+                    {
+                        data: 'created_at'
+                    }
+
+                ],
+                dom: 'lBfrtip',
+                "responsive": true,
+                "autoWidth": false,
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+            });
     </script>
 @endpush

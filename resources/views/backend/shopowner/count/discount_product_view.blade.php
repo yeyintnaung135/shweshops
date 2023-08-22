@@ -31,10 +31,10 @@
             <!-- Main content -->
             <section class="content pt-3 sn-background-light-blue">
                 <!-- <div class="sn-tab-panel">
-                      <ul>
-                        <li id="item-tab-1" class="active-panel" onclick="itemTabSwitchOne()">Shop View List</li>
-                      </ul>
-                    </div> -->
+                          <ul>
+                            <li id="item-tab-1" class="active-panel" onclick="itemTabSwitchOne()">Shop View List</li>
+                          </ul>
+                        </div> -->
 
                 <!--{{-- panel 1 --}}-->
                 <div id="item-panel-1" class="container-fluid">
@@ -100,6 +100,34 @@
 
 @push('scripts')
     <script>
+        $('#discountproductviewTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('backside.shop_owner.detail.get_discount_product_view') }}",
+
+            columns: [{
+                    data: 'id'
+                },
+                {
+                    data: 'user_id'
+                },
+                {
+                    data: 'user_name'
+                },
+                {
+                    data: 'created_at'
+                }
+
+
+            ],
+            dom: 'lBfrtip',
+            "responsive": true,
+            "autoWidth": false,
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+        });
+
         function get(obj) {
             return document.getElementById(obj);
         }

@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\ShopOwner;
 
-use App\Services\ImageService;
-use App\Models\News;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Trait\ShopTrait;
 use App\Http\Controllers\Trait\YKImage;
 use App\Http\Requests\ShopOwner\StoreNewsRequest;
 use App\Http\Requests\ShopOwner\UpdateNewsRequest;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-use App\Http\Controllers\Trait\ShopTrait;
+use App\Models\News;
+use App\Services\ImageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -58,7 +58,7 @@ class NewsController extends Controller
         }
 
         News::create([
-            'shop_id' => $this->getShopId(),
+            'shop_id' => $this->get_shop_id(),
             'title' => $request->input('title'),
             'description' => $request->input('description'),
             'image' => $fileName,
@@ -143,10 +143,10 @@ class NewsController extends Controller
         $fromDate = $request->input('fromDate');
         $toDate = $request->input('toDate');
 
-        $allNews = News::where('shop_id', $this->getShopId())
+        $allNews = News::where('shop_id', $this->get_shop_id())
             ->select('id', 'title', 'description', 'image')
-            ->when($fromDate, fn ($query) => $query->whereDate('created_at', '>=', $fromDate))
-            ->when($toDate, fn ($query) => $query->whereDate('created_at', '<=', $toDate));
+            ->when($fromDate, fn($query) => $query->whereDate('created_at', '>=', $fromDate))
+            ->when($toDate, fn($query) => $query->whereDate('created_at', '<=', $toDate));
 
         return datatables($allNews)
             ->addColumn('description', function ($news) {
@@ -155,7 +155,7 @@ class NewsController extends Controller
             ->addColumn('actions', function ($news) {
                 $urls = [
                     'edit_url' => route('backside.shop_owner.news.edit', $news->id),
-                    'delete_url' => route('backside.shop_owner.news.destroy',  $news->id)
+                    'delete_url' => route('backside.shop_owner.news.destroy', $news->id),
                 ];
 
                 return $urls;

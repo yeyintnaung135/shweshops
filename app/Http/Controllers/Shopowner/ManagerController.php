@@ -6,16 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\UserRole;
 use App\Models\BackroleEditDetail;
 use App\Models\BackroleLogActivity;
-use App\Models\ItemLogActivity;
 use App\Models\ItemsEditDetailLogs;
 use App\Models\Role;
 use App\Models\ShopownerLogActivity;
 use App\Models\ShopOwnersAndStaffs;
-use App\Models\Shops;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
@@ -23,6 +20,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Yajra\DataTables\DataTables;
 
 class ManagerController extends Controller
 {
@@ -33,82 +31,66 @@ class ManagerController extends Controller
         $this->middleware('auth:shop_owners_and_staffs');
     }
 
-    public function list(): View
+    public function list(): View {
+        Gate::authorize('to_create_user', 3);
+        $managers = $this->getuserlistbyrolelevel();
+        return view('backend.shopowner.manager.list', ['managers' => $managers]);
+    }
+    public function user_activity_product(): View
     {
         Gate::authorize('to_create_user', 3);
-        $itemlogs = ItemLogActivity::all();
-        $backrolelogs = BackroleLogActivity::all();
-
-        $shopdata = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        return view('backend.shopowner.manager.list', ['shopowner' => $shopdata, 'itemlogs' => $itemlogs, 'manager' => $this->getuserlistbyrolelevel()]);
+        return view('backend.shopowner.activity.user.product');
     }
-    public function u_product(): View
+    public function user_activity_role(): View
     {
         Gate::authorize('to_create_user', 3);
-
-        $itemlogs = ItemLogActivity::all();
-        $backrolelogs = BackroleLogActivity::all();
-        // return dd($backrolelogs);
-
-        $shopdata = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        return view('backend.shopowner.activity.user.product', ['shopowner' => $shopdata, 'itemlogs' => $itemlogs, 'manager' => $this->getuserlistbyrolelevel()]);
+        return view('backend.shopowner.activity.user.role');
     }
-    public function u_role(): View
-    {
-        Gate::authorize('to_create_user', 3);
 
-        $itemlogs = ItemLogActivity::all();
-        $backrolelogs = BackroleLogActivity::all();
-        // return dd($backrolelogs);
-
-        $shopdata = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        return view('backend.shopowner.activity.user.role', ['shopowner' => $shopdata, 'itemlogs' => $itemlogs, 'manager' => $this->getuserlistbyrolelevel()]);
-    }
-    public function get_users_activity_log(Request $request): RedirectResponse
+    public function get_users_activity_log(Request $request): JsonResponse
     {
         $shop_id = $this->get_shopid();
-        $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
-        $searchByTodate = $request->input('toDate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
 
-        $recordsQuery = ShopownerLogActivity::select('shopowner_log_activities.*')
+        $query = ShopownerLogActivity::select('id', 'product_code', 'item_name',
+            'user_name', 'action', 'role', 'created_at')
             ->where('shop_id', $shop_id)
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->orderBy('created_at', 'desc');
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
-        return DataTables::of($recordsQuery)
-            ->addColumn('created_at_formatted', function ($record) {
-                return $record->created_at->format('d-m-Y H:i:s');
-            })
-            ->addColumn('btn', function ($record) {
+        return DataTables::of($query)
+            ->addColumn('check', function ($record) {
                 return $record->id;
             })
-            ->rawColumns(['created_at_formatted', 'action', 'btn'])
-            ->make(true);
+            ->editColumn('created_at', function ($record) {
+                return $record->created_at->format('d-m-Y H:i:s');
+            })
+            ->toJson();
 
     }
 
     // datable for backrole log activity
-    public function get_back_role_activity(Request $request): RedirectResponse
+    public function get_back_role_activity(Request $request): JsonResponse
     {
         $shop_id = $this->get_shopid();
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
 
-    $query = BackroleLogActivity::query()
-        ->where('shop_id', $shop_id)
-        ->whereBetween('created_at', [
-            $request->input('searchByFromdate', '0-0-0 00:00:00'),
-            $request->input('searchByTodate', Carbon::now())
-        ]);
+        $query = BackroleLogActivity::select('id', 'user_name', 'user_role',
+            'name', 'action', 'role', 'created_at')
+            ->where('shop_id', $shop_id)
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
-    return DataTables::of($query)
-    ->addColumn('created_at_formatted', function ($record) {
-        return $record->created_at->format('d-m-Y H:i:s');
-    })
-    ->addColumn('btn', function ($record) {
-        return $record->id;
-    })
-    ->rawColumns(['created_at_formatted', 'action', 'btn'])
-    ->make(true);
-
+        return DataTables::of($query)
+            ->editColumn('created_at', function ($record) {
+                return $record->created_at->format('d-m-Y H:i:s');
+            })
+            ->addColumn('check_edit', function ($record) {
+                return $record->id;
+            })
+            ->make(true);
     }
 
     public function get_back_role_activity_detail(Request $request)
@@ -132,7 +114,7 @@ class ManagerController extends Controller
         return view('backend.shopowner.manager.editdetail', ['detail_id' => $detail_id]);
     }
 
-    public function get_users(Request $request): RedirectResponse
+    public function get_users(Request $request): JsonResponse
     {
 
         if (Auth::guard('shop_role')->check()) {
@@ -480,14 +462,8 @@ class ManagerController extends Controller
 
     public function trash(): View
     {
-        if (Auth::guard('shop_role')->check()) {
-            $this->role('shop_role');
-            $this->role_check_trash(Auth::user()->role_id);
-            return view('backend.shopowner.manager.restore_list', ['shopowner' => $this->current_shop_data(), 'manager' => $this->role_user]);
-        }
-        $this->role('shop_owner');
-        $manager = ShopOwnersAndStaffs::onlyTrashed()->where('shop_id', $this->role)->get();
-        return view('backend.shopowner.manager.restore_list', ['shopowner' => $this->current_shop_data(), 'manager' => $manager]);
+        $trashList = $this->trash_list_by_role()->get();
+        return view('backend.shopowner.manager.restore_list', ['trashList' => $trashList]);
     }
 
     public function restore($id): RedirectResponse

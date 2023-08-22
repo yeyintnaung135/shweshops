@@ -111,3 +111,52 @@
         <!-- /.control-sidebar -->
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        $('#templateTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('backside.shop_owner.template.get_template') }}",
+
+            columns: [{
+                    data: 'id'
+                },
+                {
+                    data: 'name'
+                },
+                {
+                    data: 'undamaged_product'
+                },
+                {
+                    data: 'damaged_product'
+                },
+                {
+                    data: 'valuable_product'
+                },
+                {
+                    data: 'action',
+                    render: function(data, type) {
+                        var info =
+                            `<a style="margin-right: 5px;" class="btn btn-sm btn-danger" href="{{ route('backside.shop_owner.template.destroy', ['id' => ':id']) }}"><span class="fa fa-trash"></span></a>`;
+                        info = info.replace(':id', data);
+                        var edit =
+                            `<a class="btn btn-sm btn-primary" href="{{ route('backside.shop_owner.template.edit', ['id' => ':id']) }}"><span class="fa fa-edit"></span></a>`;
+                        edit = edit.replace(':id', data);
+                        return info + edit;
+                    }
+                },
+                {
+                    data: 'created_at'
+                }
+
+            ],
+            dom: 'lBfrtip',
+            "responsive": true,
+            "autoWidth": false,
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+        });
+    </script>
+@endpush

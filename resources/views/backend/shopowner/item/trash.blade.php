@@ -13,16 +13,7 @@
             @if (Session::has('message'))
                 <x-alert></x-alert>
             @endif
-            <!-- zhheader shopname -->
-            {{-- <x-header>
-            @foreach ($shopowner as $shopowner)
-                    @endforeach
-                    {{$shopowner->shop_name}}
-            </x-header> --}}
-            <!-- end zh header shopname -->
-            {{-- <x-title>
-                Trash
-            </x-title> --}}
+
             <!-- Main content -->
             <section class="content pt-3">
                 <div class="container-fluid">
@@ -55,39 +46,6 @@
                                                 <th>Deleted Date</th>
                                             </tr>
                                         </thead>
-                                        {{-- <tbody>
-                                        @php $i=1; @endphp
-
-                                        @foreach ($items as $item)
-                                            <tr>
-                                                <td>{{$i++}}</td>
-                                                <td>{{$item->product_code}}</td>
-
-                                                <td> @if ($item->check_photo)<img style="width:122px;height:122px;" src="{{url($item->check_photo)}}"/>@endif</td>
-
-                                                <td>{{ ($item->price != 0) ? $item->price : $item->short_price }} Ks</td>
-                                                <td>
-                                                    <a href="{{route('backside.shop_owner.items.restore',[$item->id])}}" class="btn btn-success">Restore</a>
-                                                    @if (Auth::guard('shop_owner')->check())
-                                                    <a href="{{route('backside.shop_owner.items.forcedelete',[$item->id])}}" class="btn btn-danger">Delete Forever</a>
-
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-
-
-                                        </tbody> --}}
-                                        <tfoot>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Product Code</th>
-                                                <th>IMAGE</th>
-                                                <th>Price</th>
-                                                <th>Action</th>
-                                                <th>Deleted Date</th>
-                                            </tr>
-                                        </tfoot>
                                     </table>
 
                                 </div>
@@ -144,7 +102,7 @@
                             `<a style="margin-right: 5px;" class="btn btn-sm btn-success" href="{{ route('backside.shop_owner.items.restore', [':id']) }}">Restore</a>`;
                         restore = restore.replace(':id', data);
                         var delete_forever = `
-                            @if (Auth::guard('shop_owner')->check())
+                            @if (Auth::guard('shop_owners_and_staffs')->check())
                             <form id="forceDeleteForm" method="post" action="{{ route('backside.shop_owner.items.forcedelete', [':id']) }}">
                              @csrf
                              @method('DELETE')
@@ -163,7 +121,7 @@
                     }
                 },
                 {
-                    data: 'deleted_at_formatted'
+                    data: 'deleted_at'
                 }
 
             ],

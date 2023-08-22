@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\ShopOwner;
 
-use App\Http\Controllers\Trait\Firebase;
-use App\Models\Item;
-use App\Models\Discount;
-use App\Models\UserNoti;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Trait\Firebase;
 use App\Http\Controllers\Trait\UserRole;
+use App\Models\Discount;
+use App\Models\Item;
+use App\Models\UserNoti;
 use GuzzleHttp\Middleware;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Validator;
 use Illuminate\View\View;
@@ -37,7 +37,7 @@ class DiscountController extends Controller
             'percent.max' => 'Percent တန်ဖိုးသည် 100 မဖြစ်ရ !',
         ];
         return Validator::make($data, [
-            'percent' => 'required|numeric|min:0|max:99'
+            'percent' => 'required|numeric|min:0|max:99',
         ], $message);
     }
 
@@ -68,16 +68,15 @@ class DiscountController extends Controller
                 }
             }
             if ($item->price != 0) {
-                $willupdatepricelist[$key] = ['fromdisprice' => $olddisprice, 'disprice' => $disprice,  'id' => $item->id, 'name' => $item->name, 'product_code' => $item->product_code, 'orgprice' => $item->price, 'orgmin' => 0, 'orgmax' => 0];
+                $willupdatepricelist[$key] = ['fromdisprice' => $olddisprice, 'disprice' => $disprice, 'id' => $item->id, 'name' => $item->name, 'product_code' => $item->product_code, 'orgprice' => $item->price, 'orgmin' => 0, 'orgmax' => 0];
             } else {
-                $willupdatepricelist[$key] = ['fromdisprice' => $olddisprice, 'disprice' => $disprice,  'id' => $item->id, 'name' => $item->name, 'product_code' => $item->product_code, 'price' => 0,  'orgprice' => 0, 'orgmin' => $item->min_price, 'orgmax' => $item->max_price,];
+                $willupdatepricelist[$key] = ['fromdisprice' => $olddisprice, 'disprice' => $disprice, 'id' => $item->id, 'name' => $item->name, 'product_code' => $item->product_code, 'price' => 0, 'orgprice' => 0, 'orgmin' => $item->min_price, 'orgmax' => $item->max_price];
             }
         }
         return response()->json(['status' => 'success', 'data' => $willupdatepricelist]);
     }
 
-    public function list(): View
-    {
+    public function list(): View {
 
         $items = Discount::where('shop_id', $this->get_shopid())->onlyTrashed()->get();
         return view('backend.shopowner.item.discount.list', ['items' => $items, 'shopowner' => $this->current_shop_data()]);
@@ -85,41 +84,45 @@ class DiscountController extends Controller
 
     public function get_discount_items(Request $request)
     {
-        if ($request->ajax()) {
-            $shop_id = $this->get_shopid();
+        $shop_id = $this->get_shopid();
 
-            $records = Discount::join('items', 'discount.item_id', '=', 'items.id')
-                ->select('discount.*', 'items.product_code', 'items.default_photo', 'items.price', 'items.min_price', 'items.max_price')
-                ->where('discount.shop_id', $shop_id)
-                ->where('items.product_code', 'like', '%' . $request->input('search.value') . '%')
-                ->orderBy($request->input('columns.' . $request->input('order.0.column') . '.data'), $request->input('order.0.dir'))
-                ->orderBy('created_at', 'desc')
-                ->get();
+        $query = Discount::join('items', 'discount.item_id', '=', 'items.id')
+            ->where('discount.shop_id', $shop_id)
+            ->select(
+                'discount.id',
+                'discount.discount_price',
+                'discount.discount_min',
+                'discount.discount_max',
+                'discount.item_id',
+                'discount.created_at',
+                'items.product_code',
+                'items.default_photo',
+                'items.price',
+                'items.min_price',
+                'items.max_price'
+            );
 
-            $data_arr = [];
-            foreach ($records as $record) {
-                $old_price = ($record->price != 0) ? $record->price : ($record->min_price . '-' . $record->max_price);
-                $new_price = ($record->discount_price != 0) ? $record->discount_price : ($record->discount_min . '-' . $record->discount_max);
-
-                $data_arr[] = [
-                    "id" => $record->id,
-                    "product_code" => $record->product_code,
-                    "image" => $record->default_photo,
-                    "old_price" => $old_price,
-                    "new_price" => $new_price,
-                    "date_time" => $record->created_at,
-                    "unset_discount" => $record->id,
-                    "item_id" => $record->item_id
-                ];
-            }
-
-            return DataTables::of($data_arr)
-                    ->addColumn('action', function ($record) {
-                        return '<a href="#">Edit</a>'; // Add your action link here
-                    })
-                    ->rawColumns(['action'])
-                    ->make(true);
-        }
+        return DataTables::of($query)
+            ->addColumn('checkbox', fn($record) => $record->id)
+            ->addColumn('image', function ($record) {
+                return $record->default_photo;
+            })
+            ->addColumn('old_price', function ($record) {
+                return ($record->price != 0) ? $record->price : ($record->min_price . '-' . $record->max_price);
+            })
+            ->addColumn('new_price', function ($record) {
+                return ($record->discount_price != 0) ? $record->discount_price : ($record->discount_min . '-' . $record->discount_max);
+            })
+            ->editColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->created_at));
+            })
+            ->addColumn('unset_discount', function ($record) {
+                return $record->id;
+            })
+            ->addColumn('item_id', function ($record) {
+                return $record->item_id;
+            })
+            ->toJson();
     }
 
     public function discount($id): View
@@ -133,7 +136,6 @@ class DiscountController extends Controller
         //     }
         // }
 
-
         return view('backend.shopowner.item.discount.Setdiscount', ['item' => $item]);
     }
 
@@ -143,8 +145,6 @@ class DiscountController extends Controller
         $item = discount::where('id', $request->id)->forceDelete();
         $discount = Item::where('id', $request->item_id)->with('tagged')->first();
         $discount->untag('Discount');
-
-
 
         Session::flash('message', 'Your Discount Item was successfully unset');
 
@@ -163,7 +163,6 @@ class DiscountController extends Controller
         return redirect()->back();
     }
 
-
     private function percent_calculate($price, $percent): int
     {
         return round($price - ($percent * $price / 100));
@@ -174,7 +173,7 @@ class DiscountController extends Controller
         $plus_price = $request->percent;
         $request->validate(
             [
-                'percent' => 'required|numeric|min:0|max:99'
+                'percent' => 'required|numeric|min:0|max:99',
             ],
             [
                 'percent.required' => 'Percent တန်ဖိုး ထည့်ပေးရန်',
@@ -250,7 +249,6 @@ class DiscountController extends Controller
             Firebase::send($item_id, 'Discount Product', $message, $link, 'logo', url($takecheckphoto->check_photo));
             //noti end
 
-
             $hasdiscount = discount::where('item_id', $id);
             $olddiscount = discount::where('item_id', $id)->get();
             $price = Item::where('id', $id)->get();
@@ -297,11 +295,9 @@ class DiscountController extends Controller
     public function discount_save(Request $request): RedirectResponse
     {
 
-
         if (empty($request->all()['discount_min']) and empty($request->all()['discount_max']) and empty($request->all()['discount_price'])) {
             return 'error';
         }
-
 
         //for noti
         $checkShopOwnerFav = DB::table('shop_owners_fav')->where('fav_id', $request->item_id)->pluck('user_id');
