@@ -61,7 +61,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     Route::post('/getproductcodebytyping', [ItemsController::class, 'get_product_code_by_typing']);
 
     Route::get('/items_trash', [ItemsController::class, 'trash'])->name('items.trash');
-    Route::get('/get_items_trash', [ItemsController::class, 'getitemsTrash'])->name('items.getitemsTrash');
+    Route::get('/get_items_trash', [ItemsController::class, 'get_items_trash']);
     Route::get('/items_trash/{id}', [ItemsController::class, 'restore'])->name('items.restore');
     Route::delete('/items_trash_delete/{id}', [ItemsController::class, 'force_delete'])->name('items.forcedelete');
 

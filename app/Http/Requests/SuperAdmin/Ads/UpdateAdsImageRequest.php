@@ -22,12 +22,12 @@ class UpdateAdsImageRequest extends FormRequest
     public function rules()
     {
         return [
-            "shop_id" => "required|exists:shops,id",
+            "shop_id" => "exists:shops,id",
             "links" => "nullable|url",
-            "start" => "required|date",
-            "end" => "required|date|after:start",
-            "image" => "required|image|mimes:gif,jpg,bmp,png,jpeg",
-            "image_for_mobile" => "required|image|mimes:gif,jpg,bmp,png,jpeg",
+            "start" => "date",
+            "end" => "date|after:start",
+            "photo" => "image|mimes:gif,jpg,bmp,png,jpeg",
+            "image_for_mobile" => "image|mimes:gif,jpg,bmp,png,jpeg",
         ];
     }
 }

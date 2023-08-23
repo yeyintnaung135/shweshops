@@ -779,7 +779,7 @@
 
                         <div class="row justify-content-between mt-4 px-2 px-lg-3">
                             <div class="">
-                                @isRole('shopowner')
+                                {{-- @isRole('shopowner') --}}
                                     <a class="btn btn-md btn-danger" onclick="Delete()"><span
                                             class="fa fa-trash"></span>&nbsp;&nbsp;Delete</a>
                                     <form id="delete_form"
@@ -789,7 +789,7 @@
                                         {{ method_field('DELETE') }}
                                         <input type="hidden" name="id" value="{{ $item->id }}" />
                                     </form>
-                                @endisRole
+                                {{-- @endisRole --}}
                             </div>
                             <div class="row">
                                 @if ($item->check_discount == '0')

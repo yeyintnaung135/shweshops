@@ -14,6 +14,6 @@ function dofile_exists($uri){
     if(env('USE_DO')=='true'){
         return Storage::disk('digitalocean')->exists('/prod'.$uri);
     }else{
-        return file_exists(public_path('/images/items/1689916740057image-500x250.jpg'));
+        return Storage::disk('public_image')->exists($uri);
     }
 }

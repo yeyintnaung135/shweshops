@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
+use Illuminate\Support\Facades\Storage;
+
 use App\Facade\Repair;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Trait\YKImage;
 use App\Http\Requests\SuperAdmin\Ads\StoreAdsImageRequest;
-use App\Http\Requests\SuperAdmin\Ads\StoreAdsVideoFormRequest;
 use App\Http\Requests\SuperAdmin\Ads\UpdateAdsImageRequest;
 use App\Models\Ads;
 use App\Models\Shops;
@@ -18,9 +20,11 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Str;
 
 class AdsController extends Controller
 {
+    use YKImage;
     public function __construct()
     {
         $this->middleware(['auth:super_admin']);
@@ -71,8 +75,8 @@ class AdsController extends Controller
 
         $recordsQuery = Ads::select('id', 'name', 'image', 'start', 'end', 'created_at', 'deleted_at', 'video')
             ->withTrashed()
-            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
-            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate))
+            ->when($searchByFromdate, fn ($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn ($query) => $query->whereDate('created_at', '<=', $searchByTodate))
             ->orderBy('created_at', 'desc');
 
         return DataTables::of($recordsQuery)
@@ -88,7 +92,7 @@ class AdsController extends Controller
             ->addColumn('created_at', function ($record) {
                 return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
-            ->addColumn('action', fn($record) => $record->id)
+            ->addColumn('action', fn ($record) => $record->id)
             ->rawColumns(['deleted_at'])
             ->make(true);
     }
@@ -110,44 +114,11 @@ class AdsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreAdsImageRequest $request): JsonResponse
+
+
+    public function store_video(StoreAdsImageRequest $request): mixed
     {
 
-        $folderPath = 'images/banner/';
-        $mobileimgfolder = 'images/banner/thumbs/';
-        $shop_name = Shops::where('id', $request->shop_id)->first();
-        $start = Carbon::parse($request->start, 'UTC')->format('Y-m-d H:i:s A');
-        $end = Carbon::parse($request->end, 'UTC')->format('Y-m-d H:i:s A');
-        $ads = new Ads();
-        if (!empty($shop_name)) {
-            $ads->name = $shop_name->shop_name;
-
-        } else {
-            $ads->name = 'No Shop';
-        }
-        $ads->shop_id = $request->shop_id;
-        $ads->image = Repair::fileStore($request->file('photo'), $folderPath);
-        $ads->image_for_mobile = Repair::fileStore($request->file('image_for_mobile'), $mobileimgfolder);
-
-        $ads->start = $start;
-        $ads->links = $request->links;
-
-        $ads->end = $end;
-        $ads->save();
-
-        \SuperAdminLogActivity::SuperAdminAdsCreateLog($ads);
-
-        return response()->json([
-            'success' => true,
-            'message' => "Ads Created Successfully",
-        ]);
-
-    }
-
-    public function store_video(StoreAdsVideoFormRequest $request): RedirectResponse
-    {
-        $folderPath = 'images/banner';
-        $mobileimgfolder = 'images/banner/thumbs/';
 
         $shop_name = Shops::where('id', $request->shop_id)->first();
 
@@ -156,20 +127,29 @@ class AdsController extends Controller
         $ads = new Ads();
         if (!empty($shop_name)) {
             $ads->name = $shop_name->shop_name;
-
         } else {
             $ads->name = 'No Shop';
         }
         $ads->shop_id = $request->shop_id;
-        $ads->image = Repair::fileStore($request->file('video'), $folderPath);
-        $ads->image_for_mobile = Repair::fileStore($request->file('image_for_mobile'), $mobileimgfolder);
+        $statictimestamp = Carbon::now()->timestamp;
+        $file = $request->file('photo');
+
+        $imageName = strtolower($statictimestamp . '_' . Str::random(4) . '.' . $file->getClientOriginalExtension());
+        $this->save_image($file, $imageName, 'ads/');
+
+        $mobilefile = $request->file('image_for_mobile');
+        $mobileimageName = strtolower($statictimestamp . '_' . Str::random(4) . '.' . $mobilefile->getClientOriginalExtension());
+        $this->save_image($file, $mobileimageName, 'ads/thumbs/');
+
+        $ads->image = $imageName;
+        $ads->image_for_mobile = $mobileimageName;
 
         $ads->start = $start;
         $ads->links = $request->links;
         $ads->end = $end;
         $ads->save();
 
-        \SuperAdminLogActivity::SuperAdminAdsCreateLog($ads);
+        // \SuperAdminLogActivity::SuperAdminAdsCreateLog($ads);
 
         Session::flash('message', 'Your ads was successfully created');
 
@@ -237,34 +217,56 @@ class AdsController extends Controller
      */
     public function update(UpdateAdsImageRequest $request, $id): RedirectResponse
     {
-//        return $request->shop_id;
+        //        return $request->shop_id;
         $shop_name = Shops::where('id', $request->shop_id)->first();
         $folderPath = 'images/banner/';
         $ads = Ads::withTrashed()->findOrfail($id);
+        $statictimestamp = Carbon::now()->timestamp;
         if (!empty($shop_name)) {
             $ads->name = $shop_name->shop_name;
-
         } else {
             $ads->name = 'No Shop';
-        }$ads->shop_id = $request->shop_id;
+        }
+        $ads->shop_id = $request->shop_id;
         if ($request->start) {
             $ads->start = Carbon::createFromFormat('d-m-Y h:i A', $request->start)->format('Y-m-d H:i:s A');
         }
         if ($request->end) {
             $ads->end = Carbon::createFromFormat('d-m-Y h:i A', $request->end)->format('Y-m-d H:i:s A');
         }
-        if ($request->image) {
-            $ads->image = Repair::fileStore($request->file('image'), $folderPath);
-        }
-        if ($request->image_for_mobile) {
-            $mobileimgfolder = 'images/banner/thumbs/';
+        if ($request->file('photo')) {
+            if (env('USE_DO') == 'true') {
+                Storage::disk('digitalocean')->delete('/prod/ads/' . $ads->image);
+            } else {
+                Storage::disk('public_image')->delete('/ads/' . $ads->image);
+            }
 
-            $ads->image_for_mobile = Repair::fileStore($request->file('image_for_mobile'), $mobileimgfolder);
+
+            $file = $request->file('photo');
+
+
+            $imageName = strtolower($statictimestamp . '_' . Str::random(4) . '.' . $file->getClientOriginalExtension());
+
+            $this->save_image($file, $imageName, 'ads/');
+
+            $ads->image =  $imageName;
+        }
+        if ($request->file('image_for_mobile')) {
+            if (env('USE_DO') == 'true') {
+                Storage::disk('digitalocean')->delete('/prod/ads/thumbs/' . $ads->image_for_mobile);
+            } else {
+                Storage::disk('public_image')->delete('/ads/thumbs/' . $ads->image_for_mobile);
+            }
+            $mobilefile = $request->file('image_for_mobile');
+            $mobileimageName = strtolower($statictimestamp . '_' . Str::random(4) . '.' . $mobilefile->getClientOriginalExtension());
+            $this->save_image($mobilefile, $mobileimageName, 'ads/thumbs/');
+
+            $ads->image_for_mobile = $mobileimageName;
         }
         $ads->links = $request->links;
 
         $ads->save();
-        \SuperAdminLogActivity::SuperAdminAdsEditLog($ads);
+        // \SuperAdminLogActivity::SuperAdminAdsEditLog($ads);
 
         $ads = Ads::withTrashed()->findOrfail($id)->restore();
         Session::flash('message', 'Your ads was successfully updated');
@@ -281,12 +283,9 @@ class AdsController extends Controller
     {
 
         $ad = Ads::withTrashed()->findOrFail($id);
-        \SuperAdminLogActivity::SuperAdminAdsDeleteLog($ad);
-
-        if (File::exists(public_path('images/banner/' . $ad->image))) {
-            File::delete(public_path('/images/banner/' . $ad->name));
-        }
-
+        // \SuperAdminLogActivity::SuperAdminAdsDeleteLog($ad);
+        $this->delete_image('ads/' . $ad->image,'ads/' . $ad->image_for_mobile);
+     
         if ($ad->deleted_at) {
             Ads::onlyTrashed()->findOrFail($id)->forceDelete();
         } else {

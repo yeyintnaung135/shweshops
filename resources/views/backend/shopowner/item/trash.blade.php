@@ -118,7 +118,7 @@
         $('#itemsTrashTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('backside.shop_owner.items.getitemsTrash') }}",
+            ajax: "{{ url('backside/shop_owner/get_items_trash')}}",
 
             columns: [{
                     data: 'id'
@@ -144,14 +144,12 @@
                             `<a style="margin-right: 5px;" class="btn btn-sm btn-success" href="{{ route('backside.shop_owner.items.restore', [':id']) }}">Restore</a>`;
                         restore = restore.replace(':id', data);
                         var delete_forever = `
-                            @if (Auth::guard('shop_owner')->check())
                             <form id="forceDeleteForm" method="post" action="{{ route('backside.shop_owner.items.forcedelete', [':id']) }}">
                              @csrf
                              @method('DELETE')
                              <button type="button" class="btn btn-sm btn-danger" onclick="Delete()"  >Delete from Trash</button>
 
                             </form>
-                            @endif
                             `;
                         delete_forever = delete_forever.replace(':id', data);
                         return `

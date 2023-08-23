@@ -12,32 +12,14 @@
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
 
-            <!-- zhheader shopname -->
-            <x-header>
-                @foreach ($shopowner as $shopowner)
-                @endforeach
-                {{ $shopowner->shop_name }}
-            </x-header>
-            <!-- end zh header shopname -->
+         
+  
 
-            <!-- Content Header (Page header) -->
-            <x-title>
-                Item Edit
-            </x-title>
 
-            <!-- Main content -->
-            <section class="content">
-                <div class="container-fluid">
-                    <!-- SELECT2 EXAMPLE -->
-
-                    <yk-dropzoneforedit :main_cat="{{ $main_cat }}" :editdata="{{ $item }}"
-                        :catlist="{{ $cat_list }}" :collection="{{ $collection }}"
-                        link="{{ url('/backside/shop_owner/editajax') }}"></yk-dropzoneforedit>
-
-                    <!-- /.card -->
-                </div>
-                <!-- /.container-fluid -->
-            </section>
+            <item-edit :main_cat="{{ $main_cat }}" :editdata="{{ $item }}"
+            :catlist="{{ $cat_list }}" :collection="{{ $collection }}"
+            link="{{ url('/backside/shop_owner/editajax') }}" ></item-edit>
+       
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->

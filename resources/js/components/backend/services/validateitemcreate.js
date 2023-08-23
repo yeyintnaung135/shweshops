@@ -2,7 +2,7 @@ const validatecreate = (data) => {
     data.validate_errors=[];
     var tempobj={};
     if (data.name == "") {
-        tempobj.name={msg:'Product code ဖြည့်သွင်းပေးရန် လိုအပ်ပါသည်။'};
+        tempobj.name={msg:'Name ဖြည့်သွင်းပေးရန် လိုအပ်ပါသည်။'};
 
 
 
@@ -29,9 +29,44 @@ const validatecreate = (data) => {
         tempobj.price={msg:'Wrong Price'};
 
     }
-  
+  if(JSON.stringify(tempobj) !== "{}"){
     data.validate_errors.push(tempobj);
+
+  }
 
 };
 
-export default validatecreate;
+const dzcreateerror=(data)=>{
+    data.dzerror=[];
+    var tempobjdz={};
+    if (data.$refs.myVueDropzone.getAcceptedFiles().length == 0) {
+        tempobjdz.photo={msg:'ဓာတ်ပုံ ဖြည့်သွင်းပေးရန် လိုအပ်ပါသည်။'};
+
+    }
+    if(JSON.stringify(tempobjdz) !== "{}"){
+        data.dzerror.push(tempobjdz);
+    
+      }
+
+}
+const dzediterror=(data)=>{
+    data.dzerror=[];
+    var tempobjdz={};
+    if (data.tempphotonames == 0) {
+        tempobjdz.photo={msg:'ဓာတ်ပုံ ဖြည့်သွင်းပေးရန် လိုအပ်ပါသည်။'};
+
+    }
+    if(JSON.stringify(tempobjdz) !== "{}"){
+        data.dzerror.push(tempobjdz);
+    
+      }
+
+}
+
+
+export const allvalidate={
+    validatecreate:validatecreate,
+    dzcreateerror:dzcreateerror,
+    dzediterror:dzediterror
+
+};

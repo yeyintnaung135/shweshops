@@ -41,6 +41,10 @@ Vue.component(
     "item-create",
     require("./components/backend/ItemCreate.vue").default
 );
+Vue.component(
+    "item-edit",
+    require("./components/backend/ItemEdit.vue").default
+);
 
 //services
 import { allfromfbjs } from "./components/forfacebook/facebook";

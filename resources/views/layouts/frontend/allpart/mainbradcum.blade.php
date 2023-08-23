@@ -20,7 +20,7 @@
                         ?>
                         @if ($ad->video)
                             <img class="item my-image  w-100 h-100"
-                                 src="{{asset('/images/banner/video/'. $ad->video )}}"/>
+                                 src="{{filedopath('/ads/'. $ad->video )}}"/>
                         @else
                             @if ($ad->links)
                                 <a href="{{ $ad->links }}">
@@ -28,7 +28,7 @@
                                         <a href="{{url('/adsclick/'.$deletespace.'/'.$ad->id)}}">
                                             @endif
                                             @if($ad->image != null)
-                                                <img class="" src="{{asset('/images/banner/thumbs/'. $ad->image_for_mobile )}}"
+                                                <img class="" src="{{filedopath('/ads/thumbs/'. $ad->image_for_mobile )}}"
                                                      onclick="storelogtoserver('{{$ad->id}}','{{$deletespace}}')"/>
                                             @endif
                                         </a>
@@ -46,7 +46,7 @@
                         ?>
                         @if ($ad->video)
                             <img class="item my-image  w-100 h-100"
-                                 src="{{asset('/images/banner/video/'. $ad->video )}}"/>
+                                 src="{{filedopath('/ads/'. $ad->video )}}"/>
                         @else
                             @if ($ad->links)
                                 <a href="{{ $ad->links }}">
@@ -54,7 +54,7 @@
                                         <a href="{{url('/adsclick/'.$deletespace.'/'.$ad->id)}}">
                                             @endif
                                             @if($ad->image != null)
-                                                <img class="" src="{{asset('/images/banner/'. $ad->image )}}"
+                                                <img class="" src="{{filedopath('/ads/'. $ad->image )}}"
                                                      onclick="storelogtoserver('{{$ad->id}}','{{$deletespace}}')"/>
                                             @endif
                                         </a>

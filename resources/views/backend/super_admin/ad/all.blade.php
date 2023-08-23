@@ -206,16 +206,16 @@
                         console.log(row)
                         if (row.video !== null) {
                             var result = row.deleted_at ?
-                                `<img src="{{ asset('images/banner/video/${row.video}') }}" class="filter cover" alt="cover" >` :
-                                `<img src="{{ asset('images/banner/video/${row.video}') }}" alt="cover" class="cover" >`;
+                                `<img src="{{ filedopath('/ads/${row.video}') }}" class="filter cover" alt="cover" >` :
+                                `<img src="{{ filedopath('/ads/${row.video}') }}" alt="cover" class="cover" >`;
 
                         } else {
                             var result = row.deleted_at ?
-                                `<img src="{{ asset('images/banner/${data}') }}" class="filter cover" alt="cover" >` :
-                                `<img src="{{ asset('images/banner/${data}') }}" alt="cover" class="cover" >`;
+                                `<img src="{{ filedopath('/ads/${data}') }}" class="filter cover" alt="cover" >` :
+                                `<img src="{{ filedopath('/ads/${data}') }}" alt="cover" class="cover" >`;
                         }
 
-                        return result;
+                        return result;  
                     }
                 },
                 {

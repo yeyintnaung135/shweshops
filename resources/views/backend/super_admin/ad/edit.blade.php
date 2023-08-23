@@ -20,11 +20,11 @@
                             <div class="col-12 col-lg-6">
                                 <div class="mb-3 p-lg-3">
                                     <div class="">
-                                        <img src="{{ asset('images/banner/' . $ad->image) }}" alt="" class="w-100 ">
+                                        <img src="{{ filedopath('/ads/' . $ad->image) }}" alt="" class="w-100 ">
                                     </div>
                                     <br>
                                     <div class="">
-                                        <img src="{{ asset('images/banner/thumbs/' . $ad->image_for_mobile) }}"
+                                        <img src="{{ asset('/ads/thumbs/' . $ad->image_for_mobile) }}"
                                             alt="" class="w-50 ">
                                     </div>
                                 </div>
@@ -37,7 +37,7 @@
                                     <div class="form-group">
                                         <label id="shop">Image</label>
 
-                                        <input type="file" name="image"
+                                        <input type="file" name="photo"
                                             class=" form-control
                                         @error('image')
                                             is-invalid

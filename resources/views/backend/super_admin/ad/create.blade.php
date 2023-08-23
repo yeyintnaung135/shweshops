@@ -26,8 +26,8 @@
                                         @csrf
                                         <div class="form-group">
                                             <label id="shop">Image For Desktop (1920 * 600)</label>
-                                            <input type="file" name="video" id=""
-                                                class="form-control  @error('video')
+                                            <input type="file" name="photo" id=""
+                                                class="form-control  @error('photo')
                                       is-invalid @enderror">
                                         </div>
                                         <div class="form-group">

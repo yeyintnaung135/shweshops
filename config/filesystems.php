@@ -43,7 +43,23 @@ return [
             'visibility' => 'public',
             'throw' => false,
         ],
+        'public_image' => [
+            'driver' => 'local',
+            'root' => public_path('images'),
+            'visibility' => 'public',
+        ],
+        'digitalocean' => [
+            'driver' => 's3',
+            'key' => env('DIGITALOCEAN_SPACES_KEY'),
+            'secret' => env('DIGITALOCEAN_SPACES_SECRET'),
+            'endpoint' => env('DIGITALOCEAN_SPACES_ENDPOINT'),
+            'region' => 'sgp1',
+            'bucket' =>  env('DIGITALOCEAN_SPACES_BUCKET'),
+            'url' => env('DIGITALOCEAN_SPACES_ENDPOINT'),
+            'visibility' => 'public',
+            'bucket_endpoint' => true
 
+        ],
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

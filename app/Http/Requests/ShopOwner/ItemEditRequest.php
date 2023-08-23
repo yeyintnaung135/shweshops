@@ -11,7 +11,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Auth\Access\Response;
 
 
-class ItemCreateRequest extends FormRequest
+class ItemEditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -35,9 +35,9 @@ class ItemCreateRequest extends FormRequest
 
             'gems' => ['max:2000'],
             'weight' => ['max:2000'],
-            'အထည်မပျက်_ပြန်သွင်း' => ['max:2114'],
-            'အထည်ပျက်စီးချို့ယွင်း' => ['max:2114'],
-            'တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ' => ['max:2114'],
+            'undamaged_product' => ['max:2114'],
+            'damaged_product' => ['max:2114'],
+            'valuable_product' => ['max:2114'],
 
 
             'diamond' => ['required', Rule::in(['Yes', 'No'])],
@@ -50,10 +50,12 @@ class ItemCreateRequest extends FormRequest
 
 
 
-            'file' => ['required', 'array', 'min:1', 'max:10'],
+            'file' => ['array', 'min:1', 'max:10'],
             // 'mid_files'=>['required','array','min:1','max:10'],
             'tags' => ['max:2000'],
-            'formidphotos' => ['required', new YkSixFourBitImageCheck],
+            'formidphotos' => [new YkSixFourBitImageCheck],
+            'forthumbphotos' => [new YkSixFourBitImageCheck],
+
 
             'stock' => ['required', 'regex:(In Stock|Out Of Stock)'],
             'default_photo' => ['required', 'max:300'],
