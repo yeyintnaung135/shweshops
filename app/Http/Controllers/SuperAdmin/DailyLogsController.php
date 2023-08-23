@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\SuperAdminLogActivity;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -29,12 +31,9 @@ class DailyLogsController extends Controller
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();
 
-        $totalRecordsQuery = DB::table('shopowner_log_activities')
-            ->select('*', DB::raw('count(*) as total'))
+        $totalRecordsQuery = SuperAdminLogActivity::select('shopowner_log_activities.*')
             ->where('action', 'Create')
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->groupBy('shop_id')
-            ->orderBy('created_at', 'desc')
             ->get();
 
         return DataTables::of($totalRecordsQuery)

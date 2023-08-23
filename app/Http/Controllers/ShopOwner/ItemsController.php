@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ShopOwner;
 use App\Facade\TzGate;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\FacebookTraid;
+use App\Http\Controllers\Trait\Logs\ShopsLogActivityTrait;
 use App\Http\Controllers\Trait\MultipleItem;
 use App\Http\Controllers\Trait\UserRole;
 use App\Http\Controllers\Trait\YKImage;
@@ -36,7 +37,7 @@ use Yajra\DataTables\DataTables;
 
 class ItemsController extends Controller
 {
-    use YKImage, UserRole, MultipleItem, FacebookTraid;
+    use YKImage, UserRole, MultipleItem, FacebookTraid, ShopsLogActivityTrait;
 
     public $err_data = [];
 
@@ -233,7 +234,7 @@ class ItemsController extends Controller
     public function store(ItemcreateRequest $request): JsonResponse
     {
 
-        // \ShopownerLogActivity::ShopowneraddToLog($id);
+        // $this->ShopsaddToLog($id);
         $input = $request->except('_token');
         if ($input['price'] > 9999999999 or $input['min_price'] > 9999999999 or $input['max_price'] > 9999999999 or ($input['min_price'] > $input['max_price'])) {
             return response()->json(['msg' => 'error', 'error_msg' => 'Wrong Price']);
@@ -321,7 +322,7 @@ class ItemsController extends Controller
         $input['weight_unit'] = 0;
 
         $itemupload = Item::create($input);
-        // \ShopownerLogActivity::ShopownerCreateLog($itemupload, $shop_id);
+        // $this->ShopsCreateLog($itemupload, $shop_id);
         if ($itemupload) {
             Gems::create(['gems' => $input['gems'], 'item_id' => $itemupload->id]);
             $itemupload->tag($request->tags);
@@ -428,7 +429,7 @@ class ItemsController extends Controller
                 $shop_id = Auth::guard('shop_owner')->user()->id;
             }
 
-            $shopownerlogid = \ShopownerLogActivity::ShopownerEditLog($request, $shop_id);
+            $shopownerlogid = $this->ShopsEditLog($request, $shop_id);
             $old_tags = DB::table('tagging_tagged')->where('taggable_id', $request->id)->get();
             $item_tag = Item::where('id', $request->id)->first();
             $item_tagarray = explode(',', $item_tag->tags);
@@ -737,7 +738,7 @@ class ItemsController extends Controller
                 $shop_id = Auth::guard('shop_owner')->user()->id;
             }
 
-            $shopownerlogid = \ShopownerLogActivity::ShopownerEditLog($request, $shop_id);
+            $shopownerlogid = $this->ShopsEditLog($request, $shop_id);
             Item::find($request->id)->retag($request->all()['tags']);
 
             $checkgcount = Gems::where('item_id', $request->id)->count();
@@ -1295,7 +1296,7 @@ class ItemsController extends Controller
             }
             $shop_id = "yahoo";
         }
-        $shopownerlogid = \ShopownerLogActivity::ShopownerDeleteLog($shopowner_log, $shop_id);
+        $shopownerlogid = $this->ShopsDeleteLog($shopowner_log, $shop_id);
 
         return redirect(url('backside/shop_owner/items'))->with(['status' => 'success', 'message' => 'Your Item was successfully Deleted']);
     }

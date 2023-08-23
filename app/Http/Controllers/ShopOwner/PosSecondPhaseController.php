@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ShopOwner;
 
 use App\Facade\TzGate;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Trait\Logs\BackRoleLogActivityTrait;
 use App\Http\Controllers\Trait\MultipleItem;
 use App\Http\Controllers\Trait\UserRole;
 use App\Http\Controllers\Trait\YKImage;
@@ -44,7 +45,7 @@ use Illuminate\Validation\Rule;
 
 class PosSecondPhaseController extends Controller
 {
-    use YKImage, UserRole, MultipleItem;
+    use YKImage, UserRole, MultipleItem, BackRoleLogActivityTrait;
 
     public $err_data = [];
 
@@ -101,7 +102,7 @@ class PosSecondPhaseController extends Controller
             $input['shop_id'] = Auth::guard('shop_owner')->user()->id;
             $shop_id = Auth::guard('shop_owner')->user()->id;
         }
-        \BackroleLogActivity::BackroleCreateLog($input, $shop_id);
+        $this->BackroleCreateLog($input, $shop_id);
 
         $input['password'] = Hash::make($input['password']);
         $validate = Validator::make($input, $rules);
@@ -173,7 +174,7 @@ class PosSecondPhaseController extends Controller
         } else {
 
             if (PosStaff::where('id', $id)->update($input)) {
-                $backroleid = \BackroleLogActivity::BackroleEditLog($input, $shop_id);
+                $backroleid = $this->BackroleEditLog($input, $shop_id);
 
                 $old_name = $manager->name;
                 $old_phone = $manager->phone;
@@ -385,7 +386,7 @@ class PosSecondPhaseController extends Controller
             $shop_id = "yahoo";
         }
 
-        \BackroleLogActivity::BackroleDeleteLog($manager_log, $shop_id);
+        $this->BackroleDeleteLog($manager_log, $shop_id);
 
         Session::flash('message', 'Staff was successfully Deleted!');
         return response()->json([

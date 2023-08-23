@@ -183,7 +183,7 @@ class PosSuperAdminController extends Controller
             $banner->save();
         }
 
-        // \SuperadminLogActivity::SuperadminShopCreateLog($shopdata);
+        // $this->SuperadminShopCreateLog($shopdata);
 
         if ($shopdata) {
             $shop_id = $shopdata->id;
@@ -320,7 +320,7 @@ class PosSuperAdminController extends Controller
         }
 
         if ($updateSuccess) {
-            // \SuperadminLogActivity::SuperadminShopEditLog($input);
+            // $this->SuperadminShopEditLog($input);
             // Session::flash('message', 'Your ads was successfully updated');
             return redirect()->route('pos_super_admin_shops.all');
         }
@@ -372,8 +372,7 @@ class PosSuperAdminController extends Controller
     //End Shops
 
     //Admins
-    public function list(): View
-    {
+    function list(): View {
         $super_admin = PosSuperAdmin::all();
         return view('backend.pos_super_admin.list', ['super_admin' => $super_admin]);
     }

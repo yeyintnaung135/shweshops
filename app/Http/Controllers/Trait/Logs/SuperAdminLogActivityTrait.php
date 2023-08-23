@@ -1,33 +1,14 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Http\Controllers\Trait\Logs;
 
-use App\Models\SuperAdminLogActivity as SuperAdminLogActivityModel;
+use App\Models\LogActivity;
+use App\Models\SuperAdminLogActivity;
 use Illuminate\Support\Facades\Auth;
 
-class SuperAdminLogActivity
+trait SuperAdminLogActivityTrait
 {
-
     // ads
-    public static function SuperAdminAdsDeleteLog($subject)
-    {
-
-        $log = [];
-        $log['name'] = Auth::guard('super_admin')->user()->name;
-        $log['type'] = 'ads';
-        $log['type_name'] = $subject->name;
-        $log['type_id'] = $subject;
-        $log['status'] = 'delete';
-        if (Auth::guard('super_admin')->user()->role == 0 or Auth::guard('super_admin')->user()->role == 4) {
-            $log['role'] = "SuperAdmin";
-
-        } else {
-            $log['role'] = "Sub-Admin";
-        }
-        $log['role_id'] = Auth::guard('super_admin')->user()->id;
-        SuperadminLogActivityModel::create($log);
-    }
-
     public static function SuperAdminAdsCreateLog($subject)
     {
 
@@ -44,7 +25,26 @@ class SuperAdminLogActivity
             $log['role'] = "Sub-Admin";
         }
         $log['role_id'] = Auth::guard('super_admin')->user()->id;
-        SuperadminLogActivityModel::create($log);
+        SuperAdminLogActivity::create($log);
+    }
+
+    public static function SuperAdminAdsDeleteLog($subject)
+    {
+
+        $log = [];
+        $log['name'] = Auth::guard('super_admin')->user()->name;
+        $log['type'] = 'ads';
+        $log['type_name'] = $subject->name;
+        $log['type_id'] = $subject;
+        $log['status'] = 'delete';
+        if (Auth::guard('super_admin')->user()->role == 0 or Auth::guard('super_admin')->user()->role == 4) {
+            $log['role'] = "SuperAdmin";
+
+        } else {
+            $log['role'] = "Sub-Admin";
+        }
+        $log['role_id'] = Auth::guard('super_admin')->user()->id;
+        SuperAdminLogActivity::create($log);
     }
 
     public static function SuperAdminAdsEditLog($subject)
@@ -64,7 +64,7 @@ class SuperAdminLogActivity
         }
         $log['role_id'] = Auth::guard('super_admin')->user()->id;
 
-        SuperadminLogActivityModel::create($log);
+        SuperAdminLogActivity::create($log);
     }
     // end of ads
 
@@ -85,7 +85,7 @@ class SuperAdminLogActivity
             $log['role'] = "Sub-Admin";
         }
         $log['role_id'] = Auth::guard('super_admin')->user()->id;
-        SuperadminLogActivityModel::create($log);
+        SuperAdminLogActivity::create($log);
     }
 
     public static function SuperAdminShopEditLog($subject)
@@ -104,7 +104,7 @@ class SuperAdminLogActivity
             $log['role'] = "Sub-Admin";
         }
         $log['role_id'] = Auth::guard('super_admin')->user()->id;
-        SuperadminLogActivityModel::create($log);
+        SuperAdminLogActivity::create($log);
     }
 
     public static function SuperAdminShopDeleteLog($subject)
@@ -123,7 +123,7 @@ class SuperAdminLogActivity
             $log['role'] = "Sub-Admin";
         }
         $log['role_id'] = Auth::guard('super_admin')->user()->id;
-        SuperadminLogActivityModel::create($log);
+        SuperAdminLogActivity::create($log);
     }
     // end of shop
 
@@ -144,7 +144,7 @@ class SuperAdminLogActivity
             $log['role'] = "Sub-Admin";
         }
         $log['role_id'] = Auth::guard('super_admin')->user()->id;
-        SuperadminLogActivityModel::create($log);
+        SuperAdminLogActivity::create($log);
     }
 
     public static function SuperAdminAdminEditLog($subject)
@@ -161,14 +161,14 @@ class SuperAdminLogActivity
             $log['role'] = "Sub-Admin";
         }
         $log['role_id'] = Auth::guard('super_admin')->user()->id;
-        SuperadminLogActivityModel::create($log);
+        SuperAdminLogActivity::create($log);
     }
 
     // end of admin
 
     public static function logActivityLists()
     {
-        return LogActivityModel::latest()->get();
+        return LogActivity::latest()->get();
     }
 
 }

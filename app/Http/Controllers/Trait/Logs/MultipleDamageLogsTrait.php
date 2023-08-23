@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Http\Controllers\Trait\Logs;
 
-use App\MultipleDamageLogs as MultipleDamageLogsModel;
+use App\Models\MultipleDamageLogs;
 use Illuminate\Support\Facades\Auth;
 
-class MultipleDamageLogs
+trait MultipleDamageLogsTrait
 {
 
     public static function MultipleDamageLogs($subject, $old_percent, $shop_id)
@@ -49,7 +49,7 @@ class MultipleDamageLogs
         $log['expensive_thing'] = $subject->valuable_product;
 
         $log['user_id'] = auth()->check() ? auth()->user()->id : 1;
-        MultipleDamageLogsModel::create($log);
+        MultipleDamageLogs::create($log);
     }
 
     public static function logActivityLists()

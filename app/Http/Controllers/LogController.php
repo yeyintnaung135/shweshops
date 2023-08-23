@@ -1,21 +1,13 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-
-use App\Models\frontuserlogs;
-use App\Models\Guestoruserid;
-use App\Http\Controllers\traid\logs;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
-
+use App\Http\Controllers\Trait\Logs\LogActivityTrait;
 
 class LogController extends Controller
 {
-    use logs;
+    use LogActivityTrait;
     /**
      * Create a new controller instance.
      *
@@ -23,7 +15,6 @@ class LogController extends Controller
      */
     public function __construct()
     {
-
 
     }
     /**
@@ -33,13 +24,10 @@ class LogController extends Controller
      */
     public function myTestAddToLog()
     {
-        \LogActivity::addToLog('My Testing Add To Log.');
-        \LogActivity::itemaddToLog('My Testing Add To Log.');
+        $this->addToLog('My Testing Add To Log.');
+        $this->itemaddToLog('My Testing Add To Log.');
 
     }
-
-
-
 
     /**
      * Show the application dashboard.
@@ -48,24 +36,14 @@ class LogController extends Controller
      */
     public function logActivity()
     {
-        $logs = \LogActivity::logActivityLists();
-        return view('logActivity',compact('logs'));
+        $logs = $this->logActivityLists();
+        return view('logActivity', compact('logs'));
     }
 
-
-
-
-
-
-
-
-
-
-    public function storeadsclicklog($name,$id){
-          $this->addlog(url()->current(),'all','all','adsclick',$id);
-          return redirect(url('/'.$name));
-
-
+    public function storeadsclicklog($name, $id)
+    {
+        $this->addlog(url()->current(), 'all', 'all', 'adsclick', $id);
+        return redirect(url('/' . $name));
 
     }
 }

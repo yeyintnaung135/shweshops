@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Trait\Logs\SuperAdminLogActivityTrait;
 use App\Http\Controllers\Trait\YkImage;
 use App\Models\PercentTemplate;
 use App\Models\PremiumTemplate;
@@ -21,7 +22,7 @@ use Illuminate\Validation\Rule;
 class ShopownerRegisterController extends Controller
 {
 
-    use RegistersUsers;use ykimage;
+    use RegistersUsers, YkImage, SuperAdminLogActivityTrait;
 
     public function __construct()
     {
@@ -136,7 +137,7 @@ class ShopownerRegisterController extends Controller
             $banner->save();
         }
 
-        \SuperadminLogActivity::SuperadminShopCreateLog($shopdata);
+        $this->SuperadminShopCreateLog($shopdata);
 
         if ($shopdata) {
             $shop_id = $shopdata->id;
@@ -274,7 +275,7 @@ class ShopownerRegisterController extends Controller
         }
 
         if ($updateSuccess) {
-            \SuperadminLogActivity::SuperadminShopEditLog($input);
+            $this->SuperadminShopEditLog($input);
             // Session::flash('message', 'Your ads was successfully updated');
 
             return redirect()->route('shops.all');

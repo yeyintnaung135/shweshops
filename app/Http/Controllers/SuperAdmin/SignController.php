@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SuperAdmin\Sign\StoreSignRequest;
 use App\Http\Requests\SuperAdmin\Sign\UpdateSignRequest;
 use App\Models\Sign;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -119,7 +120,7 @@ class SignController extends Controller
         //
     }
 
-    public function delete_sign(Request $request): RedirectResponse
+    public function delete_sign(Request $request): JsonResponse
     {
         $delete_sign = Sign::find($request->sign_id);
         $delete_sign->delete();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Trait\Logs\SuperAdminLogActivityTrait;
 use App\Http\Controllers\Trait\ShopDelete;
 use App\Http\Controllers\Trait\UserRole;
 use App\Models\AddToCartClickLog;
@@ -39,6 +40,7 @@ class ShopController extends Controller
 {
     use ShopDelete;
     use UserRole;
+    use SuperAdminLogActivityTrait;
 
     public function __construct()
     {
@@ -831,7 +833,7 @@ class ShopController extends Controller
             $del = $shop_owner->getPhotos->pluck("id");
             ShopBanner::destroy($del);
         }
-        \SuperAdminLogActivity::SuperAdminShopDeleteLog($shop_owner);
+        $this->SuperAdminShopDeleteLog($shop_owner);
         $shop_owner->delete();
 
         $this->shop_relevant_destroy($id);

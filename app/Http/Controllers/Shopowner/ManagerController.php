@@ -8,7 +8,7 @@ use App\Models\BackroleEditDetail;
 use App\Models\BackroleLogActivity;
 use App\Models\ItemsEditDetailLogs;
 use App\Models\Role;
-use App\Models\ShopownerLogActivity;
+use App\Models\ShopOwnerLogActivity;
 use App\Models\ShopOwnersAndStaffs;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -53,7 +53,7 @@ class ManagerController extends Controller
         $searchByFromdate = $request->input('searchByFromdate');
         $searchByTodate = $request->input('searchByTodate');
 
-        $query = ShopownerLogActivity::select('id', 'product_code', 'item_name',
+        $query = ShopOwnerLogActivity::select('id', 'product_code', 'item_name',
             'user_name', 'action', 'role', 'created_at')
             ->where('shop_id', $shop_id)
             ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
@@ -96,7 +96,7 @@ class ManagerController extends Controller
     public function get_back_role_activity_detail(Request $request)
     {
 
-        $detail = BackroleEditdetail::where("backrole_log_activities_id", $request->id)->first();
+        $detail = BackRoleEditdetail::where("backrole_log_activities_id", $request->id)->first();
         echo json_encode($detail);
     }
 
@@ -110,7 +110,7 @@ class ManagerController extends Controller
 
     public function back_role_edit_detail($id): View
     {
-        $detail_id = BackroleEditdetail::findOrFail($id)->user_id;
+        $detail_id = BackRoleEditdetail::findOrFail($id)->user_id;
         return view('backend.shopowner.manager.editdetail', ['detail_id' => $detail_id]);
     }
 
@@ -118,15 +118,9 @@ class ManagerController extends Controller
     {
 
         if (Auth::guard('shop_role')->check()) {
-            $query = ShopOwnersAndStaffs::query()
-                ->orderBy($request->input('columns')[0]['data'], $request->input('order')[0]['dir'])
+            $query = ShopOwnersAndStaffs::select('*')
                 ->where('shop_id', Auth::user()->role_id)
-                ->whereIn('role_id', [3])
-                ->where(function ($query) use ($request) {
-                    $searchValue = $request->input('search.value', '');
-                    $query->where('name', 'like', '%' . $searchValue . '%')
-                        ->orWhere('phone', 'like', '%' . $searchValue . '%');
-                });
+                ->whereIn('role_id', [3]);
         } else {
             $this->role('shop_owner');
             $query = ShopOwnersAndStaffs::query()
@@ -184,7 +178,6 @@ class ManagerController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:11'],
             'password' => ['required', 'string', 'max:255'],
-            //rules
             'phone' => 'unique:shop_owners_and_staffs,phone|unique:shops,main_phone',
 
         ];
