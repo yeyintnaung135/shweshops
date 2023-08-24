@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\ShopOwner;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Trait\Logs\BackRoleLogActivityTrait;
 use App\Http\Controllers\Trait\UserRole;
-use App\Models\BackroleEditDetail;
-use App\Models\BackroleLogActivity;
+use App\Models\BackRoleEditDetail;
+use App\Models\BackRoleLogActivity;
 use App\Models\ItemsEditDetailLogs;
 use App\Models\Role;
 use App\Models\ShopOwnerLogActivity;
@@ -24,7 +25,7 @@ use Yajra\DataTables\DataTables;
 
 class ManagerController extends Controller
 {
-    use UserRole;
+    use UserRole, BackRoleLogActivityTrait;
 
     public function __construct()
     {
@@ -77,7 +78,7 @@ class ManagerController extends Controller
         $searchByFromdate = $request->input('searchByFromdate');
         $searchByTodate = $request->input('searchByTodate');
 
-        $query = BackroleLogActivity::select('id', 'user_name', 'user_role',
+        $query = BackRoleLogActivity::select('id', 'user_name', 'user_role',
             'name', 'action', 'role', 'created_at')
             ->where('shop_id', $shop_id)
             ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
@@ -183,7 +184,7 @@ class ManagerController extends Controller
         ];
         $shop_id = $this->get_shopid();
 
-        // \BackroleLogActivity::BackroleCreateLog($input,$shop_id);
+        $this->BackroleCreateLog($input, $shop_id);
 
         $input['password'] = Hash::make($input['password']);
         $input['shop_id'] = $shop_id;
@@ -254,7 +255,7 @@ class ManagerController extends Controller
         } else {
 
             if (ShopOwnersAndStaffs::where('id', $id)->update($input)) {
-                // $backroleid = BackroleLogActivity::BackroleEditLog($input, $shop_id);
+                // $backroleid = $this->BackroleEditLog($input, $shop_id);
 
                 // $old_name = $manager->name;
                 // $old_phone = $manager->phone;
@@ -443,12 +444,12 @@ class ManagerController extends Controller
     {
         $shop_id = $this->get_shopid();
 
-        $forlog = ShopOwnersAndStaffs::where('shop_id', $shop_id)->where('id', $id)->first();
+        $for_log = ShopOwnersAndStaffs::where('shop_id', $shop_id)->where('id', $id)->first();
         $to_delete = ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->where('id', $id);
-        $this->authorize('to_create_user', $forlog->role_id);
+        $this->authorize('to_create_user', $for_log->role_id);
 
         $to_delete->delete();
-        // \BackroleLogActivity::BackroleDeleteLog($manager_log,$shop_id);
+        $this->BackroleDeleteLog($for_log, $shop_id);
 
         return redirect('/backside/shop_owner/users');
     }

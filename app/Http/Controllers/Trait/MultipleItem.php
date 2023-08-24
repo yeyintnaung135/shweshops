@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Trait;
 
-use App\Models\discount;
+use App\Models\Discount;
 
 trait MultipleItem
 {
@@ -23,7 +23,7 @@ trait MultipleItem
 
         }
         /** discount value delete */
-        $discount_id = discount::where('item_id', $item->id);
+        $discount_id = Discount::where('item_id', $item->id);
         if ($discount_id->count() > 0) {
             if ($request->unsetdiscountitems != null) {
                 $check = in_array($item->id, $request->unsetdiscountitems);
@@ -105,7 +105,7 @@ trait MultipleItem
 
             }
             /** discount value delete */
-            $discount_id = discount::where('item_id', $item->id);
+            $discount_id = Discount::where('item_id', $item->id);
             if ($discount_id->count() > 0) {
                 if ($request->unsetdiscountitems != null) {
                     $check = in_array($item->id, $request->unsetdiscountitems);

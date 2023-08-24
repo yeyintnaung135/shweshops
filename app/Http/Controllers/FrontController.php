@@ -7,6 +7,7 @@ use App\Http\Controllers\Trait\AllShops;
 use App\Http\Controllers\Trait\Category;
 use App\Http\Controllers\Trait\ForYouLogic;
 use App\Http\Controllers\Trait\Logs;
+use App\Http\Controllers\Trait\Logs\ShopLogActivityTrait;
 use App\Http\Controllers\Trait\SimilarLogic;
 use App\Models\AddToCartClickLog;
 use App\Models\Ads;
@@ -29,7 +30,7 @@ use App\Models\State;
 use App\Models\Township;
 use App\Models\Usernoti;
 use App\Models\Users_fav;
-use App\Models\WhislistClickLog;
+use App\Models\WishlistClickLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,11 +40,9 @@ use Illuminate\Support\Str;
 
 class FrontController extends Controller
 {
-    use ForYouLogic;
-    use AllShops;
-    use SimilarLogic;
-    use Category;
-    use Logs;
+    use ForYouLogic, AllShops, SimilarLogic,
+    Category, Logs, ShopLogActivityTrait;
+
     public function getstates()
     {
         $states = State::all();
@@ -527,11 +526,11 @@ class FrontController extends Controller
         $item = Item::where('id', $request->id)->first();
 
         $getuserorguestid = $this->getidoftable_userorguestid();
-        $check_atc_logs_exit = WhislistClickLog::where([['item_id', '=', $request->id], ['userorguestid', '=', $getuserorguestid]]);
+        $check_atc_logs_exit = WishlistClickLog::where([['item_id', '=', $request->id], ['userorguestid', '=', $getuserorguestid]]);
         if ($check_atc_logs_exit->count() != 0) {
-            WhislistClickLog::where([['item_id', '=', $request->id], ['userorguestid', '=', $getuserorguestid]])->delete();
+            WishlistClickLog::where([['item_id', '=', $request->id], ['userorguestid', '=', $getuserorguestid]])->delete();
         } else {
-            WhislistClickLog::create(['item_id' => $request->id, 'userorguestid' => $getuserorguestid]);
+            WishlistClickLog::create(['item_id' => $request->id, 'userorguestid' => $getuserorguestid]);
 
         }
         echo json_encode($item);
@@ -548,7 +547,7 @@ class FrontController extends Controller
         if (empty($shop)) {
             return abort(404);
         }
-        // \ShopLogActivity::shopaddToLog($shop->name);
+        $this->shopaddToLog($shop->name);
         $id = $shop->id;
 
         //for log

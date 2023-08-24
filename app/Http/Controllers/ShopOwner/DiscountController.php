@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ShopOwner;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\Firebase;
+use App\Http\Controllers\Trait\Logs\MultipleDamageLogsTrait;
 use App\Http\Controllers\Trait\UserRole;
 use App\Models\Discount;
 use App\Models\Item;
@@ -21,7 +22,7 @@ use Yajra\DataTables\DataTables;
 
 class DiscountController extends Controller
 {
-    use UserRole;
+    use UserRole, MultipleDamageLogsTrait;
 
     public function __construct()
     {
@@ -76,7 +77,7 @@ class DiscountController extends Controller
         return response()->json(['status' => 'success', 'data' => $willupdatepricelist]);
     }
 
-    public function list(): View {
+    function list(): View {
 
         $items = Discount::where('shop_id', $this->get_shopid())->onlyTrashed()->get();
         return view('backend.shopowner.item.discount.list', ['items' => $items, 'shopowner' => $this->current_shop_data()]);
@@ -266,7 +267,7 @@ class DiscountController extends Controller
                         $discount->percent = $request->percent;
                         // return dd($discount);
                         $discount->update();
-                        // \MultipleDiscountLogs::MultipleDiscountLogs($p, $discount, $olddiscount, $shop_id);
+                        $this->MultipleDiscountLogs($p, $discount, $olddiscount, $shop_id);
                     }
                 }
             } else {
@@ -281,7 +282,7 @@ class DiscountController extends Controller
                     $discount->item_id = $id;
                     $discount->shop_id = $shop_id;
                     $discount->percent = $request->percent;
-                    // \MultipleDiscountLogs::MultipleNoneDiscountLogs($p, $discount, $olddiscount, $shop_id);
+                    $this->MultipleNoneDiscountLogs($p, $discount, $olddiscount, $shop_id);
 
                     $discount->save();
                 }

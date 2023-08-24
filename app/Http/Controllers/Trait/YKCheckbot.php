@@ -1,10 +1,7 @@
 <?php
 namespace App\Http\Controllers\Trait;
 
-use App\Models\discount;
-use App\Models\Forfirebase;
-use App\Models\Item;
-use App\Models\Shopowner;
+use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
@@ -15,7 +12,7 @@ trait YKCheckbot
         $res = '';
 
         try {
-            $checkfromapi = \Illuminate\Support\Facades\Http::get("https://whatmyuseragent.com/api?ua=".$useragent."&key=NOTREQUIED");
+            $checkfromapi = Http::get("https://whatmyuseragent.com/api?ua=" . $useragent . "&key=NOTREQUIED");
             $res = $checkfromapi;
 
         } catch (Exception $e) {
@@ -32,8 +29,10 @@ trait YKCheckbot
         }
 
     }
-    public function recheckbystring($useragent){
-        if(Str::contains($useragent, ['Python/3.10 aiohttp/3.8.1',
+
+    public function recheckbystring($useragent)
+    {
+        if (Str::contains($useragent, ['Python/3.10 aiohttp/3.8.1',
             'ZaldamoSearchBot(www.zaldamo.com/search.html)',
             'Python/3.6 aiohttp/3.8.3',
             'Python/3.8 aiohttp/3.4.4',
@@ -50,7 +49,7 @@ trait YKCheckbot
             'WebZIP/3.5 (http://www.spidersoft.com)',
             'Wget/1.12 (linux-gnu)',
             'Wget/1.20.3 (linux-gnu)',
-            'Wget/1.21.2','Spider_Bot/3.0',
+            'Wget/1.21.2', 'Spider_Bot/3.0',
             'test',
             'YandexBot',
             'bitlybot/3.0 (+http://bit.ly/)',
@@ -65,7 +64,7 @@ trait YKCheckbot
             'CensysInspect',
             'ViberUrlDownloader',
             'a Palo Alto Networks company',
-            'http://dev.hubspot.com/','Googlebot',
+            'http://dev.hubspot.com/', 'Googlebot',
             'PetalBot',
             'AhrefsBot',
             'zgrab',
@@ -81,15 +80,12 @@ trait YKCheckbot
             'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:58.0) Gecko/20100101 Firefox/58.0',
             'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:107.0) Gecko/20100101 Firefox/107.0',
             'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0',
-            'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:100.0) Gecko/20100101 Firefox/100.0'
+            'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:100.0) Gecko/20100101 Firefox/100.0',
 
-
-        ])){
+        ])) {
             return 'yes';
-        }else{
+        } else {
             return 'no';
         }
     }
 }
-
-?>

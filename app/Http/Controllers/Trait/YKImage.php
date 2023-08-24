@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Trait;
 
-use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
-
+use Intervention\Image\Facades\Image;
 
 trait YKImage
 {
-    function base64_to_image($base64_string, $output_file)
+    public function base64_to_image($base64_string, $output_file)
     {
         if (env('USE_DO') != 'true') {
 
@@ -30,10 +29,6 @@ trait YKImage
             $image = base64_decode($data[1]);
             Storage::disk('digitalocean')->put($output_file, $image);
         }
-
-
-
-
 
         return 'done';
     }

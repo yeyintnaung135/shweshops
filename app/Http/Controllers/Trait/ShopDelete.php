@@ -7,14 +7,14 @@ use App\Models\Collection;
 use App\Models\CountSetting;
 use App\Models\discount;
 use App\Models\Event;
-use App\Models\facebooktable;
+use App\Models\FacebookTable;
 use App\Models\Item;
 use App\Models\ItemLogActivity;
 use App\Models\Manager;
 use App\Models\MultipleDamageLogs;
 use App\Models\MultipleDiscountLogs;
 use App\Models\MultiplePriceLogs;
-use App\Models\Percent_template;
+use App\Models\PercentTemplate;
 use App\Models\Promotions;
 use App\Models\ShopLogActivity;
 use App\Models\ShopOwnerLogActivity;
@@ -31,12 +31,12 @@ trait ShopDelete
         $this->model_accept_delete(new Item(), $id);
         $this->model_accept_delete(new Collection(), $id);
         $this->model_accept_delete(new discount(), $id);
-        $this->model_accept_delete(new Percent_template(), $id);
+        $this->model_accept_delete(new PercentTemplate(), $id);
         $this->model_accept_delete(new ItemLogActivity(), $id); //recheck
-        $this->model_accept_delete(new facebooktable(), $id);
+        $this->model_accept_delete(new FacebookTable(), $id);
         //log activities
         // $this->model_accept_delete(new AddToCartClickLog(),$id);
-        $this->model_accept_delete(new BackroleLogActivity(), $id);
+        $this->model_accept_delete(new BackRoleLogActivity(), $id);
         // $this->model_accept_delete(new BuyNowClickLog(),$id);
         $this->model_accept_delete(new ShopOwnerLogActivity(), $id);
         $this->model_accept_delete2(new ShopLogActivity(), $id);
@@ -69,11 +69,11 @@ trait ShopDelete
         $this->model_accept_restore(new Item(), $id);
         // $this->model_accept_restore(new Collection(),$id);
         $this->model_accept_restore(new discount(), $id);
-        $this->model_accept_restore(new Percent_template(), $id);
+        $this->model_accept_restore(new PercentTemplate(), $id);
         $this->model_accept_restore(new ItemLogActivity(), $id);
-        $this->model_accept_restore(new facebooktable(), $id);
+        $this->model_accept_restore(new FacebookTable(), $id);
         // $this->model_accept_restore(new AddToCartClickLog(),$id);
-        $this->model_accept_restore(new BackroleLogActivity(), $id);
+        $this->model_accept_restore(new BackRoleLogActivity(), $id);
         // $this->model_accept_restore(new BuyNowClickLog(),$id);
         $this->model_accept_restore(new ShopOwnerLogActivity(), $id);
         $this->model_accept_restore(new Manager(), $id);
@@ -102,12 +102,12 @@ trait ShopDelete
         $this->model_accept_force_delete(new Item(), $id);
         // $this->model_accept_force_delete(new Collection(),$id);
         $this->model_accept_force_delete(new discount(), $id);
-        $this->model_accept_force_delete(new Percent_template(), $id);
+        $this->model_accept_force_delete(new PercentTemplate(), $id);
         $this->model_accept_force_delete(new ItemLogActivity(), $id); //recheck
-        $this->model_accept_force_delete(new facebooktable(), $id);
+        $this->model_accept_force_delete(new FacebookTable(), $id);
         //log activities
         // $this->model_accept_force_delete(new AddToCartClickLog(),$id);
-        $this->model_accept_force_delete(new BackroleLogActivity(), $id);
+        $this->model_accept_force_delete(new BackRoleLogActivity(), $id);
         // $this->model_accept_force_delete(new BuyNowClickLog(),$id);
         $this->model_accept_force_delete(new ShopOwnerLogActivity(), $id);
         $this->model_accept_force_delete2(new ShopLogActivity(), $id);

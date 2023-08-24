@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 trait MultiplePriceLogsTrait
 {
-
     public static function MultiplePlusPriceLogs($subject, $plus_price, $shop_id)
     {
 

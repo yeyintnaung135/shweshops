@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Trait\Logs;
 
+use App\Models\LogActivity;
 use App\Models\MultipleDamageLogs;
 use Illuminate\Support\Facades\Auth;
 
 trait MultipleDamageLogsTrait
 {
-
     public static function MultipleDamageLogs($subject, $old_percent, $shop_id)
     {
 
@@ -54,7 +54,7 @@ trait MultipleDamageLogsTrait
 
     public static function logActivityLists()
     {
-        return LogActivityModel::latest()->get();
+        return LogActivity::latest()->get();
     }
 
 }

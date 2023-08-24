@@ -46,7 +46,7 @@ trait BackRoleLogActivityTrait
         } else {
             $log['role'] = 'shopowner';
         }
-        BackroleLogActivity::create($log);
+        BackRoleLogActivity::create($log);
     }
 
     public static function BackroleCreateLog($subject, $shop_id)
@@ -87,7 +87,7 @@ trait BackRoleLogActivityTrait
         } else {
             $log['role'] = 'shopowner';
         }
-        BackroleLogActivity::create($log);
+        BackRoleLogActivity::create($log);
     }
 
     public static function BackroleEditLog($subject, $shop_id)
@@ -127,13 +127,13 @@ trait BackRoleLogActivityTrait
         } else {
             $log['role'] = 'shopowner';
         }
-        $backroleid = BackroleLogActivity::create($log);
+        $backroleid = BackRoleLogActivity::create($log);
         return $backroleid;
     }
 
     public static function logActivityLists()
     {
-        return BackroleLogActivity::latest()->get();
+        return BackRoleLogActivity::latest()->get();
     }
 
 }

@@ -3,14 +3,14 @@
 namespace App\Helpers;
 
 use App\Models\LogActivity;
-use App\Models\WishListClickLog;
+use App\Models\WishlistClickLog;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class WishlistClickLogTrait
 {
 
-    public static function WhislistClickLog($subject)
+    public static function WishlistClickLog($subject)
     {
 
         $log = [];
@@ -26,7 +26,7 @@ class WishlistClickLogTrait
             $log['user_id'] = Session::get('guest_id');
         }
         $log['shop_id'] = $subject->shop_id;
-        WishListClickLog::create($log);
+        WishlistClickLog::create($log);
     }
 
     public static function logActivityLists()

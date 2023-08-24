@@ -4,7 +4,9 @@ namespace App\Http\Controllers\ShopOwner;
 
 use App\Facade\TzGate;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Trait\FacebookTraid;
+use App\Http\Controllers\Trait\FacebookTrait;
+use App\Http\Controllers\Trait\Logs\MultipleDamageLogsTrait;
+use App\Http\Controllers\Trait\Logs\MultiplePriceLogsTrait;
 use App\Http\Controllers\Trait\Logs\ShopsLogActivityTrait;
 use App\Http\Controllers\Trait\MultipleItem;
 use App\Http\Controllers\Trait\UserRole;
@@ -37,7 +39,8 @@ use Yajra\DataTables\DataTables;
 
 class ItemsController extends Controller
 {
-    use YKImage, UserRole, MultipleItem, FacebookTraid, ShopsLogActivityTrait;
+    use YKImage, UserRole, FacebookTrait, ShopsLogActivityTrait,
+    MultipleItem, MultipleDamageLogsTrait, MultiplePriceLogsTrait;
 
     public $err_data = [];
 
@@ -1061,7 +1064,7 @@ class ItemsController extends Controller
             $item = Item::findOrfail($id);
             $shop_id = $this->get_shopid();
 
-            // \MultiplePriceLogs::MultipleMinusPriceLogs($item, $plus_price, $shop_id);
+            $this->MultipleMinusPriceLogs($item, $plus_price, $shop_id);
             $this->minus($item, $request);
         }
         $items = Item::whereIn('id', $request->id)->get();
@@ -1083,7 +1086,7 @@ class ItemsController extends Controller
             $shop_id = $this->get_shopid();
 
             // return dd($item);
-            // \MultipleDamageLogs::MultipleDamageLogs($item, $old_percent, $shop_id);
+            $this->MultipleDamageLogs($item, $old_percent, $shop_id);
             // $item->user_id = $user_id;
             $this->get_multiple_recap($item, $old_percent);
         }
@@ -1107,7 +1110,7 @@ class ItemsController extends Controller
             $item = Item::findOrfail($id);
             $shop_id = $this->get_shopid();
 
-            // \MultiplePriceLogs::MultiplePlusPriceLogs($item, $plus_price, $shop_id);
+            $this->MultiplePlusPriceLogs($item, $plus_price, $shop_id);
             $this->plus($item, $request);
         }
         $items = Item::whereIn('id', $request->id)->get();
