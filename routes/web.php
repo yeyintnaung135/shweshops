@@ -14,7 +14,6 @@ use App\Http\Controllers\Shwe_News\NewsFrontController;
 use App\Http\Controllers\SupportFrontController;
 use App\Models\Manager;
 use App\Models\Shops;
-use App\Models\Shops;
 use App\Models\Sign;
 use App\Models\User;
 use Illuminate\Http\Request;
