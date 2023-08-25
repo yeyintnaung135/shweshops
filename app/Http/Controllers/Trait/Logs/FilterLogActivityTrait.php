@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Trait\Logs;
 
 use App\Models\FilterLogActivity;
-use Illuminate\Support\Facades\Auth;
-use Request;
+use App\Models\LogActivity;
+use Illuminate\Support\Facades\Request;
 
 trait FilterLogActivityTrait
 {
@@ -25,7 +25,7 @@ trait FilterLogActivityTrait
 
     public static function logActivityLists()
     {
-        return LogActivityModel::latest()->get();
+        return LogActivity::latest()->get();
     }
 
 }

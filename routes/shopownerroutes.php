@@ -47,7 +47,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.',
     Route::post('add_new_password', [YkforgotpasswordController::class, 'add_new_password'])->name('add_new_password');
 
     //reg ph confirmation
-    Route::get('/support', [ShopOwnerSupportController::class, 'index']);
+    Route::get('/support', [ShopOwnerSupportController::class, 'index'])->name('support');
     Route::post('/get_support_by_cat', [ShopOwnerSupportController::class, 'get_support_by_cat']);
     Route::post('/get_support', [ShopOwnerSupportController::class, 'get_support']);
     Route::resource('/', ShopOwnerController::class);

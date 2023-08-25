@@ -7,53 +7,12 @@ use Intervention\Image\Facades\Image;
 
 trait YKImage
 {
-<<<<<<< HEAD
-    public function save_image($file, $fileName, $directory): string
-    {
-        if (env('USE_DO') != 'true') {
-            $file->storeAs($directory, $fileName, 'public_image');
-
-            return 'done';
-        } else {
-            return $this->save_image_digitalocean($file, $fileName, $directory);
-        }
-    }
-    public function save_image_digitalocean($file, $fileName, $directory)
-    {
-
-        $file->storeAs('prod/' . $directory, $fileName, 'digitalocean');
-
-        return 'done';
-    }
-
-    public function delete_image($imagePath, $thumbnailPath=null)
-    {
-      if(env('USE_DO') == 'true') {
-
-        Storage::disk('digitalocean')->delete('/prod/'.$imagePath);
-        if($thumbnailPath != null){
-            Storage::disk('digitalocean')->delete('/prod/'.$thumbnailPath);
-        }
-
-      }else{
-        Storage::disk('public_image')->delete($imagePath);
-        if($thumbnailPath != null){
-            Storage::disk('public_image')->delete($thumbnailPath);
-        }
-      }
-    }
-
-   
-
-    function base64_to_image($base64_string, $output_file):string
-=======
     public function base64_to_image($base64_string, $output_file)
->>>>>>> 3f9a9a3d8cef9b7a5371a5700376357bba0f709c
     {
         if (env('USE_DO') != 'true') {
 
             // open the output file for writing
-            $ifp = fopen(public_path('/images/'.$output_file), 'wb');
+            $ifp = fopen(public_path('/images/' . $output_file), 'wb');
 
             // split the string on commas
             // $data[ 0 ] == "data:image/png;base64"
@@ -68,7 +27,7 @@ trait YKImage
         } else {
             $data = explode(',', $base64_string);
             $image = base64_decode($data[1]);
-            Storage::disk('digitalocean')->put('prod/'.$output_file, $image);
+            Storage::disk('digitalocean')->put('prod/' . $output_file, $image);
         }
 
         return 'done';

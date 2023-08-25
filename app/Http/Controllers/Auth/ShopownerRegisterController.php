@@ -5,27 +5,20 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\Logs\SuperAdminLogActivityTrait;
 use App\Http\Controllers\Trait\YkImage;
-use App\Models\PercentTemplate;
 use App\Models\PremiumTemplate;
 use App\Models\ShopBanner;
-use App\Models\Shopdirectory;
-use App\Models\ShopOwnersAndStaffs;
+use App\Models\ShopDirectory;
 use App\Models\Shops;
-
 use App\Models\State;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Carbon;
 
 class ShopownerRegisterController extends Controller
 {
 
-    use RegistersUsers;use YKImage;
+    use RegistersUsers, YKImage, SuperAdminLogActivityTrait;
 
     public function __construct()
     {
@@ -37,8 +30,6 @@ class ShopownerRegisterController extends Controller
         $shopowner = Shops::all();
         return view('backend.super_admin.activity_logs.shops', ['shopowner' => $shopowner]);
     }
-
-  
 
     public function edit($id)
     {

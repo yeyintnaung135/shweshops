@@ -58,7 +58,6 @@ return [
             'driver' => 'session',
             'provider' => 'shop_owner_and_staff',
         ],
-        
 
     ],
 
@@ -86,13 +85,12 @@ return [
         ],
         'super_admins' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Superadmin::class,
+            'model' => App\Models\SuperAdmin::class,
         ],
         'pos_super_admins' => [
             'driver' => 'eloquent',
             'model' => App\PosSuperAdmin::class,
         ],
-    
 
         'shop_owner_and_staff' => [
             'driver' => 'eloquent',
