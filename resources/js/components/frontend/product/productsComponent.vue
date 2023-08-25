@@ -5,7 +5,7 @@
       <h3 v-else>Results</h3>
       <span class="d-none">( 212 Results ) static data</span>
     </div>
-    {{ this.tt }}ffffffffffffffff
+    fffffffffff
     <div class="sn-no-items" v-if="this.shownoitems">
       <div class="sn-cross-sign"></div>
       <i class="fa-solid fa-box-open"></i>
@@ -14,7 +14,7 @@
     <div
       v-infinite-scroll="loadMore"
       infinite-scroll-disabled="busy"
-      infinite-scroll-distance="340"
+      infinite-scroll-distance="10"
     >
       <div
         class="products default loading row d-flex flex-wrap"
@@ -175,7 +175,6 @@ export default {
     return {
       shownoitems: false,
       imgurl: "",
-tt:'tt',
       host: "",
       // emptyonserver: 0,
       newdata: "",
@@ -187,6 +186,7 @@ tt:'tt',
   beforeMount() {},
   updated() {},
   mounted() {
+    this.busy=this.$parent.busy;
     this.host = this.$hostname;
     if (process.env.MIX_USE_DO == "true") {
       this.imgurl = process.env.MIX_DO_URL;
@@ -211,84 +211,15 @@ tt:'tt',
     },
   },
   methods: {
-    loadMore: function () {
-      this.busy = true;
+    loadMore:  function () {
+  
+        this.$parent.getdatafromserver_bysort();
 
-      let tmp_limit = 0;
-      if (this.filterdata.length > 0) {
-        tmp_limit = this.filterdata.length;
-      } else {
-        tmp_limit = 20;
-      }
 
-      axios
-        .post(
-          this.$hostname + "/catfilter",
-          {
-            data: this.filterdata,
-            filtertype: {
-              sort: this.sortby,
-              byshop: this.byshop,
-              price_range: this.price_range,
-              cat_id: this.cat_id,
-              gems: this.selected_gems,
-              gender: this.gender,
-              gold_colour: this.gold_colour,
-              gold_quality: this.gold_quality,
-              typesearch: this.typesearch,
-              additional: this.additional,
-              limit: tmp_limit,
-              item_id: this.item_id,
-              discount: this.discount,
-              ini_checked: this.ini_check,
-              selected_product_quality: this.selected_product_quality,
-            },
-          },
-          {
-            header: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        )
-        .then((response) => {
-          var self = this;
-          if (response.statusText == "OK") {
-            if (response.data[0].length > 0) {
-              setTimeout(() => {
-                let setemptyonserver = async (e) => {
-                  // this.emptyonserver = e;
-                  this.$emit("forparent", { emptyonserver: e });
-                };
+    
 
-                let setbusy = () => {
-                  if (this.empty_on_server == 1) {
-                    this.busy = true;
-                  } else {
-                    this.busy = false;
-                  }
-                  console.log(this.busy);
-                };
-                let setfilterdata = (d) => {
-                    d.map((x) =>
-                    this.filterdata.data.push(x)
-                    );
-                   
-                };
+     
 
-                async function tosetdata() {
-                  await setemptyonserver(response.data["empty_on_server"]);
-
-                  await setfilterdata(response.data[0]);
-                  await setbusy();
-                  console.log("filter data");
-                }
-
-                tosetdata();
-              }, 500);
-            }
-          }
-        });
-      console.log(this.busy);
     },
   },
 };

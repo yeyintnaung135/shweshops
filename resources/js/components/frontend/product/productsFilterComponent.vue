@@ -1,8 +1,8 @@
 <template>
     <div>
         <div
-            v-if="this.showbigloader"
-            class="yk-wrapper fff"
+         :class="{'d-none':!this.showbigloader}"   
+         class="yk-wrapper fff"
             style="
                 position: relative !important;
                 margin-top: 36px;
@@ -15,7 +15,8 @@
                 <div class="bounce3"></div>
             </div>
         </div>
-        <div class="container-fluid px-1" v-if="!this.showbigloader">
+        <div class="container-fluid px-1" :class="{'d-none':this.showbigloader}"   
+>
             <div class="mb-3 col-12 mt-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -747,17 +748,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-9">
-                    <!-- <div
-                        v-if="this.showloader"
-                        class="yk-wrapper fff"
-                        style="position: relative !important; margin-top: 56px"
-                    >
-                        <div class="ct-spinner5">
-                            <div class="bounce1"></div>
-                            <div class="bounce2"></div>
-                            <div class="bounce3"></div>
-                        </div>
-                    </div> -->
+                 
                     <Products
                         ref="productcom"
                         @forparent="getdatafromchild"
@@ -778,6 +769,17 @@
                             this.selected_product_quality
                         "
                     ></Products>
+                    <div
+                        v-if="this.busy"
+                        class="yk-wrapper fff"
+                        style="position: relative !important; margin-top: 56px"
+                    >
+                        <div class="ct-spinner5">
+                            <div class="bounce1"></div>
+                            <div class="bounce2"></div>
+                            <div class="bounce3"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1012,7 +1014,6 @@ export default {
        
     },
     mounted() {
-        this.$refs.productcom.tt='xxx';
 
         this.host = this.$hostname;
         if (localStorage.getItem("product_quality") != undefined) {
@@ -1025,11 +1026,11 @@ export default {
         this.getstatefromserver();
         // shop list to bind in slider
         this.shoplist = this.shop_ids;
-        // this.empty_on_server = this.newfilterdata.length < 20 ? 1 : 0;
-        // console.log("empty_on_server", this.empty_on_server);
-        // this.showbigloader = true;
+console.log(this.shoplist);
+        this.showbigloader = true;
         this.gold_colour = this.main_product_type;
         this.getdatafromserver_bysort();
+
     },
     beforeUpdate() {
         if (this.$refs.slick) {
@@ -1300,28 +1301,22 @@ export default {
             this.getdatafromserver_bysort();
         },
 
-        getdatafromserver_bysort: function () {
+        getdatafromserver_bysort: async function () {
             if (!this.busy) {
                 this.busy = true;
+                
                 // console.log(this.filterdata_from_server);
                 console.log("type search", this.typesearch);
                 this.empty_on_server = 0;
              
                 let tmp_limit = 0;
-                if (
-                    this.newfilterdata.length > 0
-                ) {
-                    tmp_limit =
-                        this.newfilterdata.length;
-                } else {
-                    tmp_limit = 0;
-                }
+                tmp_limit=this.$refs.productcom.filterdata.length;
+              
                 //for similar
                 if (this.price_range != "all") {
                     this.item_child_id = "empty";
                 }
                 // var self = this;
-                this.showloader = true;
                 axios
                     .post(
                         this.$hostname + "/catfilter",
@@ -1360,6 +1355,19 @@ export default {
                         this.newfilterdata = response.data[0];
                         this.empty_on_server = response.data.empty_on_server;
                         console.log("byshop response",'afefae');
+                        response.data[0].map((d)=>{
+                            this.$refs.productcom.filterdata.push(d);
+
+                        })
+                        if(this.$refs.productcom.length < 1){
+                            this.$refs.productcom.shownoitems=true;
+                        }else{
+                            this.$refs.productcom.shownoitems=false;
+
+                        }
+
+                    }).then((response)=>{
+
                     });
             }
 
