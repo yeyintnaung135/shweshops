@@ -51,44 +51,36 @@ class ItemsController extends Controller
 
     public function index(): View
     {
-
-        $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-
-        return view('backend.shopowner.item.list', ['items' => $items, 'shopowner' => $this->current_shop_data()]);
+        return view('backend.shopowner.item.list');
     }
 
     public function item_activity_index(): View
     {
-        $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-
-        return view('backend.shopowner.activity.product.item', ['items' => $items, 'shopowner' => $this->shop_owner]);
+        return view('backend.shopowner.activity.product.item');
     }
 
     public function multiprice_activity_index(): View
     {
-
-        $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-
-        return view('backend.shopowner.activity.product.multiprice', ['items' => $items, 'shopowner' => $this->shop_owner]);
+        return view('backend.shopowner.activity.product.multiprice');
     }
 
     public function multidiscount_activity_index(): View
     {
-        $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-
-        return view('backend.shopowner.activity.product.multidis', ['items' => $items, 'shopowner' => $this->shop_owner]);
+        return view('backend.shopowner.activity.product.multidis');
     }
 
     public function multipercent_activity_index(): View
     {
-        $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-
-        return view('backend.shopowner.activity.product.multipercent', ['items' => $items, 'shopowner' => $this->shop_owner]);
+        return view('backend.shopowner.activity.product.multipercent');
     }
 
     public function get_item_activity_log(Request $request): JsonResponse
     {
+        $shop_id = $this->get_shopid();
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
 
+<<<<<<< HEAD
         $shop_id = $this->get_shopid();
         $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
         $searchByTodate = $request->input('searchByTodate', now());
@@ -101,6 +93,15 @@ class ItemsController extends Controller
 
         return DataTables::of($query)
             ->addColumn('created_at_formatted', fn ($record) => $record->created_at->format('F d, Y ( h:i A )'))
+=======
+        $query = ItemLogActivity::select('id', 'user_name', 'item_code', 'name', 'user_id', 'created_at')
+            ->where('shop_id', $shop_id)
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
+
+        return DataTables::of($query)
+            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
+>>>>>>> 8d51a8b6a4185854d3a8036d7aff2b6eb385e31e
             ->toJson();
     }
 
@@ -108,6 +109,7 @@ class ItemsController extends Controller
     {
 
         $shop_id = $this->get_shopid();
+<<<<<<< HEAD
         $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
         $searchByTodate = $request->input('searchByTodate', now());
 
@@ -130,6 +132,22 @@ class ItemsController extends Controller
                 'new_max_price',
                 'created_at'
             );
+=======
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
+
+        $query = MultiplePriceLogs::select(
+            'id', 'product_code', 'name', 'user_id', 'user_name',
+            'user_role', 'old_price', 'new_price', 'min_price',
+            'max_price', 'new_min_price', 'new_max_price', 'created_at')
+            ->where('shop_id', $shop_id)
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
+
+        return DataTables::of($query)
+            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
+            ->toJson();
+>>>>>>> 8d51a8b6a4185854d3a8036d7aff2b6eb385e31e
 
         return DataTables::of($query)
             ->addColumn('created_at_formatted', fn ($record) => $record->created_at->format('F d, Y ( h:i A )'))
@@ -142,6 +160,7 @@ class ItemsController extends Controller
         $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
         $searchByTodate = $request->input('searchByTodate', now());
 
+<<<<<<< HEAD
         $query = MultipleDiscountLogs::query()
             ->where('shop_id', $shop_id)
             ->orderByDesc('created_at')
@@ -168,11 +187,26 @@ class ItemsController extends Controller
 
         return DataTables::of($query)
             ->addColumn('created_at_formatted', fn ($record) => $record->created_at->format('F d, Y ( h:i A )'))
+=======
+        $query = MultipleDiscountLogs::select(
+            'id', 'product_code', 'name', 'user_name',
+            'user_role', 'old_price', 'old_min_price', 'old_max_price',
+            'percent', 'old_discount_price', 'new_discount_price',
+            'old_discount_min', 'old_discount_max', 'new_discount_min',
+            'new_discount_max', 'created_at')
+            ->where('shop_id', $shop_id)
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
+
+        return DataTables::of($query)
+            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
+>>>>>>> 8d51a8b6a4185854d3a8036d7aff2b6eb385e31e
             ->toJson();
     }
 
     public function get_multiple_damage_activity_log(Request $request): JsonResponse
     {
+<<<<<<< HEAD
         $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
         $searchByTodate = $request->input('searchByTodate', now());
 
@@ -201,6 +235,23 @@ class ItemsController extends Controller
 
         return DataTables::of($query)
             ->addColumn('created_at_formatted', fn ($record) => $record->created_at->format('F d, Y ( h:i A )'))
+=======
+        $shop_id = $this->get_shopid();
+        $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
+        $searchByTodate = $request->input('searchByTodate', now());
+
+        $query = MultipleDamageLogs::select(
+            'id', 'product_code', 'name', 'user_name',
+            'user_role', 'name', 'decrease', 'fee', 'undamage',
+            'damage', 'expensive_thing', 'new_decrease', 'new_fee',
+            'new_undamage', 'new_damage', 'new_expensive_thing', 'created_at')
+            ->where('shop_id', $shop_id)
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
+
+        return DataTables::of($query)
+            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
+>>>>>>> 8d51a8b6a4185854d3a8036d7aff2b6eb385e31e
             ->toJson();
     }
     //show create form
@@ -208,6 +259,7 @@ class ItemsController extends Controller
     public function get_items(Request $request): JsonResponse
     {
         $shop_id = $this->get_shopid();
+<<<<<<< HEAD
         $searchByFromdate = $request->input('searchByFromdate', '0-0-0 00:00:00');
         $searchByTodate = $request->input('searchByTodate', now());
 
@@ -234,6 +286,24 @@ class ItemsController extends Controller
             })
             ->addColumn('action', fn ($record) => $record->id)
             ->addColumn('created_at_formatted', fn ($record) => $record->created_at->format('F d, Y ( h:i A )'))
+=======
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
+
+        $query = Item::select(
+            'id', 'product_code', 'default_photo', 'name',
+            'price', 'min_price', 'max_price', 'created_at')
+            ->where('shop_id', $shop_id)
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
+
+        return DataTables::of($query)
+            ->addColumn('checkbox', fn($record) => $record->id)
+            ->addColumn('check_discount', fn($record) => $record->YkGetDiscount)
+            ->addColumn('price_formatted', fn($record) => $record->formatted_price)
+            ->addColumn('action', fn($record) => $record->id)
+            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
+>>>>>>> 8d51a8b6a4185854d3a8036d7aff2b6eb385e31e
             ->toJson();
     }
 
@@ -253,6 +323,7 @@ class ItemsController extends Controller
             ->where('shop_id', $shop_id)
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
             ->select(
+<<<<<<< HEAD
                 'id',
                 'product_code',
                 'default_photo',
@@ -271,6 +342,19 @@ class ItemsController extends Controller
             })
             ->addColumn('action', fn ($record) => $record->id)
             ->addColumn('created_at_formatted', fn ($record) => $record->created_at->format('F d, Y ( h:i A )'))
+=======
+                'id', 'product_code', 'default_photo', 'name',
+                'description', 'price', 'min_price', 'max_price', 'created_at'
+            );
+
+        return DataTables::of($query)
+            ->addColumn('check_discount', fn($record) => $record->YkGetDiscount)
+            ->addColumn('price_formatted', function ($record) {
+                return ($record->price != 0) ? $record->price : $record->min_price . '-' . $record->max_price;
+            })
+            ->addColumn('action', fn($record) => $record->id)
+            ->addColumn('created_at_formatted', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
+>>>>>>> 8d51a8b6a4185854d3a8036d7aff2b6eb385e31e
             ->toJson();
     }
 
@@ -1412,27 +1496,36 @@ class ItemsController extends Controller
 
     public function trash(): View
     {
-        $items = Item::onlyTrashed()->where('shop_id', $this->get_shopid())->get();
-
-        return view('backend.shopowner.item.trash', ['items' => $items, 'shopowner' => $this->current_shop_data()]);
+        return view('backend.shopowner.item.trash');
     }
 
     public function get_items_trash(Request $request): JsonResponse
     {
         $shop_id = $this->get_shopid();
+<<<<<<< HEAD
         $searchValue = $request->input('searchValue', '');
 
         $records = Item::onlyTrashed()
             ->where('shop_id', $shop_id)
             ->orderBy('created_at', 'desc')
             ->select('id', 'product_code', 'default_photo', 'price', 'deleted_at');
+=======
+
+        $records = Item::select('id', 'product_code', 'default_photo', 'price', 'deleted_at')
+            ->where('shop_id', $shop_id)->onlyTrashed();
+>>>>>>> 8d51a8b6a4185854d3a8036d7aff2b6eb385e31e
 
         return DataTables::of($records)
             ->addColumn('price_formatted', function ($record) {
                 return ($record->price != 0) ? $record->price : $record->short_price;
             })
+<<<<<<< HEAD
             ->addColumn('action', fn ($record) => $record->id)
             ->addColumn('deleted_at_formatted', function ($record) {
+=======
+            ->addColumn('action', fn($record) => $record->id)
+            ->addColumn('deleted_at', function ($record) {
+>>>>>>> 8d51a8b6a4185854d3a8036d7aff2b6eb385e31e
                 return $record->deleted_at ? $record->deleted_at->format('F d, Y ( h:i A )') : '';
             })
             ->toJson();

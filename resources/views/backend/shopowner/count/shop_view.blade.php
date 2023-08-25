@@ -104,6 +104,38 @@
 
 @push('scripts')
     <script>
+        $('#shopViewTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('backside.shop_owner.detail.get_shop_view') }}",
+
+                columns: [{
+                        data: 'id'
+                    },
+                    {
+                        data: 'shop'
+                    },
+                    {
+                        data: 'shop_name'
+                    },
+                    {
+                        data: 'user_id'
+                    },
+                    {
+                        data: 'user_name'
+                    },
+                    {
+                        data: 'created_at'
+                    },
+                ],
+                dom: 'lBfrtip',
+                "responsive": true,
+                "autoWidth": false,
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+            });
+
         function get(obj) {
             return document.getElementById(obj);
         }

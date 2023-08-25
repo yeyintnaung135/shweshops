@@ -286,7 +286,7 @@
                         }
 
 
-                    }
+                    }, orderable: false, searchable: false
                 },
                 {
                     data: 'created_at'

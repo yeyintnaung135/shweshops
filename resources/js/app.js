@@ -80,7 +80,11 @@ Vue.component(
     require("./components/frontend/discount/DiscountitemsForShopComponent.vue")
         .default
 );
-
+Vue.component(
+    "test-com",
+    require("./components/test.vue")
+        .default
+);
 Vue.component(
     "readmore-detail",
     require("./components/ReadMoreDetail.vue").default

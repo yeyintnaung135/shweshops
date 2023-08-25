@@ -97,24 +97,6 @@
                                                     <th>Created Date</th>
                                                 </tr>
                                             </thead>
-
-                                            <tfoot>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Product Code</th>
-                                                    <th>Product Name</th>
-                                                    <th>User Id</th>
-                                                    <th>User Name</th>
-                                                    <th>User Role</th>
-                                                    <th>Old Price</th>
-                                                    <th>New Price</th>
-                                                    <th>Min Price</th>
-                                                    <th>Max Price</th>
-                                                    <th>New Min Price</th>
-                                                    <th>New Max Price</th>
-                                                    <th>Created Date</th>
-                                                </tr>
-                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>
@@ -208,7 +190,7 @@
                         data: 'new_max_price'
                     },
                     {
-                        data: 'created_at_formatted'
+                        data: 'created_at'
                     }
 
                 ],

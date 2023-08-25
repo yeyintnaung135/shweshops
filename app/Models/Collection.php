@@ -8,4 +8,10 @@ class Collection extends Model
 {
     protected $fillable = ['name', 'shop_id'];
     protected $table = 'collection';
+
+    public function items()
+    {
+        return $this->hasMany(Item::class, 'collection_id');
+    }
+
 }

@@ -16,7 +16,7 @@
                     <div id="" class="col-12">
 
                         <form method="POST" enctype="multipart/form-data"
-                            action="{{ route('backside.shop_owner.registered') }}">
+                            action="{{ route('backside.super_admin.shops.store') }}">
                             @csrf
 
                             <div class="fs form-group row">

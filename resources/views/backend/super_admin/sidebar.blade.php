@@ -1,7 +1,7 @@
 @php
     use App\Models\Shops;
     use App\Models\Ads;
-    $ads_deleted_count = Ads::count();
+    $ads_deleted_count = Ads::withTrashed()->count();
     $all_shops_count = Shops::count();
     $admin_request = DB::table('super_admins')->where('role' , '==' , 2)->count();
 @endphp
@@ -186,7 +186,7 @@
                 </li>
                 <!-- zh_shos -->
                 <li class="nav-item">
-                    <a href="{{route('backside.super_admin.shops.all')}}" class="mobile-nav nav-link">
+                    <a href="{{url('backside/super_admin/shops/all')}}" class="mobile-nav nav-link">
                         <!-- <i class="nav-icon fas fa-store"></i> -->
                         <img id="logo" class="logo rounded-5" src="{{'/images/logo/super_admin_logo/Shops.svg'}}" alt=""/>
                         <img id="mobile" class="logo mobile d-none rounded-5" src="{{'/images/logo/super_admin_mobile_logo/Shops.svg'}}" alt=""/>
@@ -200,7 +200,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{route('backside.super_admin.shops.all')}}" class="nav-link border-0">
+                            <a href="{{url('backside/super_admin/shops/all')}}" class="nav-link border-0">
                                 {{--                                <i class="far fa-circle nav-icon"></i>--}}
                                 <i class="fa fa-circle pl-5"></i>
                                 <p class="ml-3">All Shops</p>
@@ -230,8 +230,7 @@
                                 <i class="fa fa-circle pl-5"></i>
                                 <p class="ml-3">Fb Messengers</p>
                                 <?php
-                                $count=\App\Models\FacebookTable::all();
-                                    $all_fb_msg_count=count($count);
+                                $all_fb_msg_count=\App\Models\FacebookTable::count();
                                     ?>
                                 @if ($all_fb_msg_count)
                                     <span class="badge badge-danger right">{{ $all_fb_msg_count }}</span>
@@ -480,7 +479,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{url('baydins')}}" class="nav-link border-0">
+                            <a href="{{url('/backside/super_admin/baydins')}}" class="nav-link border-0">
                                 {{--                                <i class="far fa-circle nav-icon"></i>--}}
                                 <i class="fa fa-circle pl-5"></i>
                                 <p class="ml-3">All Baydins</p>

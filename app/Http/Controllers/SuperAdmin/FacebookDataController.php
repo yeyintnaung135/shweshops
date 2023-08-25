@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\FacebookMessage;
 use App\Models\FacebookTable;
 use App\Models\Item;
+use App\Models\Shops;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
@@ -17,26 +17,26 @@ class FacebookDataController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:super_admin', 'admin']);
+        $this->middleware(['auth:super_admin']);
     }
 
     public function list(): View {
         return view('backend.super_admin.fbdata.list');
     }
 
-    public function get_all(Request $request): mixed
+    public function get_all(Request $request): JsonResponse
     {
-        $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
-        $searchByTodate = $request->input('toDate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
 
-        $recordsQuery = FacebookTable::leftJoin('shop_owners', 'facebook.shop_owner_id', '=', 'shop_owners.id')
-            ->select('*', 'facebook.created_at as ff')
-            ->orderBy('facebook.created_at', 'desc')
-            ->whereBetween('facebook.created_at', [$searchByFromdate, $searchByTodate]);
+        $recordsQuery = FacebookTable::leftJoin('shops', 'facebook.shop_owner_id', '=', 'shops.id')
+            ->select('shops.id', 'shops.shop_name', 'facebook.pagename', 'facebook.created_at')
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
         return DataTables::of($recordsQuery)
-            ->addColumn('created_at', function ($record) {
-                return date('F d, Y ( h:i A )', strtotime($record->ff));
+            ->editColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
             ->make(true);
     }
@@ -61,7 +61,7 @@ class FacebookDataController extends Controller
     {
         return view('backend.super_admin.fbdata.msglogdetail', ['shop_id' => $shopid]);
     }
-    public function get_msg_log_detail(Request $request): mixed
+    public function get_msg_log_detail(Request $request): JsonResponse
     {
         $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
         $searchByTodate = $request->input('toDate') ?? Carbon::now();
@@ -85,21 +85,21 @@ class FacebookDataController extends Controller
             ->make(true);
     }
 
-    public function get_msg_log(Request $request): mixed
+    public function get_msg_log(Request $request): JsonResponse
     {
-        $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
-        $searchByTodate = $request->input('toDate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
 
-        $recordsQuery = FacebookMessage::leftJoin('shop_owners', 'fb_messenger_click_log.shop_id', '=', 'shop_owners.id')
-            ->select('*', 'fb_messenger_click_log.created_at as ff', DB::raw('count(*) as total'))
-            ->whereBetween('fb_messenger_click_log.created_at', [$searchByFromdate, $searchByTodate])
-            ->orderBy('fb_messenger_click_log.created_at', 'desc');
+        $recordsQuery = Shops::select('id', 'shop_name', 'created_at')
+            ->withCount('facebook_message_clicks')
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
         return DataTables::of($recordsQuery)
-            ->addColumn('created_at', function ($record) {
-                return date('F d, Y ( h:i A )', strtotime($record->ff));
+            ->editColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
-            ->addColumn('detail', function ($record) {
+            ->addColumn('action', function ($record) {
                 return $record->shop_id;
             })
             ->make(true);

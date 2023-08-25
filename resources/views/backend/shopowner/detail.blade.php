@@ -10,6 +10,9 @@
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper sn-background-light-blue">
+
+
+
             @if (Session::has('message'))
                 <x-alert>
 
@@ -18,604 +21,584 @@
             <!-- Content Header (Page header) -->
             <section class="content-header sn-content-header">
                 <div class="container-fluid">
-                    @foreach ($shopowner as $shopowner)
-                    @endforeach
-
-
                 </div><!-- /.container-fluid -->
             </section>
 
-            {{-- <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>Profile</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">User Profile</li>
-                        </ol>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section> --}}
-
             <!-- Main content -->
             <section class="sn-admin-wrapper">
-                {{-- <div class="sn-cover-img d-md-none">
-                    <img class="img-fluid"
-                    src="{{url('/images/banner/'.$shopowner->shop_banner)}}"
-                    alt="User profile picture">
-                </div> --}}
+
                 <div class="sn-shop-profile">
                     <div class="sn-profile-img">
                         <div class="sn-img-wrap text-center">
-                            <img class=" img-fluid img-circle" src="{{ url('images/logo/' . $shopowner->shop_logo) }}"
+
+                            <img class=" img-fluid img-circle" src="{{ url('images/logo/' . $shop->shop_logo) }}"
                                 alt="User profile picture">
                             <h3 class="d-none d-md-block profile-username text-center">
-                                {{ \Illuminate\Support\Str::limit($shopowner->shop_name, 20, '..') }}
+                                {{ \Illuminate\Support\Str::limit($shop->shop_name, 20, '..') }}
 
                             </h3>
                             <p class="d-none d-md-block text-muted text-center">
-                                {{ \Illuminate\Support\Str::limit($shopowner->name, 20, '..') }}
+                                {{ \Illuminate\Support\Str::limit($shop->name, 20, '..') }}
                             </p>
+
                         </div>
                     </div>
                     <div class="container sn-shop-general-info mb-4 mb-sm-1">
                         <div class="sn-shop-info-grid text-center">
-                            @if (count($products_count_setting) != 0)
+                                @if ($products_count_setting != 0)
                                 <div class="">
                                     <a href="{{ route('backside.shop_owner.items.index') }}">
                                         <p>
-                                            {{ count($items) }}
+                                            {{ $items_count }}
                                         </p>
                                         <p
                                             style="
                                                     color: #000;
-                                                ">
+                                                    ">
                                             Products</p>
                                     </a>
                                 </div>
-                            @endif
-                            @if (count($users_count_setting) != 0)
-                                <div class="">
-                                    <a href="{{ url('backside/shop_owner/users') }}">
+                        @endif
 
-                                        <p>
+                        @if ($users_count_setting != 0)
+                            <div class="">
+                                <a href="{{ url('backside/shop_owner/users') }}">
 
-                                            {{ count($managers) }}
-
-                                        </p>
-                                        <p
-                                            style="
+                                    <p>
+                                        {{ $users_count }}
+                                    </p>
+                                    <p
+                                        style="
                                             color: #000;
-                                        ">
-                                            Users</p>
-                                    </a>
-                                </div>
-                            @endif
-                            @if (count($items_view_count_setting) != 0)
-                                <div class="">
-                                    <a href="{{ route('backside.shop_owner.detail.product_view') }}">
-                                        <p>{{ count($productclick) }}</p>
-                                        <p
-                                            style="
+                                            ">
+
+                                        Users</p>
+
+                                </a>
+                            </div>
+                        @endif
+
+                        @if ($items_view_count_setting != 0)
+                            <div class="">
+                                <a href="{{ route('backside.shop_owner.detail.product_view') }}">
+                                    <p>{{ $productclick }}</p>
+
+                                    <p
+                                        style="
                                                     color: #000;
                                                 ">
-                                            Products View</p>
-                                    </a>
-                                </div>
-                            @endif
-                            <!-- Check Premium shop  -->
 
-                            @if (count($shops_view_count_setting) != 0)
-                                <div class="">
-                                    <a href="{{ route('backside.shop_owner.detail.shop_view') }}">
-                                        <p>{{ count($shopview) }}</p>
-                                        <p
-                                            style="
+                                        Products View</p>
+                                </a>
+                            </div>
+                        @endif
+                        <!-- Check Premium shop  -->
+
+                        @if ($shops_view_count_setting != 0)
+                            <div class="">
+                                <a href="{{ route('backside.shop_owner.detail.shop_view') }}">
+
+                                    <p>{{ $shopview }}</p>
+
+                                    <p
+                                        style="
                                             color: #000;
                                         ">
-                                            Shop View</p>
-                                    </a>
-                                </div>
-                            @endif
+                                        Shop View</p>
+                                </a>
+                            </div>
+                        @endif
 
-                            @if (count($unique_product_click_count_setting) != 0)
-                                <div class="">
-                                    <a href="{{ route('backside.shop_owner.detail.unique_product_view') }}">
-                                        <p>{{ count($unique_productclick) }}</p>
-                                        <p
-                                            style="
+                        @if ($unique_product_click_count_setting != 0)
+                            <div class="">
+                                <a href="{{ route('backside.shop_owner.detail.unique_product_view') }}">
+
+                                    <p>{{ $unique_productclick }}</p>
+
+                                    <p
+                                        style="
                                                 color: #000;
                                             ">
-                                            Unique Products View</p>
-                                    </a>
-                                </div>
-                            @endif
-                            @if (count($buy_now_count_setting) != 0)
-                                <div class="">
-                                    <a href="{{ route('backside.shop_owner.detail.buy_now_click') }}">
-                                        <p>{{ count($buynowclick) }}</p>
-                                        <p
-                                            style="
+                                        Unique Products View</p>
+                                </a>
+                            </div>
+                        @endif
+
+                        @if ($buy_now_count_setting != 0)
+                            <div class="">
+                                <a href="{{ route('backside.shop_owner.detail.buy_now_click') }}">
+                                    <p>{{ $buynowclick }}</p>
+                                    <p
+                                        style="
+                                                color: #000;
+                                                ">
+                                        Buy Now</p>
+                                </a>
+                            </div>
+                        @endif
+
+                        @if ($addtocartclick_count_setting != 0)
+                            <div class="">
+                                <a href="{{ route('backside.shop_owner.detail.unique_add_to_cart_click') }}">
+                                    <p>{{ $addtocartclick }}</p>
+                                    <p
+                                        style="
+                                                color: #000;
+                                                ">
+                                        Unique Add To Cart Click</p>
+                                </a>
+                            </div>
+                        @endif
+
+                        @if ($whislistclick_count_setting != 0)
+                            <div class="">
+                                <a href="{{ route('backside.shop_owner.detail.unique_whishlist_click') }}">
+                                    <p>{{ $whislistclick }}</p>
+                                    <p
+                                        style="
                                                 color: #000;
                                             ">
-                                            Buy Now</p>
-                                    </a>
-                                </div>
-                            @endif
-                            @if (count($addtocartclick_count_setting) != 0)
-                                <div class="">
-                                    <a href="{{ route('backside.shop_owner.detail.unique_add_to_cart_click') }}">
-                                        <p>{{ count($addtocartclick) }}</p>
-                                        <p
-                                            style="
+
+                                        Unique Whishlist Click
+                                    </p>
+                                </a>
+                            </div>
+                        @endif
+
+                        @if ($adsview_count_setting != 0)
+                            <div class="">
+                                <a href="{{ route('backside.shop_owner.detail.unique_ads_view') }}">
+                                    <p>{{ $adsview }}</p>
+                                    <p
+                                        style="
                                                 color: #000;
                                             ">
-                                            Unique Add To Cart Click</p>
-                                    </a>
-                                </div>
-                            @endif
-                            @if (count($whislistclick_count_setting) != 0)
-                                <div class="">
-                                    <a href="{{ route('backside.shop_owner.detail.unique_whishlist_click') }}">
-                                        <p>{{ count($whislistclick) }}</p>
-                                        <p
-                                            style="
+
+                                        Unique Ads View
+                                    </p>
+
+                                </a>
+                            </div>
+                        @endif
+
+                        @if ($discountview_count_setting != 0)
+                            <div class="">
+                                <a href="{{ route('backside.shop_owner.detail.product_discount_view') }}">
+                                    <p>{{ $discountview }}</p>
+                                    <p
+                                        style="
                                                 color: #000;
                                             ">
-                                            Unique Whishlist Click</p>
-                                    </a>
-                                </div>
-                            @endif
-                            @if (count($adsview_count_setting) != 0)
-                                <div class="">
-                                    <a href="{{ route('backside.shop_owner.detail.unique_ads_view') }}">
-                                        <p>{{ count($adsview) }}</p>
-                                        <p
-                                            style="
-                                                color: #000;
-                                            ">
-                                            Unique Ads View</p>
-                                    </a>
-                                </div>
-                            @endif
-                            @if (count($discountview_count_setting) != 0)
-                                <div class="">
-                                    <a href="{{ route('backside.shop_owner.detail.product_discount_view') }}">
-                                        <p>{{ count($discountview) }}</p>
-                                        <p
-                                            style="
-                                                color: #000;
-                                            ">
-                                            Discount Products View</p>
-                                    </a>
-                                </div>
-                            @endif
-                        </div>
+
+                                        Discount Products View
+                                    </p>
+
+                                </a>
+                            </div>
+                        @endif
                     </div>
                 </div>
-                <div class="sn-purpose mb-4 mb-sm-auto">
-                    <h2 class="mb-4 d-sm-none">What's Your Purpose?</h2>
-                    <div class="sn-purpose-grid text-center">
-                        <a href="{{ url('backside/shop_owner/items/create') }}" class="">
-                            <i class="fa fa-plus"></i>
-                            <p>Create Item</p>
-                        </a>
-                        @can('can_show_dashboard')
-                            <a href="{{ url('backside/shop_owner/users/create') }}" class="">
-                                <i class="fa fa-user-plus"></i>
-                                <p>Create User</p>
-                            </a>
-                        @endcan
-                        @isRole('shopowner', 'admin')
-                            <a href="{{ route('backside.shop_owner.edit') }}" class="">
-                                <i class="fa fa-edit"></i>
-                                <p>Edit Shop</p>
-                            </a>
-                        @endisRole
-                        <a href="#" class="sop-detail-disabled">
-                            <i class="fa fa-ad"></i>
-                            <p>Ads Create</p>
-                        </a>
-                        <a href="#" class="sop-detail-disabled">
-                            <i class="fa fa-cog"></i>
-                            <p>Setting</p>
-                        </a>
+        </div>
+        <div class="sn-purpose mb-4 mb-sm-auto">
+            <h2 class="mb-4 d-sm-none">What's Your Purpose?</h2>
+            <div class="sn-purpose-grid text-center">
+                <a href="{{ url('backside/shop_owner/items/create') }}" class="">
+                    <i class="fa fa-plus"></i>
+                    <p>Create Item</p>
+                </a>
+                @can('can_show_dashboard')
+                    <a href="{{ url('backside/shop_owner/users/create') }}" class="">
+                        <i class="fa fa-user-plus"></i>
+                        <p>Create User</p>
+                    </a>
+                @endcan
+                @isRole('shopowner', 'admin')
+                    <a href="{{ route('backside.shop_owner.edit') }}" class="">
+                        <i class="fa fa-edit"></i>
+                        <p>Edit Shop</p>
+                    </a>
+                @endisRole
+                <a href="#" class="sop-detail-disabled">
+                    <i class="fa fa-ad"></i>
+                    <p>Ads Create</p>
+                </a>
+                <a href="#" class="sop-detail-disabled">
+                    <i class="fa fa-cog"></i>
+                    <p>Setting</p>
+                </a>
+            </div>
+        </div>
+        <div class="sn-update-product mb-1">
+            <div class="sop-update-product px-4 pb-3">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h2 class=" pt-3">Latest Update Products</h2>
+                        <p class=" mb-4">Check your store’s updates</p>
+                    </div>
+
+                    <div class="  d-flex justify-content-center align-items-center">
+                        <p><a href="{{ url('backside/shop_owner/items') }}" style="font-size: 16px;">All Products
+                                <i class="fas fa-arrow-right"></i></a></p>
                     </div>
                 </div>
-                <div class="sn-update-product mb-1">
-                    <div class="sop-update-product px-4 pb-3">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h2 class=" pt-3">Latest Update Products</h2>
-                                <p class=" mb-4">Check your store’s updates</p>
-                            </div>
+                <table class="table table-borderless table-responsive-sm table-responsive-md">
+                    <thead>
+                        <tr class="sop-tr-bg">
+                            <td class="">Product</td>
+                            <td class="">Price</td>
+                            <td class="">Code No.</td>
+                            <td class="">Uploaded By</td>
+                            <td class="">Date</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @isset($items)
+                            @if (count($items) != 0)
+                                @foreach ($items as $item)
+                                    <tr class="">
+                                        <td class="" style="font: 'myanmar3">
+                                            <img class="sop-image-table" src="{{ filedopath($item->CheckPhotothumbs) }}"
+                                                alt=""><br class="sop-sm-md"> {{ $item->YkbeautyCat }}
+                                        </td>
+                                        <td class="">{!! $item->MmPrice !!}</td>
+                                        <td class="">{{ $item->product_code }}</td>
+                                        @if ($item->UserName == 0)
+                                            <td class="">
+                                                {{ \Illuminate\Support\Str::limit($item->shop_name->name, 10, '..') }}
+                                            </td>
+                                        @else
+                                            <td class="">
+                                                {{ \Illuminate\Support\Str::limit($item->UserName, 10, '..') }}</td>
+                                        @endif
 
-                            <div class="  d-flex justify-content-center align-items-center">
-                                <p><a href="{{ url('backside/shop_owner/items') }}" style="font-size: 16px;">All Products
-                                        <i class="fas fa-arrow-right"></i></a></p>
-                            </div>
-                        </div>
-                        <table class="table table-borderless table-responsive-sm table-responsive-md">
-                            <thead>
-                                <tr class="sop-tr-bg">
-                                    <td class="">Product</td>
-                                    <td class="">Price</td>
-                                    <td class="">Code No.</td>
-                                    <td class="">Uploaded By</td>
-                                    <td class="">Date</td>
-                                    <td></td>
+
+                                        <td class="">{{ $item->updated_at }}</td>
+                                        <td><a href="javascript:void(0)" data-toggle="modal"
+                                                data-target="#quickEditeModal{{ $item->id }}"><i class="fas fa-ellipsis-v"
+                                                    style="width:20px"></i></a>
+                                        </td>
+                                    </tr>
+                                    {{-- //modal --}}
+                                @endforeach
+                            @else
+                                <tr colspan="5">
+                                    <td>No Item yet</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @isset($items)
-                                    @if (count($items) != 0)
-                                        @foreach ($items->slice(0, 6) as $item)
-                                            <tr class="">
-                                                <td class="" style="font: 'myanmar3">
-                                                    <img class="sop-image-table"
-                                                        src="{{ filedopath($item->CheckPhotothumbs) }}" alt=""><br
-                                                        class="sop-sm-md"> {{ $item->YkbeautyCat }}
-                                                </td>
-                                                <td class="">{!! $item->MmPrice !!}</td>
-                                                <td class="">{{ $item->product_code }}</td>
-                                                @if ($item->UserName == 0)
-                                                    <td class="">
-                                                        {{ \Illuminate\Support\Str::limit($item->shop_name->name, 10, '..') }}
-                                                    </td>
-                                                @else
-                                                    <td class="">
-                                                        {{ \Illuminate\Support\Str::limit($item->UserName, 10, '..') }}</td>
-                                                @endif
+                            @endif
+                        @endisset
 
+                    </tbody>
+                </table>
+            </div>
+            @isset($items)
+                @foreach ($items->slice(0, 6) as $item)
+                    <div class="modal fade quickEditModal" id="quickEditeModal{{ $item->id }}" tabindex="-1"
+                        role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
 
-                                                <td class="">{{ $item->updated_at }}</td>
-                                                <td><a href="javascript:void(0)" data-toggle="modal"
-                                                        data-target="#quickEditeModal{{ $item->id }}"><i
-                                                            class="fas fa-ellipsis-v" style="width:20px"></i></a>
-                                                </td>
-                                            </tr>
-                                            {{-- //modal --}}
-                                        @endforeach
-                                    @else
-                                        <tr colspan="5">
-                                            <td>No Item yet</td>
-                                        </tr>
-                                    @endif
-                                @endisset
-
-                            </tbody>
-                        </table>
-                    </div>
-                    @isset($items)
-                        @foreach ($items->slice(0, 6) as $item)
-                            <div class="modal fade quickEditModal" id="quickEditeModal{{ $item->id }}" tabindex="-1"
-                                role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-
-                                        <div class="modal-body d-flex flex-column m-3">
-                                            <div class="m-2">
-                                                <a href="{{ url('backside/shop_owner/items/' . $item->id) }}">
-                                                    <div class="d-flex justify-contents-between align-items-center w-100">
-                                                        <i class="fas fa-external-link "
-                                                            style="font-size: 35px;width:45px"></i>
-                                                        <div class="mx-2">
-                                                            View Item<br />
-                                                            <span>မိမိတင်လိုက်သောပစ္စည်းကိုကြည့်ရန်</span>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="m-2">
-                                                <a href="{{ url('backside/shop_owner/items/' . $item->id . '/edit') }}">
-                                                    <div class="d-flex justify-contents-center align-items-center">
-                                                        <i class="fas fa-edit" style="font-size: 35px;width:45px"></i>
-                                                        <div class="mx-2">
-                                                            Edit Item<br />
-                                                            <span>မိမိတင်လိုက်သောပစ္စည်းကိုပြန်လည် edit လုပ်ရန်</span>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="m-2">
-                                                <a href="{{ url('backside/shop_owner/item/discount/' . $item->id) }}">
-                                                    <div class="d-flex justify-contents-center align-items-center">
-                                                        <i class="fas fa-percent" style="font-size: 35px;width:45px"></i>
-                                                        <div class="mx-2">
-                                                            Discount<br />
-                                                            <span>မိမိတင်ထားသောပစ္စည်းကို discount ချရန်</span>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="m-2 w-100" id="">
-                                                <a class="w-100" data-toggle="collapse" href="#collapseQucikEdit"
-                                                    role="button" aria-expanded="false" aria-controls="collapseExample">
-                                                    <div
-                                                        class="d-flex justify-contents-center align-items-center w-100 sop-chevron">
-                                                        <i class="fas fa-pencil" style="font-size: 35px ;width:45px"></i>
-                                                        <div class="mx-2 w-75">
-                                                            Quick Edit<br />
-                                                            <span>အမြန်ပြင်ဆင်မှုများပြုလုပ်ရန်</span>
-                                                        </div>
-                                                        <i id=""
-                                                            class="sop-arrow fa-solid fa-chevron-down justify-self-end "></i>
-                                                    </div>
-                                                </a>
-                                                <div class="collapse " id="collapseQucikEdit">
-                                                    <div class="my-2 py-3">
-                                                        <form action="{{ route('backside.shop_owner.detail.update') }}"
-                                                            method="POST">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <div class="form-group my-2">
-                                                                <div class="d-flex my-2">
-                                                                    <input type="hidden" name="id" id=""
-                                                                        value="{{ $item->id }}">
-                                                                    <div class="col-6">
-                                                                        <label for="exampleInputEmail1">Product Code</label>
-                                                                        <input type="number"
-                                                                            class="form-control input-number" id=""
-                                                                            name="product_code" placeholder="Price"
-                                                                            value="{{ $item->product_code }}">
-                                                                    </div>
-                                                                    <div class="col-6">
-                                                                        <label for="exampleInputEmail1">Stock Count</label>
-                                                                        <input type="number"
-                                                                            class="form-control input-number" id=""
-                                                                            name="stock_count" placeholder="Stock Count"
-                                                                            value="{{ $item->stock_count }}">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="d-flex my-2">
-                                                                    @if ($item->price != 0)
-                                                                        <div class="col-6">
-                                                                            <label for="exampleInputEmail1">Price</label>
-                                                                            <input type="number"
-                                                                                class="form-control input-number"
-                                                                                id="" name="price"
-                                                                                placeholder="Price"
-                                                                                value="{{ $item->price }}">
-                                                                        </div>
-                                                                    @elseif ($item->max_price != 0)
-                                                                        <div class="col-6">
-                                                                            <label for="exampleInputEmail1">Min
-                                                                                Price</label>
-                                                                            <input type="number"
-                                                                                class="form-control input-number"
-                                                                                id="" name="min_price"
-                                                                                placeholder="Min Price"
-                                                                                value="{{ $item->min_price }}">
-                                                                        </div>
-                                                                        <div class="col-6">
-                                                                            <label for="exampleInputEmail1">Max
-                                                                                Price</label>
-                                                                            <input type="number"
-                                                                                class="form-control input-number"
-                                                                                id="max_price" placeholder="Max Price"
-                                                                                value="{{ $item->max_price }}">
-                                                                        </div>
-                                                                    @endif
-                                                                </div>
-                                                            </div>
-                                                            <div class="d-flex justify-content-end my-3">
-                                                                <button type="button" class="btn btn-secondary "
-                                                                    data-dismiss="modal">Cancel
-                                                                </button>
-                                                                <input type="submit" class="btn btn-primary  mx-2"
-                                                                    value="Submit">
-                                                            </div>
-                                                        </form>
-                                                    </div>
+                                <div class="modal-body d-flex flex-column m-3">
+                                    <div class="m-2">
+                                        <a href="{{ url('backside/shop_owner/items/' . $item->id) }}">
+                                            <div class="d-flex justify-contents-between align-items-center w-100">
+                                                <i class="fas fa-external-link " style="font-size: 35px;width:45px"></i>
+                                                <div class="mx-2">
+                                                    View Item<br />
+                                                    <span>မိမိတင်လိုက်သောပစ္စည်းကိုကြည့်ရန်</span>
                                                 </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="m-2">
+                                        <a href="{{ url('backside/shop_owner/items/' . $item->id . '/edit') }}">
+                                            <div class="d-flex justify-contents-center align-items-center">
+                                                <i class="fas fa-edit" style="font-size: 35px;width:45px"></i>
+                                                <div class="mx-2">
+                                                    Edit Item<br />
+                                                    <span>မိမိတင်လိုက်သောပစ္စည်းကိုပြန်လည် edit လုပ်ရန်</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="m-2">
+                                        <a href="{{ url('backside/shop_owner/item/discount/' . $item->id) }}">
+                                            <div class="d-flex justify-contents-center align-items-center">
+                                                <i class="fas fa-percent" style="font-size: 35px;width:45px"></i>
+                                                <div class="mx-2">
+                                                    Discount<br />
+                                                    <span>မိမိတင်ထားသောပစ္စည်းကို discount ချရန်</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="m-2 w-100" id="">
+                                        <a class="w-100" data-toggle="collapse" href="#collapseQucikEdit" role="button"
+                                            aria-expanded="false" aria-controls="collapseExample">
+                                            <div class="d-flex justify-contents-center align-items-center w-100 sop-chevron">
+                                                <i class="fas fa-pencil" style="font-size: 35px ;width:45px"></i>
+                                                <div class="mx-2 w-75">
+                                                    Quick Edit<br />
+                                                    <span>အမြန်ပြင်ဆင်မှုများပြုလုပ်ရန်</span>
+                                                </div>
+                                                <i id=""
+                                                    class="sop-arrow fa-solid fa-chevron-down justify-self-end "></i>
+                                            </div>
+                                        </a>
+                                        <div class="collapse " id="collapseQucikEdit">
+                                            <div class="my-2 py-3">
+                                                <form action="{{ route('backside.shop_owner.detail.update') }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="form-group my-2">
+                                                        <div class="d-flex my-2">
+                                                            <input type="hidden" name="id" id=""
+                                                                value="{{ $item->id }}">
+                                                            <div class="col-6">
+                                                                <label for="exampleInputEmail1">Product Code</label>
+                                                                <input type="number" class="form-control input-number"
+                                                                    id="" name="product_code" placeholder="Price"
+                                                                    value="{{ $item->product_code }}">
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <label for="exampleInputEmail1">Stock Count</label>
+                                                                <input type="number" class="form-control input-number"
+                                                                    id="" name="stock_count"
+                                                                    placeholder="Stock Count"
+                                                                    value="{{ $item->stock_count }}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex my-2">
+                                                            @if ($item->price != 0)
+                                                                <div class="col-6">
+                                                                    <label for="exampleInputEmail1">Price</label>
+                                                                    <input type="number" class="form-control input-number"
+                                                                        id="" name="price" placeholder="Price"
+                                                                        value="{{ $item->price }}">
+                                                                </div>
+                                                            @elseif ($item->max_price != 0)
+                                                                <div class="col-6">
+                                                                    <label for="exampleInputEmail1">Min
+                                                                        Price</label>
+                                                                    <input type="number" class="form-control input-number"
+                                                                        id="" name="min_price"
+                                                                        placeholder="Min Price"
+                                                                        value="{{ $item->min_price }}">
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <label for="exampleInputEmail1">Max
+                                                                        Price</label>
+                                                                    <input type="number" class="form-control input-number"
+                                                                        id="max_price" placeholder="Max Price"
+                                                                        value="{{ $item->max_price }}">
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex justify-content-end my-3">
+                                                        <button type="button" class="btn btn-secondary "
+                                                            data-dismiss="modal">Cancel
+                                                        </button>
+                                                        <input type="submit" class="btn btn-primary  mx-2" value="Submit">
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                @endforeach
+            @endisset
+
+        </div>
+        <div class="sn-user-list pb-4">
+            <div class="sop-user-list">
+                <h2 class="mb-4 pt-3 px-3">Users List</h2>
+                <ul class="list-group mb-3">
+                    @isset($users)
+                        @foreach ($users->slice(0, 5) as $user)
+                            <li class="list-group-item d-flex justify-content-between">
+                                <div style="width: 70%;text-transform:capitalize;">
+                                    <p class="font-weight-bold">
+                                        {{ \Illuminate\Support\Str::limit($user->name, 10, '..') }}</p>
+                                </div>
+
+                                <div style="width: 30%;text-transform:capitalize;">
+                                    <p>{{ $user->role->name }}</p>
+                                </div>
+
+                            </li>
                         @endforeach
                     @endisset
 
-                </div>
-                <div class="sn-user-list pb-4">
-                    <div class="sop-user-list">
-                        <h2 class="mb-4 pt-3 px-3">Users List</h2>
-                        <ul class="list-group mb-3">
-                            @isset($managers)
-                                @foreach ($managers->slice(0, 5) as $manager)
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <div style="width: 70%;text-transform:capitalize;">
-                                            <p class="font-weight-bold">
-                                                {{ \Illuminate\Support\Str::limit($manager->name, 10, '..') }}</p>
-                                        </div>
+                    @can('can_show_dashboard')
+                        <li class="d-flex justify-content-center"><a href="{{ url('backside/shop_owner/users/create') }}"
+                                class="btn btn-outline-secondary px-5">Add New User +</a></li>
+                    @endcan
+                </ul>
+            </div>
 
-                                        <div style="width: 30%;text-transform:capitalize;">
-                                            <p>{{ $manager->role->name }}</p>
-                                        </div>
+            {{-- <p class="text-right"><a class="text-dark font-weight-bold" href="{{url('backside/shop_owner/users')}}">more</a></p> --}}
+        </div>
+        </section>
 
-                                    </li>
-                                @endforeach
-                            @endisset
-
-                            @can('can_show_dashboard')
-                                <li class="d-flex justify-content-center"><a
-                                        href="{{ url('backside/shop_owner/users/create') }}"
-                                        class="btn btn-outline-secondary px-5">Add New User +</a></li>
-                            @endcan
-                        </ul>
-                    </div>
-
-                    {{-- <p class="text-right"><a class="text-dark font-weight-bold" href="{{url('backside/shop_owner/users')}}">more</a></p> --}}
-                </div>
-            </section>
-
-            <section class="content d-none">
-                <div class="container-fluid">
+        <section class="content d-none">
+            <div class="container-fluid">
+                <div class="">
                     <div class="">
+
+                        <!-- Profile Image -->
                         <div class="">
-
-                            <!-- Profile Image -->
                             <div class="">
-                                <div class="">
-                                    <div class="text-center">
-                                        <img class="profile-user-img img-fluid img-circle"
-                                            src="{{ url('images/logo/' . $shopowner->shop_logo) }}"
-                                            alt="User profile picture">
-                                    </div>
 
-                                    <h3 class="profile-username text-center"> {{ $shopowner->name }}</h3>
-
-
-                                    <p class="text-muted text-center">{{ $shopowner->shop_name }}</p>
-
-                                    <ul class="list-group list-group-unbordered mb-3">
-                                        <li class="list-group-item">
-                                            <b>Name</b> <a class="float-right">{{ $shopowner->name }}</a>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <b>ဆိုင် အမည်</b> <a class="float-right">{{ $shopowner->shop_name_myan }}</a>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <b>shop name</b> <a class="float-right">{{ $shopowner->shop_name }}</a>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <b>undamaged_product</b> <a
-                                                class="float-right">{{ $shopowner->undamaged_product }}</a>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <b>တန်ဖိုးမြင့်အထည်</b> <a
-                                                class="float-right">{{ $shopowner->valuable_product }}
-                                            </a>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <b>အထည်မပျက်ပြန်လဲ</b> <a
-                                                class="float-right">{{ $shopowner->valuable_product }}
-                                            </a>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <b>damaged_product</b> <a
-                                                class="float-right">{{ $shopowner->damaged_product }}</a>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <b>Page Link</b> <a
-                                                href="{{ $shopowner->page_link }}">{{ $shopowner->page_link }}</a>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <b>Messenger Link</b> <a
-                                                href="{{ $shopowner->messenger_link }}">{{ $shopowner->messenger_link }}</a>
-                                        </li>
-                                        <!-- <li class="list-group-item">
-                                                                            <b>Address</b><br> <a class="text-muted">{{ $shopowner->address }}</a>
-                                                                        </li> -->
-
-                                    </ul>
-
-                                    <div class="row">
-                                        <div class="col-12">
-                                            @isRole('shopowner', 'admin', 'manager')
-                                                <a href="{{ route('backside.shop_owner.edit') }}"
-                                                    class="btn btn-primary btn-block"><b><span
-                                                            class="fa fa-edit"></span>&nbsp;&nbsp;Edit</b></a>
-                                                <a href="{{ route('backside.shop_owner.change.password') }}"
-                                                    class="btn btn-primary btn-block"><b><span
-                                                            class="fa fa-lock"></span>&nbsp;&nbsp;Edit</b></a>
-                                            @endisRole
-
-                                            @isset(Auth::guard('shop_owners_and_staffs')->user()->id)
-                                            @endisset
-                                        </div>
-                                    </div>
-
+                                <div class="text-center">
+                                    <img class="profile-user-img img-fluid img-circle"
+                                        src="{{ url('images/logo/' . $shop->shop_logo) }}" alt="User profile picture">
                                 </div>
-                                <!-- /.card-body -->
+
+                                <h3 class="profile-username text-center"> {{ $shop->name }}</h3>
+
+
+                                <p class="text-muted text-center">{{ $shop->shop_name }}</p>
+
+                                <ul class="list-group list-group-unbordered mb-3">
+                                    <li class="list-group-item">
+                                        <b>Name</b> <a class="float-right">{{ $shop->name }}</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>ဆိုင် အမည်</b> <a class="float-right">{{ $shop->shop_name_myan }}</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>shop name</b> <a class="float-right">{{ $shop->shop_name }}</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>undamaged_product</b> <a class="float-right">{{ $shop->undamaged_product }}</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>တန်ဖိုးမြင့်အထည်</b> <a class="float-right">{{ $shop->valuable_product }}
+                                        </a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>အထည်မပျက်ပြန်လဲ</b> <a class="float-right">{{ $shop->valuable_product }}
+                                        </a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>damaged_product</b> <a class="float-right">{{ $shop->damaged_product }}</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>Page Link</b> <a href="{{ $shop->page_link }}">{{ $shop->page_link }}</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>Messenger Link</b> <a
+                                            href="{{ $shop->messenger_link }}">{{ $shop->messenger_link }}</a>
+                                    </li>
+                                </ul>
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        @isRole('shopowner', 'admin', 'manager')
+                                            <a href="{{ route('backside.shop_owner.edit') }}"
+                                                class="btn btn-primary btn-block"><b><span
+                                                        class="fa fa-edit"></span>&nbsp;&nbsp;Edit</b></a>
+                                            <a href="{{ route('backside.shop_owner.change.password') }}"
+                                                class="btn btn-primary btn-block"><b><span
+                                                        class="fa fa-lock"></span>&nbsp;&nbsp;Edit</b></a>
+                                        @endisRole
+
+                                        @isset(Auth::guard('shop_owners_and_staffs')->user()->id)
+                                        @endisset
+                                    </div>
+                                </div>
+
                             </div>
-                            <!-- /.card -->
-
-
-                            <!-- /.card -->
+                            <!-- /.card-body -->
                         </div>
-                        <!-- /.col -->
-                        <div class="col-md-9">
-                            <div class="card">
-                                <!-- /.card-header -->
-                                <div class="card-body">
-                                    <div class="tab-content">
-                                        <div class="active tab-pane" id="activity">
-                                            <!-- /.post -->
-
-                                            <!-- Post -->
-                                            <div class="post">
-                                                <div class="user-block">
+                        <!-- /.card -->
 
 
-                                                </div>
-                                                <!-- /.user-block -->
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-9">
+                        <div class="card">
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <div class="tab-content">
+                                    <div class="active tab-pane" id="activity">
+                                        <!-- /.post -->
 
-                                                @if ($shopowner->premium == 'yes')
-                                                    <div class="row mb-3">
-                                                        <div class="col-sm-6">
-                                                            @if (!empty($shopowner->shop_banner))
-                                                                <img class="img-fluid"
-                                                                    src="{{ url('images/banner/' . $shopowner->shop_banner) }}"
-                                                                    alt="Photo">
-                                                            @else
-                                                                <?php
-                                                                if ($banner) {
-                                                                    $getbanner = $banner->location;
-                                                                } else {
-                                                                    $getbanner = 'default.jpg';
-                                                                }
-                                                                ?>
-                                                                <img class="img-fluid"
-                                                                    src="{{ url('images/banner/' . $getbanner) }}"
-                                                                    alt="Photo">
-                                                            @endif
-                                                        </div>
+                                        <!-- Post -->
+                                        <div class="post">
+                                            <div class="user-block">
 
-                                                        <!-- /.col -->
+
+                                            </div>
+                                            <!-- /.user-block -->
+
+                                            @if ($shop->premium == 'yes')
+                                                <div class="row mb-3">
+                                                    <div class="col-sm-6">
+                                                        @if (!empty($shop->shop_banner))
+                                                            <img class="img-fluid"
+                                                                src="{{ url('images/banner/' . $shop->shop_banner) }}"
+                                                                alt="Photo">
+                                                        @else
+                                                            <?php
+                                                            if ($banner) {
+                                                                $getbanner = $banner->location;
+                                                            } else {
+                                                                $getbanner = 'default.jpg';
+                                                            }
+                                                            ?>
+                                                            <img class="img-fluid"
+                                                                src="{{ url('images/banner/' . $getbanner) }}"
+                                                                alt="Photo">
+                                                        @endif
                                                     </div>
-                                                    <!-- /.row -->
-                                                @endif
 
-
-
-                                            </div>
-                                            <!-- Post -->
-                                            <div class="post">
-                                                <div class="user-block">
-
-                                                    <p class="font-weight-bold">Description</p>
-                                                    <!-- /.user-block -->
-                                                    <p>
-                                                        {{ $shopowner->description }}
-                                                    </p>
-                                                    <p class="font-weight-bold">
-                                                        Address
-                                                    </p>
-                                                    <p>
-                                                        {{ $shopowner->address }}
-                                                    </p>
-                                                    <p class="font-weight-bold">
-                                                        Phone No
-                                                    </p>
-                                                    <p>
-                                                        {{ $shopowner->main_phone }}
-                                                    </p>
-
-
+                                                    <!-- /.col -->
                                                 </div>
+                                                <!-- /.row -->
+                                            @endif
+
+
+
+                                        </div>
+                                        <!-- Post -->
+                                        <div class="post">
+                                            <div class="user-block">
+
+                                                <p class="font-weight-bold">Description</p>
+                                                <!-- /.user-block -->
+                                                <p>
+                                                    {{ $shop->description }}
+                                                </p>
+                                                <p class="font-weight-bold">
+                                                    Address
+                                                </p>
+                                                <p>
+                                                    {{ $shop->address }}
+                                                </p>
+                                                <p class="font-weight-bold">
+                                                    Phone No
+                                                </p>
+                                                <p>
+                                                    {{ $shop->main_phone }}
+                                                </p>
+
 
                                             </div>
 
-                                            <!-- /.post -->
-                                            <!-- /.post -->
                                         </div>
-                                        <!-- /.tab-pane -->
-                                        {{-- <div class="tab-pane" id="timeline">
+
+                                        <!-- /.post -->
+                                        <!-- /.post -->
+                                    </div>
+                                    <!-- /.tab-pane -->
+                                    {{-- <div class="tab-pane" id="timeline">
                                             <!-- The timeline -->
                                             <div class="timeline timeline-inverse">
                                                 <!-- timeline time label -->
@@ -721,24 +704,24 @@
 
                                                                                     <div class="timeline-body">
                                                                                         {{--                              //this code will take more loading time --}}
-                                        {{--                            <img src="https://placehold.it/150x100" alt="..."> --}}
-                                        {{--                            <img src="https://placehold.it/150x100" alt="..."> --}}
-                                        {{--                            <img src="https://placehold.it/150x100" alt="..."> --}}
-                                        {{--                            <img src="https://placehold.it/150x100" alt="..."> --}}
-                                        {{--                              //this code will take more loading time --}}
+                                    {{--                            <img src="https://placehold.it/150x100" alt="..."> --}}
+                                    {{--                            <img src="https://placehold.it/150x100" alt="..."> --}}
+                                    {{--                            <img src="https://placehold.it/150x100" alt="..."> --}}
+                                    {{--                            <img src="https://placehold.it/150x100" alt="..."> --}}
+                                    {{--                              //this code will take more loading time --}}
 
-                                    </div>
                                 </div>
                             </div>
-                            <!-- END timeline item -->
-                            <div>
-                                <i class="far fa-clock bg-gray"></i>
-                            </div>
+                        </div>
+                        <!-- END timeline item -->
+                        <div>
+                            <i class="far fa-clock bg-gray"></i>
                         </div>
                     </div>
-                    <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-pane -->
 
-                    {{-- <div class="tab-pane" id="settings">
+                {{-- <div class="tab-pane" id="settings">
                     <form class="form-horizontal">
                         <div class="form-group row">
                             <label for="inputName" class="col-sm-2 col-form-label">Name</label>
@@ -794,10 +777,12 @@
                             </div>
                         </form>
                     </div> --}}
-                    <!-- /.tab-pane -->
-                </div>
-                <!-- /.tab-content -->
-        </div><!-- /.card-body -->
+                <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+
+
+    </div><!-- /.card-body -->
     </div>
     <!-- /.card -->
     </div>

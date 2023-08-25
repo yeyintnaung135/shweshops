@@ -153,7 +153,7 @@
         $('#shopTrashTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ url('backside/super_admin/messages/getexpire') }}",
+            ajax: "{{ route('backside.super_admin.messages.getexpire') }}",
 
             columns: [{
                     data: 'checkbox',
@@ -203,7 +203,7 @@
                     data: 'action',
                     render: function(data, type) {
 
-                        var del = `<form action="{{ route('backside.super_admin.delete', ':id') }}" method="post" >
+                        var del = `<form action="{{ route('backside.super_admin.messages.delete', ':id') }}" method="post" >
                         @csrf
                     @method('DELETE')
                     <button type="button" class="btn btn-sm btn-danger" onclick="shopForceDelete(this)"><i class="fa fa-trash"> Delete</i></button>

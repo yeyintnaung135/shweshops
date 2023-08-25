@@ -64,7 +64,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('superadmin.update_action') }}",
+                url: " {{ route('backside.super_admin.superadmin.update_action') }}",
                 cache: false,
                 dataType: "json",
                 data: {

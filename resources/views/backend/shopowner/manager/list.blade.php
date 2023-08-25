@@ -72,11 +72,10 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @php $i=1; @endphp
 
-                                            @foreach ($manager as $manager)
+                                            @foreach ($managers as $manager)
                                                 <tr>
-                                                    <td>{{ $i++ }}</td>
+                                                    <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $manager->name }}</td>
                                                     <td>{{ $manager->phone }}</td>
                                                     <td>{{ $manager->role->name }}</td>
@@ -281,6 +280,38 @@
 
 @push('scripts')
     <script>
+        $("#datatable").DataTable({
+            "responsive": true,
+            "lengthChange": false,
+            "autoWidth": false,
+            'columnDefs': [{
+                    responsivePriority: 1,
+                    targets: 2
+                },
+                {
+                    responsivePriority: 2,
+                    targets: 1
+                },
+                {
+                    responsivePriority: 3,
+                    targets: 3
+                },
+                {
+                    "targets": [4],
+                    'orderable': false,
+                }
+            ],
+            language: {
+                "search": '<i class="fa-solid fa-search sn-search-icon"></i>',
+                "searchPlaceholder": 'Search by name or role or phone',
+                paginate: {
+                    next: '<i class="fa fa-angle-right"></i>', // or '→'
+                    previous: '<i class="fa fa-angle-left"></i>' // or '←'
+                }
+            },
+            "order": [0, 'desc']
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
         $(document).ready(function() {
             $(".userdatepicker").datepicker({
                 "dateFormat": "yy-mm-dd",

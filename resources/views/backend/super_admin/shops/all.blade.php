@@ -38,7 +38,7 @@
                                             <h2>Shop Lists</h2>
                                             <p>Check your Shops</p>
                                         </div>
-                                        <a href=" {{ route('shops.create') }} " class="btn btn-primary">Add Shop</a>
+                                        <a href=" {{ route('backside.super_admin.shops.create') }} " class="btn btn-primary">Add Shop</a>
                                     </div>
 
                                     <div class="d-flex justify-content-end my-3 align-items-center">
@@ -72,19 +72,12 @@
                                                 <th>Shop Logo</th>
                                                 <th>Shop Banner</th>
                                                 <th>Type</th>
-                                                <!-- <th>Description</th> -->
                                                 <th>Email</th>
-                                                <!-- <th>undamaged_product</th>
-                                              <th>valuable_product</th>
-                                              <th>damaged_product</th> -->
-                                                <!-- <th>Messanger Link</th>
-                                              <th>Page Link</th> -->
-                                                <!-- <th>Address</th> -->
                                                 <th>Main Phone</th>
-                                                <th>state</th>
+                                                <th>State</th>
+                                                <th>Pos Only</th>
                                                 <th>Action</th>
                                                 <th>Created Date</th>
-                                                <!--<th>Action</th> -->
                                             </tr>
                                         </thead>
                                     </table>
@@ -119,7 +112,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                "url": "{{ route('shops.getAllShops') }}",
+                "url": "{{ route('backside.super_admin.shops.getAllShops') }}",
                 'data': function(data) {
                     // Read values
                     var from_date = $('#search_fromdate_shop').val() ? $('#search_fromdate_shop').val() +
@@ -143,7 +136,7 @@
                 {
                     data: 'shop_logo',
                     render: function(data, type) {
-                        var image = `<img src="{{ url('/images/logo/' . ':img') }}"
+                        var image = `<img src="{{ filedopath('/shop_owner/logo/' . ':img') }}"
                           class="rounded-circle" width="50"
                           height="45" alt="Logo" />`;
                         image = image.replace(':img', data);
@@ -153,7 +146,7 @@
                 {
                     data: 'shop_banner',
                     render: function(data, type) {
-                        var image = `<img src="{{ url('/images/banner/' . ':img') }}"
+                        var image = `<img src="{{ filedopath('/shop_owner/banner/' . ':img') }}"
                           alt="cover" class="rounded-circle" width="50"
                           height="45"/>`;
                         image = image.replace(':img', data);
@@ -174,12 +167,7 @@
                 {
                     data: 'email'
                 },
-                // {data: 'undamaged_product'},
-                // {data: 'valuable_product'},
-                // {data: 'damaged_product'},
-                // {data: 'messenger_link'},
-                // {data: 'page_link'},
-                // {data: 'address'},
+
                 {
                     data: 'main_phone'
                 },
@@ -187,20 +175,22 @@
                     data: 'state'
                 },
                 {
-                    data: 'id',
-                    name: 'action',
+                    data: 'pos_only'
+                },
+                {
+                    data: 'action',
                     render: function(data, type) {
-                        var edit = `<a href="{{ route('shops.edit', ':id') }}" role="button" class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="top" title="Shop Edit">
+                        var edit = `<a href="{{ url('backside/super_admin/shops/edit/:id') }}" role="button" class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="top" title="Shop Edit">
                         <i class="fa fa-edit"></i>
                       </a>`;
                         edit = edit.replace(':id', data);
                         var detail = `
-                      <a href="{{ route('shops.detail', ':id') }}" role="button" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Shop Detail">
+                      <a href="{{ route('backside.super_admin.shops.detail', ':id') }}" role="button" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Shop Detail">
                         <i class="fa fa-eye"></i>
                       </a>
           `;
                         var detail = detail.replace(':id', data);
-                        var del = `<form action="{{ route('shops.trash', ':id') }}" method="post">
+                        var del = `<form action="{{ route('backside.super_admin.shops.trash', ':id') }}" method="post">
                       @csrf
                       @method('DELETE')
                       <button type="button" onclick="deleteShop(this)" class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="Move To Trash">
@@ -218,7 +208,7 @@
                     }
                 },
                 {
-                    data: 'created_at_formatted'
+                    data: 'created_at'
                 }
 
             ],

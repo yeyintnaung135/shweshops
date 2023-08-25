@@ -14,10 +14,9 @@
                 <div class="row">
                     <div class="col-12">
 
-                        {{ Form::model($shopowner, ['route' => ['shops.update', $shopowner->id], 'method' => 'post', 'enctype' => 'multipart/form-data']) }}
+                        {{ Form::model($shopowner, [url('backend/super_admin/shops/edit/'.$shopowner->id), 'method' => 'post', 'enctype' => 'multipart/form-data']) }}
 
                         @csrf {{-- cross site request forgery --}}
-                        @method('PUT')
                         <div class="card-body">
                             <div class="row sn-item-create-wrapper">
                                 <div class="col-md-6">
@@ -56,7 +55,25 @@
 
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <fieldset>
+                                            <legend><span style="font-family: 'Myanmar3'!important"> Email </span>(
+                                                In MM )
+                                            </legend>
+                                            {{-- <label for="shopname">ဆိုင် အမည် ( In MM )</label> --}}
+                                            <input type="text" class="form-control sop-form-control" id="email"
+                                                placeholder="ဆိုင်အမည် ထည့်ရန်" name="email"
+                                                value="{{ old('email', $shopowner->email) }}">
+                                        </fieldset>
+                                        @error('email')
+                                            <x-error>
+                                                {{ $message }}
+                                            </x-error>
+                                        @enderror
 
+                                    </div>
+                                </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <fieldset>
@@ -89,11 +106,8 @@
                                         @enderror
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="row sn-item-create-wrapper">
                                 <div class="col-12 col-md-6">
-                                    <label for="state">State<span style="color: red;">*</span></label>
+                                    <legend>States</legend>
                                     <select id="state" name="state"
                                         class="form-control @error('state') is-invalid @enderror">
                                         @foreach ($states as $state)
@@ -115,9 +129,8 @@
                                         </x-error>
                                     @enderror
                                 </div>
-
                                 <div class="col-12 col-md-6">
-                                    <label for="township">Township<span style="color: red;">*</span></label>
+                                    <legend>Township</legend>
                                     <input type="hidden" id="townshipfromdata" name=""
                                         value="{{ $shopowner->township }}">
                                     <select id="township" name="township"
@@ -129,6 +142,11 @@
                                         </x-error>
                                     @enderror
                                 </div>
+                            </div>
+
+                            <div class="row sn-item-create-wrapper">
+                                
+                              
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <fieldset>
@@ -219,7 +237,6 @@
                                     </div>
                                 </div>
                             </div>
-
 
                             <!-- photo two -->
                             <h2>ပြန်သွင်း/ပြန်လဲ အချက်အလက်များ</h2>
@@ -325,7 +342,7 @@
 
                                             <div class="col-md-12 col-12">
                                                 <div class="mb-2">
-                                                    <img src="{{ asset('images/logo/' . $shopowner->shop_logo) }}"
+                                                    <img src="{{ filedopath('/shop_owner/logo/' . $shopowner->shop_logo) }}"
                                                         alt="" class="w-25">
                                                 </div>
                                                 <div class="input-group mb-3">
@@ -360,7 +377,7 @@
                                             <label for="exampleInputFile">Banner</label>
                                             <div class="mb-3">
                                                 @foreach ($shopowner->getPhotos as $photo)
-                                                    <img src="{{ asset('images/banner/' . $photo->location) }}"
+                                                    <img src="{{ filedopath('/shop_owner/banner/' . $photo->location) }}"
                                                         alt="" class="w-25 mb-1">
                                                 @endforeach
                                             </div>

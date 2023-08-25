@@ -27,6 +27,11 @@ class Item extends Model
     //        return $this->hasOne('App\discount','item_id');
     //    }
 
+    public function shop()
+    {
+        return $this->belongsTo(Shops::class, 'shop_id');
+    }
+
     public function getMainCategoryNameAttribute()
     {
         $maincat = MainCategory::where('id', $this->main_category)->first();

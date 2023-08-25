@@ -23,7 +23,7 @@
                     <div class="col-12">
 
                         <div class="card">
-                            <div class="card-header">
+                            <div class="card-header d-flex justify-content-end align-items-center">
                                 <h3 class="card-title">
                                     <a href="{{ route('backside.shop_owner.news.create') }}" class="btn btn-primary">
                                         <span class="fa fa-plus-circle"></span>&nbsp;&nbsp;Create News

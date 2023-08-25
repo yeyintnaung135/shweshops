@@ -101,28 +101,6 @@
                                                     <th>Created Date</th>
                                                 </tr>
                                             </thead>
-
-                                            <tfoot>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Product Code</th>
-                                                    <th>Product Name</th>
-                                                    <th>User Name</th>
-                                                    <th>User Role</th>
-                                                    <th>Name</th>
-                                                    <th>အလျော့တွက်</th>
-                                                    <th>လက်ခ</th>
-                                                    <th>အထည်မပျက်ပြန်သွင်း</th>
-                                                    <th>အထည်ပျက်စီး ချို့ယွင်း</th>
-                                                    <th>တန်ဖိုးမြင့်အထည်နှင့် အထည်မပျက်ပြန်လဲ</th>
-                                                    <th>အလျော့တွက်(new)</th>
-                                                    <th>လက်ခ(new)</th>
-                                                    <th>အထည်မပျက်ပြန်သွင်း(new)</th>
-                                                    <th>အထည်ပျက်စီး ချို့ယွင်း(new)</th>
-                                                    <th>တန်ဖိုးမြင့်အထည်နှင့် အထည်မပျက်ပြန်လဲ(new)</th>
-                                                    <th>Created Date</th>
-                                                </tr>
-                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>

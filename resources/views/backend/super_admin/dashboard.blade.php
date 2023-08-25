@@ -74,7 +74,7 @@
                                         style="
                                     font-size: 2.1rem;
                                 ">
-                                        {{ count($viewer) }}</p>
+                                        {{ $viewer }}</p>
                                 </a>
                             </div>
                         </div>
@@ -90,7 +90,7 @@
                                         style="
                                     font-size: 2.1rem;
                                 ">
-                                        {{ count($adsview) }}</p>
+                                        {{ $adsview }}</p>
                                 </a>
                             </div>
                         </div>
@@ -106,7 +106,7 @@
                                         style="
                                     font-size: 2.1rem;
                                 ">
-                                        {{ count($shop) }}</p>
+                                        {{ $shop }}</p>
                                 </a>
                             </div>
                         </div>
@@ -122,7 +122,7 @@
                                         style="
                                     font-size: 2.1rem;
                                 ">
-                                        {{ count($shopview) }}</p>
+                                        {{ $shopview }}</p>
                                 </a>
                             </div>
                         </div>
@@ -138,7 +138,7 @@
                                         style="
                                     font-size: 2.1rem;
                                 ">
-                                        {{ count($buynow) }}</p>
+                                        {{ $buynow }}</p>
                                 </a>
                             </div>
                         </div>
@@ -154,7 +154,7 @@
                                         style="
                                     font-size: 2.1rem;
                                 ">
-                                        {{ count($addtocart) }}</p>
+                                        {{ $addtocart }}</p>
                                 </a>
                             </div>
                         </div>
@@ -170,7 +170,7 @@
                                         style="
                                     font-size: 2.1rem;
                                 ">
-                                        {{ count($whishlist) }}</p>
+                                        {{ $whishlist }}</p>
                                 </a>
                             </div>
                         </div>
@@ -204,7 +204,7 @@
                                         style="
                                       font-size: 2.1rem;
                                   ">
-                                        {{ count($uqviewer) }}</p>
+                                        {{ $uqviewer }}</p>
                                 </a>
                             </div>
                         </div>
@@ -220,7 +220,7 @@
                                         style="
                                       font-size: 2.1rem;
                                   ">
-                                        {{ count($uqadsview) }}</p>
+                                        {{ $uqadsview }}</p>
                                 </a>
                             </div>
                         </div>
@@ -236,7 +236,7 @@
                                         style="
                                       font-size: 2.1rem;
                                   ">
-                                        {{ count($uqshopview) }}</p>
+                                        {{ $uqshopview }}</p>
                                 </a>
                             </div>
                         </div>
@@ -251,7 +251,7 @@
                                     <p class="card-text" id='registercount'
                                         style="font-size: 2.1rem;
                                   ">
-                                        {{ count($register) }}</p>
+                                        {{ $register }}</p>
                                 </a>
                             </div>
                         </div>
@@ -267,7 +267,7 @@
                                         style="
                                       font-size: 2.1rem;
                                   ">
-                                        {{ count($uqbuynow) }}</p>
+                                        {{ $uqbuynow }}</p>
                                 </a>
                             </div>
                         </div>
@@ -365,7 +365,7 @@
                                         style="
                                       font-size: 2.1rem;
                                   ">
-                                        {{ count($addtocart) }}</p>
+                                        {{ $addtocart }}</p>
                                 </a>
                             </div>
                         </div>
@@ -381,7 +381,7 @@
                                         style="
                                       font-size: 2.1rem;
                                   ">
-                                        {{ count($whishlist) }}</p>
+                                        {{ $whishlist }}</p>
                                 </a>
                             </div>
                         </div>

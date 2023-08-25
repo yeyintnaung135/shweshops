@@ -48,48 +48,45 @@ class AdsController extends Controller
     }
 
     // datable for ads log activity
-    public function get_ads_activity(Request $request): mixed
+    public function get_ads_activity(Request $request): JsonResponse
     {
-        if ($request->ajax()) {
-            $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
-            $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
 
-            $recordsQuery = SuperAdminLogActivity::where('type', 'ads')
-                ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-                ->orderBy('created_at', 'desc');
+        $recordsQuery = SuperAdminLogActivity::select('id', 'name', 'type', 'type_name', 'status', 'created_at', 'role')
+            ->where('type', 'ads')
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
-            return DataTables::of($recordsQuery)
-                ->addColumn('created_at_formatted', function ($record) {
-                    return date('F d, Y ( h:i A )', strtotime($record->created_at));
-                })
-                ->editColumn('created_at', '{{ date("F d, Y ( h:i A )", strtotime($created_at)) }}')
-                ->rawColumns(['created_at_formatted'])
-                ->toJson();
-        }
+        return DataTables::of($recordsQuery)
+            ->editColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->created_at));
+            })
+            ->toJson();
+
     }
 
-    public function get_all_ads(Request $request): mixed
+    public function get_all_ads(Request $request): JsonResponse
     {
-        $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
-        $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
 
         $recordsQuery = Ads::select('id', 'name', 'image', 'start', 'end', 'created_at', 'deleted_at', 'video')
             ->withTrashed()
-            ->when($searchByFromdate, fn ($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
-            ->when($searchByTodate, fn ($query) => $query->whereDate('created_at', '<=', $searchByTodate))
-            ->orderBy('created_at', 'desc');
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
         return DataTables::of($recordsQuery)
-            ->addColumn('start', function ($record) {
+            ->editColumn('start', function ($record) {
                 return date('F d, Y ( h:i A )', strtotime($record->start));
             })
-            ->addColumn('end', function ($record) {
+            ->editColumn('end', function ($record) {
                 return date('F d, Y ( h:i A )', strtotime($record->end));
             })
-            ->addColumn('deleted_at', function ($record) {
+            ->editColumn('deleted_at', function ($record) {
                 return $record->deleted_at ? '<span class="text-danger">' . $record->deleted_at->diffForHumans() . '</span>' : '';
             })
-            ->addColumn('created_at', function ($record) {
+            ->editColumn('created_at', function ($record) {
                 return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
             ->addColumn('action', fn ($record) => $record->id)

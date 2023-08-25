@@ -46,15 +46,15 @@
                                             <fieldset>
                                                 <legend>From Date</legend>
                                                 <input type="text" id='search_fromdate_shop'
-                                                    class="shopdatepicker form-control" placeholder='Choose date'
-                                                    value="{{ date('Y-m-d') }}" autocomplete="off" />
+                                                value="{{ date('Y-m-d') }}" class="shopdatepicker form-control" placeholder='Choose date'
+                                                    autocomplete="off" />
                                             </fieldset>
                                         </div>
                                         <div class="form-group mr-md-2">
                                             <fieldset>
                                                 <legend>To Date</legend>
-                                                <input type="text" id='search_todate_shop' value="{{ date('Y-m-d') }}"
-                                                    class="shopdatepicker form-control" placeholder='Choose date'
+                                                <input type="text" id='search_todate_shop'
+                                                value="{{ date('Y-m-d') }}" class="shopdatepicker form-control" placeholder='Choose date'
                                                     autocomplete="off" />
                                             </fieldset>
                                         </div>
@@ -69,22 +69,12 @@
                                             <tr>
                                                 <th>Id</th>
                                                 <th>Name</th>
-                                                <!-- <th>Myanamr Name</th> -->
                                                 <th>Shop Logo</th>
                                                 <th>Shop Banner</th>
                                                 <th>Type</th>
-                                                <!-- <th>Description</th> -->
-                                                <th>Total Product Counts</th>
-                                                <!-- <th>undamaged_product</th>
-                                              <th>valuable_product</th>
-                                              <th>damaged_product</th> -->
-                                                <!-- <th>Messanger Link</th>
-                                              <th>Page Link</th> -->
-                                                <!-- <th>Address</th> -->
+                                                <th>Product Counts</th>
                                                 <th>Main Phone</th>
                                                 <th>Created At</th>
-
-                                                <!--<th>Action</th> -->
                                             </tr>
                                         </thead>
                                     </table>
@@ -97,64 +87,6 @@
                     </div>
                     <!-- /.row -->
                 </div>
-                <?php /*
-                <div id="item-panel-2" class="container-fluid sn-panel-hide">
-                    <div class="row">
-                        <div class="col-12">
-
-                          <div class="sn-table-list-wrapper">
-                            <div class="card shadow-none border-0 rounded-5 pb-2 mt-5">
-                              <div class="card-header">
-                                  <h2>Shops Activity List</h2>
-                                  <p>Check your Shops Activities</p>
-                                  <a href=" {{ route('shops.create') }} " class="btn btn-primary">Add Shop</a>
-
-                              </div>
-                              <div class="d-flex justify-content-end my-3">
-                                <div class="form-group mr-md-2">
-                                  <fieldset>
-                                    <legend>From Date</legend>
-                                    <input type="text" id='search_fromdate_shopact' class="shopactdatepicker form-control" placeholder='Choose date' autocomplete="off"/>
-                                  </fieldset>
-                                </div>
-                                <div class="form-group mr-md-2">
-                                  <fieldset>
-                                    <legend>To Date</legend>
-                                    <input type="text" id='search_todate_shopact' class="shopactdatepicker form-control" placeholder='Choose date' autocomplete="off"/>
-                                  </fieldset>
-                                </div>
-                                <div class="pr-md-4">
-                                  <input type='button' id="shopact_search_button" value="Search" class="form-control bg-info" style="margin-top: 25px;">
-                                </div>
-                              </div>
-                              <!-- /.card-header -->
-                                  <table id="shopActivityTable" class="table table-borderless p-2">
-                                      <thead>
-                                      <tr>
-                                          <th>id</th>
-                                          <th>Name</th>
-                                          <th>Type</th>
-                                          <th>Type Name</th>
-                                          <th>Status</th>
-                                          <th>Role</th>
-                                          <th>Date</th>
-                                      </tr>
-                                      </thead>
-
-
-                                  </table>
-
-                              <!-- /.card-body -->
-                            </div>
-                          </div>
-                            <!-- /.card -->
-                        </div>
-                        <!-- /.col -->
-                    </div>
-                    <!-- /.row -->
-                </div>
-                */
-                ?>
                 <!-- /.container-fluid -->
             </section>
             <!-- /.content -->
@@ -190,7 +122,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                "url": "{{ url('backside/super_admin/items/getitemsajax') }}",
+                "url": "{{ route('backside.super_admin.items.getItemsAjax') }}",
                 'data': function(data) {
                     // Read values
                     var from_date = $('#search_fromdate_shop').val() ? $('#search_fromdate_shop').val() +
@@ -208,9 +140,8 @@
                     data: 'id'
                 },
                 {
-                    data: 'name'
+                    data: 'shop_name'
                 },
-                // {data: 'shop_name_myan'},
                 {
                     data: 'shop_logo',
                     render: function(data, type) {
@@ -220,7 +151,9 @@
                           height="45" alt="Logo" />`;
                         image = image.replace(':img', data);
                         return image;
-                    }
+                    },
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'shop_banner',
@@ -230,7 +163,9 @@
                           height="45"/>`;
                         image = image.replace(':img', data);
                         return image;
-                    }
+                    },
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'premium',
@@ -242,16 +177,10 @@
                         }
                     }
                 },
-                // {data: 'description'},
                 {
-                    data: 'email'
+                    data: 'items',
+                    name: 'items_count',
                 },
-                // {data: 'undamaged_product'},
-                // {data: 'valuable_product'},
-                // {data: 'damaged_product'},
-                // {data: 'messenger_link'},
-                // {data: 'page_link'},
-                // {data: 'address'},
                 {
                     data: 'main_phone'
                 },
@@ -261,11 +190,11 @@
 
             ],
             dom: 'lBfrtip',
-                "responsive": true,
-                "autoWidth": false,
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ],
+            "responsive": true,
+            "autoWidth": false,
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
         });
 
         $(document).ready(function() {

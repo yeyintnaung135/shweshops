@@ -106,7 +106,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                "url": "{{ url('backside/super_admin/fbdata/messenger/getall') }}",
+                "url": "{{ route('backside.super_admin.fbdata.messenger.getAll') }}",
                 'data': function(data) {
                     // Read values
                     var from_date = $('#search_fromdate_shop').val() ? $('#search_fromdate_shop').val() +
@@ -127,7 +127,7 @@
                     data: 'shop_name'
                 },
                 {
-                    data: 'page_name'
+                    data: 'pagename'
                 },
 
                 {

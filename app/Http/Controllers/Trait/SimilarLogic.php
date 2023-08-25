@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\Trait;
 
-use App\Models\discount;
+use App\Models\Discount;
 use App\Models\Item;
 
 trait SimilarLogic{

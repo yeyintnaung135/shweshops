@@ -13,7 +13,7 @@ class UserNoti extends Model
 
     public function getWithoutspaceShopnameAttribute()
     {
-        $shop_name_for_space = Shopowner::where('id', $this->sender_shop_id)->first();
+        $shop_name_for_space = Shops::where('id', $this->sender_shop_id)->first();
         $shopurl = 'deleted shop';
         if (!empty($shop_name_for_space)) {
             if (!empty($shop_name_for_space->shop_name_url)) {

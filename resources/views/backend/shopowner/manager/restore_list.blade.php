@@ -50,7 +50,7 @@
                                         <h2>Deleted Users List</h2>
                                         <p>Check your deleted users list</p>
                                     </div>
-                                    <table id="datatable" class="table table-borderless mb-2">
+                                    <table id="trashTable" class="table table-borderless mb-2">
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
@@ -63,15 +63,15 @@
                                         </thead>
                                         <tbody>
                                             @php $i=1; @endphp
-                                            @foreach ($manager as $manager)
+                                            @foreach ($trashList as $trash)
                                                 <tr>
-                                                    <td>{{ $i++ }}</td>
-                                                    <td>{{ $manager->phone }}</td>
-                                                    <td>{{ $manager->name }}</td>
-                                                    <td>{{ $manager->role->name }}</td>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $trash->phone }}</td>
+                                                    <td>{{ $trash->name }}</td>
+                                                    <td>{{ $trash->role->name }}</td>
 
                                                     <td>
-                                                        <a href="{{ route('backside.shop_owner.managers.restore', $manager->id) }}"
+                                                        <a href="{{ route('backside.shop_owner.managers.restore', $trash->id) }}"
                                                             class="btn btn-success">Restore</a>
                                                     </td>
 
@@ -116,6 +116,38 @@
 @endsection
 @push('scripts')
     <script>
+        $("#trashTable").DataTable({
+            "responsive": true,
+            "lengthChange": false,
+            "autoWidth": false,
+            'columnDefs': [{
+                    responsivePriority: 1,
+                    targets: 2
+                },
+                {
+                    responsivePriority: 2,
+                    targets: 1
+                },
+                {
+                    responsivePriority: 3,
+                    targets: 3
+                },
+                {
+                    "targets": [4],
+                    'orderable': false,
+                }
+            ],
+            language: {
+                "search": '<i class="fa-solid fa-search sn-search-icon"></i>',
+                "searchPlaceholder": 'Search by name or role or phone',
+                paginate: {
+                    next: '<i class="fa fa-angle-right"></i>', // or '→'
+                    previous: '<i class="fa fa-angle-left"></i>' // or '←'
+                }
+            },
+            "order": [0, 'desc']
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
         function Delete() {
             $(function() {
                 const swalWithBootstrapButtons = Swal.mixin({

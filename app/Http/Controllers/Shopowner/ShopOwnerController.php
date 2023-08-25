@@ -23,7 +23,6 @@ use App\Models\Shops;
 use App\Models\User;
 use App\Models\WishlistClickLog;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -53,40 +52,81 @@ class ShopOwnerController extends Controller
     public function detail(): View
     {
 
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $shop = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->first();
 
-        $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $products_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'item')->get();
+        $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->limit(6)->get();
 
-        $shopview = frontuserlogs::where('shop_id', $this->get_shopid())->where('status', 'shopdetail')->orderBy('created_at', 'desc')->get()->unique('guest_id');
-        $shops_view_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'shop_view')->get();
+        $products_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'item')->count();
+        if ($products_count_setting != 0) {
+            $items_count = Item::where('shop_id', $this->get_shopid())->count();
+        } else {
+            $shopview = null;
+        }
 
-        $productclick = frontuserlogs::leftjoin('items', 'front_user_logs.product_id', '=', 'items.id')->where('front_user_logs.status', 'product_detail')->where('items.shop_id', $this->get_shopid())->orderBy('front_user_logs.created_at', 'desc')->get();
-        $items_view_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'items_view')->get();
+        $shops_view_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'shop_view')->count();
+        if ($shops_view_count_setting != 0) {
+            $shopview = frontuserlogs::where('shop_id', $this->get_shopid())->where('status', 'shopdetail')->orderBy('created_at', 'desc')->get()->unique('guest_id')->count();
+        } else {
+            $shopview = null;
+        }
 
-        $unique_productclick = ItemLogActivity::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get()->unique('user_id', 'guest_id');
-        $unique_product_click_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'item_unique_view')->get();
+        $items_view_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'items_view')->count();
+        if ($items_view_count_setting != 0) {
+            $productclick = frontuserlogs::leftjoin('items', 'front_user_logs.product_id', '=', 'items.id')->where('front_user_logs.status', 'product_detail')->where('items.shop_id', $this->get_shopid())->orderBy('front_user_logs.created_at', 'desc')->get()->count();
+        } else {
+            $productclick = null;
+        }
 
-        $buynowclick = BuyNowClickLog::leftjoin('items', 'items.id', 'buy_now_click_logs.item_id')->where('items.shop_id', $this->get_shopid())->orderBy('buy_now_click_logs.created_at', 'desc')->get();
-        $buy_now_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'buyNowClick')->get();
+        $unique_product_click_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'item_unique_view')->count();
+        if ($unique_product_click_count_setting != 0) {
+            $unique_productclick = ItemLogActivity::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get()->unique('user_id', 'guest_id')->count();
+        } else {
+            $unique_productclick = null;
+        }
 
-        $addtocartclick = AddToCartClickLog::leftjoin('items', 'items.id', 'add_to_cart_click_logs.item_id')->where('items.shop_id', $this->get_shopid())->orderBy('add_to_cart_click_logs.created_at', 'desc')->get()->unique('guest_id', 'user_id');
-        $addtocartclick_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'addToCartClick')->get();
+        $buy_now_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'buyNowClick')->count();
+        if ($buy_now_count_setting != 0) {
+            $buynowclick = BuyNowClickLog::leftjoin('items', 'items.id', 'buy_now_click_logs.item_id')->where('items.shop_id', $this->get_shopid())->orderBy('buy_now_click_logs.created_at', 'desc')->get()->count();
+        } else {
+            $buynowclick = null;
+        }
 
-        $whislistclick = WishlistClickLog::leftjoin('items', 'items.id', 'wishlist_click_logs.item_id')->where('items.shop_id', $this->get_shopid())->orderBy('wishlist_click_logs.created_at', 'desc')->get();
-        $whislistclick_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'whislistclick')->get();
+        $addtocartclick_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'addToCartClick')->count();
+        if ($addtocartclick_count_setting != 0) {
+            $addtocartclick = AddToCartClickLog::leftjoin('items', 'items.id', 'add_to_cart_click_logs.item_id')->where('items.shop_id', $this->get_shopid())->orderBy('add_to_cart_click_logs.created_at', 'desc')->get()->unique('guest_id', 'user_id')->count();
+        } else {
+            $addtocartclick = null;
+        }
 
-        $discountview = ItemLogActivity::where('shop_id', $this->get_shopid())->whereIn('item_id', Discount::pluck('item_id'))->get();
-        $discountview_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'discountview')->get();
+        $whislistclick_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'whislistclick')->count();
+        if ($whislistclick_count_setting != 0) {
+            $whislistclick = WishlistClickLog::leftjoin('items', 'items.id', 'wishlist_click_logs.item_id')->where('items.shop_id', $this->get_shopid())->orderBy('wishlist_click_logs.created_at', 'desc')->get()->count();
+        } else {
+            $whislistclick = null;
+        }
 
-        $adsview = ShopLogActivity::where('shop', $this->get_shopid())->whereIn('shop', Ads::pluck('shop_id'))->get();
-        $adsview_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'adsview')->get();
+        $discountview_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'discountview')->count();
+        if ($discountview_count_setting != 0) {
+            $discountview = ItemLogActivity::where('shop_id', $this->get_shopid())->whereIn('item_id', Discount::pluck('item_id'))->get()->count();
+        } else {
+            $discountview = null;
+        }
 
-        // if($this->checkUserCount($this->get_shopid())){
+        $adsview_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'adsview')->count();
+        if ($adsview_count_setting != 0) {
+            $adsview = ShopLogActivity::where('shop', $this->get_shopid())->whereIn('shop', Ads::pluck('shop_id'))->get()->count();
+        } else {
+            $adsview = null;
+        }
 
-        // }
-        $users = $this->getuserlistbyrolelevel();
-        $users_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'users')->get();
+        $users = $this->get_user_list_by_role_level_select()->limit(6)->get();
+
+        $users_count_setting = CountSetting::where('shop_id', $this->get_shopid())->where('name', 'users')->count();
+        if ($users_count_setting != 0) {
+            $users_count = $this->get_user_list_by_role_level_count();
+        } else {
+            $users_count = null;
+        }
 
         $banner = ShopBanner::where('shop_owner_id', $this->get_shopid())->first();
 
@@ -117,12 +157,14 @@ class ShopOwnerController extends Controller
             'shopview' => $shopview,
             'shops_view_count_setting' => $shops_view_count_setting,
 
-            'shopowner' => $shopowner,
+            'shop' => $shop,
 
             'items' => $items,
+            'items_count' => $items_count,
             'products_count_setting' => $products_count_setting,
 
-            'managers' => $users,
+            'users_count' => $users_count,
+            'users' => $users,
             'users_count_setting' => $users_count_setting,
 
             'banner' => $banner,
@@ -212,183 +254,183 @@ class ShopOwnerController extends Controller
     public function get_shop_owner_view(Request $request): JsonResponse
     {
 
-            $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
-            $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
+        $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
-            $shop_id = $this->get_shopid();
+        $shop_id = $this->get_shopid();
 
-            $query = FrontUserLogs::leftJoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
-                ->leftJoin('shop_owners', 'shop_owners.id', '=', 'front_user_logs.shop_id')
-                ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
-                ->orderBy('front_user_logs.created_at', 'desc')
-                ->where('front_user_logs.status', 'shopdetail')
-                ->where('front_user_logs.shop_id', $shop_id)
-                ->whereBetween('front_user_logs.created_at', [$searchByFromdate, $searchByTodate])
-                ->select('*', 'front_user_logs.created_at as fulct', 'front_user_logs.id as fulid');
+        $query = FrontUserLogs::leftJoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
+            ->leftJoin('shop_owners', 'shop_owners.id', '=', 'front_user_logs.shop_id')
+            ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
+            ->orderBy('front_user_logs.created_at', 'desc')
+            ->where('front_user_logs.status', 'shopdetail')
+            ->where('front_user_logs.shop_id', $shop_id)
+            ->whereBetween('front_user_logs.created_at', [$searchByFromdate, $searchByTodate])
+            ->select('*', 'front_user_logs.created_at as fulct', 'front_user_logs.id as fulid');
 
-            return DataTables::of($query)
-                ->addColumn('user_id', function ($record) {
-                    return $record->user_id == 0 ? $record->guest_id : $record->user_id;
-                })
-                ->addColumn('created_at', function ($record) {
-                    return date('F d, Y ( h:i A )', strtotime($record->fulct));
-                })
-                ->toJson();
+        return DataTables::of($query)
+            ->addColumn('user_id', function ($record) {
+                return $record->user_id == 0 ? $record->guest_id : $record->user_id;
+            })
+            ->addColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->fulct));
+            })
+            ->toJson();
     }
 
     public function get_buy_now_click(Request $request): JsonResponse
     {
-            $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
-            $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
+        $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
-            $shop_id = $this->get_shopid();
+        $shop_id = $this->get_shopid();
 
-            $query = BuyNowClickLog::leftJoin('guestoruserid', 'buy_now_click_logs.userorguestid', '=', 'guestoruserid.id')
-                ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
-                ->leftJoin('items', 'items.id', '=', 'buy_now_click_logs.item_id')
-                ->leftJoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
-                ->orderBy('buy_now_click_logs.created_at', 'desc')
-                ->select('*', 'buy_now_click_logs.created_at as fulct', 'buy_now_click_logs.id as fulid', 'guestoruserid.user_id as goruserid')
-                ->where('items.shop_id', $shop_id)
-                ->whereBetween('buy_now_click_logs.created_at', [$searchByFromdate, $searchByTodate]);
+        $query = BuyNowClickLog::leftJoin('guestoruserid', 'buy_now_click_logs.userorguestid', '=', 'guestoruserid.id')
+            ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
+            ->leftJoin('items', 'items.id', '=', 'buy_now_click_logs.item_id')
+            ->leftJoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
+            ->orderBy('buy_now_click_logs.created_at', 'desc')
+            ->select('*', 'buy_now_click_logs.created_at as fulct', 'buy_now_click_logs.id as fulid', 'guestoruserid.user_id as goruserid')
+            ->where('items.shop_id', $shop_id)
+            ->whereBetween('buy_now_click_logs.created_at', [$searchByFromdate, $searchByTodate]);
 
-            return DataTables::of($query)
-                ->addColumn('user_name', function ($record) {
-                    if ($record->goruserid == 0) {
-                        return 'guest';
-                    } else {
-                        return User::where('id', $record->goruserid)->value('username');
-                    }
-                })
-                ->addColumn('user_id', function ($record) {
-                    return $record->goruserid == 0 ? $record->guest_id : $record->goruserid;
-                })
-                ->addColumn('created_at', function ($record) {
-                    return date('F d, Y ( h:i A )', strtotime($record->fulct));
-                })
-                ->toJson();
+        return DataTables::of($query)
+            ->addColumn('user_name', function ($record) {
+                if ($record->goruserid == 0) {
+                    return 'guest';
+                } else {
+                    return User::where('id', $record->goruserid)->value('username');
+                }
+            })
+            ->addColumn('user_id', function ($record) {
+                return $record->goruserid == 0 ? $record->guest_id : $record->goruserid;
+            })
+            ->addColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->fulct));
+            })
+            ->toJson();
     }
 
     public function get_unique_add_to_cart_click(Request $request): JsonResponse
     {
-            $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
-            $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
+        $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
-            $shop_id = $this->get_shopid();
+        $shop_id = $this->get_shopid();
 
-            $query = AddToCartClickLog::leftJoin('items', 'items.id', '=', 'add_to_cart_click_logs.item_id')
-                ->leftJoin('guestoruserid', 'add_to_cart_click_logs.userorguestid', '=', 'guestoruserid.id')
-                ->leftJoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
-                ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
-                ->orderBy('add_to_cart_click_logs.created_at', 'desc')
-                ->where('items.shop_id', $shop_id)
-                ->whereBetween('add_to_cart_click_logs.created_at', [$searchByFromdate, $searchByTodate])
-                ->select('*', 'add_to_cart_click_logs.created_at as fulct', 'add_to_cart_click_logs.id as fulid');
+        $query = AddToCartClickLog::leftJoin('items', 'items.id', '=', 'add_to_cart_click_logs.item_id')
+            ->leftJoin('guestoruserid', 'add_to_cart_click_logs.userorguestid', '=', 'guestoruserid.id')
+            ->leftJoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
+            ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
+            ->orderBy('add_to_cart_click_logs.created_at', 'desc')
+            ->where('items.shop_id', $shop_id)
+            ->whereBetween('add_to_cart_click_logs.created_at', [$searchByFromdate, $searchByTodate])
+            ->select('*', 'add_to_cart_click_logs.created_at as fulct', 'add_to_cart_click_logs.id as fulid');
 
-            return DataTables::of($query)
-                ->addColumn('user_name', function ($record) {
-                    if ($record->user_id == 0) {
-                        return 'guest';
-                    } else {
-                        return User::where('id', $record->user_id)->value('username');
-                    }
-                })
-                ->addColumn('user_id', function ($record) {
-                    return $record->user_id == 0 ? $record->guest_id : $record->user_id;
-                })
-                ->addColumn('created_at', function ($record) {
-                    return date('F d, Y ( h:i A )', strtotime($record->fulct));
-                })
-                ->toJson();
+        return DataTables::of($query)
+            ->addColumn('user_name', function ($record) {
+                if ($record->user_id == 0) {
+                    return 'guest';
+                } else {
+                    return User::where('id', $record->user_id)->value('username');
+                }
+            })
+            ->addColumn('user_id', function ($record) {
+                return $record->user_id == 0 ? $record->guest_id : $record->user_id;
+            })
+            ->addColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->fulct));
+            })
+            ->toJson();
     }
 
     public function get_unique_wishlist_click(Request $request): JsonResponse
     {
-            $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
-            $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
+        $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
-            $shop_id = $this->get_shopid();
+        $shop_id = $this->get_shopid();
 
-            $query = WhislistClickLog::leftJoin('items', 'items.id', '=', 'whislist_click_logs.item_id')
-                ->leftJoin('guestoruserid', 'whislist_click_logs.userorguestid', '=', 'guestoruserid.id')
-                ->leftJoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
-                ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
-                ->orderBy('whislist_click_logs.created_at', 'desc')
-                ->where('items.shop_id', $shop_id)
-                ->whereBetween('whislist_click_logs.created_at', [$searchByFromdate, $searchByTodate])
-                ->select('*', 'whislist_click_logs.created_at as fulct', 'whislist_click_logs.id as fulid');
+        $query = WhislistClickLog::leftJoin('items', 'items.id', '=', 'whislist_click_logs.item_id')
+            ->leftJoin('guestoruserid', 'whislist_click_logs.userorguestid', '=', 'guestoruserid.id')
+            ->leftJoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
+            ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
+            ->orderBy('whislist_click_logs.created_at', 'desc')
+            ->where('items.shop_id', $shop_id)
+            ->whereBetween('whislist_click_logs.created_at', [$searchByFromdate, $searchByTodate])
+            ->select('*', 'whislist_click_logs.created_at as fulct', 'whislist_click_logs.id as fulid');
 
-            return DataTables::of($query)
-                ->addColumn('user_name', function ($record) {
-                    if ($record->user_id == 0) {
-                        return 'guest';
-                    } else {
-                        return User::where('id', $record->user_id)->value('username');
-                    }
-                })
-                ->addColumn('user_id', function ($record) {
-                    return $record->user_id == 0 ? $record->guest_id : $record->user_id;
-                })
-                ->addColumn('created_at', function ($record) {
-                    return date('F d, Y ( h:i A )', strtotime($record->fulct));
-                })
-                ->toJson();
+        return DataTables::of($query)
+            ->addColumn('user_name', function ($record) {
+                if ($record->user_id == 0) {
+                    return 'guest';
+                } else {
+                    return User::where('id', $record->user_id)->value('username');
+                }
+            })
+            ->addColumn('user_id', function ($record) {
+                return $record->user_id == 0 ? $record->guest_id : $record->user_id;
+            })
+            ->addColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->fulct));
+            })
+            ->toJson();
     }
 
     public function get_unique_ads_view(Request $request): JsonResponse
     {
-            $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
-            $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
+        $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
 
-            $shop_id = $this->get_shopid();
+        $shop_id = $this->get_shopid();
 
-            $query = FrontUserLogs::leftJoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
-                ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
-                ->leftJoin('ads', 'front_user_logs.ads_id', '=', 'ads.id')
-                ->leftJoin('shop_owners', 'shop_owners.id', '=', 'ads.shop_id')
-                ->orderBy('front_user_logs.created_at', 'desc')
-                ->where('front_user_logs.status', 'adsclick')
-                ->where('ads.shop_id', $shop_id)
-                ->whereBetween('front_user_logs.created_at', [$searchByFromdate, $searchByTodate])
-                ->select('*', 'front_user_logs.created_at as fulct', 'front_user_logs.id as fulid');
+        $query = FrontUserLogs::leftJoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
+            ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
+            ->leftJoin('ads', 'front_user_logs.ads_id', '=', 'ads.id')
+            ->leftJoin('shop_owners', 'shop_owners.id', '=', 'ads.shop_id')
+            ->orderBy('front_user_logs.created_at', 'desc')
+            ->where('front_user_logs.status', 'adsclick')
+            ->where('ads.shop_id', $shop_id)
+            ->whereBetween('front_user_logs.created_at', [$searchByFromdate, $searchByTodate])
+            ->select('*', 'front_user_logs.created_at as fulct', 'front_user_logs.id as fulid');
 
-            return DataTables::of($query)
-                ->addColumn('user_name', function ($record) {
-                    if ($record->user_id == 0) {
-                        return 'guest';
-                    } else {
-                        return User::where('id', $record->user_id)->value('username');
-                    }
-                })
-                ->addColumn('user_id', function ($record) {
-                    return $record->user_id == 0 ? $record->guest_id : $record->user_id;
-                })
-                ->addColumn('created_at', function ($record) {
-                    return date('F d, Y ( h:i A )', strtotime($record->fulct));
-                })
-                ->toJson();
+        return DataTables::of($query)
+            ->addColumn('user_name', function ($record) {
+                if ($record->user_id == 0) {
+                    return 'guest';
+                } else {
+                    return User::where('id', $record->user_id)->value('username');
+                }
+            })
+            ->addColumn('user_id', function ($record) {
+                return $record->user_id == 0 ? $record->guest_id : $record->user_id;
+            })
+            ->addColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->fulct));
+            })
+            ->toJson();
     }
 
     public function get_discount_product_view(Request $request): JsonResponse
     {
-            $users = ItemLogActivity::where('shop_id', $this->get_shopid())
-                ->whereIn('item_id', Discount::pluck('item_id'))
-                ->orderBy('created_at', 'desc')
-                ->select('item_log_activities.*')
-                ->get()
-                ->unique('guest_id', 'user_id');
+        $users = ItemLogActivity::where('shop_id', $this->get_shopid())
+            ->whereIn('item_id', Discount::pluck('item_id'))
+            ->orderBy('created_at', 'desc')
+            ->select('item_log_activities.*')
+            ->get()
+            ->unique('guest_id', 'user_id');
 
-            return DataTables::of($users)
-                ->addColumn('user_id', function ($user) {
-                    return $user->user_id;
-                })
-                ->addColumn('user_name', function ($user) {
-                    return $user->user_name;
-                })
-                ->addColumn('created_at', function ($user) {
-                    return date('F d, Y ( h:i A )', strtotime($user->created_at));
-                })
-                ->toJson();
+        return DataTables::of($users)
+            ->addColumn('user_id', function ($user) {
+                return $user->user_id;
+            })
+            ->addColumn('user_name', function ($user) {
+                return $user->user_name;
+            })
+            ->addColumn('created_at', function ($user) {
+                return date('F d, Y ( h:i A )', strtotime($user->created_at));
+            })
+            ->toJson();
     }
 
     public function unique_get_item_activity_log(Request $request): JsonResponse

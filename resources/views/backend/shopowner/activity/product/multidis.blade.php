@@ -100,27 +100,6 @@
                                                     <th>Created Date</th>
                                                 </tr>
                                             </thead>
-
-                                            <tfoot>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Product Code</th>
-                                                    <th>Product Name</th>
-                                                    <th>User Name</th>
-                                                    <th>User Role</th>
-                                                    <th>Old Price</th>
-                                                    <th>Old Min Price</th>
-                                                    <th>Old Max Price</th>
-                                                    <th>Percent</th>
-                                                    <th>Old Discount Price</th>
-                                                    <th>New Discount Price</th>
-                                                    <th>Old Discount Min</th>
-                                                    <th>Old Discount Max</th>
-                                                    <th>New Discount Min</th>
-                                                    <th>New Discount Max</th>
-                                                    <th>Created Date</th>
-                                                </tr>
-                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>
@@ -224,7 +203,7 @@
                         data: 'new_discount_max'
                     },
                     {
-                        data: 'created_at_formatted'
+                        data: 'created_at'
                     }
 
                 ],

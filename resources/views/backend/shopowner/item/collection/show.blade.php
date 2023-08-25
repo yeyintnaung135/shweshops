@@ -19,7 +19,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="card" data-collection-id="{{ $collection->id }}">
-                                <div class="card-header">
+                                <div class="card-header d-flex justify-content-end align-items-center">
                                     <h3 class="card-title"><a
                                             href="{{ route('backside.shop_owner.collections.items', ['collection' => $collection->id]) }}"
                                             type="button" class="btn btn-block bg-gradient-primary"><span

@@ -146,7 +146,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    'url': "{{ route('ads.getAdsActivity') }}",
+                    'url': "{{ route('backside.super_admin.ads.getAdsActivity') }}",
                     'data': function(data) {
                         // Read values
                         var from_date = $('#search_fromdate_adsact').val() ? $(
@@ -178,7 +178,7 @@
                         data: 'role'
                     },
                     {
-                        data: 'created_at_formatted'
+                        data: 'created_at'
                     }
 
                 ],

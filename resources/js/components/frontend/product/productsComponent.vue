@@ -5,6 +5,7 @@
       <h3 v-else>Results</h3>
       <span class="d-none">( 212 Results ) static data</span>
     </div>
+    {{ this.tt }}ffffffffffffffff
     <div class="sn-no-items" v-if="this.shownoitems">
       <div class="sn-cross-sign"></div>
       <i class="fa-solid fa-box-open"></i>
@@ -144,22 +145,7 @@
           </div>
         </div>
 
-        <div
-          v-if="this.empty_on_server === 0"
-          class="col-12"
-          style="height: 222px !important"
-        >
-          <div
-            class="yk-wrapper fff"
-            style="position: relative !important; margin-top: 56px"
-          >
-            <div class="ct-spinner5">
-              <div class="bounce1"></div>
-              <div class="bounce2"></div>
-              <div class="bounce3"></div>
-            </div>
-          </div>
-        </div>
+       
       </div>
     </div>
   </div>
@@ -170,7 +156,6 @@ export default {
   props: [
     "initialitems",
     "selected_product_quality",
-    "search_key",
     "price_range",
     "byshop",
     "sortby",
@@ -190,14 +175,13 @@ export default {
     return {
       shownoitems: false,
       imgurl: "",
-
+tt:'tt',
       host: "",
       // emptyonserver: 0,
       newdata: "",
-      filterdata: "",
+      filterdata: [],
       busy: false,
       ini_check: true,
-      filterdata_from_server: [],
     };
   },
   beforeMount() {},
@@ -209,29 +193,12 @@ export default {
     } else {
       this.imgurl = this.$hostname;
     }
-    this.filterdata = this.initialitems;
-    this.newdata = this.initialitems;
     // this.emptyonserver = this.empty_on_server;
 
-    this.filterdata_from_server[this.search_key] = {
-      data: this.filterdata,
-      limit: this.filterdata.length,
-    };
+  
   },
   watch: {
-    initialitems: function (newitems, olditems) {
-      this.filterdata = newitems;
-      this.busy = false;
-      this.filterdata_from_server[this.search_key] = {
-        data: this.filterdata,
-        limit: this.filterdata.length,
-      };
-      if (this.filterdata.length == 0) {
-        this.shownoitems = true;
-      } else {
-        this.shownoitems = false;
-      }
-    },
+   
   },
   filters: {
     strlimit: function (str, limit, other) {
@@ -248,8 +215,8 @@ export default {
       this.busy = true;
 
       let tmp_limit = 0;
-      if (this.filterdata_from_server[this.search_key] !== undefined) {
-        tmp_limit = this.filterdata_from_server[this.search_key].limit;
+      if (this.filterdata.length > 0) {
+        tmp_limit = this.filterdata.length;
       } else {
         tmp_limit = 20;
       }
@@ -302,21 +269,10 @@ export default {
                   console.log(this.busy);
                 };
                 let setfilterdata = (d) => {
-                  if (this.filterdata_from_server[this.search_key] !== undefined) {
                     d.map((x) =>
-                      this.filterdata_from_server[this.search_key].data.push(x)
+                    this.filterdata.data.push(x)
                     );
-                    this.filterdata_from_server[this.search_key].limit += 20;
-                    this.filterdata = this.filterdata_from_server[this.search_key].data;
-                  } else {
-                    this.filterdata_from_server[this.search_key] = {
-                      data: d,
-                      limit: 20,
-                    };
-                    this.filterdata = d;
-                    console.log(this.filterdata_from_server[this.search_key].limit);
-                    //
-                  }
+                   
                 };
 
                 async function tosetdata() {

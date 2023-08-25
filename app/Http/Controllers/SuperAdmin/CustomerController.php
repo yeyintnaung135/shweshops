@@ -8,6 +8,7 @@ use App\Models\GoldPoint;
 use App\Models\ItemLogActivity;
 use App\Models\Point;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -29,57 +30,46 @@ class CustomerController extends Controller
 
     public function activity_index(): View
     {
-        $itemlogs = ItemLogActivity::whereBetween('created_at', [Carbon::now()->submonth(), Carbon::now()]);
-        return view('backend.super_admin.activity_logs.customer', ['itemlogs' => $itemlogs]);
+
+        return view('backend.super_admin.activity_logs.customer');
     }
 
-    public function get_customers(Request $request): mixed
+    public function get_customers(Request $request): JsonResponse
     {
-        $searchByFromdate = $request->input('searchByFromdate') ?? '0-0-0 00:00:00';
-        $searchByTodate = $request->input('searchByTodate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
 
-        $recordsQuery = User::select([
+        $recordsQuery = User::select(
             'id',
             'username',
             'phone',
             'gender',
             'birthday',
             'active',
-            'created_at',
-        ])->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->orderBy('created_at', 'desc');
-
+            'created_at')
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
         return DataTables::of($recordsQuery)
-            ->addColumn('birthday', function ($record) {
-                return $record->birthday;
-            })
-            ->addColumn('active', function ($record) {
-                return $record->active;
-            })
-            ->addColumn('created_at_formatted', function ($record) {
+            ->editColumn('created_at', function ($record) {
                 return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
-            ->rawColumns(['created_at_formatted'])
             ->make(true);
     }
 
-    public function get_customer_activity(Request $request): mixed
+    //WARNING Code has not been used
+    public function get_customer_activity(Request $request): JsonResponse
     {
-        $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
-        $searchByTodate = $request->input('toDate') ?? Carbon::now();
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
 
-        $recordsQuery = ItemLogActivity::select('item_log_activities.*')
-            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
-            ->orderBy('created_at', 'desc');
+        $recordsQuery = ItemLogActivity::select('id', 'user_name', 'item_code', 'user_id', 'created_at')
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
         return DataTables::of($recordsQuery)
-            ->addColumn('user_name', function ($record) {
-                return $record->user_name;
-            })
-            ->addColumn('created_at', function ($record) {
+            ->editColumn('created_at', function ($record) {
                 return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
-            ->rawColumns(['created_at'])
             ->make(true);
     }
 

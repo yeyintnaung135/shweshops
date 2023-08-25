@@ -194,7 +194,8 @@
 @endpush
 
 @push('scripts')
-    <script src="//cdn.ckeditor.com/4.19.0/full/ckeditor.js"></script>
+    //NOTE: can't find the actual usage of this so i commented it out to improve performance, by Minth
+    {{-- <script src="//cdn.ckeditor.com/4.19.0/full/ckeditor.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $('.ckeditor').ckeditor();
@@ -205,5 +206,5 @@
                 preview.src = URL.createObjectURL(file)
             }
         }
-    </script>
+    </script> --}}
 @endpush

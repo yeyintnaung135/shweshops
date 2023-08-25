@@ -101,6 +101,34 @@
 
 @push('scripts')
     <script>
+
+        $('#uniqueaddtocartTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('backside.shop_owner.detail.get_unique_add_to_cart_click') }}",
+
+                columns: [{
+                        data: 'id'
+                    },
+                    {
+                        data: 'user_id'
+                    },
+                    {
+                        data: 'user_name'
+                    },
+                    {
+                        data: 'created_at'
+                    },
+
+                ],
+                dom: 'lBfrtip',
+                "responsive": true,
+                "autoWidth": false,
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+            });
+
         function get(obj) {
             return document.getElementById(obj);
         }

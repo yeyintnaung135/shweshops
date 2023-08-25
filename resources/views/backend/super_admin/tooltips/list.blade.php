@@ -52,7 +52,6 @@
                                                     <td>url</td>
                                                     <td>Info</td>
                                                     <td>Action</td>
-                                                    <!-- <td>Created Date</td> -->
                                                 </tr>
                                             </thead>
                                         </table>
@@ -111,13 +110,13 @@
         $('#tootTipsTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ url('backside/super_admin/tooltips/all') }}",
+            ajax: "{{ route('backside.super_admin.tooltips.get_all_tooltips') }}",
 
             columns: [{
                     data: 'id'
                 },
                 {
-                    data: 'url'
+                    data: 'endpoint'
                 },
                 {
                     data: 'info'

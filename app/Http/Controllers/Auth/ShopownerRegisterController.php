@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Trait\YKImage;
+use App\Http\Controllers\Trait\YkImage;
 use App\Models\PercentTemplate;
 use App\Models\PremiumTemplate;
 use App\Models\ShopBanner;
-use App\Models\ShopDirectory;
+use App\Models\Shopdirectory;
 use App\Models\ShopOwnersAndStaffs;
 use App\Models\Shops;
+
 use App\Models\State;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
@@ -36,134 +37,7 @@ class ShopownerRegisterController extends Controller
         return view('backend.super_admin.activity_logs.shops', ['shopowner' => $shopowner]);
     }
 
-    public function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:50'],
-            'shop_name_url' => ['required', 'alpha_num', 'string', 'max:50', 'unique:shops'],
-            'shop_logo' => ['required', 'mimes:jpeg,bmp,png,jpg'],
-            'banner.*' => 'mimes:jpeg,bmp,png,jpg',
-            'email' => ['required', 'string', 'email', 'max:50', 'unique:shops'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'shop_name' => ['required', 'string', 'max:50', 'unique:shops,shop_name'],
-            'main_phone' => ['required', 'string', 'max:11', 'unique:shop_owners_and_staffs,phone', 'unique:shops,main_phone'],
-            'description' => ['string', 'max:1255555'],
-            'page_link' => ['required', 'string', 'max:1111'],
-            // 'undamaged_product' => ['numeric'],
-            // 'valuable_product' => [ 'numeric'],
-            // 'damaged_product' => ['numeric'],
-            'undamaged_product' => ['string', 'max:50'],
-            'valuable_product' => ['string', 'max:50'],
-            'damaged_product' => ['string', 'max:50'],
-            'state' => ['required'],
-            'township' => ['required'],
-            'premium' => ['sometimes', 'required', 'string', 'in:yes,no'],
-            'premium_template_id' => 'sometimes|required|exists:premium_templates,id',
-        ]);
-    }
-
-    protected function create()
-    {
-        $states = State::get();
-        $premium_templates = PremiumTemplate::get();
-        return view('backend.super_admin.shops.create', ['states' => $states, 'premium_templates' => $premium_templates]);
-    }
-
-    protected function store(Request $request)
-    {
-        if ($request->premium == 'yes') {
-            if (!$request->hasFile('banner')) {
-                return redirect()->back()->withErrors(['banner.*' => 'File Required'])->withInput();
-            }
-        }
-
-        $valid = $this->validator($request->except('_token'));
-        if ($valid->fails()) {
-            return redirect()->back()->withErrors($valid)->withInput();
-        }
-
-        $fileNameArr = [];
-        if ($request->hasFile('banner')) {
-            foreach ($request->banner as $b) {
-
-                $newFileName = uniqid() . '_banner' . '.' . $b->getClientOriginalExtension();
-                array_push($fileNameArr, $newFileName);
-                $bpath = $b->move(public_path('images/banner/'), $newFileName);
-            }
-        }
-
-        $data = $request->except("_token");
-
-        $shop_logo = $data['shop_logo'];
-        //   $shop_banner = $data['shop_banner'];
-
-        //file upload
-        $imageNameone = time() . 'logo' . '.' . $shop_logo->getClientOriginalExtension();
-
-        $lpath = $shop_logo->move(public_path('images/logo/'), $imageNameone);
-        $this->setthumbslogo($lpath, $imageNameone);
-
-        //store database
-        $filepath_logo = $imageNameone;
-        //   $filepath_banner = $imageNametwo;
-        $add_ph = json_decode($request->additional_phones);
-        $add_ph_array = [];
-
-        if (json_decode($request->additional_phones) !== null) {
-            foreach ($add_ph as $k => $v) {
-                if (count($add_ph) != 0) {
-                    $ph = json_decode(json_encode($v), true);
-                    foreach ($ph as $k2 => $v2) {
-                        array_push($add_ph_array, $v2);
-                    }
-                }
-            }
-        }
-
-        //data insert
-        $data['shop_logo'] = $filepath_logo;
-        $data['active'] = 'yes';
-        $withouthashpsw = $data['password'];
-       $hashpassword=Hash::make($data['password']);
-        $data['password'] = $hashpassword;
-        $data['additional_phones'] = json_encode($add_ph_array);
-        // $data['state']=$request->state;
-        // $data['township']=$request->township;
-        $shopdata = Shops::create($data);
-
-        foreach ($fileNameArr as $f) {
-            $banner = new ShopBanner();
-            $banner->shop_owner_id = $shopdata->id;
-            $banner->location = $f;
-            $banner->save();
-        }
-
-        // \SuperadminLogActivity::SuperadminShopCreateLog($shopdata);
-
-        if ($shopdata) {
-            $shop_id = $shopdata->id;
-            $template_percent = [
-                'shop_id' => $shop_id,
-                'name' => 'default',
-                'handmade' => 1,
-                'charge' => 1,
-                'undamaged_product' => $data['undamaged_product'],
-                'damaged_product' => $data['damaged_product'],
-                'valuable_product' => $data['valuable_product'],
-            ];
-
-            PercentTemplate::create($template_percent);
-
-            $shop_dir['shop_id'] = $shop_id;
-            ShopDirectory::updateOrCreate($shop_dir);
-            ShopOwnersAndStaffs::create(['name' => $data['name'],'phone' => $data['main_phone'], 'shop_id' => $shop_id, 'password' => $hashpassword,'created_at'=>Carbon::now(),'updated_at'=>Carbon::now(),'role_id'=>4]);
-            Session::flash('message', 'Your Shop was successfully created');
-
-            return redirect()->route('shops.all');
-        } else {
-            return 'false';
-        }
-    }
+  
 
     public function edit($id)
     {
@@ -276,7 +150,7 @@ class ShopownerRegisterController extends Controller
         }
 
         if ($updateSuccess) {
-            \SuperadminLogActivity::SuperadminShopEditLog($input);
+            // \SuperadminLogActivity::SuperadminShopEditLog($input);
             // Session::flash('message', 'Your ads was successfully updated');
 
             return redirect()->route('shops.all');
