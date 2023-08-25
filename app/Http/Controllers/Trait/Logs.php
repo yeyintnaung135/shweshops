@@ -3,8 +3,8 @@ namespace App\Http\Controllers\Trait;
 
 use App\Http\Controllers\Trait\YKCheckbot;
 use App\Models\Bots;
-use App\Models\frontuserlogs;
-use App\Models\Guestoruserid;
+use App\Models\FrontUserLogs;
+use App\Models\GuestOrUserId;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
@@ -20,27 +20,27 @@ trait Logs
         if (Session::has('guest_id')) {
             $getguestsession = Session::get('guest_id');
             if (Auth::guard('web')->check()) {
-                $checkwehavethisguestid = Guestoruserid::where('guest_id', $getguestsession)->get();
+                $checkwehavethisguestid = GuestOrUserId::where('guest_id', $getguestsession)->get();
                 if ($checkwehavethisguestid->count() > 0) {
-                    $checkwehavebothid = Guestoruserid::where([['guest_id', '=', $getguestsession], ['user_id', '=', 0]]);
+                    $checkwehavebothid = GuestOrUserId::where([['guest_id', '=', $getguestsession], ['user_id', '=', 0]]);
                     if (!empty($checkwehavebothid->first())) {
-                        $id_of_table_goruser = Guestoruserid::where([['guest_id', '=', $getguestsession], ['user_id', '=', 0]])->update(['user_id' => Auth::guard('web')->user()->id]);
-                        return Guestoruserid::where([['guest_id', '=', $getguestsession], ['user_id', '=', Auth::guard('web')->user()->id]])->first()->id;
+                        $id_of_table_goruser = GuestOrUserId::where([['guest_id', '=', $getguestsession], ['user_id', '=', 0]])->update(['user_id' => Auth::guard('web')->user()->id]);
+                        return GuestOrUserId::where([['guest_id', '=', $getguestsession], ['user_id', '=', Auth::guard('web')->user()->id]])->first()->id;
 
                     } else {
                         return $checkwehavethisguestid->first()->id;
                     }
 
                 } else {
-                    $id_of_table_goruser = Guestoruserid::create(['guest_id' => $getguestsession, 'user_id' => Auth::guard('web')->user()->id, 'ip' => \Illuminate\Support\Facades\Request::ip(), 'user_agent' => \Illuminate\Support\Facades\Request::userAgent()]);
+                    $id_of_table_goruser = GuestOrUserId::create(['guest_id' => $getguestsession, 'user_id' => Auth::guard('web')->user()->id, 'ip' => \Illuminate\Support\Facades\Request::ip(), 'user_agent' => \Illuminate\Support\Facades\Request::userAgent()]);
                     return $id_of_table_goruser->id;
                 }
             } else {
-                $checkwehavethisguestid = Guestoruserid::where('guest_id', $getguestsession);
+                $checkwehavethisguestid = GuestOrUserId::where('guest_id', $getguestsession);
                 if ($checkwehavethisguestid->count() > 0) {
-                    return Guestoruserid::where('guest_id', $getguestsession)->first()->id;
+                    return GuestOrUserId::where('guest_id', $getguestsession)->first()->id;
                 } else {
-                    $tmpid = Guestoruserid::create(['guest_id' => $getguestsession, 'user_id' => 0, 'ip' => \Illuminate\Support\Facades\Request::ip(), 'user_agent' => \Illuminate\Support\Facades\Request::userAgent()]);
+                    $tmpid = GuestOrUserId::create(['guest_id' => $getguestsession, 'user_id' => 0, 'ip' => \Illuminate\Support\Facades\Request::ip(), 'user_agent' => \Illuminate\Support\Facades\Request::userAgent()]);
                     return $tmpid->id;
                 }
 
@@ -60,7 +60,7 @@ trait Logs
                 if (Session::has('guest_id')) {
                     $tableidof_userorguestid = $this->getidoftable_userorguestid();
 
-                    frontuserlogs::create(['ads_id' => $ads_id, 'userorguestid' => $tableidof_userorguestid, 'visited_link' => $visitedlink, 'product_id' => $productid, 'shop_id' => $shop_id, 'status' => $status]);
+                    FrontUserLogs::create(['ads_id' => $ads_id, 'userorguestid' => $tableidof_userorguestid, 'visited_link' => $visitedlink, 'product_id' => $productid, 'shop_id' => $shop_id, 'status' => $status]);
 
                 }
             } else {
@@ -78,12 +78,12 @@ trait Logs
     public function isbacksideuserdeleterecord()
     {
         $tableidof_userorguestid = $this->getidoftable_userorguestid();
-        if (!empty(frontuserlogs::where('userorguestid', $tableidof_userorguestid)->first())) {
-            frontuserlogs::where('userorguestid', $tableidof_userorguestid)->delete();
+        if (!empty(FrontUserLogs::where('userorguestid', $tableidof_userorguestid)->first())) {
+            FrontUserLogs::where('userorguestid', $tableidof_userorguestid)->delete();
 
         }
-        if (!empty(Guestoruserid::where('id', $tableidof_userorguestid)->first())) {
-            Guestoruserid::where('id', $tableidof_userorguestid)->delete();
+        if (!empty(GuestOrUserId::where('id', $tableidof_userorguestid)->first())) {
+            GuestOrUserId::where('id', $tableidof_userorguestid)->delete();
 
         }
 

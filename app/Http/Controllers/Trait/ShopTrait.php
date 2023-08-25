@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Trait;
 
 use Illuminate\Support\Facades\Auth;
-use App\Models\Shopowner;
-use App\Models\ShopRole;
 
 trait ShopTrait
 {

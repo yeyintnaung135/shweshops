@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Facade\TzGate;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Trait\Logs\SuperAdminLogActivityTrait;
 use App\Http\Requests\SuperAdmin\SuperAdminRole\UpdateSuperAdminRoleRequest;
 use App\Models\SuperAdmin;
 use App\Models\SuperAdminLogActivity;
@@ -17,12 +18,13 @@ use Yajra\DataTables\DataTables;
 
 class SuperAdminRoleController extends Controller
 {
+    use SuperAdminLogActivityTrait;
     public function __construct()
     {
         $this->middleware(['auth:super_admin']);
     }
 
-    public function list(): View {
+    function list(): View {
         $super_admin = SuperAdmin::all();
         $super_admin_log = SuperAdminLogActivity::all();
         return view('backend.super_admin_role.list', ['super_admin' => $super_admin, 'super_admin_log' => $super_admin_log]);
@@ -90,7 +92,7 @@ class SuperAdminRoleController extends Controller
 
         if ($super_admin_data) {
 
-            \SuperAdminLogActivity::SuperAdminAdminCreateLog($validatedData);
+            $this->SuperAdminAdminCreateLog($validatedData);
         }
 
         return redirect()->route('super_admin_role.list')->with(['status' => 'success', 'message' => 'Sub Admin was successfully created']);
@@ -123,7 +125,7 @@ class SuperAdminRoleController extends Controller
         $admin->email = $request->email;
         $admin->save();
 
-        \SuperAdminLogActivity::SuperAdminAdminEditLog($request->except('_token', '_method'));
+        $this->SuperAdminAdminEditLog($request->except('_token', '_method'));
         Session::flash('message', 'Your admin was successfully updated');
 
         return redirect('/backside/super_admin/admins/all');

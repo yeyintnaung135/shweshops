@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Facade\Repair;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\YKImage;
+use App\Http\Controllers\Trait\Logs\SuperAdminLogActivityTrait;
 use App\Http\Requests\SuperAdmin\Ads\StoreAdsImageRequest;
 use App\Http\Requests\SuperAdmin\Ads\UpdateAdsImageRequest;
 use App\Models\Ads;
@@ -25,6 +26,8 @@ use Illuminate\Support\Str;
 class AdsController extends Controller
 {
     use YKImage;
+    use SuperAdminLogActivityTrait;
+
     public function __construct()
     {
         $this->middleware(['auth:super_admin']);
@@ -146,7 +149,7 @@ class AdsController extends Controller
         $ads->end = $end;
         $ads->save();
 
-        // \SuperAdminLogActivity::SuperAdminAdsCreateLog($ads);
+        $this->SuperAdminAdsCreateLog($ads);
 
         Session::flash('message', 'Your ads was successfully created');
 
@@ -263,7 +266,7 @@ class AdsController extends Controller
         $ads->links = $request->links;
 
         $ads->save();
-        // \SuperAdminLogActivity::SuperAdminAdsEditLog($ads);
+        $this->SuperAdminAdsEditLog($ads);
 
         $ads = Ads::withTrashed()->findOrfail($id)->restore();
         Session::flash('message', 'Your ads was successfully updated');
@@ -280,7 +283,7 @@ class AdsController extends Controller
     {
 
         $ad = Ads::withTrashed()->findOrFail($id);
-        // \SuperAdminLogActivity::SuperAdminAdsDeleteLog($ad);
+        $this->SuperAdminAdsDeleteLog($ad);
         $this->delete_image('ads/' . $ad->image,'ads/' . $ad->image_for_mobile);
      
         if ($ad->deleted_at) {

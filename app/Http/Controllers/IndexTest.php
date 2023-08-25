@@ -1,58 +1,30 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Controllers\Controller;
-
-use App\Ads;
-use App\Ajax;
-use App\Item;
-use App\State;
-use App\discount;
-use App\Township;
-use App\Usernoti;
-use App\Contactus;
-use App\Shopowner;
-use App\UserPoint;
-use App\Users_fav;
+use App\Http\Controllers\Trait\ForYouLogic;
+use App\Models\FrontUserLogs;
+use App\Models\Item;
+use App\Models\Shops;
+use App\Models\SiteSettings;
 use Carbon\Carbon;
-use App\Collection;
-use App\Manager_fav;
-use App\foraddtohome;
-use App\Facade\Repair;
-use App\frontuserlogs;
-use App\Guestoruserid;
-use App\Shopdirectory;
-use App\BuyNowClickLog;
-use App\Shop_owners_fav;
-use App\WhislistClickLog;
-use App\AddToCartClickLog;
-use App\VisitorLogActivity;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\traid\logs;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\traid\allshops;
-use App\Http\Controllers\traid\category;
-use App\Http\Controllers\traid\similarlogic;
-use App\Http\Controllers\traid\foryoulogic;
-use App\sitesettings;
-
 
 class IndexTest extends Controller
 {
-    use foryoulogic;
+    use ForYouLogic;
 
-    public function index(){
+    public function index()
+    {
         //dummy products (Latest 20)
-        $dummyProducts = Item::select('items.id as item_id','shop_id','default_photo', 'items.name as item_name', 'min_price', 'max_price', 'shop_owners.shop_name_url')
-                            ->orderBy('items.created_at', 'desc')
-                            ->leftJoin('shop_owners','items.shop_id','=','shop_owners.id')
-                            ->limit(20)
-                            ->get();
+        $dummyProducts = Item::select('items.id as item_id', 'shop_id', 'default_photo', 'items.name as item_name', 'min_price', 'max_price', 'shop_owners.shop_name_url')
+            ->orderBy('items.created_at', 'desc')
+            ->leftJoin('shop_owners', 'items.shop_id', '=', 'shop_owners.id')
+            ->limit(20)
+            ->get();
         //premium shops (dummy for popular shops)
-        $premiumshops = Shopowner::orderBy('created_at', 'desc')->where('premium', 'yes')->limit(20)->get();
+        $premiumshops = Shops::orderBy('created_at', 'desc')->where('premium', 'yes')->limit(20)->get();
 
         //for new item every shop
         //get all distinct shopid from table
@@ -82,35 +54,29 @@ class IndexTest extends Controller
         //for all cat count
         //$all = Item::where('id', '!=', 0)->get();
 
-
         //values function is beacause filter retrun {{}} but i need [{}]
         $remove_discount_new = collect($get_by_shopid)->filter(function ($value, $key) {
             return $value->check_discount == 0;
         })->values();
 
         //popular shops filter
-        $popular_shops = frontuserlogs::leftJoin('shop_owners','front_user_logs.shop_id','=','shop_owners.id')
-                                        ->select('shop_owners.id','shop_owners.shop_logo','shop_owners.shop_name','shop_owners.shop_name_url')->selectRaw('count(*) as s_count')
-                                        ->where('status','shopdetail')
-                                        ->whereDate('front_user_logs.created_at', '>', Carbon::today()->subDay(30))
-                                        ->groupBy('shop_id')
-                                        ->orderBy('s_count', 'desc')
-                                        ->limit(20)
-                                        ->get();
+        $popular_shops = FrontUserLogs::leftJoin('shop_owners', 'front_user_logs.shop_id', '=', 'shop_owners.id')
+            ->select('shop_owners.id', 'shop_owners.shop_logo', 'shop_owners.shop_name', 'shop_owners.shop_name_url')->selectRaw('count(*) as s_count')
+            ->where('status', 'shopdetail')
+            ->whereDate('front_user_logs.created_at', '>', Carbon::today()->subDay(30))
+            ->groupBy('shop_id')
+            ->orderBy('s_count', 'desc')
+            ->limit(20)
+            ->get();
 
-        $sitesettings = sitesettings::where('name','foryou')->first();
-        if($sitesettings->action == 'on'){
-            $foryoudata=$this->caculateforyouforcurrentuser();
-        }else{
-            $foryoudata=[];
+        $sitesettings = SiteSettings::where('name', 'foryou')->first();
+        if ($sitesettings->action == 'on') {
+            $foryoudata = $this->caculateforyouforcurrentuser();
+        } else {
+            $foryoudata = [];
         }
-                                
 
-
-       
         return view('front.index_test', ['recommendedProducts' => $foryoudata, 'premium' => $premiumshops, 'current_shop_count' => $current_shop_count, 'new_items' => $remove_discount_new, 'popular_shops' => $popular_shops]);
     }
-
-
 
 }

@@ -1,13 +1,13 @@
 <?php
 namespace App\Models;
 
+use App\Http\Controllers\Trait\YKImage;
 use App\Models\Ads;
-use App\Http\Controllers\traid\ykimage;
 use Illuminate\Support\Carbon;
 
 class Ajax
 {
-    use ykimage;
+    use YKImage;
 
     public function expiration()
     {

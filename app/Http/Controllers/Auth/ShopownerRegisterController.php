@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Trait\Logs\SuperAdminLogActivityTrait;
 use App\Http\Controllers\Trait\YkImage;
 use App\Models\PercentTemplate;
 use App\Models\PremiumTemplate;
@@ -150,7 +151,7 @@ class ShopownerRegisterController extends Controller
         }
 
         if ($updateSuccess) {
-            // \SuperadminLogActivity::SuperadminShopEditLog($input);
+            $this->SuperadminShopEditLog($input);
             // Session::flash('message', 'Your ads was successfully updated');
 
             return redirect()->route('shops.all');

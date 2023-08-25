@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers\Trait;
 
-use App\Models\Discount;
-use App\Models\Forfirebase;
-use App\Models\Item;
-use App\Models\Shops;
-use Illuminate\Support\Facades\Http;
+use App\Models\ForFirebase;
 
 trait Firebase
 {
@@ -18,7 +14,7 @@ trait Firebase
                 //  'Authorization' => 'key=AAAAh_UhvDE:APA91bHwGqI5w4cFSYGjp1tCdJoshLNS58u8NFv5tMJBbV4X5rDp6K_WqP_CxyitkG4i_95OIhMzCgWaJK_AhiErPiE2V-tE4u7J77naN78B-t-BAAQ4hzCjFaJ_Fz3iSCZFIx_ZD18j',
                 // Added by Swe
                 'Authorization' => 'key=AAAAs3L7Dpk:APA91bHW_87I0M2LIU2dKyOhYbmkxcFFXH8xNasjpaUqNBtLqx73vmaQ8wcAIsl3T7b0tTF7fqLJDUCQFmqqnf1Duv6j4LaSl28dBaWyTxv5zuJUzTt4yl9HZjqZXm9VgCG2axNu_tSE',
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
             ])->post("https://fcm.googleapis.com/fcm/send", [
                 'registration_ids' => $items->pluck('token'),
 
@@ -30,7 +26,7 @@ trait Firebase
             if ($items->pluck('androidtoken')) {
                 $res = \Illuminate\Support\Facades\Http::withHeaders([
                     'Authorization' => 'key=AAAAs3L7Dpk:APA91bHW_87I0M2LIU2dKyOhYbmkxcFFXH8xNasjpaUqNBtLqx73vmaQ8wcAIsl3T7b0tTF7fqLJDUCQFmqqnf1Duv6j4LaSl28dBaWyTxv5zuJUzTt4yl9HZjqZXm9VgCG2axNu_tSE',
-                    'Content-Type' => 'application/json'
+                    'Content-Type' => 'application/json',
                 ])->post("https://fcm.googleapis.com/fcm/send", [
                     'registration_ids' => $items->pluck('androidtoken'),
 
@@ -45,13 +41,13 @@ trait Firebase
 
     public static function sendformessage($toid, $title, $body, $link, $logo, $image)
     {
-        $gettoken = Forfirebase::where('userid', $toid)->first();
+        $gettoken = ForFirebase::where('userid', $toid)->first();
         if (!empty($gettoken)) {
             $res = \Illuminate\Support\Facades\Http::withHeaders([
                 // 'Authorization' => 'key=AAAAh_UhvDE:APA91bHwGqI5w4cFSYGjp1tCdJoshLNS58u8NFv5tMJBbV4X5rDp6K_WqP_CxyitkG4i_95OIhMzCgWaJK_AhiErPiE2V-tE4u7J77naN78B-t-BAAQ4hzCjFaJ_Fz3iSCZFIx_ZD18j',
                 // Added by Swe
                 'Authorization' => 'key=AAAAs3L7Dpk:APA91bHW_87I0M2LIU2dKyOhYbmkxcFFXH8xNasjpaUqNBtLqx73vmaQ8wcAIsl3T7b0tTF7fqLJDUCQFmqqnf1Duv6j4LaSl28dBaWyTxv5zuJUzTt4yl9HZjqZXm9VgCG2axNu_tSE',
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
             ])->post("https://fcm.googleapis.com/fcm/send", [
                 //if u want to send multiple use registration ids
                 //'registration_ids' => $gettoken->pluck('androidtoken'),
@@ -66,7 +62,7 @@ trait Firebase
             if ($gettoken->androidtoken) {
                 $res = \Illuminate\Support\Facades\Http::withHeaders([
                     'Authorization' => 'key=AAAAs3L7Dpk:APA91bHW_87I0M2LIU2dKyOhYbmkxcFFXH8xNasjpaUqNBtLqx73vmaQ8wcAIsl3T7b0tTF7fqLJDUCQFmqqnf1Duv6j4LaSl28dBaWyTxv5zuJUzTt4yl9HZjqZXm9VgCG2axNu_tSE',
-                    'Content-Type' => 'application/json'
+                    'Content-Type' => 'application/json',
                 ])->post("https://fcm.googleapis.com/fcm/send", [
                     'to' => $gettoken->androidtoken,
                     // 'data' => ['title' => $title, 'body' => $body,'link'=>$link,'logo'=>$logo],
@@ -81,14 +77,14 @@ trait Firebase
     public static function sendformessagetoshop($toid, $title, $body, $link, $logo, $image)
     {
 
-        $gettoken = Forfirebase::where('shopid', $toid)->first();
+        $gettoken = ForFirebase::where('shopid', $toid)->first();
         if (!empty($gettoken)) {
 
             $res = \Illuminate\Support\Facades\Http::withHeaders([
                 // 'Authorization' => 'key=AAAAh_UhvDE:APA91bHwGqI5w4cFSYGjp1tCdJoshLNS58u8NFv5tMJBbV4X5rDp6K_WqP_CxyitkG4i_95OIhMzCgWaJK_AhiErPiE2V-tE4u7J77naN78B-t-BAAQ4hzCjFaJ_Fz3iSCZFIx_ZD18j',
                 // Added by Swe
                 'Authorization' => 'key=AAAAs3L7Dpk:APA91bHW_87I0M2LIU2dKyOhYbmkxcFFXH8xNasjpaUqNBtLqx73vmaQ8wcAIsl3T7b0tTF7fqLJDUCQFmqqnf1Duv6j4LaSl28dBaWyTxv5zuJUzTt4yl9HZjqZXm9VgCG2axNu_tSE',
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
             ])->post("https://fcm.googleapis.com/fcm/send", [
                 //if u want to send multiple use registration ids
                 //'registration_ids' => $gettoken->pluck('androidtoken'),
@@ -102,7 +98,7 @@ trait Firebase
             if ($gettoken->androidtoken) {
                 $res = \Illuminate\Support\Facades\Http::withHeaders([
                     'Authorization' => 'key=AAAAs3L7Dpk:APA91bHW_87I0M2LIU2dKyOhYbmkxcFFXH8xNasjpaUqNBtLqx73vmaQ8wcAIsl3T7b0tTF7fqLJDUCQFmqqnf1Duv6j4LaSl28dBaWyTxv5zuJUzTt4yl9HZjqZXm9VgCG2axNu_tSE',
-                    'Content-Type' => 'application/json'
+                    'Content-Type' => 'application/json',
                 ])->post("https://fcm.googleapis.com/fcm/send", [
                     'to' => $gettoken->androidtoken,
                     // 'data' => ['title' => $title, 'body' => $body,'link'=>$link,'logo'=>$logo],

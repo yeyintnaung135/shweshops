@@ -31,10 +31,7 @@ use Yajra\DataTables\DataTables;
 
 class ShopOwnerController extends Controller
 {
-    use YKImage;
-    use UserRole;
-    use CountSettingCheck;
-    use CalculateCat;
+    use YKImage, UserRole, CountSettingCheck, CalculateCat;
 
     public function __construct()
     {
@@ -351,7 +348,7 @@ class ShopOwnerController extends Controller
 
         $shop_id = $this->get_shopid();
 
-        $query = WhislistClickLog::leftJoin('items', 'items.id', '=', 'whislist_click_logs.item_id')
+        $query = WishlistClickLog::leftJoin('items', 'items.id', '=', 'whislist_click_logs.item_id')
             ->leftJoin('guestoruserid', 'whislist_click_logs.userorguestid', '=', 'guestoruserid.id')
             ->leftJoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')
             ->leftJoin('users', 'users.id', '=', 'guestoruserid.user_id')
