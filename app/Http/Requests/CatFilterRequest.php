@@ -35,10 +35,7 @@ class CatFilterRequest extends FormRequest
                 'Kid',
                 'Men', 'Women', 'Couple', 'UniSex', 'all'
             ])],
-            'filtertype.discount' => [Rule::in([
-                'yes',
-                'no'
-            ])],
+            'filtertype.discount' => ['boolean'],
             'filtertype.item_id' => [function ($attribute, $value, $fail) {
                 if (is_int($value) || 'empty' === $value) {
                     return true;

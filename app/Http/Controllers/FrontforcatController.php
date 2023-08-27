@@ -147,7 +147,7 @@ class FrontforcatController extends Controller
     public function catfilter(CatFilterRequest $request)
     {
         // return $request;
-        if ($request->filtertype['discount'] == 'yes') {
+        if ($request->filtertype['discount']) {
             $discountquery = 'discount.created_at IS NOT NULL AND discount.deleted_at IS NULL';
         } else {
             $discountquery = 'items.id IS NOT NULL AND discount.deleted_at IS NULL';

@@ -102,7 +102,7 @@ class Item extends Model
                 if ($this[$pc] != '') {
                     $show_photo = $this[$pc];
                     if (dofile_exists('/items/mid/' . $show_photo)) {
-                        return '/items/' . $show_photo;
+                        return '/items/mid/' . $show_photo;
                     } else {
                         return '/items/' . $show_photo;
                     }
