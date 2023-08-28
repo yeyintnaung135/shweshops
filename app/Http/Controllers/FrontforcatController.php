@@ -367,6 +367,7 @@ class FrontforcatController extends Controller
                     });
             })->orderByRaw($tmp_order)
             ->groupBy('items.id')
+           
             // ->toSql();
             ->skip($request->filtertype['limit'])
             ->take('20')->get();

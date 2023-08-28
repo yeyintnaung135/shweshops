@@ -70,8 +70,13 @@
                                 "
                             >
                                 <div>
-                                  <v-lazy-image  :src-placeholder=" imgurl+item.CheckPhotothumbs" :src="imgurl + item.CheckPhoto" class="item_img"  />
-
+                                    <v-lazy-image
+                                        :src-placeholder="
+                                            imgurl + item.CheckPhotothumbs
+                                        "
+                                        :src="imgurl + item.CheckPhoto"
+                                        class="item_img"
+                                    />
                                 </div>
                             </a>
                         </div>
@@ -172,11 +177,14 @@
                                     item.id
                                 "
                             >
-                            <div>
-                                
-
-                                  <v-lazy-image  :src-placeholder=" imgurl+item.CheckPhotothumbs" :src="imgurl + item.CheckPhoto" class="item_img"  />
-
+                                <div>
+                                    <v-lazy-image
+                                        :src-placeholder="
+                                            imgurl + item.CheckPhotothumbs
+                                        "
+                                        :src="imgurl + item.CheckPhoto"
+                                        class="item_img"
+                                    />
                                 </div>
                                 <!-- <img :src="host + '/images/items/16806830130392.jpg'" class="sop-image-w-h" /> -->
                             </a>
@@ -238,7 +246,7 @@ export default {
             imgurl: "",
             host: "",
             // emptyonserver: 0,
-            newdata: "",
+            isloadmoreprocessing: false,
             filterdata: [],
             busy: false,
             ini_check: true,
@@ -274,7 +282,7 @@ export default {
         loadMore: function () {
             if (!this.shownoitems) {
                 this.$parent.showloader = true;
-
+                this.isloadmoreprocessing = true;
                 this.$parent.getdatafromserver_bysort();
             }
         },
@@ -283,8 +291,9 @@ export default {
 </script>
 
 <style scoped>
-.item_img{
-    width:200px !important;height:100px !important;
+.item_img {
+    width: 200px !important;
+    height: 100px !important;
 }
 .indi-product {
     width: 50%;

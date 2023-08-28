@@ -1,24 +1,6 @@
 <template>
     <div>
-        <div
-            :class="{ 'd-none': !this.showbigloader }"
-            class="yk-wrapper fff"
-            style="
-                position: relative !important;
-                margin-top: 36px;
-                height: 560px;
-            "
-        >
-            <div class="ct-spinner5">
-                <div class="bounce1"></div>
-                <div class="bounce2"></div>
-                <div class="bounce3"></div>
-            </div>
-        </div>
-        <div
-            class="container-fluid px-1"
-            :class="{ 'd-none': this.showbigloader }"
-        >
+        <div class="container-fluid px-1">
             <div class="mb-3 col-12 mt-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -750,22 +732,6 @@
                     <Products
                         ref="productcom"
                         @forparent="getdatafromchild"
-                        :initialitems="this.newfilterdata"
-                        :price_range="this.price_range"
-                        :byshop="this.byshop"
-                        :sortby="this.sortby"
-                        :cat_id="this.specific_cat_id"
-                        :selected_gems="this.byspecificgems"
-                        :gender="this.selectedgender"
-                        :gold_colour="this.gold_colour"
-                        :discount="this.discountonly"
-                        :item_id="this.item_child_id"
-                        :additional="this.additional"
-                        :typesearch="this.typesearch"
-                        :empty_on_server="this.empty_on_server"
-                        :selected_product_quality="
-                            this.selected_product_quality
-                        "
                     ></Products>
                     <div
                         v-if="this.showloader"
@@ -790,12 +756,12 @@ import Slick from "vue-slick";
 import $ from "jquery";
 import productsComponent from "./productsComponent.vue";
 import { Checkbox, Radio } from "vue-checkbox-radio";
+import {allservicesfromproductfilter} from "../services/ProductFilterServices";
 
 Vue.component("checkbox", Checkbox);
 Vue.component("radio", Radio);
 export default {
     props: [
-        "initialitems",
         "discount",
         "cat_list",
         "cat_id",
@@ -824,11 +790,9 @@ export default {
             showquality: false,
             seemoretext: "see more ...",
             states: "",
-            showbigloader: false,
             state_label: "",
             host: "", // get base url
 
-            newfilterdata: "",
             busy: false,
 
             shoplist: [],
@@ -930,6 +894,7 @@ export default {
         };
     },
     beforeMount() {
+
         // props
         if (!Array.isArray(this.selected_shop)) {
             this.byspecificshop.push(this.selected_shop);
@@ -939,11 +904,8 @@ export default {
             this.byshop = this.selected_shop;
         }
 
-        if (this.discount != undefined) {
-            this.discountonly = true;
-        } else {
-            this.discountonly = false;
-        }
+        this.discountonly = false;
+
         this.notnullcatlist = this.cat_list.filter(
             (f) => f.category_id != null
         );
@@ -1005,7 +967,6 @@ export default {
             this.selectedgender = localStorage.getItem("selectedgender");
         }
         if (localStorage.getItem("removecatcache") != undefined) {
-            console.log(localStorage.getItem("removecatcache"));
         }
     },
     mounted() {
@@ -1020,8 +981,6 @@ export default {
         this.getstatefromserver();
         // shop list to bind in slider
         this.shoplist = this.shop_ids;
-        console.log(this.shoplist);
-        this.showbigloader = true;
         this.gold_colour = this.main_product_type;
         this.getdatafromserver_bysort();
     },
@@ -1104,7 +1063,6 @@ export default {
             }
         },
         checkedSelectedShop: function () {
-            this.showbigloader = true;
             this.byshop = [];
             if (this.byspecificshop.length != 0) {
                 if (this.byspecificshop.includes("all")) {
@@ -1117,9 +1075,7 @@ export default {
             }
             localStorage.setItem("byshop", JSON.stringify(this.byshop));
 
-            this.$refs.productcom.shownoitems = false;
-            this.$refs.productcom.filterdata = [];
-            this.getdatafromserver_bysort();
+            this.static_action_server();
         },
         removeSelectOther: function () {
             if (!this.byspecificshop.includes("all")) {
@@ -1160,14 +1116,10 @@ export default {
                 this.hidefrompriceoption = true;
             }
             if (this.to_price != "") {
-                this.showbigloader = true;
-
                 this.snPriceCheck();
             }
         },
         snPriceCheck: async function () {
-            this.$refs.productcom.shownoitems = false;
-
             if (
                 this.to_price != "" &&
                 parseInt(this.from_price) > parseInt(this.to_price)
@@ -1181,20 +1133,15 @@ export default {
                 );
                 localStorage.setItem("from", this.from_price);
                 localStorage.setItem("to", this.to_price);
-                this.$refs.productcom.filterdata = [];
 
                 this.price_range = this.from_price + "-" + this.to_price;
-                this.getdatafromserver_bysort();
+                this.static_action_server();
             } else if (this.to_price == "" && this.from_price == "") {
                 this.price_range = "all";
-                this.$refs.productcom.filterdata = [];
-
-                this.getdatafromserver_bysort();
+                this.static_action_server();
             } else {
                 this.price_range = "all";
-                this.$refs.productcom.filterdata = [];
-
-                this.getdatafromserver_bysort();
+                this.static_action_server();
             }
         },
         fromPriceBoxBlur: function () {
@@ -1210,12 +1157,7 @@ export default {
                 "specific_cat_id",
                 JSON.stringify(this.specific_cat_id)
             );
-            this.showbigloader = true;
-
-            this.$refs.productcom.shownoitems = false;
-            this.$refs.productcom.filterdata = [];
-
-            this.getdatafromserver_bysort();
+            this.static_action_server();
         },
         catSeeMore: function () {
             var moreText = document.getElementById("cat-more");
@@ -1233,10 +1175,7 @@ export default {
         // Sorting
         getSorting: function () {
             localStorage.setItem("order", this.sortby);
-            this.showbigloader = true;
-            this.$refs.productcom.filterdata = [];
-
-            this.getdatafromserver_bysort();
+            this.static_action_server();
         },
 
         // Gems
@@ -1245,11 +1184,7 @@ export default {
                 "byspecificgems",
                 JSON.stringify(this.byspecificgems)
             );
-            this.showbigloader = true;
-            this.$refs.productcom.shownoitems = false;
-            this.$refs.productcom.filterdata = [];
-
-            this.getdatafromserver_bysort();
+            this.static_action_server();
         },
         gemsSeeMore: function () {
             var moreText = document.getElementById("gems-more");
@@ -1263,7 +1198,9 @@ export default {
                 moreText.style.display = "block";
             }
         },
-
+        serverprocess: function () {
+            allservicesfromproductfilter.get_data_from_server(this);
+        },
         // Gender
         getGender: function () {
             localStorage.setItem("selectedgender", this.selectedgender);
@@ -1273,24 +1210,23 @@ export default {
                 "product_quality",
                 this.selected_product_quality
             );
-            this.$refs.productcom.filterdata = [];
-
-            this.getdatafromserver_bysort();
+            this.static_action_server();
         },
 
         // Discount
         isDiscount: function (isdis) {
-          this.static_action_server();
+            this.static_action_server();
         },
-        static_action_server:function(){
+        static_action_server: function () {
             this.$refs.productcom.shownoitems = false;
             this.$refs.productcom.filterdata = [];
+            this.$refs.productcom.isloadmoreprocessing=false;
+
             this.cancel();
-            this.busy=false;
+            this.busy = false;
 
             this.getdatafromserver_bysort();
         },
-
 
         // Gold Type
         getMainProductType: function () {
@@ -1302,7 +1238,7 @@ export default {
                 this.gold_colour = this.main_product_type;
             }
             this.$refs.productcom.shownoitems = false;
-            console.log(this.gold_colour + "!!!!!");
+
             this.$refs.productcom.filterdata = [];
 
             this.getdatafromserver_bysort();
@@ -1316,67 +1252,9 @@ export default {
             // }
         },
         cancel() {
-            if (this.rqcontroller != ""){
+            if (this.rqcontroller != "") {
                 this.rqcontroller.abort();
-            } 
-        },
-        serverprocess: function () {
-            this.busy = true;
-            // console.log(this.filterdata_from_server);
-            console.log("type search", this.typesearch);
-
-            let tmp_limit = 0;
-            tmp_limit = this.$refs.productcom.filterdata.length;
-
-            //for similar
-            if (this.price_range != "all") {
-                this.item_child_id = "empty";
             }
-            // var self = this;
-            this.rqcontroller = new AbortController();
-
-            axios
-                .post(
-                    this.$hostname + "/catfilter",
-                    {
-                        data: this.fdata,
-
-                        filtertype: {
-                            item_id: this.item_child_id,
-                            sort: this.sortby,
-                            typesearch: this.typesearch,
-                            byshop: this.byshop,
-                            price_range: this.price_range,
-                            cat_id: this.specific_cat_id,
-                            gender: this.selectedgender,
-                            gems: this.byspecificgems,
-                            gold_colour: this.gold_colour,
-                            additional: this.additional,
-                            ini_checked: false,
-                            discount: this.discountonly,
-                            selected_product_quality:
-                                this.selected_product_quality,
-                            limit: tmp_limit,
-                        },
-                    },
-
-                    { signal: this.rqcontroller.signal }
-                )
-                .then((response) => {
-                    this.busy = false;
-                    this.showbigloader = false;
-                    this.showloader = false;
-
-                    response.data[0].map((d) => {
-                        this.$refs.productcom.filterdata.push(d);
-                    });
-                    if (response.data[0].length < 1) {
-                        this.$refs.productcom.shownoitems = true;
-                    } else {
-                        this.$refs.productcom.shownoitems = false;
-                    }
-                })
-                .then((response) => {});
         },
         getdatafromchild: function (v) {
             this.empty_on_server = v.emptyonserver;
