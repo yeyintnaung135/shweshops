@@ -152,6 +152,7 @@ class ManagerController extends Controller
         $this->authorize('to_create_user', 3);
 
         //tz
+        $role_limit = [1, 2, 3];
         if ($this->is_admin() or $this->is_manager()) {
 
             if ($this->is_admin()) {
@@ -255,7 +256,7 @@ class ManagerController extends Controller
         } else {
 
             if (ShopOwnersAndStaffs::where('id', $id)->update($input)) {
-                // $backroleid = $this->BackroleEditLog($input, $shop_id);
+                $this->BackroleEditLog($input, $shop_id);
 
                 // $old_name = $manager->name;
                 // $old_phone = $manager->phone;
@@ -434,7 +435,14 @@ class ManagerController extends Controller
                 //     Session::flash('message', 'Your staff was successfully updated');
                 //     return redirect('/backside/shop_owner/users');
                 // }
-                Session::flash('message', 'Your staff was successfully updated');
+                if ($input['role_id'] == 1) {
+                    Session::flash('message', 'Your admin was successfully added');
+                } else if ($input['role_id'] == 2) {
+                    Session::flash('message', 'Your manager was successfully added');
+                } else if ($input['role_id'] == 3) {
+                    Session::flash('message', 'Your staff was successfully added');
+                }
+
                 return redirect('/backside/shop_owner/users');
             }
         }
@@ -445,11 +453,18 @@ class ManagerController extends Controller
         $shop_id = $this->get_shopid();
 
         $for_log = ShopOwnersAndStaffs::where('shop_id', $shop_id)->where('id', $id)->first();
-        $to_delete = ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->where('id', $id);
+        $to_delete = ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->where('id', $id)->first();
         $this->authorize('to_create_user', $for_log->role_id);
-
         $to_delete->delete();
         $this->BackroleDeleteLog($for_log, $shop_id);
+
+        if ($to_delete['role_id'] == 1) {
+            Session::flash('message', 'Your admin was successfully added');
+        } else if ($to_delete['role_id'] == 2) {
+            Session::flash('message', 'Your manager was successfully added');
+        } else if ($to_delete['role_id'] == 3) {
+            Session::flash('message', 'Your staff was successfully added');
+        }
 
         return redirect('/backside/shop_owner/users');
     }

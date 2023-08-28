@@ -29,7 +29,7 @@ use App\Models\PosWhiteGoldPurchase;
 use App\Models\PosWhiteGoldSale;
 use App\Models\Role;
 use App\Models\ShopBanner;
-use App\Models\ShopOwner;
+use App\Models\Shops;
 use App\Models\State;
 use App\Models\Township;
 use App\Rules\MatchOldPassword;
@@ -57,13 +57,13 @@ class PosSecondPhaseController extends Controller
 //Staff
     public function get_staff_list()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
         $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
         return view('backend.pos.staff_list', ['shopowner' => $shopowner, 'staffs' => $staffs]);
     }
     public function get_create_staff()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
         $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
         $role = Role::all();
         return view('backend.pos.create_staff', ['shopowner' => $shopowner, 'counters' => $counters, 'role' => $role]);
@@ -133,7 +133,7 @@ class PosSecondPhaseController extends Controller
 
     public function edit_staff($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
         $staff = PosStaff::where('id', $id)->first();
         $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
         $role = Role::all();
@@ -413,7 +413,7 @@ class PosSecondPhaseController extends Controller
 
     public function get_supplier_list()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
         $suppliers = PosSupplier::where('shop_owner_id', $this->getshopid())->get();
 
         return view('backend.pos.supplier_list', ['shopowner' => $shopowner, 'suppliers' => $suppliers]);
@@ -421,7 +421,7 @@ class PosSecondPhaseController extends Controller
 
     public function get_create_supplier()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
         $state = State::all();
         $township = Township::all();
         return view('backend.pos.create_supplier', ['shopowner' => $shopowner, 'state' => $state, 'township' => $township]);
@@ -494,7 +494,7 @@ class PosSecondPhaseController extends Controller
 
     public function edit_supplier($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
         $supplier = PosSupplier::find($id);
         $state = State::all();
         $township = Township::all();
@@ -548,7 +548,7 @@ class PosSecondPhaseController extends Controller
     //Return
     public function return_list()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
         $lists = PosReturnList::where('shop_owner_id', $this->getshopid())->get();
         return view('backend.pos.return_list', ['shopowner' => $shopowner, 'lists' => $lists]);
     }
@@ -559,7 +559,7 @@ class PosSecondPhaseController extends Controller
     }
     public function create_return()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
         $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
         $categories = Category::all();
         $quality = DB::table('pos_qualities')->get();
@@ -640,7 +640,7 @@ class PosSecondPhaseController extends Controller
                 'photo' => $filename,
             ]);
             // $return = PosReturnList::first();
-            $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
             $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
             $code = "RTN-" . date('dmY') . "-" . sprintf("%04s", ($return->id + 1));
             Session::flash('message', 'Return was successfully Created!');
@@ -721,7 +721,7 @@ class PosSecondPhaseController extends Controller
     }
     public function edit_return($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
         $return = PosReturnList::where('id', $id)->first();
         $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
         $categories = Category::all();
@@ -833,7 +833,7 @@ class PosSecondPhaseController extends Controller
     //Credit List
     public function credit_list()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
         $credits = PosCreditList::where('shop_owner_id', $this->getshopid())->get();
         // dd($assign_gold_price);
         return view('backend.pos.credit_list', ['shopowner' => $shopowner, 'credits' => $credits]);
@@ -863,7 +863,7 @@ class PosSecondPhaseController extends Controller
     //Purchases
     public function get_purchase_lists()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
         $purchases = PosPurchase::where('shop_owner_id', $this->getshopid())->get();
         $kyoutpurchases = PosKyoutPurchase::where('shop_owner_id', $this->getshopid())->get();
         $platinumpurchases = PosPlatinumPurchase::where('shop_owner_id', $this->getshopid())->get();
@@ -874,7 +874,7 @@ class PosSecondPhaseController extends Controller
         } else {
             Session::flash('message', '​ရွှေ​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
-            $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
             $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
             return view('backend.pos.assign_gold_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
         }
@@ -882,7 +882,7 @@ class PosSecondPhaseController extends Controller
     //Sales
     public function get_sale_lists()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
         $purchases = PosGoldSale::where('shop_owner_id', $this->getshopid())->get();
         $kyoutpurchases = PosKyoutSale::where('shop_owner_id', $this->getshopid())->get();
         $platinumpurchases = PosPlatinumSale::where('shop_owner_id', $this->getshopid())->get();
@@ -916,7 +916,7 @@ class PosSecondPhaseController extends Controller
 
     public function get_famous_sale_lists()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
         $purchases = PosGoldSale::where('shop_owner_id', $this->getshopid())->get();
         $kyoutpurchases = PosKyoutSale::where('shop_owner_id', $this->getshopid())->get();
         $platinumpurchases = PosPlatinumSale::where('shop_owner_id', $this->getshopid())->get();
@@ -952,7 +952,7 @@ class PosSecondPhaseController extends Controller
 
     public function get_income_lists()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
         $purchases = PosGoldSale::where('shop_owner_id', $this->getshopid())->get();
         $kyoutpurchases = PosKyoutSale::where('shop_owner_id', $this->getshopid())->get();
         $platinumpurchases = PosPlatinumSale::where('shop_owner_id', $this->getshopid())->get();
@@ -1146,7 +1146,7 @@ class PosSecondPhaseController extends Controller
     //Stock List
     public function get_stock_lists()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
         $purchases = PosPurchase::where('shop_owner_id', $this->getshopid())->get();
         $kyoutpurchases = PosKyoutPurchase::where('shop_owner_id', $this->getshopid())->get();
         $platinumpurchases = PosPlatinumPurchase::where('shop_owner_id', $this->getshopid())->get();
@@ -1251,7 +1251,7 @@ class PosSecondPhaseController extends Controller
     public function get_shop_profile()
     {
         $users_list = $this->getuserlistbyrolelevel();
-        $result = ShopOwner::where('id', $this->getshopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
+        $result = Shops::where('id', $this->getshopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
         $items = Item::where('shop_id', $this->getshopid())->orderBy('created_at', 'desc')->get();
         return view('backend.pos.shop_profile', ['shopowner' => $result, 'items' => $items, 'managers' => $users_list]);
     }
@@ -1260,7 +1260,7 @@ class PosSecondPhaseController extends Controller
         if ($this->isstaff()) {
             return $this->unauthorize();
         }
-        $shopowner = ShopOwner::where('id', $this->getshopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->getshopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
         return view('backend.pos.shop_edit', ['shopowner' => $shopowner]);
     }
 
@@ -1273,7 +1273,7 @@ class PosSecondPhaseController extends Controller
         $input = $request->except('_token', '_method');
 
         // $input = $request->except('_token', '_method');
-        $shopowner = ShopOwner::findOrFail($id);
+        $shopowner = Shops::findOrFail($id);
         $request->validate(
             [
                 'name' => ['required', 'string', 'max:255'],
@@ -1386,7 +1386,7 @@ class PosSecondPhaseController extends Controller
             'new_confirm_password' => ['same:new_password'],
         ]);
 
-        ShopOwner::where('id', Auth::guard('shop_owner')->user()->id)->update(['password' => Hash::make($request->new_password)]);
+        Shops::where('id', Auth::guard('shop_owner')->user()->id)->update(['password' => Hash::make($request->new_password)]);
 
         return redirect()->route('backside.shop_owner.pos.shop_profile')->with(['status' => 'success', 'message' => 'Your Shop Password was successfully Updated']);
     }

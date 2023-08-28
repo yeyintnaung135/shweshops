@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ShopOwner;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\Firebase;
 use App\Http\Controllers\Trait\Logs\MultipleDamageLogsTrait;
+use App\Http\Controllers\Trait\Logs\MultipleDiscountLogsTrait;
 use App\Http\Controllers\Trait\UserRole;
 use App\Models\Discount;
 use App\Models\Item;
@@ -22,7 +23,7 @@ use Yajra\DataTables\DataTables;
 
 class DiscountController extends Controller
 {
-    use UserRole, MultipleDamageLogsTrait;
+    use UserRole, MultipleDamageLogsTrait, MultipleDiscountLogsTrait;
 
     public function __construct()
     {
@@ -77,7 +78,7 @@ class DiscountController extends Controller
         return response()->json(['status' => 'success', 'data' => $willupdatepricelist]);
     }
 
-    function list(): View {
+    public function list(): View {
 
         $items = Discount::where('shop_id', $this->get_shopid())->onlyTrashed()->get();
         return view('backend.shopowner.item.discount.list', ['items' => $items, 'shopowner' => $this->current_shop_data()]);
