@@ -50,7 +50,7 @@ trait YKImage
         if (env('USE_DO') != 'true') {
 
             // open the output file for writing
-            $ifp = fopen(public_path('/images/'.$output_file), 'wb');
+            $ifp = fopen(public_path('/images/' . $output_file), 'wb');
 
             // split the string on commas
             // $data[ 0 ] == "data:image/png;base64"
@@ -65,7 +65,7 @@ trait YKImage
         } else {
             $data = explode(',', $base64_string);
             $image = base64_decode($data[1]);
-            Storage::disk('digitalocean')->put('prod/'.$output_file, $image);
+            Storage::disk('digitalocean')->put('prod/' . $output_file, $image);
         }
 
         return 'done';

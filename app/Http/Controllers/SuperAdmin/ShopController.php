@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\Logs\SuperAdminLogActivityTrait;
 use App\Http\Controllers\Trait\ShopDelete;
 use App\Http\Controllers\Trait\UserRole;
+use App\Http\Controllers\Trait\YKImage;
 use App\Http\Requests\SuperAdmin\Shop\ShopCreateRequest;
+use App\Http\Requests\SuperAdmin\Shop\ShopUpdateRequest;
 use App\Models\AddToCartClickLog;
 use App\Models\BuyNowClickLog;
 use App\Models\CountSetting;
@@ -16,9 +18,11 @@ use App\Models\GuestOrUserId;
 use App\Models\Item;
 use App\Models\Manager;
 use App\Models\Messages;
+use App\Models\PercentTemplate;
 use App\Models\PremiumTemplate;
 use App\Models\ShopBanner;
 use App\Models\ShopDirectory;
+use App\Models\ShopOwnersAndStaffs;
 use App\Models\Shops;
 use App\Models\State;
 use App\Models\SuperAdminLogActivity;
@@ -33,23 +37,15 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Hash;
-use App\Models\PercentTemplate;
-use App\Models\ShopOwnersAndStaffs;
-use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\Trait\YKImage;
-use App\Http\Requests\SuperAdmin\Shop\ShopUpdateRequest;
 
 class ShopController extends Controller
 {
-    use ShopDelete;
-    use UserRole, YKImage;
-    use UserRole;
-    use SuperAdminLogActivityTrait;
+    use ShopDelete, UserRole, YKImage, SuperAdminLogActivityTrait;
 
     public function __construct()
     {
@@ -102,8 +98,8 @@ class ShopController extends Controller
         $shopowner->other_address = $request->other_address;
         $shopowner->premium_template_id = $request->premium_template_id;
         if ($request->file('shop_logo')) {
-            if (dofile_exists('/shop_owner/logo/' . $shopowner->shop_logo)){
-                $this->delete_image('shop_owner/logo/'.$shopowner->shop_logo);
+            if (dofile_exists('/shop_owner/logo/' . $shopowner->shop_logo)) {
+                $this->delete_image('shop_owner/logo/' . $shopowner->shop_logo);
             }
 
             $shop_logo = time() . '1.' . $request->file('shop_logo')->getClientOriginalExtension();
@@ -122,7 +118,7 @@ class ShopController extends Controller
             $shop_banner = ShopBanner::where('shop_owner_id', $id)->get();
             foreach ($shop_banner as $b) {
                 if (dofile_exists('/shop_owner/banner/' . $b->location)) {
-                    $this->delete_image('shop_owner/banner/'.$b->location);
+                    $this->delete_image('shop_owner/banner/' . $b->location);
                 }
             }
             if (isset($shopowner->getPhotos)) {
@@ -146,8 +142,8 @@ class ShopController extends Controller
         }
 
         if ($updateSuccess) {
-            // \SuperadminLogActivity::SuperadminShopEditLog($input);
-            // Session::flash('message', 'Your ads was successfully updated');
+            $this->SuperadminShopEditLog($input);
+            Session::flash('message', 'Your ads was successfully updated');
 
             return redirect(url('backside/super_admin/shop/all'));
         }
@@ -168,8 +164,6 @@ class ShopController extends Controller
             }
         }
 
-
-
         $fileNameArr = [];
         if ($request->hasFile('banner')) {
             foreach ($request->banner as $b) {
@@ -187,7 +181,6 @@ class ShopController extends Controller
 
         //file upload
         $imageNameone = time() . 'logo' . '.' . $shop_logo->getClientOriginalExtension();
-
 
         $this->save_image($shop_logo, $imageNameone, 'shop_owner/logo/');
 
@@ -228,7 +221,7 @@ class ShopController extends Controller
             $banner->save();
         }
 
-        // \SuperadminLogActivity::SuperadminShopCreateLog($shopdata);
+        $this->SuperadminShopCreateLog($shopdata);
 
         if ($shopdata) {
             $shop_id = $shopdata->id;
@@ -436,8 +429,8 @@ class ShopController extends Controller
             'state',
             'pos_only',
             'created_at',
-        )->when($searchByFromdate, fn ($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
-            ->when($searchByTodate, fn ($query) => $query->whereDate('created_at', '<=', $searchByTodate));
+        )->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
         return DataTables::of($recordsQuery)
             ->editColumn('shop_banner', function ($record) {
@@ -479,8 +472,8 @@ class ShopController extends Controller
             'created_at',
         )
             ->where('type', 'shop')
-            ->when($searchByFromdate, fn ($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
-            ->when($searchByTodate, fn ($query) => $query->whereDate('created_at', '<=', $searchByTodate));
+            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
         return DataTables::of($shopActivityQuery)
             ->editColumn('created_at', function ($shopActivity) {
@@ -867,7 +860,7 @@ class ShopController extends Controller
             'discount' => count($discountview),
             'inquiry' => count($user_inquiry),
             'for_date_shop' => Carbon::createFromDate($from)->isoFormat('MMM') . ' ' . Carbon::createFromDate($from)->isoFormat('D') . ' မှ ' .
-                Carbon::createFromDate($to)->isoFormat('MMM') . ' ' . Carbon::createFromDate($to)->isoFormat('D') . ' အတွင်း ',
+            Carbon::createFromDate($to)->isoFormat('MMM') . ' ' . Carbon::createFromDate($to)->isoFormat('D') . ' အတွင်း ',
 
         ]);
     }
@@ -1056,7 +1049,7 @@ class ShopController extends Controller
 
         $this->shop_relevant_destroy($id);
         ShopDirectory::where('shop_id', $id)->delete();
-       return redirect(url('backside/super_admin/shop/all'))->with(['status' => 'success', 'message' => 'Your Shop was successfully Deleted']);
+        return redirect(url('backside/super_admin/shop/all'))->with(['status' => 'success', 'message' => 'Your Shop was successfully Deleted']);
     }
 
     public function get_trash(): View
@@ -1087,17 +1080,17 @@ class ShopController extends Controller
     {
         $shop_owner = Shops::onlyTrashed()->with('getPhotos')->findOrFail($id);
 
-        if (dofile_exists('/shop_owner/logo/' . $shop_owner->shop_logo)){
-            $this->delete_image('shop_owner/logo/'.$shop_owner->shop_logo);
+        if (dofile_exists('/shop_owner/logo/' . $shop_owner->shop_logo)) {
+            $this->delete_image('shop_owner/logo/' . $shop_owner->shop_logo);
         }
         if (isset($shop_owner->getPhotos)) {
             $re_id = ShopBanner::where('shop_owner_id', $id)->onlyTrashed()->get();
 
             foreach ($re_id as $i) {
-                if (dofile_exists('/shop_owner/banner/' .  $i->location)){
-                    $this->delete_image('shop_owner/banner/'. $i->location);
+                if (dofile_exists('/shop_owner/banner/' . $i->location)) {
+                    $this->delete_image('shop_owner/banner/' . $i->location);
                 }
-               
+
                 ShopBanner::onlyTrashed()->findOrFail($i->id)->forceDelete();
             }
         }

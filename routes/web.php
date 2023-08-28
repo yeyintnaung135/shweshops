@@ -7,7 +7,8 @@ use App\Http\Controllers\FrontController;
 use App\Http\Controllers\FrontForCatController;
 use App\Http\Controllers\FrontForDiscountController;
 use App\Http\Controllers\FrontShopController;
-use App\Http\Controllers\message\UsermessageController;
+use App\Http\Controllers\LogController;
+use App\Http\Controllers\message\UserMessageController;
 use App\Http\Controllers\ShopOwner\DiscountController;
 use App\Http\Controllers\ShopOwner\PosController;
 use App\Http\Controllers\Shwe_News\NewsFrontController;
@@ -34,7 +35,7 @@ Route::group(
         Route::post('/get_support', [SupportFrontController::class, 'get_support']);
         Route::get('/initial_pop_items', [FrontController::class, 'initial_pop_items']);
         Route::post('/addtohome/update', [FrontController::class, 'addtohomeupdate']);
-        Route::post('/fb_message_log/add', [forfacebook\FacebookController::class, 'addlog']);
+        Route::post('/fb_message_log/add', [FacebookController::class, 'addlog']);
 
         //for chat
 

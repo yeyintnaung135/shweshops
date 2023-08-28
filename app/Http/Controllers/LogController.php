@@ -42,8 +42,7 @@ class LogController extends Controller
 
     public function storeadsclicklog($name, $id)
     {
-        $this->addlog(url()->current(), 'all', 'all', 'adsclick', $id);
-        return redirect(url('/' . $name));
-
+        $this->addToLog('adsclick');
+        return redirect('/' . $name);
     }
 }
