@@ -189,7 +189,7 @@
                 </div>
                 <div class="modal-body body-3">
                     <div class="p-3">
-                        <form  method="POST" action="{{ route('backside.shop_owner.login') }}">
+                        <form  method="POST" action="{{ url('backside/shop_owner/login') }}">
                         {{  Form::hidden('url',URL::previous())  }}
                         @csrf
                             <input id="loginbeforesupport" name="fromsupport" type="hidden" value="">

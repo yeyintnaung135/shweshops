@@ -21,14 +21,14 @@ use App\Http\Controllers\ShopOwner\TemplateController;
 use App\Http\Controllers\UpdatePasswordController;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.', 'middleware' => ['auth:shop_owners_and_staffs']], function () {
+Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.'], function () {
 
     // Authentication Routes
     // Route::get('register', [ShopownerRegisterController::class, 'create'])->name('register');
     Route::post('register', [ShopownerRegisterController::class, 'store'])->name('registered');
 
     Route::get('/login/{from?}', [ShopownerLoginController::class, 'loginform'])->name('login');
-    Route::post('login', [ShopownerLoginController::class, 'login'])->name('logined');
+    Route::post('login', [ShopownerLoginController::class, 'login']);
 
     // POS login & register form
     Route::get('/pos/login', [ShopownerLoginController::class, 'pos_login_form'])->name('pos.login');

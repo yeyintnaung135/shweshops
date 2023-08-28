@@ -35,7 +35,7 @@ class ShopOwnerController extends Controller
 
     public function __construct()
     {
-        //tz
+        //
         $this->middleware('auth:shop_owners_and_staffs');
     }
 
