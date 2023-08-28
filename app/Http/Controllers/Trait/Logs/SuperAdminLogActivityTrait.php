@@ -74,7 +74,7 @@ trait SuperAdminLogActivityTrait
 
         $log = [];
         $log['name'] = Auth::guard('super_admin')->user()->name;
-        $log['type'] = 'ads';
+        $log['type'] = 'shop';
         $log['type_name'] = $subject->name;
         $log['type_id'] = $subject->id;
         $log['status'] = 'create';

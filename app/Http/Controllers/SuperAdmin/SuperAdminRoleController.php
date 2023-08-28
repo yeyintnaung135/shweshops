@@ -24,7 +24,7 @@ class SuperAdminRoleController extends Controller
         $this->middleware(['auth:super_admin']);
     }
 
-    function list(): View {
+    public function list(): View {
         $super_admin = SuperAdmin::all();
         $super_admin_log = SuperAdminLogActivity::all();
         return view('backend.super_admin_role.list', ['super_admin' => $super_admin, 'super_admin_log' => $super_admin_log]);
@@ -95,7 +95,7 @@ class SuperAdminRoleController extends Controller
             $this->SuperAdminAdminCreateLog($validatedData);
         }
 
-        return redirect()->route('super_admin_role.list')->with(['status' => 'success', 'message' => 'Sub Admin was successfully created']);
+        return redirect()->route('backside.super_admin.super_admin_role.list')->with(['status' => 'success', 'message' => 'Sub Admin was successfully created']);
 
     }
 

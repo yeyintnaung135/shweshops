@@ -30,12 +30,12 @@
                                     <div class="card-header">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <h2><i class="fas fa-edit"></i> Edit Admin </h2>
-                                            <a href="{{ route('super_admin_role.list') }}"> <i class="fas fa-list"></i></a>
+                                            <a href="{{ route('backside.super_admin.super_admin_role.list') }}"> <i class="fas fa-list"></i></a>
                                         </div>
                                     </div>
                                     <div class="card-body p-lg-5">
                                         <form method="POST"
-                                            action="{{ route('super_admin_role.update', $super_admin->id) }}">
+                                            action="{{ route('backside.super_admin.super_admin_role.update', $super_admin->id) }}">
                                             @csrf
                                             @method('PUT')
                                             <div class="form-group">

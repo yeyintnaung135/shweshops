@@ -33,11 +33,11 @@
                                     <div class="card-header">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <h2><i class="fas fa-user"></i> Create Admin </h2>
-                                            <a href="{{ route('super_admin_role.list') }}"> <i class="fas fa-list"></i></a>
+                                            <a href="{{ route('backside.super_admin.super_admin_role.list') }}"> <i class="fas fa-list"></i></a>
                                         </div>
                                     </div>
                                     <div class="card-body p-lg-5">
-                                        <form method="POST" action="{{ route('super_admin_role.create') }}">
+                                        <form method="POST" action="{{ route('backside.super_admin.super_admin_role.create') }}">
                                             @csrf
                                             <div class="form-group">
                                                 <label for="exampleInputEmail1">Name</label>

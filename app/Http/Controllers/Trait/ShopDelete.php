@@ -18,6 +18,7 @@ use App\Models\PercentTemplate;
 use App\Models\Promotions;
 use App\Models\ShopLogActivity;
 use App\Models\ShopOwnerLogActivity;
+use App\Models\ShopOwnersAndStaffs;
 
 trait ShopDelete
 {
@@ -44,7 +45,7 @@ trait ShopDelete
         $this->model_accept_delete(new MultipleDiscountLogs(), $id);
         $this->model_accept_delete(new MultiplePriceLogs(), $id);
         //users role
-        $this->model_accept_delete(new Manager(), $id);
+        $this->model_accept_delete(new ShopOwnersAndStaffs(), $id);
 
         $this->model_accept_delete(new CountSetting(), $id);
 

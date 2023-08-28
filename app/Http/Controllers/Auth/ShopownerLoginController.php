@@ -123,24 +123,31 @@ class ShopownerLoginController extends Controller
         //custom code by yk
 
         $username = auth()->check() ? auth()->user()->username : 0;
-        if (isset(Auth::guard('shop_role')->user()->id)) {
+        if (isset(Auth::guard('shop_owners_and_staffs')->user()->id)) {
 
-            Auth::guard('shop_role')->logout();
+            Auth::guard('shop_owners_and_staffs')->logout();
             return redirect(RouteServiceProvider::HOME);
 
-        } else if (isset(Auth::guard('web')->user()->id)) {
-
-            Auth::guard('web')->logout();
-
-            return redirect()->back();
-
-        } else {
-            Auth::guard('shop_owner')->logout();
-            $request->session()->invalidate();
-
-            $request->session()->regenerateToken();
-
         }
+        //WARNING: this needs to be checked or fixed later. Minth
+        else {
+            Auth::guard('web')->logout();
+            return redirect()->back();
+        }
+
+        // } else if (isset(Auth::guard('web')->user()->id)) {
+
+        //     Auth::guard('web')->logout();
+
+        //     return redirect()->back();
+
+        // } else {
+        //     Auth::guard('shop_owner')->logout();
+        //     $request->session()->invalidate();
+
+        //     $request->session()->regenerateToken();
+
+        // }
 
         //custom code by yk
         Session::put('guest_id', $guest);
