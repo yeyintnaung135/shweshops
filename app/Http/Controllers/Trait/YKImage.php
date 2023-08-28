@@ -7,7 +7,6 @@ use Intervention\Image\Facades\Image;
 
 trait YKImage
 {
-<<<<<<< HEAD
     public function save_image($file, $fileName, $directory): string
     {
         if (env('USE_DO') != 'true') {
@@ -45,10 +44,8 @@ trait YKImage
 
    
 
-    function base64_to_image($base64_string, $output_file):string
-=======
+
     public function base64_to_image($base64_string, $output_file)
->>>>>>> 3f9a9a3d8cef9b7a5371a5700376357bba0f709c
     {
         if (env('USE_DO') != 'true') {
 

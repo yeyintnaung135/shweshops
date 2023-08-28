@@ -1280,7 +1280,9 @@ export default {
 
         // Discount
         isDiscount: function (isdis) {
-            this.showbigloader = true;
+          this.static_action_server();
+        },
+        static_action_server:function(){
             this.$refs.productcom.shownoitems = false;
             this.$refs.productcom.filterdata = [];
             this.cancel();
@@ -1288,6 +1290,7 @@ export default {
 
             this.getdatafromserver_bysort();
         },
+
 
         // Gold Type
         getMainProductType: function () {
