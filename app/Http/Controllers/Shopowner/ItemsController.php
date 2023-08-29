@@ -30,7 +30,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Validator;
@@ -222,7 +221,6 @@ class ItemsController extends Controller
     //show create form
     public function create(): View
     {
-
         //tz
         $shop_id = $this->get_shopid();
         $collection = Collection::where('shop_id', $shop_id)->get();
@@ -334,7 +332,7 @@ class ItemsController extends Controller
         $input['weight_unit'] = 0;
 
         $itemupload = Item::create($input);
-        // $this->ShopsCreateLog($itemupload, $shop_id);
+        $this->ShopsCreateLog($itemupload, $this->get_shopid());
         if ($itemupload) {
             Gems::create(['gems' => $input['gems'], 'item_id' => $itemupload->id]);
             $itemupload->tag($request->tags);
@@ -360,6 +358,7 @@ class ItemsController extends Controller
         //        if (!$this->itisowneritem($request->id)) {
         //            return $this->unauthorize();
         //        }
+        return response()->json($request);
         $old_tags = DB::table('tagging_tagged')->where('taggable_id', $request->id)->get();
         $item_tag = Item::where('id', $request->id)->first();
         $item_tagarray = explode(',', $item_tag->tags);
@@ -435,7 +434,7 @@ class ItemsController extends Controller
 
             $shop_id = $this->get_shopid();
 
-            $shopownerlogid = $this->ShopsEditLog($request, $shop_id);
+            $this->ShopsEditLog($request, $shop_id);
             Item::find($request->id)->retag($request->all()['tags']);
 
             $checkgcount = Gems::where('item_id', $request->id)->count();
@@ -1310,6 +1309,7 @@ class ItemsController extends Controller
     //for delete function of specified item
     public function destroy($id): RedirectResponse
     {
+        dd($id);
         $shop_id = $this->get_shopid();
         $item = Item::where('id', $id)->where('shop_id', $shop_id)->delete();
         $this->ShopsDeleteLog($item, $shop_id);

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
-use App\Facade\TzGate;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\Logs\SuperAdminLogActivityTrait;
 use App\Http\Requests\SuperAdmin\SuperAdminRole\UpdateSuperAdminRoleRequest;
@@ -24,7 +23,7 @@ class SuperAdminRoleController extends Controller
         $this->middleware(['auth:super_admin']);
     }
 
-    public function list(): View {
+    function list(): View {
         $super_admin = SuperAdmin::all();
         $super_admin_log = SuperAdminLogActivity::all();
         return view('backend.super_admin_role.list', ['super_admin' => $super_admin, 'super_admin_log' => $super_admin_log]);
@@ -101,20 +100,12 @@ class SuperAdminRoleController extends Controller
 
     public function edit($id): View
     {
-
-        if (TzGate::super_admin_allows($id)) {
-            $super_admin = SuperAdmin::findOrFail($id);
-            return view('backend.super_admin_role.edit', ['super_admin' => $super_admin]);
-        }
-
+        $super_admin = SuperAdmin::findOrFail($id);
+        return view('backend.super_admin_role.edit', ['super_admin' => $super_admin]);
     }
 
     public function update(UpdateSuperAdminRoleRequest $request, $id): RedirectResponse
     {
-        if (!TzGate::super_admin_allows($id)) {
-            abort(403, 'You are not authorized to perform this action.');
-        }
-
         $admin = SuperAdmin::findOrFail($id);
 
         if ($request->filled(['current_password', 'new_password', 'new_confirm_password'])) {

@@ -19,7 +19,7 @@
             <div class="col-12 col-md-6 mt-4">
                 <div class="">
                     <div class="">
-                        <form method="POST" action="{{ route('backside.shop_owner.logined') }}">
+                        <form method="POST" action="{{ route('backside.shop_owner.login.post') }}">
                             @csrf
                             <input type="hidden" value="{{$from}}" name="from"/>
 

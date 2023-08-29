@@ -1,6 +1,5 @@
 @extends('layouts.backend.datatable')
-@section('content')
-    @push('css')
+@push('css')
         <style>
             .priceInput {
                 height: 30px;
@@ -27,8 +26,10 @@
         </style>
     @endpush
 
+@section('content')
     <div class="wrapper">
-        @include('backend.shopowner.loading')
+        {{-- loading stuck for some reason --}}
+        {{-- @include('backend.shopowner.loading') --}}
         @include('layouts.backend.navbar')
 
 

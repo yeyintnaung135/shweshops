@@ -199,7 +199,6 @@
 <body onbeforeunload="useroffline()" class="hold-transition sidebar-mini">
     @php
         use App\Models\Shops;
-        use App\Models\Manager;
         if ($is_chat_on) {
             $current_shop = Shops::where('id', Auth::guard('shop_owners_and_staffs')->user()->shop_id)->first();
             $roleid = Auth::guard('shop_owners_and_staffs')->user()->role->id;
