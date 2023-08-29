@@ -12,13 +12,8 @@ trait ShopsLogActivityTrait
 
     public static function ShopsDeleteLog($action, $shop_id)
     {
-
         $log = [];
-        if (isset(Auth::guard('shop_owner')->user()->id)) {
-            $log['shop_id'] = Auth::guard('shop_owner')->check() ? auth()->user()->id : 0;
-        } elseif (isset(Auth::guard('shop_role')->user()->id)) {
-            $log['shop_id'] = $shop_id;
-        }
+        $log['shop_id'] = $shop_id;
         $shop_name = Shops::where('id', $log['shop_id'])->get('name');
 
         foreach ($shop_name as $shop_name) {
@@ -32,38 +27,26 @@ trait ShopsLogActivityTrait
             $log['category'] = $action->category_id;
         }
 
-        $shop_name = Shops::where('id', $log['shop_id'])->get('name');
-
         foreach ($shop_name as $shop_name) {
             $log['shop_name'] = $shop_name->name;
         }
-        $log['user_name'] = Auth::guard('shop_owner')->check() ? auth()->user()->name : 0;
-        $log['action'] = 'Delete';
-        if (isset(Auth::guard('shop_owner')->user()->id)) {
-            $log['role'] = 'shopowner';
-        } elseif (isset(Auth::guard('shop_role')->user()->id)) {
-            $log['user_name'] = Auth::guard('shop_role')->check() ? auth()->user()->name : 0;
-            if (Auth::guard('shop_role')->user()->role_id == 1) {
-                $log['role'] = 'admin';
-            } elseif (Auth::guard('shop_role')->user()->role_id == 2) {
-                $log['role'] = 'manager';
-            } elseif (Auth::guard('shop_role')->user()->role_id == 3) {
-                $log['role'] = 'staff';
-            }
-        }
 
-        ShopownerLogActivity::create($log);
+        $log['user_name'] = Auth::guard('shop_owners_and_staffs')->user()->name;
+
+        $log['action'] = 'Delete';
+
+        $role = $action->role_id;
+        $roles = [1 => 'admin', 2 => 'manager', 3 => 'staff', 4 => 'shopowner'];
+        $log['role'] = $roles[$role] ?? 'unknown';
+
+        ShopOwnerLogActivity::create($log);
     }
 
     public static function ShopsCreateLog($action, $shop_id)
     {
 
         $log = [];
-        if (isset(Auth::guard('shop_owner')->user()->id)) {
-            $log['shop_id'] = Auth::guard('shop_owner')->check() ? auth()->user()->id : 0;
-        } elseif (isset(Auth::guard('shop_role')->user()->id)) {
-            $log['shop_id'] = $shop_id;
-        }
+        $log['shop_id'] = $shop_id;
         $shop_name = Shops::where('id', $log['shop_id'])->get('name');
 
         foreach ($shop_name as $shop_name) {
@@ -75,30 +58,18 @@ trait ShopsLogActivityTrait
         $log['category'] = $action->category_id;
         $log['user_name'] = Auth::guard('shop_owner')->check() ? auth()->user()->name : 0;
         $log['action'] = 'Create';
-        if (isset(Auth::guard('shop_owner')->user()->id)) {
-            $log['role'] = 'shopowner';
-        } elseif (isset(Auth::guard('shop_role')->user()->id)) {
-            $log['user_name'] = Auth::guard('shop_role')->check() ? auth()->user()->name : 0;
-            if (Auth::guard('shop_role')->user()->role_id == 1) {
-                $log['role'] = 'admin';
-            } elseif (Auth::guard('shop_role')->user()->role_id == 2) {
-                $log['role'] = 'manager';
-            } elseif (Auth::guard('shop_role')->user()->role_id == 3) {
-                $log['role'] = 'staff';
-            }
-        }
 
-        ShopownerLogActivity::create($log);
+        $role = $action->role_id;
+        $roles = [1 => 'admin', 2 => 'manager', 3 => 'staff', 4 => 'shopowner'];
+        $log['role'] = $roles[$role] ?? 'unknown';
+
+        ShopOwnerLogActivity::create($log);
     }
 
     public static function ShopsEditLog($action, $shop_id)
     {
         $log = [];
-        if (isset(Auth::guard('shop_owner')->user()->id)) {
-            $log['shop_id'] = Auth::guard('shop_owner')->check() ? auth()->user()->id : 0;
-        } elseif (isset(Auth::guard('shop_role')->user()->id)) {
-            $log['shop_id'] = $shop_id;
-        }
+        $log['shop_id'] = $shop_id;
         $shop_name = Shops::where('id', $log['shop_id'])->get('name');
 
         foreach ($shop_name as $shop_name) {
@@ -110,24 +81,16 @@ trait ShopsLogActivityTrait
         $log['category'] = $action->category_id;
         $log['user_name'] = Auth::guard('shop_owner')->check() ? auth()->user()->name : 0;
         $log['action'] = 'Edit';
-        if (isset(Auth::guard('shop_owner')->user()->id)) {
-            $log['role'] = 'shopowner';
-        } elseif (isset(Auth::guard('shop_role')->user()->id)) {
-            $log['user_name'] = Auth::guard('shop_role')->check() ? auth()->user()->name : 0;
-            if (Auth::guard('shop_role')->user()->role_id == 1) {
-                $log['role'] = 'admin';
-            } elseif (Auth::guard('shop_role')->user()->role_id == 2) {
-                $log['role'] = 'manager';
-            } elseif (Auth::guard('shop_role')->user()->role_id == 3) {
-                $log['role'] = 'staff';
-            }
-        }
 
-        $shopownerlogid = ShopownerLogActivity::create($log);
+        $role = $action->role_id;
+        $roles = [1 => 'admin', 2 => 'manager', 3 => 'staff', 4 => 'shopowner'];
+        $log['role'] = $roles[$role] ?? 'unknown';
+
+        $shopownerlogid = ShopOwnerLogActivity::create($log);
         return $shopownerlogid;
     }
 
-    public static function logActivityLists()
+    public static function ShopsLogActivityLists()
     {
         return LogActivity::latest()->get();
     }

@@ -137,7 +137,7 @@
                                                 <td>Discount</td>
                                                 <td>Image</td>
                                                 <td>Product Code</td>
-                                                <td>Price</td>
+                                                <td class="price">Price</td>
                                                 <td>Action</td>
                                                 <td>Date</td>
                                             </tr>

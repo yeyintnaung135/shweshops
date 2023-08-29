@@ -28,7 +28,7 @@ use App\Models\PosStaff;
 use App\Models\PosSupplier;
 use App\Models\PosWhiteGoldPurchase;
 use App\Models\PosWhiteGoldSale;
-use App\Models\ShopOwner;
+use App\Models\Shops;
 use App\Models\State;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -46,20 +46,20 @@ class PosController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:shop_owner,shop_role');
+        $this->middleware('auth:shop_owners_and_staffs');
     }
 
     public function get_dashboard()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $gold = 0;
         $kyout = 0;
         $platinum = 0;
         $whitegold = 0;
-        $golds = PosPurchase::where('stock_qty', '>', 0)->where('shop_owner_id', $this->getshopid())->get('stock_qty');
-        $kyouts = PosKyoutPurchase::where('stock_qty', '>', 0)->where('shop_owner_id', $this->getshopid())->get('stock_qty');
-        $platinums = PosPlatinumPurchase::where('stock_qty', '>', 0)->where('shop_owner_id', $this->getshopid())->get('stock_qty');
-        $whitegolds = PosWhiteGoldPurchase::where('stock_qty', '>', 0)->where('shop_owner_id', $this->getshopid())->get('stock_qty');
+        $golds = PosPurchase::where('stock_qty', '>', 0)->where('shop_owner_id', $this->get_shopid())->get('stock_qty');
+        $kyouts = PosKyoutPurchase::where('stock_qty', '>', 0)->where('shop_owner_id', $this->get_shopid())->get('stock_qty');
+        $platinums = PosPlatinumPurchase::where('stock_qty', '>', 0)->where('shop_owner_id', $this->get_shopid())->get('stock_qty');
+        $whitegolds = PosWhiteGoldPurchase::where('stock_qty', '>', 0)->where('shop_owner_id', $this->get_shopid())->get('stock_qty');
         foreach ($golds as $gq) {
             $gold = $gold + $gq->stock_qty;
         }
@@ -72,30 +72,30 @@ class PosController extends Controller
         foreach ($whitegolds as $wq) {
             $whitegold = $whitegold + $wq->stock_qty;
         }
-        $supplier = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->getshopid())->take(3)->get();
-        $counts = PosSupplier::skip(2)->take(10000)->where('shop_owner_id', $this->getshopid())->get();
+        $supplier = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->get_shopid())->take(3)->get();
+        $counts = PosSupplier::skip(2)->take(10000)->where('shop_owner_id', $this->get_shopid())->get();
         $mytime = Carbon::now();
-        $gtoday_income = PosGoldSale::where('date', $mytime->toDateString())->where('shop_owner_id', $this->getshopid())->get();
-        $ktoday_income = PosKyoutSale::where('date', $mytime->toDateString())->where('shop_owner_id', $this->getshopid())->get();
-        $ptoday_income = PosPlatinumSale::where('date', $mytime->toDateString())->where('shop_owner_id', $this->getshopid())->get();
-        $wtoday_income = PosWhiteGoldSale::where('date', $mytime->toDateString())->where('shop_owner_id', $this->getshopid())->get();
+        $gtoday_income = PosGoldSale::where('date', $mytime->toDateString())->where('shop_owner_id', $this->get_shopid())->get();
+        $ktoday_income = PosKyoutSale::where('date', $mytime->toDateString())->where('shop_owner_id', $this->get_shopid())->get();
+        $ptoday_income = PosPlatinumSale::where('date', $mytime->toDateString())->where('shop_owner_id', $this->get_shopid())->get();
+        $wtoday_income = PosWhiteGoldSale::where('date', $mytime->toDateString())->where('shop_owner_id', $this->get_shopid())->get();
         $today = 0;
         $arr = [];
-        $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+        $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
         if ($assign_gold_price) {
             $gold_price = explode('/', $assign_gold_price->shop_price)[1];
         } else {
             Session::flash('message', '​ရွှေ​စျေး,ပလက်တီနမ်​စျေး,​ရွှေဖြူ​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
-            $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             // dd($credits);
             return view('backend.pos.assign_gold_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
         }
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->count();
-        $suppliers = DB::table('pos_suppliers')->where('shop_owner_id', $this->getshopid())->count();
-        $return = PosReturnList::where('date', $mytime->toDateString())->where('shop_owner_id', $this->getshopid())->get()->count();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->count();
+        $suppliers = DB::table('pos_suppliers')->where('shop_owner_id', $this->get_shopid())->count();
+        $return = PosReturnList::where('date', $mytime->toDateString())->where('shop_owner_id', $this->get_shopid())->get()->count();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
         foreach ($counters as $counter) {
             $subtotal = 0;
             foreach ($gtoday_income as $g) {
@@ -125,10 +125,10 @@ class PosController extends Controller
     }
     public function get_total_amount()
     {
-        $gjan_income = PosGoldSale::whereMonth('date', '01')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $kjan_income = PosKyoutSale::whereMonth('date', '01')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $pjan_income = PosPlatinumSale::whereMonth('date', '01')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $wjan_income = PosWhiteGoldSale::whereMonth('date', '01')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
+        $gjan_income = PosGoldSale::whereMonth('date', '01')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $kjan_income = PosKyoutSale::whereMonth('date', '01')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $pjan_income = PosPlatinumSale::whereMonth('date', '01')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $wjan_income = PosWhiteGoldSale::whereMonth('date', '01')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
         $jan = 0;
         foreach ($gjan_income as $gj) {
             $jan += $gj->amount;
@@ -142,10 +142,10 @@ class PosController extends Controller
         foreach ($wjan_income as $wj) {
             $jan += $wj->amount;
         }
-        $gfeb_income = PosGoldSale::whereMonth('date', '02')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $kfeb_income = PosKyoutSale::whereMonth('date', '02')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $pfeb_income = PosPlatinumSale::whereMonth('date', '02')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $wfeb_income = PosWhiteGoldSale::whereMonth('date', '02')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
+        $gfeb_income = PosGoldSale::whereMonth('date', '02')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $kfeb_income = PosKyoutSale::whereMonth('date', '02')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $pfeb_income = PosPlatinumSale::whereMonth('date', '02')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $wfeb_income = PosWhiteGoldSale::whereMonth('date', '02')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
         $feb = 0;
         foreach ($gfeb_income as $gf) {
             $feb += $gf->amount;
@@ -159,10 +159,10 @@ class PosController extends Controller
         foreach ($wfeb_income as $wf) {
             $feb += $wf->amount;
         }
-        $gmar_income = PosGoldSale::whereMonth('date', '03')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $kmar_income = PosKyoutSale::whereMonth('date', '03')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $pmar_income = PosPlatinumSale::whereMonth('date', '03')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $wmar_income = PosWhiteGoldSale::whereMonth('date', '03')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
+        $gmar_income = PosGoldSale::whereMonth('date', '03')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $kmar_income = PosKyoutSale::whereMonth('date', '03')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $pmar_income = PosPlatinumSale::whereMonth('date', '03')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $wmar_income = PosWhiteGoldSale::whereMonth('date', '03')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
         $mar = 0;
         foreach ($gmar_income as $gm) {
             $mar += $gm->amount;
@@ -176,10 +176,10 @@ class PosController extends Controller
         foreach ($wmar_income as $wm) {
             $mar += $wm->amount;
         }
-        $gapr_income = PosGoldSale::whereMonth('date', '04')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $kapr_income = PosKyoutSale::whereMonth('date', '04')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $papr_income = PosPlatinumSale::whereMonth('date', '04')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $wapr_income = PosWhiteGoldSale::whereMonth('date', '04')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
+        $gapr_income = PosGoldSale::whereMonth('date', '04')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $kapr_income = PosKyoutSale::whereMonth('date', '04')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $papr_income = PosPlatinumSale::whereMonth('date', '04')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $wapr_income = PosWhiteGoldSale::whereMonth('date', '04')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
         $apr = 0;
         foreach ($gapr_income as $ga) {
             $apr += $ga->amount;
@@ -193,10 +193,10 @@ class PosController extends Controller
         foreach ($wapr_income as $wa) {
             $apr += $wa->amount;
         }
-        $gmay_income = PosGoldSale::whereMonth('date', '05')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $kmay_income = PosKyoutSale::whereMonth('date', '05')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $pmay_income = PosPlatinumSale::whereMonth('date', '05')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $wmay_income = PosWhiteGoldSale::whereMonth('date', '05')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
+        $gmay_income = PosGoldSale::whereMonth('date', '05')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $kmay_income = PosKyoutSale::whereMonth('date', '05')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $pmay_income = PosPlatinumSale::whereMonth('date', '05')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $wmay_income = PosWhiteGoldSale::whereMonth('date', '05')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
         $may = 0;
         foreach ($gmay_income as $g) {
             $may += $g->amount;
@@ -210,10 +210,10 @@ class PosController extends Controller
         foreach ($wmay_income as $w) {
             $may += $w->amount;
         }
-        $gjun_income = PosGoldSale::whereMonth('date', '06')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $kjun_income = PosKyoutSale::whereMonth('date', '06')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $pjun_income = PosPlatinumSale::whereMonth('date', '06')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $wjun_income = PosWhiteGoldSale::whereMonth('date', '06')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
+        $gjun_income = PosGoldSale::whereMonth('date', '06')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $kjun_income = PosKyoutSale::whereMonth('date', '06')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $pjun_income = PosPlatinumSale::whereMonth('date', '06')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $wjun_income = PosWhiteGoldSale::whereMonth('date', '06')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
         $jun = 0;
         foreach ($gjun_income as $gju) {
             $jun += $gju->amount;
@@ -227,10 +227,10 @@ class PosController extends Controller
         foreach ($wjun_income as $wju) {
             $jun += $wju->amount;
         }
-        $gjul_income = PosGoldSale::whereMonth('date', '07')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $kjul_income = PosKyoutSale::whereMonth('date', '07')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $pjul_income = PosPlatinumSale::whereMonth('date', '07')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $wjul_income = PosWhiteGoldSale::whereMonth('date', '07')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
+        $gjul_income = PosGoldSale::whereMonth('date', '07')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $kjul_income = PosKyoutSale::whereMonth('date', '07')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $pjul_income = PosPlatinumSale::whereMonth('date', '07')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $wjul_income = PosWhiteGoldSale::whereMonth('date', '07')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
         $jul = 0;
         foreach ($gjul_income as $gjl) {
             $jul += $gjl->amount;
@@ -244,10 +244,10 @@ class PosController extends Controller
         foreach ($wjul_income as $wjl) {
             $jul += $wjl->amount;
         }
-        $gaug_income = PosGoldSale::whereMonth('date', '08')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $kaug_income = PosKyoutSale::whereMonth('date', '08')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $paug_income = PosPlatinumSale::whereMonth('date', '08')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $waug_income = PosWhiteGoldSale::whereMonth('date', '08')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
+        $gaug_income = PosGoldSale::whereMonth('date', '08')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $kaug_income = PosKyoutSale::whereMonth('date', '08')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $paug_income = PosPlatinumSale::whereMonth('date', '08')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $waug_income = PosWhiteGoldSale::whereMonth('date', '08')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
         $aug = 0;
         foreach ($gaug_income as $gau) {
             $aug += $gau->amount;
@@ -261,10 +261,10 @@ class PosController extends Controller
         foreach ($waug_income as $wau) {
             $aug += $wau->amount;
         }
-        $gsep_income = PosGoldSale::whereMonth('date', '09')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $ksep_income = PosKyoutSale::whereMonth('date', '09')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $psep_income = PosPlatinumSale::whereMonth('date', '09')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $wsep_income = PosWhiteGoldSale::whereMonth('date', '09')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
+        $gsep_income = PosGoldSale::whereMonth('date', '09')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $ksep_income = PosKyoutSale::whereMonth('date', '09')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $psep_income = PosPlatinumSale::whereMonth('date', '09')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $wsep_income = PosWhiteGoldSale::whereMonth('date', '09')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
         $sep = 0;
         foreach ($gsep_income as $gs) {
             $sep += $gs->amount;
@@ -278,10 +278,10 @@ class PosController extends Controller
         foreach ($wsep_income as $ws) {
             $sep += $ws->amount;
         }
-        $goct_income = PosGoldSale::whereMonth('date', '10')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $koct_income = PosKyoutSale::whereMonth('date', '10')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $poct_income = PosPlatinumSale::whereMonth('date', '10')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $woct_income = PosWhiteGoldSale::whereMonth('date', '10')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
+        $goct_income = PosGoldSale::whereMonth('date', '10')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $koct_income = PosKyoutSale::whereMonth('date', '10')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $poct_income = PosPlatinumSale::whereMonth('date', '10')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $woct_income = PosWhiteGoldSale::whereMonth('date', '10')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
         $oct = 0;
         foreach ($goct_income as $go) {
             $oct += $go->amount;
@@ -295,10 +295,10 @@ class PosController extends Controller
         foreach ($woct_income as $wo) {
             $oct += $wo->amount;
         }
-        $gnov_income = PosGoldSale::whereMonth('date', '11')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $knov_income = PosKyoutSale::whereMonth('date', '11')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $pnov_income = PosPlatinumSale::whereMonth('date', '11')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $wnov_income = PosWhiteGoldSale::whereMonth('date', '11')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
+        $gnov_income = PosGoldSale::whereMonth('date', '11')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $knov_income = PosKyoutSale::whereMonth('date', '11')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $pnov_income = PosPlatinumSale::whereMonth('date', '11')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $wnov_income = PosWhiteGoldSale::whereMonth('date', '11')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
         $nov = 0;
         foreach ($gnov_income as $gno) {
             $nov += $gno->amount;
@@ -312,10 +312,10 @@ class PosController extends Controller
         foreach ($wnov_income as $wno) {
             $nov += $wno->amount;
         }
-        $gdec_income = PosGoldSale::whereMonth('date', '12')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $kdec_income = PosKyoutSale::whereMonth('date', '12')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $pdec_income = PosPlatinumSale::whereMonth('date', '12')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
-        $wdec_income = PosWhiteGoldSale::whereMonth('date', '12')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->get();
+        $gdec_income = PosGoldSale::whereMonth('date', '12')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $kdec_income = PosKyoutSale::whereMonth('date', '12')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $pdec_income = PosPlatinumSale::whereMonth('date', '12')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
+        $wdec_income = PosWhiteGoldSale::whereMonth('date', '12')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->get();
         $dec = 0;
         foreach ($gdec_income as $gde) {
             $dec += $gde->amount;
@@ -359,29 +359,29 @@ class PosController extends Controller
         $oct = 0;
         $nov = 0;
         $dec = 0;
-        $jprice = PosAssignGoldPrice::whereMonth('date', '01')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->orderBy('price_16', 'desc')->first();
+        $jprice = PosAssignGoldPrice::whereMonth('date', '01')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->orderBy('price_16', 'desc')->first();
         if ($jprice) {$jan = explode('/', $jprice->shop_price)[1];}
-        $fprice = PosAssignGoldPrice::whereMonth('date', '02')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->orderBy('price_16', 'desc')->first();
+        $fprice = PosAssignGoldPrice::whereMonth('date', '02')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->orderBy('price_16', 'desc')->first();
         if ($fprice) {$feb = explode('/', $fprice->shop_price)[1];}
-        $mprice = PosAssignGoldPrice::whereMonth('date', '03')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->orderBy('price_16', 'desc')->first();
+        $mprice = PosAssignGoldPrice::whereMonth('date', '03')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->orderBy('price_16', 'desc')->first();
         if ($mprice) {$mar = explode('/', $mprice->shop_price)[1];}
-        $aprice = PosAssignGoldPrice::whereMonth('date', '04')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->orderBy('price_16', 'desc')->first();
+        $aprice = PosAssignGoldPrice::whereMonth('date', '04')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->orderBy('price_16', 'desc')->first();
         if ($aprice) {$apr = explode('/', $aprice->shop_price)[1];}
-        $mayprice = PosAssignGoldPrice::whereMonth('date', '05')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->orderBy('price_16', 'desc')->first();
+        $mayprice = PosAssignGoldPrice::whereMonth('date', '05')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->orderBy('price_16', 'desc')->first();
         if ($mayprice) {$may = explode('/', $mayprice->shop_price)[1];}
-        $jprice = PosAssignGoldPrice::whereMonth('date', '06')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->orderBy('price_16', 'desc')->first();
+        $jprice = PosAssignGoldPrice::whereMonth('date', '06')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->orderBy('price_16', 'desc')->first();
         if ($jprice) {$jun = explode('/', $jprice->shop_price)[1];}
-        $jlprice = PosAssignGoldPrice::whereMonth('date', '07')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->orderBy('price_16', 'desc')->first();
+        $jlprice = PosAssignGoldPrice::whereMonth('date', '07')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->orderBy('price_16', 'desc')->first();
         if ($jlprice) {$jul = explode('/', $jlprice->shop_price)[1];}
-        $augprice = PosAssignGoldPrice::whereMonth('date', '08')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->orderBy('price_16', 'desc')->first();
+        $augprice = PosAssignGoldPrice::whereMonth('date', '08')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->orderBy('price_16', 'desc')->first();
         if ($augprice) {$aug = explode('/', $augprice->shop_price)[1];}
-        $sprice = PosAssignGoldPrice::whereMonth('date', '09')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->orderBy('price_16', 'desc')->first();
+        $sprice = PosAssignGoldPrice::whereMonth('date', '09')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->orderBy('price_16', 'desc')->first();
         if ($sprice) {$sep = explode('/', $sprice->shop_price)[1];}
-        $oprice = PosAssignGoldPrice::whereMonth('date', '10')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->orderBy('price_16', 'desc')->first();
+        $oprice = PosAssignGoldPrice::whereMonth('date', '10')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->orderBy('price_16', 'desc')->first();
         if ($oprice) {$oct = explode('/', $oprice->shop_price)[1];}
-        $nprice = PosAssignGoldPrice::whereMonth('date', '11')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->orderBy('price_16', 'desc')->first();
+        $nprice = PosAssignGoldPrice::whereMonth('date', '11')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->orderBy('price_16', 'desc')->first();
         if ($nprice) {$nov = explode('/', $nprice->shop_price)[1];}
-        $decprice = PosAssignGoldPrice::whereMonth('date', '12')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->getshopid())->orderBy('price_16', 'desc')->first();
+        $decprice = PosAssignGoldPrice::whereMonth('date', '12')->whereYear('created_at', date('Y'))->where('shop_owner_id', $this->get_shopid())->orderBy('price_16', 'desc')->first();
         if ($decprice) {$dec = explode('/', $decprice->shop_price)[1];}
 
         return response()->json([
@@ -404,20 +404,20 @@ class PosController extends Controller
     //gold
     public function get_purchase_list()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosPurchase::where('shop_owner_id', $this->getshopid())->get();
-        $suppliers = PosSupplier::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $purchases = PosPurchase::where('shop_owner_id', $this->get_shopid())->get();
+        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->get();
         $quals = PosQuality::all();
         $cats = Category::all();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
-        $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+        $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
         if ($assign_gold_price) {
             return view('backend.pos.purchase_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
         } else {
             Session::flash('message', '​ရွှေ​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
-            $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             return view('backend.pos.assign_gold_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
         }
 
@@ -429,7 +429,7 @@ class PosController extends Controller
             $type = explode('/', $request->text);
             $types = [];
             foreach ($type as $t) {
-                $sup = PosPurchase::where('type', 'like', '%' . $t . '%')->where('shop_owner_id', $this->getshopid())->with('supplier')->get();
+                $sup = PosPurchase::where('type', 'like', '%' . $t . '%')->where('shop_owner_id', $this->get_shopid())->with('supplier')->get();
                 array_push($types, $sup);
             }
             foreach ($types as $tp) {
@@ -437,7 +437,7 @@ class PosController extends Controller
             }
         }
         if ($request->type == 2) {
-            $data = PosPurchase::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->getshopid())->with('supplier')->get();
+            $data = PosPurchase::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->with('supplier')->get();
         }
 
         return response()->json([
@@ -459,7 +459,7 @@ class PosController extends Controller
         if (!empty($data['catid'])) {
             $result = $query->where('category_id', $data['catid']);
         }
-        $results = $query->where('shop_owner_id', $this->getshopid())->with('supplier')->get();
+        $results = $query->where('shop_owner_id', $this->get_shopid())->with('supplier')->get();
 
         return response()->json([
             'data' => $results,
@@ -468,14 +468,14 @@ class PosController extends Controller
 
     public function create_purchase()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $categories = Category::all();
-        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->getshopid())->get();
+        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->get_shopid())->get();
         $quality = DB::table('pos_qualities')->get();
         $date = Carbon::now();
-        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
+        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
         if ($price) {
             $shop_price = explode('/', $price->shop_price)[0];
             $out_price = explode('/', $price->shop_price)[1];
@@ -483,8 +483,8 @@ class PosController extends Controller
         } else {
             Session::flash('message', '​ရွှေ​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
-            $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             return view('backend.pos.assign_gold_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
         }
     }
@@ -512,7 +512,7 @@ class PosController extends Controller
 
             $purchase = PosPurchase::create([
                 'date' => $request->date,
-                'shop_owner_id' => $this->getshopid(),
+                'shop_owner_id' => $this->get_shopid(),
                 'supplier_id' => $request->supplier_id,
                 'quality_id' => $request->quality,
                 'staff_id' => $request->staff_id,
@@ -562,7 +562,7 @@ class PosController extends Controller
                 if ($request->inlineCheckbox == 'option3') {$gender = 'Unisex';}
                 if ($request->inlineCheckbox == 'option4') {$gender = 'Kid';}
                 $item = Item::create([
-                    'shop_id' => $this->getshopid(),
+                    'shop_id' => $this->get_shopid(),
                     'gold_quality' => $purchase->quality->name,
                     'stock_count' => $request->stock_qty,
                     'stock' => 'In Stock',
@@ -601,10 +601,10 @@ class PosController extends Controller
             $category = Category::find($request->category_id);
             $letter = strtoupper(mb_substr($category->name, 0, 1));
             if ($request->type == 'gold') {
-                $purchase = PosPurchase::where('shop_owner_id', $this->getshopid())->get();
+                $purchase = PosPurchase::where('shop_owner_id', $this->get_shopid())->get();
             }
             if ($request->type == 'kyout') {
-                $purchase = PosKyoutPurchase::where('shop_owner_id', $this->getshopid())->get();
+                $purchase = PosKyoutPurchase::where('shop_owner_id', $this->get_shopid())->get();
             }
             $count = count($purchase);
             $code = $letter . sprintf("%04s", $count + 1);
@@ -620,7 +620,7 @@ class PosController extends Controller
     }
     public function get_quality_price(Request $request)
     {
-        $assign = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+        $assign = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
         if ($request->quality_id == 1) {
             $price = $assign->price_16;
         }
@@ -674,15 +674,15 @@ class PosController extends Controller
     }
     public function edit_purchase($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $categories = Category::all();
-        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->getshopid())->get();
+        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->get_shopid())->get();
         $purchase = PosPurchase::find($id);
         $quality = PosQuality::all();
         $date = Carbon::now();
-        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
+        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
         $shop_price = explode('/', $price->shop_price)[0];
         $out_price = explode('/', $price->shop_price)[1];
 
@@ -770,14 +770,14 @@ class PosController extends Controller
     }
     public function detail_purchase($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $categories = Category::all();
-        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->getshopid())->get();
+        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->get_shopid())->get();
         $purchase = PosPurchase::find($id);
         $quality = PosQuality::all();
         $date = Carbon::now();
-        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
+        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
         $shop_price = explode('/', $price->shop_price)[0];
         $out_price = explode('/', $price->shop_price)[1];
 
@@ -787,20 +787,20 @@ class PosController extends Controller
     //kyout
     public function get_kyout_purchase_list()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosKyoutPurchase::where('shop_owner_id', $this->getshopid())->get();
-        $suppliers = PosSupplier::where('shop_owner_id', $this->getshopid())->get();
-        $dias = PosDiamond::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $purchases = PosKyoutPurchase::where('shop_owner_id', $this->get_shopid())->get();
+        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->get();
+        $dias = PosDiamond::where('shop_owner_id', $this->get_shopid())->get();
         $cats = Category::all();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
-        $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+        $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
         if ($assign_gold_price) {
             return view('backend.pos.kyout_purchase_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'dias' => $dias, 'cats' => $cats]);
         } else {
             Session::flash('message', '​ရွှေ​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
-            $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             return view('backend.pos.assign_gold_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
         }
     }
@@ -810,7 +810,7 @@ class PosController extends Controller
             $type = explode('/', $request->text);
             $types = [];
             foreach ($type as $t) {
-                $sup = PosKyoutPurchase::where('type', 'like', '%' . $t . '%')->where('shop_owner_id', $this->getshopid())->with('supplier')->get();
+                $sup = PosKyoutPurchase::where('type', 'like', '%' . $t . '%')->where('shop_owner_id', $this->get_shopid())->with('supplier')->get();
                 array_push($types, $sup);
             }
             foreach ($types as $tp) {
@@ -818,7 +818,7 @@ class PosController extends Controller
             }
         }
         if ($request->type == 2) {
-            $data = PosKyoutPurchase::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->getshopid())->with('supplier')->with('quality')->get();
+            $data = PosKyoutPurchase::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->with('supplier')->with('quality')->get();
         }
 
         return response()->json([
@@ -840,21 +840,21 @@ class PosController extends Controller
         if (!empty($data['catid'])) {
             $result = $query->where('category_id', $data['catid']);
         }
-        $results = $query->where('shop_owner_id', $this->getshopid())->with('supplier')->with('quality')->get();
+        $results = $query->where('shop_owner_id', $this->get_shopid())->with('supplier')->with('quality')->get();
         return response()->json([
             'data' => $results,
         ]);
     }
     public function create_kyout_purchase()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $categories = Category::all();
-        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->getshopid())->get();
+        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->get_shopid())->get();
         $quality = DB::table('pos_qualities')->get();
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
-        $diamonds = PosDiamond::where('shop_owner_id', $this->getshopid())->get();
-        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+        $diamonds = PosDiamond::where('shop_owner_id', $this->get_shopid())->get();
+        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
         if ($price) {
             $shop_price = explode('/', $price->shop_price)[0];
             $out_price = explode('/', $price->shop_price)[1];
@@ -862,8 +862,8 @@ class PosController extends Controller
         } else {
             Session::flash('message', '​ရွှေ​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
-            $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             return view('backend.pos.assign_gold_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
         }
 
@@ -900,7 +900,7 @@ class PosController extends Controller
             }
             $purchase = PosKyoutPurchase::create([
                 'date' => $request->date,
-                'shop_owner_id' => $this->getshopid(),
+                'shop_owner_id' => $this->get_shopid(),
                 'supplier_id' => $request->supplier_id,
                 'quality_id' => $request->quality,
                 'staff_id' => $request->staff_id,
@@ -993,7 +993,7 @@ class PosController extends Controller
                 if ($request->inlineCheckbox == 'option3') {$gender = 'Unisex';}
                 if ($request->inlineCheckbox == 'option4') {$gender = 'Kid';}
                 $item = Item::create([
-                    'shop_id' => $this->getshopid(),
+                    'shop_id' => $this->get_shopid(),
                     'gold_quality' => $purchase->quality->name,
                     'stock_count' => $request->stock_qty,
                     'stock' => 'In Stock',
@@ -1034,15 +1034,15 @@ class PosController extends Controller
 
     public function edit_kyout_purchase($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $categories = Category::all();
-        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->getshopid())->get();
+        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->get_shopid())->get();
         $purchase = PosKyoutPurchase::find($id);
         $quality = PosQuality::all();
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
-        $diamonds = PosDiamond::where('shop_owner_id', $this->getshopid())->get();
-        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+        $diamonds = PosDiamond::where('shop_owner_id', $this->get_shopid())->get();
+        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
         $shop_price = explode('/', $price->shop_price)[0];
         $out_price = explode('/', $price->shop_price)[1];
 
@@ -1187,14 +1187,14 @@ class PosController extends Controller
     }
     public function detail_kyout_purchase($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $categories = Category::all();
-        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->getshopid())->get();
+        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->get_shopid())->get();
         $purchase = PosKyoutPurchase::find($id);
         $quality = PosQuality::all();
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $diamonds = PosDiamond::where('shop_owner_id', $this->getshopid())->get();
-        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $diamonds = PosDiamond::where('shop_owner_id', $this->get_shopid())->get();
+        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
         $shop_price = explode('/', $price->shop_price)[0];
         $out_price = explode('/', $price->shop_price)[1];
 
@@ -1204,31 +1204,31 @@ class PosController extends Controller
     //Platinum
     public function get_ptm_purchase_list()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosPlatinumPurchase::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $purchases = PosPlatinumPurchase::where('shop_owner_id', $this->get_shopid())->get();
         $cats = Category::all();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
-        $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+        $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
         if ($assign_gold_price) {
             return view('backend.pos.platinum_purchase_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'cats' => $cats]);
         } else {
             Session::flash('message', 'ပလက်တီနမ်​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
-            $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             return view('backend.pos.assign_platinum_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
         }
 
     }
     public function create_ptm_purchase()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $categories = Category::all();
         $date = Carbon::now();
-        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->getshopid())->get();
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
-        $price = PosAssignPlatinumPrice::where('shop_owner_id', $this->getshopid())->first();
+        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->get_shopid())->get();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+        $price = PosAssignPlatinumPrice::where('shop_owner_id', $this->get_shopid())->first();
         if ($price) {
             $gradeA = $price->gradeA;
             $gradeB = $price->gradeB;
@@ -1236,14 +1236,14 @@ class PosController extends Controller
         } else {
             Session::flash('message', 'ပလက်တီနမ်​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
-            $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             return view('backend.pos.assign_platinum_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
         }
     }
     public function get_ptm_quality_price(Request $request)
     {
-        $assign = PosAssignPlatinumPrice::where('shop_owner_id', $this->getshopid())->first();
+        $assign = PosAssignPlatinumPrice::where('shop_owner_id', $this->get_shopid())->first();
         if ($request->quality == 'Grade A') {
             $price = $assign->gradeA;
         }
@@ -1282,7 +1282,7 @@ class PosController extends Controller
             }
             $purchase = PosPlatinumPurchase::create([
                 'date' => $request->date,
-                'shop_owner_id' => $this->getshopid(),
+                'shop_owner_id' => $this->get_shopid(),
                 'supplier_id' => $request->supplier_id,
                 'quality' => $request->quality,
                 'staff_id' => $request->staff_id,
@@ -1323,7 +1323,7 @@ class PosController extends Controller
                 if ($request->inlineCheckbox == 'option3') {$gender = 'Unisex';}
                 if ($request->inlineCheckbox == 'option4') {$gender = 'Kid';}
                 $item = Item::create([
-                    'shop_id' => $this->getshopid(),
+                    'shop_id' => $this->get_shopid(),
                     'gold_quality' => $request->quality,
                     'stock_count' => $request->stock_qty,
                     'stock' => 'In Stock',
@@ -1355,13 +1355,13 @@ class PosController extends Controller
     }
     public function edit_ptm_purchase($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $categories = Category::all();
         $date = Carbon::now();
         $purchase = PosPlatinumPurchase::find($id);
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
-        $price = PosAssignPlatinumPrice::where('shop_owner_id', $this->getshopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+        $price = PosAssignPlatinumPrice::where('shop_owner_id', $this->get_shopid())->first();
         $gradeA = $price->gradeA;
         $gradeB = $price->gradeB;
 
@@ -1455,7 +1455,7 @@ class PosController extends Controller
             $type = explode('/', $request->text);
             $types = [];
             foreach ($type as $t) {
-                $sup = PosPlatinumPurchase::where('type', 'like', '%' . $t . '%')->where('shop_owner_id', $this->getshopid())->get();
+                $sup = PosPlatinumPurchase::where('type', 'like', '%' . $t . '%')->where('shop_owner_id', $this->get_shopid())->get();
                 array_push($types, $sup);
             }
             foreach ($types as $tp) {
@@ -1463,7 +1463,7 @@ class PosController extends Controller
             }
         }
         if ($request->type == 2) {
-            $data = PosPlatinumPurchase::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->getshopid())->get();
+            $data = PosPlatinumPurchase::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->get();
         }
 
         return response()->json([
@@ -1482,7 +1482,7 @@ class PosController extends Controller
         if (!empty($data['catid'])) {
             $result = $query->where('category_id', $data['catid']);
         }
-        $results = $query->where('shop_owner_id', $this->getshopid())->get();
+        $results = $query->where('shop_owner_id', $this->get_shopid())->get();
 
         return response()->json([
             'data' => $results,
@@ -1490,12 +1490,12 @@ class PosController extends Controller
     }
     public function detail_ptm_purchase($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $categories = Category::all();
         $date = Carbon::now();
         $purchase = PosPlatinumPurchase::find($id);
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $price = PosAssignPlatinumPrice::where('shop_owner_id', $this->getshopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $price = PosAssignPlatinumPrice::where('shop_owner_id', $this->get_shopid())->first();
         $gradeA = $price->gradeA;
         $gradeB = $price->gradeB;
 
@@ -1505,31 +1505,31 @@ class PosController extends Controller
     //WhiteGold
     public function get_wg_purchase_list()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosWhiteGoldPurchase::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $purchases = PosWhiteGoldPurchase::where('shop_owner_id', $this->get_shopid())->get();
         $cats = Category::all();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
-        $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+        $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
         if ($assign_gold_price) {
             return view('backend.pos.whitegold_purchase_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'cats' => $cats]);
         } else {
             Session::flash('message', 'ရွှေဖြူ​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
-            $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             return view('backend.pos.assign_whitegold_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
         }
 
     }
     public function create_wg_purchase()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $categories = Category::all();
         $date = Carbon::now();
-        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->getshopid())->get();
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
-        $price = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->getshopid())->first();
+        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->get_shopid())->get();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+        $price = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->get_shopid())->first();
         if ($price) {
             $gradeA = $price->gradeA;
             $gradeB = $price->gradeB;
@@ -1537,14 +1537,14 @@ class PosController extends Controller
         } else {
             Session::flash('message', 'ရွှေဖြူစျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
-            $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             return view('backend.pos.assign_whitegold_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
         }
     }
     public function get_wg_quality_price(Request $request)
     {
-        $assign = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->getshopid())->first();
+        $assign = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->get_shopid())->first();
         if ($request->quality == 'Grade A') {
             $price = $assign->gradeA;
         }
@@ -1583,7 +1583,7 @@ class PosController extends Controller
 
             $purchase = PosWhiteGoldPurchase::create([
                 'date' => $request->date,
-                'shop_owner_id' => $this->getshopid(),
+                'shop_owner_id' => $this->get_shopid(),
                 'supplier_id' => $request->supplier_id,
                 'quality' => $request->quality,
                 'staff_id' => $request->staff_id,
@@ -1624,7 +1624,7 @@ class PosController extends Controller
                 if ($request->inlineCheckbox == 'option3') {$gender = 'Unisex';}
                 if ($request->inlineCheckbox == 'option4') {$gender = 'Kid';}
                 $item = Item::create([
-                    'shop_id' => $this->getshopid(),
+                    'shop_id' => $this->get_shopid(),
                     'gold_quality' => $request->quality,
                     'stock_count' => $request->stock_qty,
                     'stock' => 'In Stock',
@@ -1657,13 +1657,13 @@ class PosController extends Controller
     }
     public function edit_wg_purchase($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $categories = Category::all();
         $date = Carbon::now();
         $purchase = PosWhiteGoldPurchase::find($id);
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
-        $price = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->getshopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+        $price = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->get_shopid())->first();
         $gradeA = $price->gradeA;
         $gradeB = $price->gradeB;
 
@@ -1757,7 +1757,7 @@ class PosController extends Controller
             $type = explode('/', $request->text);
             $types = [];
             foreach ($type as $t) {
-                $sup = PosWhiteGoldPurchase::where('type', 'like', '%' . $t . '%')->where('shop_owner_id', $this->getshopid())->get();
+                $sup = PosWhiteGoldPurchase::where('type', 'like', '%' . $t . '%')->where('shop_owner_id', $this->get_shopid())->get();
                 array_push($types, $sup);
             }
             foreach ($types as $tp) {
@@ -1765,7 +1765,7 @@ class PosController extends Controller
             }
         }
         if ($request->type == 2) {
-            $data = PosWhiteGoldPurchase::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->getshopid())->get();
+            $data = PosWhiteGoldPurchase::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->get();
         }
 
         return response()->json([
@@ -1784,7 +1784,7 @@ class PosController extends Controller
         if (!empty($data['catid'])) {
             $result = $query->where('category_id', $data['catid']);
         }
-        $results = $query->where('shop_owner_id', $this->getshopid())->get();
+        $results = $query->where('shop_owner_id', $this->get_shopid())->get();
 
         return response()->json([
             'data' => $results,
@@ -1792,12 +1792,12 @@ class PosController extends Controller
     }
     public function detail_wg_purchase($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $categories = Category::all();
         $date = Carbon::now();
         $purchase = PosWhiteGoldPurchase::find($id);
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $price = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->getshopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $price = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->get_shopid())->first();
         $gradeA = $price->gradeA;
         $gradeB = $price->gradeB;
 
@@ -1808,11 +1808,11 @@ class PosController extends Controller
     //Gold
     public function sale_gold_list()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosGoldSale::where('shop_owner_id', $this->getshopid())->get();
-        $suppliers = PosSupplier::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $purchases = PosGoldSale::where('shop_owner_id', $this->get_shopid())->get();
+        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->get();
         $quals = PosQuality::all();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
         $cats = Category::all();
 
         return view('backend.pos.sale_gold_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
@@ -1820,7 +1820,7 @@ class PosController extends Controller
     public function gold_sale_type_filter(Request $request)
     {
         if ($request->type == 2) {
-            $data = PosGoldSale::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->getshopid())->with('purchase')->get();
+            $data = PosGoldSale::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->with('purchase')->get();
         }
         return response()->json([
             'data' => $data,
@@ -1828,7 +1828,7 @@ class PosController extends Controller
     }
     public function gold_sale_advance_filter(Request $request)
     {
-        $data1 = PosGoldSale::where('shop_owner_id', $this->getshopid())->get();
+        $data1 = PosGoldSale::where('shop_owner_id', $this->get_shopid())->get();
         $arr = [];
         if ($request->supid && $request->qualid && $request->catid) {
             foreach ($data1 as $dt) {
@@ -1880,13 +1880,13 @@ class PosController extends Controller
     }
     public function edit_gold_sale($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosPurchase::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $purchases = PosPurchase::where('shop_owner_id', $this->get_shopid())->get();
         $sale = PosGoldSale::where('id', $id)->first();
         $date = Carbon::now();
-        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
+        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
         $shop_price = explode('/', $price->shop_price)[0];
         $out_price = explode('/', $price->shop_price)[1];
 
@@ -1938,14 +1938,14 @@ class PosController extends Controller
     }
     public function detail_gold_sale($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $categories = Category::all();
-        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->getshopid())->get();
+        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->get_shopid())->get();
         $purchase = PosGoldSale::find($id);
         $quality = PosQuality::all();
         $date = Carbon::now();
-        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
+        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
         $shop_price = explode('/', $price->shop_price)[0];
         $out_price = explode('/', $price->shop_price)[1];
 
@@ -1954,14 +1954,14 @@ class PosController extends Controller
 
     public function sale_purchase()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosPurchase::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $purchases = PosPurchase::where('shop_owner_id', $this->get_shopid())->get();
         $date = Carbon::now();
-        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
+        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
         $categories = Category::all();
         $quality = DB::table('pos_qualities')->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
         if ($price) {
             $shop_price = explode('/', $price->shop_price)[0];
             $out_price = explode('/', $price->shop_price)[1];
@@ -1970,15 +1970,15 @@ class PosController extends Controller
         } else {
             Session::flash('message', '​ရွှေ​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
-            $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             return view('backend.pos.assign_gold_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
         }
 
     }
     public function get_sale_values(Request $request)
     {
-        $purchase = PosPurchase::where('id', $request->purchase_id)->where('shop_owner_id', $this->getshopid())->with('quality')->with('category')->first();
+        $purchase = PosPurchase::where('id', $request->purchase_id)->where('shop_owner_id', $this->get_shopid())->with('quality')->with('category')->first();
         $product_gram_kyat_pe_yway = explode('/', $purchase->product_gram_kyat_pe_yway);
         $service_pe_yway = explode('/', $purchase->service_pe_yway);
         $decrease_pe_yway = explode('/', $purchase->decrease_pe_yway);
@@ -2010,7 +2010,7 @@ class PosController extends Controller
         try {
             $gold_sale = PosGoldSale::create([
                 'date' => $request->date,
-                'shop_owner_id' => $this->getshopid(),
+                'shop_owner_id' => $this->get_shopid(),
                 'purchase_id' => $request->purchase_id,
                 'staff_id' => $request->staff_id,
                 'counter_shop' => $request->counter,
@@ -2027,7 +2027,7 @@ class PosController extends Controller
 
                 $credit = PosCreditList::create([
                     'purchase_date' => $request->date,
-                    'shop_owner_id' => $this->getshopid(),
+                    'shop_owner_id' => $this->get_shopid(),
                     'purchase_code' => $request->code_number,
                     'credit' => $request->credit,
                     'customer_name' => $request->name,
@@ -2044,7 +2044,7 @@ class PosController extends Controller
             if ($sold < 1) {
                 PosPurchaseSale::create([
                     'purchase_id' => $request->purchase_id,
-                    'shop_owner_id' => $this->getshopid(),
+                    'shop_owner_id' => $this->get_shopid(),
                     'sale_id' => $gold_sale->id,
                     'qty' => 1,
                     'type' => 1,
@@ -2055,10 +2055,10 @@ class PosController extends Controller
                 $exit->save();
             }
 
-            $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             Session::flash('message', 'Gold Sale was successfully Created!');
-            $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
-            $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+            $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+            $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             $shop_price = explode('/', $price->shop_price)[0];
             $price15 = explode('/', $price->inprice_15)[0];
             return view('backend.pos.sale_voucher_list', ['shopowner' => $shopowner, 'sale' => $gold_sale, 'counters' => $counters, 'gold_fee' => $request->price, 'service_fee' => $request->service_fee, 'diamond_fee' => 0, 'shop_price' => $shop_price, 'price15' => $price15, 'cancel' => 1]);
@@ -2069,18 +2069,18 @@ class PosController extends Controller
     //Kyout
     public function sale_kyout_list()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosKyoutSale::where('shop_owner_id', $this->getshopid())->get();
-        $suppliers = PosSupplier::where('shop_owner_id', $this->getshopid())->get();
-        $dias = PosDiamond::where('shop_owner_id', $this->getshopid())->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $purchases = PosKyoutSale::where('shop_owner_id', $this->get_shopid())->get();
+        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->get();
+        $dias = PosDiamond::where('shop_owner_id', $this->get_shopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
         $cats = Category::all();
         return view('backend.pos.kyout_sale_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'dias' => $dias, 'cats' => $cats]);
     }
     public function kyoutsaletypeFilter(Request $request)
     {
         if ($request->type == 2) {
-            $data = PosKyoutSale::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->getshopid())->with('purchase')->get();
+            $data = PosKyoutSale::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->with('purchase')->get();
         }
         return response()->json([
             'data' => $data,
@@ -2088,8 +2088,8 @@ class PosController extends Controller
     }
     public function kyout_sale_type_filter(Request $request)
     {
-        $data1 = PosKyoutSale::where('shop_owner_id', $this->getshopid())->get();
-        $data2 = PosKyoutPurchase::where('diamonds', 'like', '%' . $request->qualid . '%')->where('sell_flag', 1)->where('shop_owner_id', $this->getshopid())->get();
+        $data1 = PosKyoutSale::where('shop_owner_id', $this->get_shopid())->get();
+        $data2 = PosKyoutPurchase::where('diamonds', 'like', '%' . $request->qualid . '%')->where('sell_flag', 1)->where('shop_owner_id', $this->get_shopid())->get();
         $arr = [];
         if ($request->supid && $request->qualid && $request->catid) {
             foreach ($data2 as $dt) {
@@ -2142,13 +2142,13 @@ class PosController extends Controller
     }
     public function edit_kyout_sale($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosKyoutPurchase::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $purchases = PosKyoutPurchase::where('shop_owner_id', $this->get_shopid())->get();
         $date = Carbon::now();
-        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
         $sale = PosKyoutSale::find($id);
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
         $shop_price = explode('/', $price->shop_price)[0];
         $out_price = explode('/', $price->shop_price)[1];
 
@@ -2199,12 +2199,12 @@ class PosController extends Controller
     }
     public function sale_kyout_purchase()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosKyoutPurchase::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $purchases = PosKyoutPurchase::where('shop_owner_id', $this->get_shopid())->get();
         $date = Carbon::now();
-        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
+        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
         $categories = Category::all();
         $quality = DB::table('pos_qualities')->get();
         if ($price) {
@@ -2215,15 +2215,15 @@ class PosController extends Controller
         } else {
             Session::flash('message', '​ရွှေ​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
-            $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             return view('backend.pos.assign_gold_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
         }
 
     }
     public function get_sale_kyout_values(Request $request)
     {
-        $purchase = PosKyoutPurchase::where('id', $request->purchase_id)->where('shop_owner_id', $this->getshopid())->with('quality')->with('category')->first();
+        $purchase = PosKyoutPurchase::where('id', $request->purchase_id)->where('shop_owner_id', $this->get_shopid())->with('quality')->with('category')->first();
         $product_gram_kyat_pe_yway = explode('/', $purchase->gold_gram_kyat_pe_yway);
         $service_pe_yway = explode('/', $purchase->service_pe_yway);
         $decrease_pe_yway = explode('/', $purchase->decrease_pe_yway);
@@ -2242,14 +2242,14 @@ class PosController extends Controller
     }
     public function detail_kyout_sale($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $categories = Category::all();
-        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->getshopid())->get();
+        $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->get_shopid())->get();
         $purchase = PosKyoutSale::find($id);
         $quality = PosQuality::all();
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $diamonds = PosDiamond::where('shop_owner_id', $this->getshopid())->get();
-        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $diamonds = PosDiamond::where('shop_owner_id', $this->get_shopid())->get();
+        $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
         $shop_price = explode('/', $price->shop_price)[0];
         $out_price = explode('/', $price->shop_price)[1];
 
@@ -2268,7 +2268,7 @@ class PosController extends Controller
         try {
             $kyout_sale = PosKyoutSale::create([
                 'date' => $request->date,
-                'shop_owner_id' => $this->getshopid(),
+                'shop_owner_id' => $this->get_shopid(),
                 'purchase_id' => $request->purchase_id,
                 'staff_id' => $request->staff_id,
                 'counter_shop' => $request->counter,
@@ -2285,7 +2285,7 @@ class PosController extends Controller
 
                 $credit = PosCreditList::create([
                     'purchase_date' => $request->date,
-                    'shop_owner_id' => $this->getshopid(),
+                    'shop_owner_id' => $this->get_shopid(),
                     'purchase_code' => $request->code_number,
                     'credit' => $request->credit,
                     'customer_name' => $request->name,
@@ -2302,7 +2302,7 @@ class PosController extends Controller
             if ($sold < 1) {
                 PosPurchaseSale::create([
                     'purchase_id' => $request->purchase_id,
-                    'shop_owner_id' => $this->getshopid(),
+                    'shop_owner_id' => $this->get_shopid(),
                     'sale_id' => $kyout_sale->id,
                     'qty' => 1,
                     'type' => 2,
@@ -2313,10 +2313,10 @@ class PosController extends Controller
                 $exit->save();
             }
 
-            $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             Session::flash('message', 'Kyout Sale was successfully Created!');
-            $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
-            $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+            $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+            $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             $shop_price = explode('/', $price->shop_price)[0];
             $price15 = explode('/', $price->inprice_15)[0];
             return view('backend.pos.sale_voucher_list', ['shopowner' => $shopowner, 'sale' => $kyout_sale, 'counters' => $counters, 'gold_fee' => $request->price, 'service_fee' => $request->service_fee, 'diamond_fee' => $request->diamond_fee, 'shop_price' => $shop_price, 'price15' => $price15, 'cancel' => 2]);
@@ -2328,11 +2328,11 @@ class PosController extends Controller
     //Platinum
     public function sale_ptm_list()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosPlatinumSale::where('shop_owner_id', $this->getshopid())->get();
-        $suppliers = PosSupplier::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $purchases = PosPlatinumSale::where('shop_owner_id', $this->get_shopid())->get();
+        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->get();
         $quals = PosQuality::all();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
         $cats = Category::all();
         return view('backend.pos.sale_platinum_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
     }
@@ -2348,7 +2348,7 @@ class PosController extends Controller
     public function ptmsale_type_filter(Request $request)
     {
         if ($request->type == 2) {
-            $data = PosPlatinumSale::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->getshopid())->get();
+            $data = PosPlatinumSale::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->get();
         }
 
         return response()->json([
@@ -2357,7 +2357,7 @@ class PosController extends Controller
     }
     public function platinum_sale_advance_filter(Request $request)
     {
-        $data1 = PosPlatinumSale::where('shop_owner_id', $this->getshopid())->get();
+        $data1 = PosPlatinumSale::where('shop_owner_id', $this->get_shopid())->get();
         $arr = [];
         if ($request->qualid && $request->catid) {
             foreach ($data1 as $dt) {
@@ -2384,13 +2384,13 @@ class PosController extends Controller
     }
     public function edit_ptm_sale($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosPlatinumSale::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $purchases = PosPlatinumSale::where('shop_owner_id', $this->get_shopid())->get();
         $sale = PosPlatinumSale::find($id);
         $date = Carbon::now();
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
-        $price = PosAssignPlatinumPrice::where('shop_owner_id', $this->getshopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+        $price = PosAssignPlatinumPrice::where('shop_owner_id', $this->get_shopid())->first();
         $gradeA = $price->gradeA;
         $gradeB = $price->gradeB;
 
@@ -2398,14 +2398,14 @@ class PosController extends Controller
     }
     public function sale_ptm_purchase()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosPlatinumPurchase::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $purchases = PosPlatinumPurchase::where('shop_owner_id', $this->get_shopid())->get();
         $date = Carbon::now();
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
         $categories = Category::all();
         $quality = DB::table('pos_qualities')->get();
-        $price = PosAssignPlatinumPrice::where('shop_owner_id', $this->getshopid())->first();
+        $price = PosAssignPlatinumPrice::where('shop_owner_id', $this->get_shopid())->first();
         $gradeA = $price->gradeA;
         $gradeB = $price->gradeB;
 
@@ -2413,7 +2413,7 @@ class PosController extends Controller
     }
     public function get_sale_ptm_values(Request $request)
     {
-        $purchase = PosPlatinumPurchase::where('id', $request->purchase_id)->where('shop_owner_id', $this->getshopid())->with('category')->first();
+        $purchase = PosPlatinumPurchase::where('id', $request->purchase_id)->where('shop_owner_id', $this->get_shopid())->with('category')->first();
         return response()->json([
             'purchase' => $purchase,
         ]);
@@ -2431,7 +2431,7 @@ class PosController extends Controller
         try {
             $gold_sale = PosPlatinumSale::create([
                 'date' => $request->date,
-                'shop_owner_id' => $this->getshopid(),
+                'shop_owner_id' => $this->get_shopid(),
                 'purchase_id' => $request->purchase_id,
                 'staff_id' => $request->staff_id,
                 'counter_shop' => $request->counter,
@@ -2448,7 +2448,7 @@ class PosController extends Controller
 
                 $credit = PosCreditList::create([
                     'purchase_date' => $request->date,
-                    'shop_owner_id' => $this->getshopid(),
+                    'shop_owner_id' => $this->get_shopid(),
                     'purchase_code' => $request->code_number,
                     'credit' => $request->credit,
                     'customer_name' => $request->name,
@@ -2465,7 +2465,7 @@ class PosController extends Controller
             if ($sold < 1) {
                 PosPurchaseSale::create([
                     'purchase_id' => $request->purchase_id,
-                    'shop_owner_id' => $this->getshopid(),
+                    'shop_owner_id' => $this->get_shopid(),
                     'sale_id' => $gold_sale->id,
                     'qty' => 1,
                     'type' => 3,
@@ -2476,10 +2476,10 @@ class PosController extends Controller
                 $exit->save();
             }
 
-            $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             Session::flash('message', 'Gold Sale was successfully Created!');
-            $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
-            $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+            $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+            $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             $shop_price = explode('/', $price->shop_price)[0];
             $price15 = explode('/', $price->inprice_15)[0];
             return view('backend.pos.sale_voucher_list', ['shopowner' => $shopowner, 'sale' => $gold_sale, 'counters' => $counters, 'gold_fee' => $request->price, 'service_fee' => 0, 'diamond_fee' => 0, 'shop_price' => $shop_price, 'price15' => $price15, 'cancel' => 3]);
@@ -2517,12 +2517,12 @@ class PosController extends Controller
     }
     public function detail_platinum_sale($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $categories = Category::all();
         $date = Carbon::now();
         $purchase = PosPlatinumSale::find($id);
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $price = PosAssignPlatinumPrice::where('shop_owner_id', $this->getshopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $price = PosAssignPlatinumPrice::where('shop_owner_id', $this->get_shopid())->first();
         $gradeA = $price->gradeA;
         $gradeB = $price->gradeB;
 
@@ -2531,11 +2531,11 @@ class PosController extends Controller
     //WhiteGold
     public function sale_wg_list()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosWhiteGoldSale::where('shop_owner_id', $this->getshopid())->get();
-        $suppliers = PosSupplier::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $purchases = PosWhiteGoldSale::where('shop_owner_id', $this->get_shopid())->get();
+        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->get();
         $quals = PosQuality::all();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
         $cats = Category::all();
         return view('backend.pos.sale_whitegold_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
     }
@@ -2551,7 +2551,7 @@ class PosController extends Controller
     public function wgsale_type_filter(Request $request)
     {
         if ($request->type == 2) {
-            $data = PosWhiteGoldSale::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->getshopid())->get();
+            $data = PosWhiteGoldSale::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->get();
         }
 
         return response()->json([
@@ -2560,12 +2560,12 @@ class PosController extends Controller
     }
     public function detail_whitegold_sale($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $categories = Category::all();
         $date = Carbon::now();
         $purchase = PosWhiteGoldSale::find($id);
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $price = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->getshopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $price = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->get_shopid())->first();
         $gradeA = $price->gradeA;
         $gradeB = $price->gradeB;
 
@@ -2573,7 +2573,7 @@ class PosController extends Controller
     }
     public function whitegold_sale_advance_filter(Request $request)
     {
-        $data1 = PosWhiteGoldSale::where('shop_owner_id', $this->getshopid())->get();
+        $data1 = PosWhiteGoldSale::where('shop_owner_id', $this->get_shopid())->get();
         $arr = [];
         if ($request->qualid && $request->catid) {
             foreach ($data1 as $dt) {
@@ -2600,13 +2600,13 @@ class PosController extends Controller
     }
     public function edit_wg_sale($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosWhiteGoldSale::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $purchases = PosWhiteGoldSale::where('shop_owner_id', $this->get_shopid())->get();
         $sale = PosWhiteGoldSale::find($id);
         $date = Carbon::now();
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
-        $price = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->getshopid())->first();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+        $price = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->get_shopid())->first();
         $gradeA = $price->gradeA;
         $gradeB = $price->gradeB;
 
@@ -2614,14 +2614,14 @@ class PosController extends Controller
     }
     public function sale_wg_purchase()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosWhiteGoldPurchase::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $purchases = PosWhiteGoldPurchase::where('shop_owner_id', $this->get_shopid())->get();
         $date = Carbon::now();
-        $staffs = PosStaff::where('shop_id', $this->getshopid())->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
+        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
         $categories = Category::all();
         $quality = DB::table('pos_qualities')->get();
-        $price = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->getshopid())->first();
+        $price = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->get_shopid())->first();
         $gradeA = $price->gradeA;
         $gradeB = $price->gradeB;
 
@@ -2629,7 +2629,7 @@ class PosController extends Controller
     }
     public function get_sale_wg_values(Request $request)
     {
-        $purchase = PosWhiteGoldPurchase::where('id', $request->purchase_id)->where('shop_owner_id', $this->getshopid())->with('category')->first();
+        $purchase = PosWhiteGoldPurchase::where('id', $request->purchase_id)->where('shop_owner_id', $this->get_shopid())->with('category')->first();
         return response()->json([
             'purchase' => $purchase,
         ]);
@@ -2647,7 +2647,7 @@ class PosController extends Controller
         try {
             $gold_sale = PosWhiteGoldSale::create([
                 'date' => $request->date,
-                'shop_owner_id' => $this->getshopid(),
+                'shop_owner_id' => $this->get_shopid(),
                 'purchase_id' => $request->purchase_id,
                 'staff_id' => $request->staff_id,
                 'counter_shop' => $request->counter,
@@ -2663,7 +2663,7 @@ class PosController extends Controller
             if ($request->credit != 0) {
                 $credit = PosCreditList::create([
                     'purchase_date' => $request->date,
-                    'shop_owner_id' => $this->getshopid(),
+                    'shop_owner_id' => $this->get_shopid(),
                     'purchase_code' => $request->code_number,
                     'credit' => $request->credit,
                     'customer_name' => $request->name,
@@ -2680,7 +2680,7 @@ class PosController extends Controller
             if ($sold < 1) {
                 PosPurchaseSale::create([
                     'purchase_id' => $request->purchase_id,
-                    'shop_owner_id' => $this->getshopid(),
+                    'shop_owner_id' => $this->get_shopid(),
                     'sale_id' => $gold_sale->id,
                     'qty' => 1,
                     'type' => 4,
@@ -2691,10 +2691,10 @@ class PosController extends Controller
                 $exit->save();
             }
 
-            $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             Session::flash('message', 'Gold Sale was successfully Created!');
-            $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
-            $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+            $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+            $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             $shop_price = explode('/', $price->shop_price)[0];
             $price15 = explode('/', $price->inprice_15)[0];
             return view('backend.pos.sale_voucher_list', ['shopowner' => $shopowner, 'sale' => $gold_sale, 'counters' => $counters, 'gold_fee' => $request->price, 'service_fee' => 0, 'diamond_fee' => 0, 'shop_price' => $shop_price, 'price15' => $price15, 'cancel' => 4]);
@@ -2735,20 +2735,20 @@ class PosController extends Controller
     //Diamond
     public function get_diamond_list()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $diamonds = PosDiamond::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $diamonds = PosDiamond::where('shop_owner_id', $this->get_shopid())->get();
         return view('backend.pos.diamond_list', ['shopowner' => $shopowner, 'diamonds' => $diamonds]);
     }
 
     public function get_create_diamond()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.pos.create_diamond', ['shopowner' => $shopowner]);
     }
 
     public function diamond_type_filter(Request $request)
     {
-        $data = PosDiamond::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->getshopid())->get();
+        $data = PosDiamond::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->get();
         return response()->json($data);
     }
 
@@ -2763,7 +2763,7 @@ class PosController extends Controller
         }
         $diamond = PosDiamond::create([
             'date' => $request->date,
-            'shop_owner_id' => $this->getshopid(),
+            'shop_owner_id' => $this->get_shopid(),
             'code_number' => $request->code_number,
             'diamond_name' => $request->diamond_name,
             'carrat_price' => $request->carrat,
@@ -2778,7 +2778,7 @@ class PosController extends Controller
 
     public function edit_diamond($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $diamond = PosDiamond::find($id);
         return view('backend.pos.edit_diamond', ['shopowner' => $shopowner, 'diamond' => $diamond]);
     }
@@ -2814,13 +2814,13 @@ class PosController extends Controller
     //Counter List
     public function get_counter_list()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->getshopid())->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
         return view('backend.pos.counter_list', ['shopowner' => $shopowner, 'counters' => $counters]);
     }
     public function create_counter()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $state = State::all();
         return view('backend.pos.create_counter', ['shopowner' => $shopowner, 'state' => $state]);
     }
@@ -2828,7 +2828,7 @@ class PosController extends Controller
     {
         $counter = PosCounterShop::create([
             'date' => $request->date,
-            'shop_owner_id' => $this->getshopid(),
+            'shop_owner_id' => $this->get_shopid(),
             'shop_name' => $request->shop_name,
             'counter_name' => $request->counter_name,
             'staff_no' => $request->staff_no,
@@ -2847,14 +2847,14 @@ class PosController extends Controller
     }
     public function edit_counter($id)
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $counter = PosCounterShop::find($id);
         $state = State::all();
         return view('backend.pos.edit_counter', ['shopowner' => $shopowner, 'counter' => $counter, 'state' => $state]);
     }
     public function counter_type_filter(Request $request)
     {
-        $data = DB::table('pos_counter_shops')->whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->getshopid())->get();
+        $data = DB::table('pos_counter_shops')->whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->get();
         return response()->json($data);
     }
     public function update_counter(Request $request, $id)
@@ -2891,8 +2891,8 @@ class PosController extends Controller
     //Assign Gold
     public function get_assign_gold()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->getshopid())->first();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
         // dd($credits);
         return view('backend.pos.assign_gold_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
     }
@@ -2901,7 +2901,7 @@ class PosController extends Controller
     {
         $assign = PosAssignGoldPrice::create([
             'date' => $request->date,
-            'shop_owner_id' => $this->getshopid(),
+            'shop_owner_id' => $this->get_shopid(),
             'shop_price' => $request->shop_price . '/' . $request->out_shop_price,
             'price_16' => $request->price_16,
             'outprice_15' => $request->outprice_15 . '/' . $request->out_outprice_15,
@@ -2953,21 +2953,21 @@ class PosController extends Controller
     //Assign Platinum
     public function get_assign_platinum()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $assign_gold_price = PosAssignPlatinumPrice::where('shop_owner_id', $this->getshopid())->first();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $assign_gold_price = PosAssignPlatinumPrice::where('shop_owner_id', $this->get_shopid())->first();
         return view('backend.pos.assign_platinum_history', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
     }
     public function get_assign_platinum_price()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $assign_gold_price = PosAssignPlatinumPrice::where('shop_owner_id', $this->getshopid())->first();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $assign_gold_price = PosAssignPlatinumPrice::where('shop_owner_id', $this->get_shopid())->first();
         return view('backend.pos.assign_platinum_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
     }
     public function store_assign_platinum_price(Request $request)
     {
         $assign = PosAssignPlatinumPrice::create([
             'date' => $request->date,
-            'shop_owner_id' => $this->getshopid(),
+            'shop_owner_id' => $this->get_shopid(),
             'gradeA' => $request->gradeA,
             'gradeB' => $request->gradeB,
             'gradeC' => $request->gradeC,
@@ -2997,21 +2997,21 @@ class PosController extends Controller
     //Assign WhiteGold
     public function get_assign_whitegold()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $assign_gold_price = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->getshopid())->first();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $assign_gold_price = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->get_shopid())->first();
         return view('backend.pos.assign_whitegold_history', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
     }
     public function get_assign_whitegold_price()
     {
-        $shopowner = ShopOwner::where('id', $this->getshopid())->orderBy('created_at', 'desc')->get();
-        $assign_gold_price = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->getshopid())->first();
+        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $assign_gold_price = PosAssignWhiteGoldPrice::where('shop_owner_id', $this->get_shopid())->first();
         return view('backend.pos.assign_whitegold_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
     }
     public function store_assign_whitegold_price(Request $request)
     {
         $assign = PosAssignWhiteGoldPrice::create([
             'date' => $request->date,
-            'shop_owner_id' => $this->getshopid(),
+            'shop_owner_id' => $this->get_shopid(),
             'gradeA' => $request->gradeA,
             'gradeB' => $request->gradeB,
             'gradeC' => $request->gradeC,

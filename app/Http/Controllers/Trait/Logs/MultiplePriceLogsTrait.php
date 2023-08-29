@@ -13,28 +13,29 @@ trait MultiplePriceLogsTrait
 
         // return dd($plus_price);
         $log = [];
-        if (isset(Auth::guard('shop_owner')->user()->id)) {
-            $log['shop_id'] = Auth::guard('shop_owner')->check() ? auth()->user()->id : 0;
-        } elseif (isset(Auth::guard('shop_role')->user()->id)) {
-            $log['shop_id'] = $shop_id;
-        }
+        $log['shop_id'] = $shop_id;
         $log['item_id'] = $subject->id;
-        if (isset(Auth::guard('shop_role')->user()->id)) {
-            $log['user_name'] = Auth::guard('shop_role')->user()->name;
-        } else {
-            $log['user_name'] = Auth::guard('shop_owner')->user()->name;
-        }
-        if (isset(Auth::guard('shop_owner')->user()->id)) {
-            $log['user_role'] = 'shopowner';
-        } elseif (isset(Auth::guard('shop_role')->user()->id)) {
-            if (Auth::guard('shop_role')->user()->role_id == 1) {
+        $log['user_name'] = Auth::guard('shop_owners_and_staffs')->user()->name;
+
+        $userRole = Auth::guard('shop_owners_and_staffs')->user()->role_id;
+        switch ($userRole) {
+            case 1:
                 $log['user_role'] = 'admin';
-            } elseif (Auth::guard('shop_role')->user()->role_id == 2) {
+                break;
+            case 2:
                 $log['user_role'] = 'manager';
-            } elseif (Auth::guard('shop_role')->user()->role_id == 3) {
+                break;
+            case 3:
                 $log['user_role'] = 'staff';
-            }
+                break;
+            case 4:
+                $log['user_role'] = 'shopowner';
+                break;
+            default:
+                $log['user_role'] = 'unknown';
+                break;
         }
+
         $log['name'] = $subject->name;
         $log['product_code'] = $subject->product_code;
         if ($subject->min_price > 0) {
@@ -64,29 +65,28 @@ trait MultiplePriceLogsTrait
     public static function MultipleMinusPriceLogs($subject, $plus_price, $shop_id)
     {
         // return dd($subject->price);
-
         $log = [];
-        if (isset(Auth::guard('shop_owner')->user()->id)) {
-            $log['shop_id'] = Auth::guard('shop_owner')->check() ? auth()->user()->id : 0;
-        } elseif (isset(Auth::guard('shop_role')->user()->id)) {
-            $log['shop_id'] = $shop_id;
-        }
+        $log['shop_id'] = $shop_id;
 
-        if (isset(Auth::guard('shop_role')->user()->id)) {
-            $log['user_name'] = Auth::guard('shop_role')->user()->name;
-        } else {
-            $log['user_name'] = Auth::guard('shop_owner')->user()->name;
-        }
-        if (isset(Auth::guard('shop_owner')->user()->id)) {
-            $log['user_role'] = 'shopowner';
-        } elseif (isset(Auth::guard('shop_role')->user()->id)) {
-            if (Auth::guard('shop_role')->user()->role_id == 1) {
+        $log['user_name'] = Auth::guard('shop_owners_and_staffs')->user()->name;
+
+        $userRole = Auth::guard('shop_owners_and_staffs')->user()->role_id;
+        switch ($userRole) {
+            case 1:
                 $log['user_role'] = 'admin';
-            } elseif (Auth::guard('shop_role')->user()->role_id == 2) {
+                break;
+            case 2:
                 $log['user_role'] = 'manager';
-            } elseif (Auth::guard('shop_role')->user()->role_id == 3) {
+                break;
+            case 3:
                 $log['user_role'] = 'staff';
-            }
+                break;
+            case 4:
+                $log['user_role'] = 'shopowner';
+                break;
+            default:
+                $log['user_role'] = 'unknown';
+                break;
         }
 
         $log['item_id'] = $subject->id;

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\ShopOwner;
 
-use App\Facade\TzGate;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\FacebookTrait;
 use App\Http\Controllers\Trait\Logs\MultipleDamageLogsTrait;
@@ -13,7 +12,6 @@ use App\Http\Controllers\Trait\UserRole;
 use App\Http\Controllers\Trait\YKImage;
 use App\Http\Requests\ShopOwner\ItemCreateRequest;
 use App\Http\Requests\ShopOwner\ItemEditRequest;
-
 use App\Http\Requests\ShopOwner\ItemsRecapUpdateRequest;
 use App\Http\Requests\ShopOwner\MultiplePriceUpdateRequest;
 use App\Models\Collection;
@@ -21,25 +19,23 @@ use App\Models\Discount;
 use App\Models\Gems;
 use App\Models\Item;
 use App\Models\ItemLogActivity;
-use App\Models\ItemsEditDetailLogs;
 use App\Models\MainCategory;
 use App\Models\MultipleDamageLogs;
 use App\Models\MultipleDiscountLogs;
 use App\Models\MultiplePriceLogs;
 use App\Models\PercentTemplate;
 use App\Models\Shops;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Validator;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Storage;
 
 class ItemsController extends Controller
 {
@@ -114,7 +110,7 @@ class ItemsController extends Controller
             ->toJson();
 
         return DataTables::of($query)
-            ->addColumn('created_at_formatted', fn ($record) => $record->created_at->format('F d, Y ( h:i A )'))
+            ->addColumn('created_at_formatted', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->toJson();
     }
 
@@ -264,7 +260,7 @@ class ItemsController extends Controller
             $get_path = $this->save_image($file, $imageName[$key], 'items/');
         }
         foreach ($jdmidimage as $key => $value) {
-            $this->base64_to_image($value['data'], 'items/mid/' .  $imageName[$key]);
+            $this->base64_to_image($value['data'], 'items/mid/' . $imageName[$key]);
         }
         foreach ($jdthumbimage as $key => $value) {
             $this->base64_to_image($value['data'], 'items/thumbs/' . $imageName[$key]);
@@ -409,10 +405,10 @@ class ItemsController extends Controller
 
         }
         foreach ($jdmidimage as $key => $value) {
-            $this->base64_to_image($value['data'], 'items/mid/' .  $imageName[$key]);
+            $this->base64_to_image($value['data'], 'items/mid/' . $imageName[$key]);
         }
         foreach ($jdthumbimage as $key => $value) {
-            $this->base64_to_image($value['data'], 'items/thumbs/' .  $imageName[$key]);
+            $this->base64_to_image($value['data'], 'items/thumbs/' . $imageName[$key]);
         }
         foreach ($imageName as &$imn) {
             foreach ($all_image_fields as $af) {
@@ -456,7 +452,6 @@ class ItemsController extends Controller
                 discount::where('item_id', $request->id)->delete();
             } else {
             }
-
 
             //            $dis = discount::where('item_id', $request->id)->get();
             //            foreach ($dis as $d) {
@@ -765,7 +760,7 @@ class ItemsController extends Controller
 
         return view('backend.shopowner.item.edit', ['cat_list' => $cat_list, 'main_cat' => $main_cat, 'shopowner' => $this->current_shop_data(), 'item' => $item, 'collection' => $collection]);
     }
-    public function items_photos_delete($id):string
+    public function items_photos_delete($id): string
     {
         $all_image_fields = ['photo_one', 'photo_two', 'photo_three', 'photo_four', 'photo_five', 'photo_six', 'photo_seven', 'photo_eight', 'photo_nine', 'photo_ten'];
         $item = Item::onlyTrashed()->findOrFail($id);
@@ -1099,8 +1094,6 @@ class ItemsController extends Controller
         return response()->json(['msg' => 'success', 'id' => $request->id]);
     }
 
-
-
     public function multiple_update_minus(MultiplePriceUpdateRequest $request): JsonResponse
     {
         $plus_price = $request->price;
@@ -1317,9 +1310,9 @@ class ItemsController extends Controller
     //for delete function of specified item
     public function destroy($id): RedirectResponse
     {
-
-        $item = Item::where('id', $id)->where('shop_id', $this->get_shopid())->delete();
-
+        $shop_id = $this->get_shopid();
+        $item = Item::where('id', $id)->where('shop_id', $shop_id)->delete();
+        $this->ShopsDeleteLog($item, $shop_id);
         // $shopowner_log = Item::where('id', $id)->get();
 
         // $item_log = ItemLogActivity::where('item_id', $id);
@@ -1380,8 +1373,6 @@ class ItemsController extends Controller
 
         return redirect('backside/shop_owner/items_trash');
     }
-
-
 
     public function force_delete($id): RedirectResponse
     {

@@ -51,7 +51,7 @@ class PosSecondPhaseController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:shop_owner,shop_role');
+        $this->middleware('auth:shop_owners_and_staffs');
     }
 
 //Staff

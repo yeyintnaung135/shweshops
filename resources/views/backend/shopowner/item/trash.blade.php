@@ -102,16 +102,14 @@
                             `<a style="margin-right: 5px;" class="btn btn-sm btn-success" href="{{ route('backside.shop_owner.items.restore', [':id']) }}">Restore</a>`;
                         restore = restore.replace(':id', data);
                         var delete_forever = `
-<<<<<<< HEAD
-=======
                             @if (Auth::guard('shop_owners_and_staffs')->check())
->>>>>>> 8d51a8b6a4185854d3a8036d7aff2b6eb385e31e
                             <form id="forceDeleteForm" method="post" action="{{ route('backside.shop_owner.items.forcedelete', [':id']) }}">
                              @csrf
                              @method('DELETE')
                              <button type="button" class="btn btn-sm btn-danger" onclick="Delete()"  >Delete from Trash</button>
 
                             </form>
+                            @endif
                             `;
                         delete_forever = delete_forever.replace(':id', data);
                         return `
