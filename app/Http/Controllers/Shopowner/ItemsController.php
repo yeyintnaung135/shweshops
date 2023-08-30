@@ -161,19 +161,19 @@ class ItemsController extends Controller
         $searchByFromdate = $request->input('searchByFromdate');
         $searchByTodate = $request->input('searchByTodate');
 
-        $query = Item::select(
-            'id', 'product_code', 'default_photo', 'name',
+        $items = Item::select(
+            'id', 'product_code', 'default_photo', 'name', 'shop_id',
             'price', 'min_price', 'max_price', 'created_at')
             ->where('shop_id', $shop_id)
             ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
             ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
-        return DataTables::of($query)
-            ->addColumn('checkbox', fn($record) => $record->id)
-            ->addColumn('check_discount', fn($record) => $record->YkGetDiscount)
-            ->addColumn('price_formatted', fn($record) => $record->formatted_price)
-            ->addColumn('action', fn($record) => $record->id)
-            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
+        return DataTables::of($items)
+            ->addColumn('checkbox', fn($item) => $item->id)
+            ->addColumn('check_discount', fn($item) => $item->YkGetDiscount)
+            ->addColumn('price_formatted', fn($item) => $item->formatted_price)
+            ->addColumn('action', fn($item) => $item->id)
+            ->editColumn('created_at', fn($item) => $item->created_at->format('F d, Y ( h:i A )'))
             ->toJson();
     }
 
@@ -237,7 +237,6 @@ class ItemsController extends Controller
     //start storing data
     public function store(ItemcreateRequest $request): JsonResponse
     {
-
         // $this->ShopsaddToLog($id);
         $input = $request->except('_token');
         if ($input['price'] > 9999999999 or $input['min_price'] > 9999999999 or $input['max_price'] > 9999999999 or ($input['min_price'] > $input['max_price'])) {
@@ -1379,7 +1378,9 @@ class ItemsController extends Controller
 
         discount::onlyTrashed()->where('item_id', $id)->where('shop_id', $this->get_shopid())->forceDelete();
         $this->items_photos_delete($id);
-        Item::onlyTrashed()->where('id', $id)->where('shop_id', $this->get_shopid())->forceDelete();
+        $forceDeletedItem = Item::onlyTrashed()->where('id', $id)->where('shop_id', $this->get_shopid())->first();
+        $forceDeletedItem->forceDelete();
+        $this->ShopsForceDeleteLog($forceDeletedItem, $this->get_shopid());
 
         Session::flash('message', 'Your item was successfully hard deleted ');
 

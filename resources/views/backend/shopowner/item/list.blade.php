@@ -29,7 +29,7 @@
 @section('content')
     <div class="wrapper">
         {{-- loading stuck for some reason --}}
-        {{-- @include('backend.shopowner.loading') --}}
+        @include('backend.shopowner.loading')
         @include('layouts.backend.navbar')
 
 
@@ -131,18 +131,6 @@
                                                 <td>Date</td>
                                             </tr>
                                         </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <td>Select</td>
-                                                <td>Name</td>
-                                                <td>Discount</td>
-                                                <td>Image</td>
-                                                <td>Product Code</td>
-                                                <td class="price">Price</td>
-                                                <td>Action</td>
-                                                <td>Date</td>
-                                            </tr>
-                                        </tfoot>
                                     </table>
 
                                 </div>

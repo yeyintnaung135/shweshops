@@ -35,7 +35,7 @@ trait ShopsLogActivityTrait
 
         $log['action'] = 'Delete';
 
-        $role = $action->role_id;
+        $role = Auth::guard('shop_owners_and_staffs')->user()->role_id;
         $roles = [1 => 'admin', 2 => 'manager', 3 => 'staff', 4 => 'shopowner'];
         $log['role'] = $roles[$role] ?? 'unknown';
 
@@ -56,10 +56,10 @@ trait ShopsLogActivityTrait
         $log['product_code'] = $action->product_code;
         $log['item_name'] = $action->name;
         $log['category'] = $action->category_id;
-        $log['user_name'] = Auth::guard('shop_owner')->check() ? auth()->user()->name : 0;
+        $log['user_name'] = Auth::guard('shop_owners_and_staffs')->user()->name;
         $log['action'] = 'Create';
 
-        $role = $action->role_id;
+        $role = Auth::guard('shop_owners_and_staffs')->user()->role_id;
         $roles = [1 => 'admin', 2 => 'manager', 3 => 'staff', 4 => 'shopowner'];
         $log['role'] = $roles[$role] ?? 'unknown';
 
@@ -79,10 +79,34 @@ trait ShopsLogActivityTrait
         $log['product_code'] = $action->product_code;
         $log['item_name'] = $action->name;
         $log['category'] = $action->category_id;
-        $log['user_name'] = Auth::guard('shop_owner')->check() ? auth()->user()->name : 0;
+        $log['user_name'] = Auth::guard('shop_owners_and_staffs')->user()->name;
         $log['action'] = 'Edit';
 
-        $role = $action->role_id;
+        $role = Auth::guard('shop_owners_and_staffs')->user()->role_id;
+        $roles = [1 => 'admin', 2 => 'manager', 3 => 'staff', 4 => 'shopowner'];
+        $log['role'] = $roles[$role] ?? 'unknown';
+
+        $shopownerlogid = ShopOwnerLogActivity::create($log);
+        return $shopownerlogid;
+    }
+
+    public static function ShopsForceDeleteLog($action, $shop_id)
+    {
+        $log = [];
+        $log['shop_id'] = $shop_id;
+        $shop_name = Shops::where('id', $log['shop_id'])->get('name');
+
+        foreach ($shop_name as $shop_name) {
+            $log['shop_name'] = $shop_name->name;
+        }
+        $log['item_id'] = $action->id;
+        $log['product_code'] = $action->product_code;
+        $log['item_name'] = $action->name;
+        $log['category'] = $action->category_id;
+        $log['user_name'] = Auth::guard('shop_owners_and_staffs')->user()->name;
+        $log['action'] = 'ForceDelete';
+
+        $role = Auth::guard('shop_owners_and_staffs')->user()->role_id;
         $roles = [1 => 'admin', 2 => 'manager', 3 => 'staff', 4 => 'shopowner'];
         $log['role'] = $roles[$role] ?? 'unknown';
 
