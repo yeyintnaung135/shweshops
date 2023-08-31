@@ -37,8 +37,8 @@ trait MultipleDamageLogsTrait
 
         $log['name'] = $subject->name;
         $log['product_code'] = $subject->product_code;
-        $log['new_decrease'] = $old_percent->အလျော့တွက်;
-        $log['new_fee'] = $old_percent->လက်ခ;
+        $log['new_decrease'] = $old_percent->new_decrease;
+        $log['new_fee'] = $old_percent->fee;
         $log['new_undamage'] = $old_percent->undamaged_product;
         $log['new_damage'] = $old_percent->damaged_product;
         $log['new_expensive_thing'] = $old_percent->valuable_product;

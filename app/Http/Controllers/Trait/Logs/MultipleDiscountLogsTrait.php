@@ -103,11 +103,7 @@ trait MultipleDiscountLogsTrait
 
         $log = [];
 
-        if (isset(Auth::guard('shop_owner')->user()->id)) {
-            $log['shop_id'] = Auth::guard('shop_owner')->user()->id;
-        } elseif (isset(Auth::guard('shop_role')->user()->id)) {
-            $log['shop_id'] = $shop_id;
-        }
+        $log['shop_id'] = $shop_id;
         $log['item_id'] = $p->id;
         $log['user_name'] = Auth::guard('shop_owners_and_staffs')->user()->name;
 

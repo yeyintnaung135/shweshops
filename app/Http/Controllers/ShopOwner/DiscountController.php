@@ -4,33 +4,33 @@ namespace App\Http\Controllers\ShopOwner;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\Firebase;
-use App\Http\Controllers\Trait\Logs\MultipleDamageLogsTrait;
 use App\Http\Controllers\Trait\Logs\MultipleDiscountLogsTrait;
 use App\Http\Controllers\Trait\UserRole;
 use App\Models\Discount;
 use App\Models\Item;
 use App\Models\UserNoti;
 use GuzzleHttp\Middleware;
+use Illuminate\Contracts\Validation\Validator as ValidationValidator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Validation\Validator;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
 class DiscountController extends Controller
 {
-    use UserRole, MultipleDamageLogsTrait, MultipleDiscountLogsTrait;
+    use UserRole, MultipleDiscountLogsTrait;
 
     public function __construct()
     {
         $this->middleware('auth:shop_owners_and_staffs');
     }
 
-    public function validate_dis($data): Validator
+    public function validate_dis($data): ValidationValidator
     {
         $message = [
             'percent.required' => 'Percent တန်ဖိုး ထည့်ပေးရန်',
@@ -130,7 +130,7 @@ class DiscountController extends Controller
     public function discount($id): View
     {
 
-        $hasdiscount = discount::where('item_id', $id);
+        $hasdiscount = Discount::where('item_id', $id);
         if ($hasdiscount->count() > 0) {
             return 'Already Has';
         }

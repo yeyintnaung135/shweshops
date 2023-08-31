@@ -45,7 +45,7 @@ class Item extends Model
 
     public function getWithoutspaceShopnameAttribute()
     {
-        $shop_name_for_space = Shops::select('id','shop_name','shop_name_url')->where('id', $this->shop_id)->first();
+        $shop_name_for_space = Shops::select('id', 'shop_name', 'shop_name_url')->where('id', $this->shop_id)->first();
         if (empty($shop_name_for_space)) {
             return 'noshop' . $this->shop_id;
         } else {
@@ -72,7 +72,7 @@ class Item extends Model
 
     public function getShopNameAttribute()
     {
-        $shop_name = Shops::select('shop_logo','shop_name')->where('id', $this->shop_id)->first();
+        $shop_name = Shops::select('shop_logo', 'shop_name')->where('id', $this->shop_id)->first();
         return $shop_name;
     }
 
@@ -252,24 +252,16 @@ class Item extends Model
 
     public function getCheckDiscountAttribute()
     {
-        $check = discount::where('item_id', $this->id);
+        $discount = Discount::where('item_id', $this->id)->first();
 
-        if ($check->count() > 0) {
-            return $check->first()->id;
-        } else {
-            return 0;
-        }
+        return $discount ? $discount->id : 0;
     }
 
     public function getYkgetDiscountAttribute()
     {
-        $check = discount::where('item_id', $this->id);
+        $discount = Discount::where('item_id', $this->id)->first();
 
-        if ($check->count() > 0) {
-            return $check->first();
-        } else {
-            return 0;
-        }
+        return $discount ?? 0;
     }
 
     public function getUserNameAttribute()
