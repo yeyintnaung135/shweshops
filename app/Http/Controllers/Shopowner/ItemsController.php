@@ -357,7 +357,6 @@ class ItemsController extends Controller
         //        if (!$this->itisowneritem($request->id)) {
         //            return $this->unauthorize();
         //        }
-        return response()->json($request);
         $old_tags = DB::table('tagging_tagged')->where('taggable_id', $request->id)->get();
         $item_tag = Item::where('id', $request->id)->first();
         $item_tagarray = explode(',', $item_tag->tags);
@@ -425,7 +424,7 @@ class ItemsController extends Controller
                 }
             }
         }
-        $change = Item::where('id', $request->id);
+        $change = Item::where('id', $request->id)->first();
         $input['review'] = 'default';
 
         // return dd($change);
@@ -433,7 +432,7 @@ class ItemsController extends Controller
 
             $shop_id = $this->get_shopid();
 
-            $this->ShopsEditLog($request, $shop_id);
+            $this->ShopsEditLog($change, $shop_id);
             Item::find($request->id)->retag($request->all()['tags']);
 
             $checkgcount = Gems::where('item_id', $request->id)->count();
@@ -1308,9 +1307,9 @@ class ItemsController extends Controller
     //for delete function of specified item
     public function destroy($id): RedirectResponse
     {
-        dd($id);
         $shop_id = $this->get_shopid();
-        $item = Item::where('id', $id)->where('shop_id', $shop_id)->delete();
+        $item = Item::where('id', $id)->where('shop_id', $shop_id)->first();
+        $item->delete();
         $this->ShopsDeleteLog($item, $shop_id);
         // $shopowner_log = Item::where('id', $id)->get();
 

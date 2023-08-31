@@ -14,22 +14,11 @@ trait ShopsLogActivityTrait
     {
         $log = [];
         $log['shop_id'] = $shop_id;
-        $shop_name = Shops::where('id', $log['shop_id'])->get('name');
-
-        foreach ($shop_name as $shop_name) {
-            $log['shop_name'] = $shop_name->name;
-        }
-
-        foreach ($action as $action) {
-            $log['item_id'] = $action->id;
-            $log['product_code'] = $action->product_code;
-            $log['item_name'] = $action->name;
-            $log['category'] = $action->category_id;
-        }
-
-        foreach ($shop_name as $shop_name) {
-            $log['shop_name'] = $shop_name->name;
-        }
+        $log['shop_name'] = Shops::where('id', $log['shop_id'])->value('name');
+        $log['item_id'] = $action->id;
+        $log['product_code'] = $action->product_code;
+        $log['item_name'] = $action->name;
+        $log['category'] = $action->category_id;
 
         $log['user_name'] = Auth::guard('shop_owners_and_staffs')->user()->name;
 
@@ -47,11 +36,7 @@ trait ShopsLogActivityTrait
 
         $log = [];
         $log['shop_id'] = $shop_id;
-        $shop_name = Shops::where('id', $log['shop_id'])->get('name');
-
-        foreach ($shop_name as $shop_name) {
-            $log['shop_name'] = $shop_name->name;
-        }
+        $log['shop_name'] = Shops::where('id', $log['shop_id'])->value('name');
         $log['item_id'] = $action->id;
         $log['product_code'] = $action->product_code;
         $log['item_name'] = $action->name;
@@ -70,11 +55,7 @@ trait ShopsLogActivityTrait
     {
         $log = [];
         $log['shop_id'] = $shop_id;
-        $shop_name = Shops::where('id', $log['shop_id'])->get('name');
-
-        foreach ($shop_name as $shop_name) {
-            $log['shop_name'] = $shop_name->name;
-        }
+        $log['shop_name'] = Shops::where('id', $log['shop_id'])->value('name');
         $log['item_id'] = $action->id;
         $log['product_code'] = $action->product_code;
         $log['item_name'] = $action->name;
@@ -94,11 +75,7 @@ trait ShopsLogActivityTrait
     {
         $log = [];
         $log['shop_id'] = $shop_id;
-        $shop_name = Shops::where('id', $log['shop_id'])->get('name');
-
-        foreach ($shop_name as $shop_name) {
-            $log['shop_name'] = $shop_name->name;
-        }
+        $log['shop_name'] = Shops::where('id', $log['shop_id'])->value('name');
         $log['item_id'] = $action->id;
         $log['product_code'] = $action->product_code;
         $log['item_name'] = $action->name;
