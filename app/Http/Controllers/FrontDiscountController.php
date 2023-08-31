@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\discount;
 use App\Models\Item;
-use App\Models\Shopowner;
+use App\Models\Shops;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -13,7 +13,7 @@ class FrontDiscountController extends Controller
     //
     public function see_all($shop_id){
       if($shop_id != 'all'){
-          $temp_shop_name = Shopowner::where('id', $shop_id)->first()->id;
+          $temp_shop_name = Shops::where('id', $shop_id)->first()->id;
 
           $shop_id = $temp_shop_name;
           $discount_items=Item::select('items.*')->leftjoin('discount', 'items.id', '=', 'discount.item_id')->where('discount.shop_id','=',$shop_id)->whereNotNull('discount.id')->orderBy('discount.percent','DESC')->take('20')->get();

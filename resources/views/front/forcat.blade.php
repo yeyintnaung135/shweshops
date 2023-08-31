@@ -15,7 +15,7 @@
                 <div id="main-content" class="mt-2 mb-5 col-sm-12 col-xs-12 ">
                     <products_filter
                         :initialitems="{{$data}}"
-                        :discount="'no'"
+                        :discount=false
                         :cat_list="{{$cat_list}}" 
                         :maincat_list="'{{$maincat_list}}'"
                         :cat_id="['{{$cat_id}}']"

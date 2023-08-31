@@ -729,7 +729,8 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-9">
-                    <Products
+                    <Products 
+                    v-if="showproductcom"
                         ref="productcom"
                         @forparent="getdatafromchild"
                     ></Products>
@@ -786,6 +787,7 @@ export default {
     name: "productsFilter",
     data: function () {
         return {
+            showproductcom:true,
             rqcontroller: "",
             showquality: false,
             seemoretext: "see more ...",
@@ -806,7 +808,6 @@ export default {
             price_range: "all",
             error_message: false,
             main_product_type: "all",
-            gold_colour: "all",
             selected_product_quality: "All",
             product_qualities: [
                 "All",
@@ -904,13 +905,11 @@ export default {
             this.byshop = this.selected_shop;
         }
 
-        this.discountonly = false;
 
         this.notnullcatlist = this.cat_list.filter(
             (f) => f.category_id != null
         );
         this.final_maincatlist = this.maincat_list;
-        this.main_product_type = this.maincat_id;
         this.byspecificgems = this.selected_gems;
         this.sortby = this.sort;
         if (this.typesearchfromblade != undefined) {
@@ -971,6 +970,10 @@ export default {
     },
     mounted() {
         this.host = this.$hostname;
+        console.log("maincat",this.maincat_id);
+        this.main_product_type = this.maincat_id;
+        this.discountonly = this.discount;
+
         if (localStorage.getItem("product_quality") != undefined) {
             this.selected_product_quality =
                 localStorage.getItem("product_quality");
@@ -981,7 +984,7 @@ export default {
         this.getstatefromserver();
         // shop list to bind in slider
         this.shoplist = this.shop_ids;
-        this.gold_colour = this.main_product_type;
+
         this.getdatafromserver_bysort();
     },
     beforeUpdate() {
@@ -1204,12 +1207,11 @@ export default {
         // Gender
         getGender: function () {
             localStorage.setItem("selectedgender", this.selectedgender);
-
-            this.$refs.productcom.shownoitems = false;
             localStorage.setItem(
                 "product_quality",
                 this.selected_product_quality
             );
+
             this.static_action_server();
         },
 
@@ -1218,6 +1220,8 @@ export default {
             this.static_action_server();
         },
         static_action_server: function () {
+            this.showloader = true;
+
             this.$refs.productcom.shownoitems = false;
             this.$refs.productcom.filterdata = [];
             this.$refs.productcom.isloadmoreprocessing=false;
@@ -1227,21 +1231,11 @@ export default {
 
             this.getdatafromserver_bysort();
         },
-
         // Gold Type
         getMainProductType: function () {
-            if (this.main_product_type == "all") {
-                this.gold_colour = "all";
-            } else if (this.main_product_type == "၁၂ပဲရည်") {
-                this.gold_colour = "all";
-            } else {
-                this.gold_colour = this.main_product_type;
-            }
-            this.$refs.productcom.shownoitems = false;
+       
+            this.static_action_server();
 
-            this.$refs.productcom.filterdata = [];
-
-            this.getdatafromserver_bysort();
         },
 
         getdatafromserver_bysort: async function () {

@@ -80,11 +80,7 @@ Vue.component(
     require("./components/frontend/discount/DiscountitemsForShopComponent.vue")
         .default
 );
-Vue.component(
-    "test-com",
-    require("./components/test.vue")
-        .default
-);
+
 Vue.component(
     "readmore-detail",
     require("./components/ReadMoreDetail.vue").default
@@ -99,30 +95,18 @@ Vue.component(
     require("./components/frontend/PopitemsComponent.vue").default
 );
 
-Vue.component(
-    "see_all",
-    require("./components/frontend/SeeAllnewitemsComponent.vue").default
-);
+
 Vue.component(
     "newitems-forshop",
     require("./components/frontend/NewitemsforshopComponent.vue").default
 );
-Vue.component(
-    "seeallnews-forshop",
-    require("./components/frontend/seeallnewitemsforshop.vue").default
-);
-Vue.component(
-    "seeallnews-collections",
-    require("./components/frontend/collection/see_all.vue").default
-);
+
+
 Vue.component(
     "pop-items-forshop",
     require("./components/frontend/PopItemsForShopComponent.vue").default
 );
-Vue.component(
-    "see_all_forcat",
-    require("./components/frontend/forcategories/seeallforcat").default
-);
+
 Vue.component(
     "products_filter",
     require("./components/frontend/product/productsFilterComponent").default
@@ -147,10 +131,7 @@ Vue.component(
     "type-search",
     require("./components/frontend/TypesearchComponent.vue").default
 );
-Vue.component(
-    "search-result",
-    require("./components/frontend/SearchresultComponent.vue").default
-);
+
 Vue.component(
     "chat-template",
     require("./components/chat/chattemplate.vue").default
@@ -212,19 +193,12 @@ Vue.use(VueLazyload, {
     loading: Vue.prototype.$hostname + "/tFFest/KSYL.gif",
     attempt: 1,
 });
-import ExampleComponent from "./components/ExampleComponent";
 
 const app = new Vue({
     functional: true,
 
     el: "#app",
-    // render(createElement) {
-    //     return createElement(
-    //         [
-    //             createElement(ExampleComponent),
-    //         ]
-    //     )
-    // },
+
     data: {
         chatdata: [],
         notimessage: "fafe",

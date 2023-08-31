@@ -1308,6 +1308,14 @@
     <div id="to-top" class="scroll-button">
         <a class="" onclick="scrollToTop()" title="Back to Top">Back to Top</a>
     </div>
+    
+
+
+
+
+@endsection
+@push('custom-scripts')
+    <script src="{{ url('test/js/fancybox.js') }}"></script>
     <script>
         if (document.getElementById('clickpayment') != null) {
 
@@ -1317,14 +1325,6 @@
             }
         }
     </script>
-
-
-
-
-@endsection
-@push('custom-scripts')
-    <script src="{{ url('test/js/fancybox.js') }}"></script>
-
     <script>
         $(document).ready(function() {
             $('#similar_slide').owlCarousel({

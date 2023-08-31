@@ -69,13 +69,14 @@
                                     item.id
                                 "
                             >
-                                <div>
-                                    <v-lazy-image
-                                        :src-placeholder="
+                                <div v-lazy-container="{ selector: 'img' }">
+                                    <img
+                                        :data-src="imgurl + item.CheckPhoto"
+                                        :data-loading="
                                             imgurl + item.CheckPhotothumbs
                                         "
-                                        :src="imgurl + item.CheckPhoto"
-                                        class="item_img"
+                                        class="sop-image-w-h"
+                                        lazy="loading"
                                     />
                                 </div>
                             </a>
@@ -177,13 +178,12 @@
                                     item.id
                                 "
                             >
-                                <div>
-                                    <v-lazy-image
-                                        :src-placeholder="
-                                            imgurl + item.CheckPhotothumbs
-                                        "
-                                        :src="imgurl + item.CheckPhoto"
-                                        class="item_img"
+                                <div v-lazy-container="{ selector: 'img' }">
+                                    <img
+                                        :data-src="imgurl + item.CheckPhoto"
+                                        :data-loading="imgurl + item.CheckPhotothumbs"
+                                        class="sop-image-w-h"
+                                        lazy="loading"
                                     />
                                 </div>
                                 <!-- <img :src="host + '/images/items/16806830130392.jpg'" class="sop-image-w-h" /> -->
@@ -219,8 +219,13 @@
     </div>
 </template>
 <script>
-import VLazyImage from "v-lazy-image/v2";
+import VueLazyload from "vue-lazyload";
+import Vue from "vue";
+Vue.use(VueLazyload, {
+    preLoad: 1.3,
 
+    attempt: 1,
+});
 export default {
     props: [
         "initialitems",
@@ -252,9 +257,7 @@ export default {
             ini_check: true,
         };
     },
-    components: {
-        VLazyImage,
-    },
+
     beforeMount() {},
     updated() {},
     mounted() {
@@ -294,6 +297,10 @@ export default {
 .item_img {
     width: 200px !important;
     height: 100px !important;
+}
+img[lazy="loading"] {
+    /*your style here*/
+    width: 200px !important;
 }
 .indi-product {
     width: 50%;

@@ -17,7 +17,7 @@ use App\Models\Contactus;
 use App\Models\discount;
 use App\Models\Event;
 use App\Models\foraddtohome;
-use App\Models\frontuserlogs;
+use App\Models\FrontUserLogs;
 use App\Models\Item;
 use App\Models\MainPopup;
 use App\Models\Manager_fav;
@@ -30,6 +30,7 @@ use App\Models\State;
 use App\Models\Township;
 use App\Models\Usernoti;
 use App\Models\Users_fav;
+use App\Models\UsersFav;
 use App\Models\WishlistClickLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -547,7 +548,7 @@ class FrontController extends Controller
         if (empty($shop)) {
             return abort(404);
         }
-        $this->shopaddToLog($shop->name);
+        $this->shopidaddToLog($shop);
         $id = $shop->id;
 
         //for log
@@ -590,38 +591,36 @@ class FrontController extends Controller
                         WHEN count(items.category_id) = 0 THEN categories.id END ASC,
             case when count(items.category_id) != 0 then count(categories.name) end DESC")->where('shop_id', $id)->get();
 
-        $visitor_view_count = frontuserlogs::where('front_user_logs.shop_id', '=', $id)->count();
-        $fav_count = Users_fav::leftjoin('items', 'items.id', '=', 'users_fav.fav_id')->leftjoin('shops', 'shops.id', '=', 'items.shop_id')->where('items.shop_id', $id)->count();
+        $visitor_view_count =FrontUserLogs::where('front_user_logs.shop_id', '=', $id)->count();
+        $fav_count = UsersFav::leftjoin('items', 'items.id', '=', 'users_fav.fav_id')->leftjoin('shops', 'shops.id', '=', 'items.shop_id')->where('items.shop_id', $id)->count();
         // return count($fav_count);
 
-        $popup = MainPopup::select('video_name', 'ad_title')->where('shop_id', $id)->first();
-        $openingTime = OpeningTimes::select('opening_time')->where('shop_id', $id)->first();
-
-        $news = News::where('shop_id', $id)->get();
-        $news->map(function ($n) {
-            $n['type'] = 'news';
-            return $n;
-        });
-
-        $events = Event::where('shop_id', $id)->get();
-        $events->map(function ($e) {
-            $e['type'] = 'events';
-            return $e;
-        });
-
-        $news_and_events = $news->merge($events)->sortByDesc('updated_at');
-        $collections = Collection::leftJoin('items', 'collection.id', '=', 'items.collection_id')->select('collection.id', 'collection.name', 'items.default_photo')->where('collection.shop_id', $id)->groupBy('collection.id')->orderBy('collection.created_at', 'desc')->get();
-        //dd($collections . "!");
-
-        $premium_type = Shops::leftjoin('premium_templates', 'shops.premium_template_id', '=', 'premium_templates.id')
-            ->select('premium_templates.id')
-            ->where('shops.id', $id)
-            ->first();
-        // dd($premium_status->name);
-        // dd($popup);
+     
         if ($shop->premium == "no") {
             return view('front.shop_detail', ['premium' => $premiumshops, 'othersellers' => $othersellers, 'shop_data' => $shop, 'forcheck_count' => $forcheck_count, 'get_pop_items' => $get_pop_items, 'items' => $remove_discount_item, 'shops' => $shops, 'allcatcount' => $allcatcount, 'discount' => $discount]);
         } else if ($shop->premium == "yes") {
+            $popup = MainPopup::select('video_name', 'ad_title')->where('shop_id', $id)->first();
+            $openingTime = OpeningTimes::select('opening_time')->where('shop_id', $id)->first();
+    
+            $news = News::where('shop_id', $id)->get();
+            $news->map(function ($n) {
+                $n['type'] = 'news';
+                return $n;
+            });
+    
+            $events = Event::where('shop_id', $id)->get();
+            $events->map(function ($e) {
+                $e['type'] = 'events';
+                return $e;
+            });
+    
+            $news_and_events = $news->merge($events)->sortByDesc('updated_at');
+            $collections = Collection::leftJoin('items', 'collection.id', '=', 'items.collection_id')->select('collection.id', 'collection.name', 'items.default_photo')->where('collection.shop_id', $id)->groupBy('collection.id')->orderBy('collection.created_at', 'desc')->get();
+           
+            $premium_type = Shops::leftjoin('premium_templates', 'shops.premium_template_id', '=', 'premium_templates.id')
+            ->select('premium_templates.id')
+            ->where('shops.id', $id)
+            ->first();
             if ($premium_type->id == '1') {
                 return view('front.shop_detail_gold', ['premium' => $premiumshops, 'premium_type' => $premium_type->id, 'othersellers' => $othersellers, 'shop_data' => $shop, 'favcount' => $fav_count, 'forcheck_count' => $forcheck_count, 'get_pop_items' => $get_pop_items, 'items' => $remove_discount_item, 'shops' => $shops, 'allcatcount' => $allcatcount, 'discount' => $discount, 'view_count' => $visitor_view_count, 'popup' => $popup, 'opening' => $openingTime, 'newsNevents' => $news_and_events, 'collections' => $collections]);
             }

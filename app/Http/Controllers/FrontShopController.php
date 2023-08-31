@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\traid\allshops;
+use App\Http\Controllers\Trait\AllShops;
 use App\Models\Item;
-use App\Models\Manager;
-use App\Models\Shopowner;
+use App\Models\ShopOwnersAndStaffs;
+use App\Models\Shops;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +13,7 @@ use App\Http\Controllers\Controller;
 
 class FrontShopController extends Controller
 {
-    use allshops;
+    use AllShops;
 
     //
 //see all for cat by shop
@@ -27,19 +27,19 @@ class FrontShopController extends Controller
         }
 
 
-        $all_shop_id = Shopowner::where('id', '!=', 1)->orderBy('shop_name', 'asc')->get();
-        // $all_shop_id = Shopowner::where('id', '!=', 1)->orderBy('created_at', 'desc')->get();
+        $all_shop_id = Shops::where('id', '!=', 1)->orderBy('shop_name', 'asc')->get();
+        // $all_shop_id = Shops::where('id', '!=', 1)->orderBy('created_at', 'desc')->get();
 
         // for account
         if (isset(Auth::guard('shop_owner')->user()->id)) {
-            $shopowner_acc = Shopowner::where('id', Auth::guard('shop_owner')->user()->id)->orderBy('created_at', 'desc')->get();
+            $shopowner_acc = Shops::where('id', Auth::guard('shop_owner')->user()->id)->orderBy('created_at', 'desc')->get();
         } else if (isset(Auth::guard('shop_role')->user()->id)) {
-            $manager = Manager::where('id', Auth::guard('shop_role')->user()->id)->pluck('shop_id');
-            $shopowner_acc = Shopowner::where('id', $manager)->orderBy('created_at', 'desc')->get();
+            $manager = ShopOwnersAndStaffs::where('id', Auth::guard('shop_role')->user()->id)->pluck('shop_id');
+            $shopowner_acc = Shops::where('id', $manager)->orderBy('created_at', 'desc')->get();
         }
 
 
-            return view('front.forcat_shop', ['data' => $data, 'cat_id' => $cat_name, 'shop_data' => $this->getshopbyid($shop_id), 'shop_ids' => $all_shop_id]);
+            return view('front.forcat_shop', ['data' => $data,'cat_id' => $cat_name, 'shop_data' => $this->getshopbyid($shop_id), 'shop_ids' => $all_shop_id]);
 
         // return $get_by_shopid;
 
@@ -48,7 +48,7 @@ class FrontShopController extends Controller
 
     public function view_more_ajax($limit)
     {
-        $shop = Shopowner::orderBy('id', 'desc')->skip($limit)->take(20)->get();
+        $shop = Shops::orderBy('id', 'desc')->skip($limit)->take(20)->get();
         if (count($shop) < 20) {
           $emptyonserver = 1;
         }else{

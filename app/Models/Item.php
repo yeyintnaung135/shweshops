@@ -130,7 +130,7 @@ class Item extends Model
 
                         return '/items/thumbs/' . $show_photo;
                     } else {
-                        return '/items/' . $show_photo;
+                        return '/items/thumbs/' . $show_photo;
                     }
 
                     break;
@@ -141,7 +141,7 @@ class Item extends Model
 
                 return '/items/thumbs/' . $this->default_photo;
             } else {
-                return '/items/' . $this->default_photo;
+                return '/items/thumbs/' . $this->default_photo;
             }
         }
     }
