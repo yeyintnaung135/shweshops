@@ -2,12 +2,12 @@ const get_data_from_server = (parmsdata) => {
     let cachekey = createcachekey(parmsdata);
     let checkcachehas = check_cache_has_data(cachekey);
     if (!parmsdata.$refs.productcom.isloadmoreprocessing && checkcachehas) {
-        console.log(
-            "cache store",
-            parmsdata.$refs.productcom.isloadmoreprocessing
-        );
-        parmsdata.$refs.productcom.filterdata = get_cache_data_by_key(cachekey);
-        console.log('cf',cachekey);
+     
+
+        parmsdata.$refs.productcom.filterdata = get_cache_data_by_key(cachekey).data;
+        console.log("cf", cachekey);
+
+
     } else {
         console.log(
             "cache not",
@@ -26,7 +26,7 @@ const get_data_from_server = (parmsdata) => {
         }
         // var self = parmsdata;
         parmsdata.rqcontroller = new AbortController();
-        var tmpresp=0;
+        var tmpresp = 0;
 
         axios
             .post(
@@ -43,7 +43,7 @@ const get_data_from_server = (parmsdata) => {
                         cat_id: parmsdata.specific_cat_id,
                         gender: parmsdata.selectedgender,
                         gems: parmsdata.byspecificgems,
-                        gold_colour: parmsdata.gold_colour,
+                        gold_colour: parmsdata.main_product_type,
                         additional: parmsdata.additional,
                         ini_checked: false,
                         discount: parmsdata.discountonly,
@@ -59,7 +59,7 @@ const get_data_from_server = (parmsdata) => {
                 parmsdata.busy = false;
                 parmsdata.showloader = false;
                 var tempthis = parmsdata;
-                tmpresp=response.data[0].length;
+                tmpresp = response.data[0].length;
                 response.data[0].map((d) => {
                     parmsdata.$refs.productcom.filterdata.push(d);
                 });
@@ -71,44 +71,70 @@ const get_data_from_server = (parmsdata) => {
                 }
             })
             .then(() => {
-                if(tmpresp != 0){
-                
-                if (localStorage.getItem("filter_cachedata") == null) {
-                    var cachedata = {};
-                    cachedata[cachekey]=parmsdata.$refs.productcom.filterdata;
-                    localStorage.setItem(
-                        "filter_cachedata",
-                        JSON.stringify(cachedata)
-                    );
-                } else {
-                    var cachedata = JSON.parse(
-                        localStorage.getItem("filter_cachedata")
-                    );
-                    cachedata[cachekey]=parmsdata.$refs.productcom.filterdata;
-                    localStorage.setItem(
-                        "filter_cachedata",
-                        JSON.stringify(cachedata)
-                    );
-                }
-            }
-            console.log('cf',cachekey);
+                if (tmpresp != 0) {
+                    if (localStorage.getItem("filter_cachedata") == null) {
+                        var cachedata = {};
+                        cachedata[cachekey] = {
+                            'data': parmsdata.$refs.productcom.filterdata,
+                            'timeout': new Date().addHours(1),
+                        };
+                        localStorage.setItem(
+                            "filter_cachedata",
+                            JSON.stringify(cachedata)
+                        );
+                        console.log("one", cachedata);
+                    }
+                    else {
+                        var cachedata = {};
+    
+                        var cachedata = JSON.parse(
+                            localStorage.getItem("filter_cachedata")
+                        );
+                        cachedata[cachekey] = {
+                            data: parmsdata.$refs.productcom.filterdata,
+                            timeout: new Date().addHours(5),
+                        };
+                        localStorage.setItem(
+                            "filter_cachedata",
+                            JSON.stringify(cachedata)
+                        );
+                        console.log("ctow", cachedata);
+    
+                    }
 
-            
+                }
+
             });
     }
 };
+Date.prototype.addHours = function(h) {
+    this.setTime(this.getTime() + (h*60*60*1000));
+    return this;
+  }
 const check_cache_has_data = (key) => {
-    let cache_data = JSON.parse(localStorage.getItem("filter_cachedata"));
-    if(cache_data == null){
-        return false;
-    }else{
-        if (cache_data[key] != undefined) {
-            return true;
-        } else {
+ 
+
+    if(localStorage.getItem("filter_cachedata") != undefined){
+        let cache_data = JSON.parse(localStorage.getItem("filter_cachedata"));
+        if (cache_data == null) {
             return false;
+        } else {
+            if (cache_data[key] != undefined) {
+                if(Date.parse(cache_data[key].timeout) < new Date()){
+                    console.log(key,'timeout');
+                    return false;
+                }else{
+                    return true;
+    
+                }
+            } else {
+                return false;
+            }
         }
+    }else{
+        return false;
     }
-   
+  
 };
 const get_cache_data_by_key = (key) => {
     let cache_data = JSON.parse(localStorage.getItem("filter_cachedata"));
@@ -116,6 +142,7 @@ const get_cache_data_by_key = (key) => {
 };
 var cachedata = [];
 const createcachekey = (parmsdata) => {
+    console.log('gafefe',parmsdata.selectedgender);
     let cachekey =
         parmsdata.item_child_id +
         "-" +
@@ -128,7 +155,7 @@ const createcachekey = (parmsdata) => {
         "-" +
         parmsdata.specific_cat_id +
         "-" +
-        +parmsdata.selectedgender +
+        parmsdata.selectedgender +
         "-" +
         parmsdata.byspecificgems +
         "-" +

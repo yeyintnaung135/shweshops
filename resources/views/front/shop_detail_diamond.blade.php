@@ -1,5 +1,4 @@
 @extends('layouts.frontend.frontend')
-@section('content')
 @push('css')
 <style>
     .contact-modal-header{
@@ -16,6 +15,8 @@
 </style>
 
 @endpush
+@section('content')
+
 @include('layouts.frontend.allpart.for_mobile')
 @include('layouts.frontend.allpart.upper_menu')
 @include('layouts.frontend.allpart.menu')

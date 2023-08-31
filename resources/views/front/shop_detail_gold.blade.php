@@ -1,5 +1,4 @@
 @extends('layouts.frontend.frontend')
-@section('content')
 @push('css')
 <style>
     .contact-modal-header{
@@ -16,6 +15,8 @@
 </style>
 
 @endpush
+@section('content')
+
 @include('layouts.frontend.allpart.for_mobile')
 @include('layouts.frontend.allpart.upper_menu')
 @include('layouts.frontend.allpart.menu')
@@ -689,17 +690,6 @@
         //     $("#contact").modal({backdrop: false});
         // });
     });
-//    ` @if(!empty($shop_data->additional_phones))`
-//     $(document).ready(function () {
-//         var additionalPhones = `{!! $shop_data->additional_phones !!}`;
-//         additionalPhones.forEach(phone => {
-//             $("#phone_modal").append(`<a href="tel:` + shop + `" class=" sop-social">
-//                     <i class="sop-social-i fa-solid fa-phone pe-1 pe-md-4 sn-phone"></i>
-//                     ` + shop + `
-//                 </a>`);
-//         });
-//     });
-//    ` @endif`
 
 
     $(document).ready(function () {

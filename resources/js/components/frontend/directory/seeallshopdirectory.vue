@@ -132,12 +132,12 @@
                       >
                         <img
                           v-if="shop.shop_logo"
-                          :src="host + '/images/logo/' + shop.shop_logo"
+                          :src="imgurl + '/shop_owner/logo/thumbs/' + shop.shop_logo"
                           class="sn-image-w-h sn-shop-image"
                         />
                         <img
                           v-else-if="shop.dir_shop_logo"
-                          :src="host + '/images/directory/' + shop.dir_shop_logo"
+                          :src="imgurl + '/directory/' + shop.dir_shop_logo"
                           class="sn-image-w-h sn-shop-image"
                         />
                         <div v-else>

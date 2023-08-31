@@ -6,10 +6,10 @@
     @include('layouts.frontend.allpart.mobile_search')
     <div id="page" class="site my-0 py-0">
 
-    {{--MENU--}}
+        {{-- MENU --}}
 
-    {{-- end Menu--}}
-    <!--.site-content-contain -->
+        {{-- end Menu --}}
+        <!--.site-content-contain -->
         <div class="site-content-contain">
 
         </div>
@@ -21,28 +21,18 @@
 
 
 
-                    <div class="col-12" >
+                    <div class="col-12">
                         @include('layouts.frontend.allpart.loading_wrapper')
 
                     </div>
 
 
 
-                    {{--                    new item--}}
-                    {{-- <see_all_forcat :title_prop="'{{$neworpop}} ITEMS FROM {{$selected_shop}}'"></see_all_forcat> --}}
-                    {{--                    new item--}}
-                    <products_filter
-                      :initialitems="{{$new_items}}"
-                      :discount="'no'"
-                      :cat_list="{{$cat_list}}"
-                      :cat_id="[]"
-                      :shop_ids="{{$shop_ids}}"
-                      :selected_shop="'{{$selected_shop}}'"
-                      :sort="'{{$neworpop}}'"
-                      :selected_gems="[]"
-                      :gender="'all'"
-                      :additional="'{{$shop_id}}'"
-                    ></products_filter>
+                  
+                    <products_filter :initialitems="{{ $new_items }}" :discount=false :cat_list="{{ $cat_list }}"
+                        :cat_id="[]" :maincat_id="'all'" :shop_ids="{{ $shop_ids }}"
+                        :selected_shop="{{ $selected_shop }}" :sort="'{{ $neworpop }}'" :selected_gems="[]"
+                        :gender="'all'" :additional="'{{ $shop_id }}'"></products_filter>
 
 
                 </div>
@@ -54,13 +44,13 @@
 
 
 
-                {{-- <!-- Right Sidebar -->--}}
+                {{-- <!-- Right Sidebar --> --}}
             </div>
         </div>
     </div>
-    {{--<!-- #content -->--}}
+    {{-- <!-- #content --> --}}
 
-    {{--    <!-- .site-content-contain -->--}}
+    {{--    <!-- .site-content-contain --> --}}
     <div class="pt-5">
         @include('layouts.frontend.allpart.footer')
     </div>
@@ -70,24 +60,19 @@
     @include('layouts.frontend.allpart.mobile_footer')
 
     <div id="to-top" class="scroll-button">
-      <a class="" onclick="scrollToTop()" title="Back to Top">Back to Top</a>
+        <a class="" onclick="scrollToTop()" title="Back to Top">Back to Top</a>
     </div>
 
     <div class="popupshadow" style="display:none"></div>
 
-
-
+    </div>
 @endsection
-@push('script')
-@endpush
 
 @push('css')
-<style>
-.remove_wrapp{
-    height: 222px !important;
-    position:relative !important;
-}
-</style>
-
+    <style>
+        .remove_wrapp {
+            height: 222px !important;
+            position: relative !important;
+        }
+    </style>
 @endpush
-

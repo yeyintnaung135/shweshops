@@ -26,7 +26,7 @@
                     {{-- <see_all_forcat :title_prop="'ALL DISCOUNT ITEMS'"></see_all_forcat>  --}}
                     <products_filter
                       :initialitems="{{$new_items}}"
-                      :discount="'yes'"
+                      :discount=true
                       :cat_list="{{$cat_list}}"
                       :cat_id="[]"
                       :shop_ids="{{$shop_ids}}"

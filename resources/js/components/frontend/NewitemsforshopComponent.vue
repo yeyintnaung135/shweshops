@@ -18,7 +18,7 @@
                 style="width: 100% !important"
               >
                 <img
-                  :src="host + '/images/logo/thumbs/' + item.ShopName.shop_logo"
+                :src="imgurl + '/shop_owner/logo/thumbs/' + item.ShopName.shop_logo"
                   class="yk-hover-logo float-left"
                 />
                 
@@ -37,10 +37,16 @@
                 host + '/' + item.WithoutspaceShopname + '/product_detail/' + item.id
               "
             >
-              <img
-                v-lazy="imgurl + item.CheckPhoto"
-                class="sop-image-w-h w-sm-100 rounded"
-              />
+            <div v-lazy-container="{ selector: 'img' }">
+                                    <img
+                                        :data-src="imgurl + item.CheckPhoto"
+                                        :data-loading="
+                                            imgurl + item.CheckPhotothumbs
+                                        "
+                                        class="sop-image-w-h"
+                                        lazy="loading"
+                                    />
+                                </div>
             </a>
           </div>
           <p style="color:#222 text-align:left;" class="my-2">{{ item.name }}</p>
@@ -97,7 +103,13 @@
 
 <script>
 import axios from "axios";
+import VueLazyload from "vue-lazyload";
 import Vue from "vue";
+Vue.use(VueLazyload, {
+    preLoad: 1.3,
+
+    attempt: 1,
+});
 
 export default {
   props: ["newitems", "uri"],
@@ -182,6 +194,10 @@ export default {
 </script>
 
 <style>
+img[lazy="loading"] {
+    /*your style here*/
+    width: 200px !important;
+}
 .yk-fade {
   -webkit-animation: fade 2s;
   -moz-animation: fade 2s;
