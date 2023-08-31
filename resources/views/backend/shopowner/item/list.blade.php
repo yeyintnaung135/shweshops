@@ -29,7 +29,7 @@
 @section('content')
     <div class="wrapper">
         {{-- loading stuck for some reason --}}
-        {{-- @include('backend.shopowner.loading') --}}
+        @include('backend.shopowner.loading')
         @include('layouts.backend.navbar')
 
 
@@ -131,18 +131,6 @@
                                                 <td>Date</td>
                                             </tr>
                                         </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <td>Select</td>
-                                                <td>Name</td>
-                                                <td>Discount</td>
-                                                <td>Image</td>
-                                                <td>Product Code</td>
-                                                <td class="price">Price</td>
-                                                <td>Action</td>
-                                                <td>Date</td>
-                                            </tr>
-                                        </tfoot>
                                     </table>
 
                                 </div>
@@ -938,8 +926,8 @@
                     price: jQuery('#changepricebox').val(),
                     id: item_id,
                     oper: oper,
-                    အလျော့ တွ က်: $("input[name=အလျော့တွက်]").val(),
-                    လက် ခ: $("input[name=လက်ခ]").val(),
+                    အလျော့တွက်: $("input[name=အလျော့တွက်]").val(),
+                    လက်ခ: $("input[name=လက်ခ]").val(),
                     undamaged_product: $("input[name=undamaged_product]").val(),
                     damaged_product: $("input[name=damaged_product]").val(),
                     valuable_product: $("input[name=valuable_product]").val()
@@ -971,17 +959,17 @@
 
                         }
                     } else {
-                        if (response['data'].အလျော့ တွ က် != undefined) {
+                        if (response['data'].အလျော့တွက် != undefined) {
                             $("input[name=အလျော့တွက်]").addClass('is-invalid');
                             $("#error_အလျော့တွက်").removeClass('d-none');
                             $("#error_အလျော့တွက်").addClass('d-block');
-                            $("#error_အလျော့တွက်").html(response['data'].အလျော့ တွ က်[0]);
+                            $("#error_အလျော့တွက်").html(response['data'].အလျော့တွက်[0]);
                         }
-                        if (response['data'].လက် ခ != undefined) {
+                        if (response['data'].လက်ခ != undefined) {
                             $("input[name=လက်ခ]").addClass('is-invalid');
                             $("#error_လက်ခ").removeClass('d-none');
                             $("#error_လက်ခ").addClass('d-block');
-                            $("#error_လက်ခ").html(response['data'].လက် ခ[0]);
+                            $("#error_လက်ခ").html(response['data'].လက်ခ[0]);
                         }
                         if (response['data'].undamaged_product != undefined) {
                             $("input[name=undamaged_product]").addClass('is-invalid');
@@ -1174,11 +1162,11 @@
                 data: {
                     _token: '{{ csrf_token() }}',
                     id: item_id,
-                    အလျော့ တွ က်: jQuery("input[name=အလျော့တွက်]").val(),
-                    လက် ခ: jQuery("input[name=လက်ခ]").val(),
+                    အလျော့တွက်: jQuery("input[name=အလျော့တွက်]").val(),
+                    လက်ခ: jQuery("input[name=လက်ခ]").val(),
                     undamaged_product: jQuery("input[name=undamaged_product]").val(),
                     damaged_product: jQuery("input[name=damaged_product]").val(),
-                    တန် ဖိုး မြ င့်: jQuery("input[name=valuable_product]").val(),
+                    တန်ဖိုးမြင့်: jQuery("input[name=valuable_product]").val(),
 
                 },
                 error: function(err) {
