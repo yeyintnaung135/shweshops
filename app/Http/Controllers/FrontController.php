@@ -541,7 +541,7 @@ class FrontController extends Controller
     {
         $id = DB::table('shops')->where('name', $shopname)->value('id');
 
-        $shop = Shops::whereRaw("REPLACE(shop_name,' ','') = '" . $shopname . "'")
+        $shop = Shops::whereRaw("REPLACE(shop_name,' ','') = ?",[$shopname])
             ->orWhere('shop_name_url', $shopname)
             ->with(['getPhotos'])
             ->first();

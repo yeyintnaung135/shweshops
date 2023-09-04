@@ -301,7 +301,7 @@ class FrontforcatController extends Controller
                 ->where(function ($query) use ($request, $checkcat) {
                     $query->where('items.name', 'like', '%' . $request->filtertype['typesearch'] . '%')
                         ->orWhere('items.name', 'like', '%' . $request->filtertype['typesearch'] . '%')
-                        ->orwhereRaw("tagging_tagged.tag_name REGEXP '(" . $request->filtertype['typesearch'] . ")'")
+                        ->orwhereRaw("tagging_tagged.tag_name REGEXP (?)",[ $request->filtertype['typesearch'] ])
                         ->orWhere('items.category_id', 'like', $checkcat)
                         ->orWhere('items.gold_quality', 'like', $request->filtertype['typesearch'] . '%')
                         // ->orWhere('items.gold_colour', 'like', $request->filtertype['typesearch'] . '%')
@@ -310,7 +310,6 @@ class FrontforcatController extends Controller
                         ->orWhere('items.product_code', 'like', '%' . $request->filtertype['typesearch'] . '%')
                         ->orWhere('items.product_code', 'like', '%' . $request->filtertype['typesearch'] . '%');
                 })
-                // ->toSql();
                 ->pluck('id');
 
             $tostring = implode(",", $typesearchresult->toArray());
@@ -331,7 +330,7 @@ class FrontforcatController extends Controller
             ->where(function ($query) use ($gems) {
                 if (!empty($gems)) {
                     foreach ($gems as $gem) {
-                        $query->orwhereRaw("for_gems_and_diamonds.gems REGEXP '" . $gem . "'");
+                        $query->orwhereRaw("for_gems_and_diamonds.gems REGEXP ?",[ $gem ]);
                     }
                 }
             })

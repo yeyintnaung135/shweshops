@@ -246,7 +246,7 @@ trait ForYouLogic
             }
 
             $resultdata = Item::leftjoin('discount', 'items.id', '=', 'discount.item_id')
-                ->leftjoin('shop_owners', 'shop_owners.id', '=', 'items.shop_id')->select('items.*', 'items.id as item_id')
+                ->leftjoin('shops', 'shops.id', '=', 'items.shop_id')->select('items.*', 'items.id as item_id')
                 ->whereIn('items.category_id', $catonlyname)
                 ->whereIn('items.main_category', $this->foryoumaincat()->pluck('main_category'))
                 ->where(function ($query) use ($pricemin, $pricemax) {
@@ -258,7 +258,7 @@ trait ForYouLogic
                 })
                 ->whereIn('gender', $genderlist)
             // ->whereIn('items.shop_id',$allshoplist)
-                ->whereNotNull('shop_owners.id')
+                ->whereNotNull('shops.id')
                 ->orderByRaw("CASE
         WHEN discount.discount_price = 0 THEN discount.discount_min
         WHEN discount.discount_price !=  0 THEN discount.discount_price

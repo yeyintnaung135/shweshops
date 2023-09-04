@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\UserLoginandRegisterController;
 use App\Http\Controllers\Auth\YkforgotpasswordController;
 use App\Http\Controllers\forfacebook\FacebookController;
 use App\Http\Controllers\FrontController;
@@ -80,10 +80,12 @@ Route::group(
         // require "payment.php";
 
         //for frontend
-        Route::post('checkvalidate', [RegisterController::class, 'checkvalidate']);
-        Route::post('checkvalidateregister', [RegisterController::class, 'check_validate_register']);
-        Route::post('checkcodereg', [RegisterController::class, 'checkcodereg']);
-        Route::post('updatename', [RegisterController::class, 'update_name']);
+        Route::post('checkvalidate', [UserLoginandRegisterController::class, 'checkvalidate']);
+        Route::post('resend_code', [UserLoginandRegisterController::class, 'resend_code']);
+
+        Route::post('checkvalidateregister', [UserLoginandRegisterController::class, 'check_validate_register']);
+        Route::post('checkcodereg', [UserLoginandRegisterController::class, 'checkcodereg']);
+        Route::post('updatename', [UserLoginandRegisterController::class, 'update_name']);
         Route::get('/', [FrontController::class, 'index'])->name('front');
         Route::get('/gold_calculator', [FrontController::class, 'gold_calculator']);
         // zh
@@ -292,7 +294,7 @@ Route::post('/get_shops_byfilter', [FrontController::class, 'get_shops_byfilter'
 //test
 Route::get('backside/pos/index', [PosController::class, 'index']);
 
-Route::get('baydin', [Auth\RegisterController::class, 'baydin']);
+Route::get('baydin', [Auth\UserLoginandRegisterController::class, 'baydin']);
 
 Route::get('terms', function () {
     return view('front.terms');
