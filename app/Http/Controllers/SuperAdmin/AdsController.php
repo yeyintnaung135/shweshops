@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
-use Illuminate\Support\Facades\Storage;
-
-use App\Facade\Repair;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Trait\YKImage;
 use App\Http\Controllers\Trait\Logs\SuperAdminLogActivityTrait;
+use App\Http\Controllers\Trait\YKImage;
 use App\Http\Requests\SuperAdmin\Ads\StoreAdsImageRequest;
 use App\Http\Requests\SuperAdmin\Ads\UpdateAdsImageRequest;
 use App\Models\Ads;
@@ -19,9 +16,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
-use Illuminate\Support\Str;
 
 class AdsController extends Controller
 {
@@ -62,9 +60,7 @@ class AdsController extends Controller
             ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
         return DataTables::of($recordsQuery)
-            ->editColumn('created_at', function ($record) {
-                return date('F d, Y ( h:i A )', strtotime($record->created_at));
-            })
+            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->toJson();
 
     }
@@ -92,7 +88,7 @@ class AdsController extends Controller
             ->editColumn('created_at', function ($record) {
                 return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
-            ->addColumn('action', fn ($record) => $record->id)
+            ->addColumn('action', fn($record) => $record->id)
             ->rawColumns(['deleted_at'])
             ->make(true);
     }
@@ -115,10 +111,8 @@ class AdsController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-
     public function store_video(StoreAdsImageRequest $request): mixed
     {
-
 
         $shop_name = Shops::where('id', $request->shop_id)->first();
 
@@ -241,15 +235,13 @@ class AdsController extends Controller
                 Storage::disk('public_image')->delete('/ads/' . $ads->image);
             }
 
-
             $file = $request->file('photo');
-
 
             $imageName = strtolower($statictimestamp . '_' . Str::random(4) . '.' . $file->getClientOriginalExtension());
 
             $this->save_image($file, $imageName, 'ads/');
 
-            $ads->image =  $imageName;
+            $ads->image = $imageName;
         }
         if ($request->file('image_for_mobile')) {
             if (env('USE_DO') == 'true') {
@@ -284,8 +276,8 @@ class AdsController extends Controller
 
         $ad = Ads::withTrashed()->findOrFail($id);
         $this->SuperAdminAdsDeleteLog($ad);
-        $this->delete_image('ads/' . $ad->image,'ads/' . $ad->image_for_mobile);
-     
+        $this->delete_image('ads/' . $ad->image, 'ads/' . $ad->image_for_mobile);
+
         if ($ad->deleted_at) {
             Ads::onlyTrashed()->findOrFail($id)->forceDelete();
         } else {

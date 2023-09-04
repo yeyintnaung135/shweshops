@@ -73,10 +73,10 @@
                                                 <th>Shop Logo</th>
                                                 <!-- <th>Description</th> -->
                                                 <!-- <th>undamaged_product</th>
-                                                        <th>valuable_product</th>
-                                                        <th>damaged_product</th> -->
+                                                            <th>valuable_product</th>
+                                                            <th>damaged_product</th> -->
                                                 <!-- <th>Messanger Link</th>
-                                                        <th>Page Link</th> -->
+                                                            <th>Page Link</th> -->
                                                 <th>Main Phone</th>
                                                 <th>Action</th>
                                                 <th>created at</th>
@@ -202,11 +202,14 @@
 
             ],
             dom: 'lBfrtip',
-                "responsive": true,
-                "autoWidth": false,
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ],
+            "responsive": true,
+            "autoWidth": false,
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            order: [
+                [5, 'desc']
+            ],
         });
 
         $(document).ready(function() {

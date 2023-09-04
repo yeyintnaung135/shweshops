@@ -50,9 +50,7 @@ class CustomerController extends Controller
             ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
             ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
         return DataTables::of($recordsQuery)
-            ->editColumn('created_at', function ($record) {
-                return date('F d, Y ( h:i A )', strtotime($record->created_at));
-            })
+            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->make(true);
     }
 

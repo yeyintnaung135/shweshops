@@ -52,6 +52,7 @@
                                                     <td>url</td>
                                                     <td>Info</td>
                                                     <td>Action</td>
+                                                    <td>Created At</td>
                                                 </tr>
                                             </thead>
                                         </table>
@@ -165,6 +166,9 @@
                 "autoWidth": false,
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                order: [
+                    [4, 'desc']
                 ],
             });
 

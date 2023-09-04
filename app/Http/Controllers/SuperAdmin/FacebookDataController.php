@@ -20,7 +20,8 @@ class FacebookDataController extends Controller
         $this->middleware(['auth:super_admin']);
     }
 
-    public function list(): View {
+    public function list(): View
+    {
         return view('backend.super_admin.fbdata.list');
     }
 
@@ -35,9 +36,7 @@ class FacebookDataController extends Controller
             ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
         return DataTables::of($recordsQuery)
-            ->editColumn('created_at', function ($record) {
-                return date('F d, Y ( h:i A )', strtotime($record->created_at));
-            })
+            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->make(true);
     }
 
@@ -79,9 +78,7 @@ class FacebookDataController extends Controller
                 $photo = Item::where('id', $record->item_id)->first();
                 return !empty($photo) ? $photo->check_photo : '';
             })
-            ->addColumn('created_at', function ($record) {
-                return date('F d, Y ( h:i A )', strtotime($record->ff));
-            })
+            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->make(true);
     }
 

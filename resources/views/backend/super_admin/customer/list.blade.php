@@ -68,7 +68,7 @@
                                     <table id="superAdminTable" class="table table-borderless">
                                         <thead>
                                             <tr>
-                                                <td>id</td>
+                                                <td>ID</td>
                                                 <td>Name</td>
                                                 <td>Phone</td>
                                                 <td>Gender</td>
@@ -79,7 +79,7 @@
                                         </thead>
                                         <tfoot>
                                             <tr>
-                                                <td>id</td>
+                                                <td>ID</td>
                                                 <td>Name</td>
                                                 <td>Phone</td>
                                                 <td>Gender</td>
@@ -247,6 +247,9 @@
                 "autoWidth": false,
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                order: [
+                    [6, 'desc']
                 ],
         });
 

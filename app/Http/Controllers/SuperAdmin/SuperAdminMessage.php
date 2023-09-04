@@ -34,7 +34,7 @@ class SuperAdminMessage extends Controller
     public function get_expire(Request $request): JsonResponse
     {
         $messages = Messages::with(['user:id,name', 'shop:id,shop_name'])
-            ->select('id', 'message', 'created_at as message_created_at');
+            ->select('id', 'message', 'created_at');
 
         return DataTables::of($messages)
             ->addColumn('checkbox', function ($record) {
@@ -61,9 +61,7 @@ class SuperAdminMessage extends Controller
             ->addColumn('action', function ($record) {
                 return $record->id;
             })
-            ->addColumn('message_created_at', function ($record) {
-                return date('F d, Y ( h:i A )', strtotime($record->message_created_at));
-            })
+            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->toJson();
     }
 }

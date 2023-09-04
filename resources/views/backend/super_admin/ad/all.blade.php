@@ -215,7 +215,7 @@
                                 `<img src="{{ filedopath('/ads/${data}') }}" alt="cover" class="cover" >`;
                         }
 
-                        return result;  
+                        return result;
                     }
                 },
                 {
@@ -286,7 +286,9 @@
                         }
 
 
-                    }, orderable: false, searchable: false
+                    },
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'created_at'
@@ -298,6 +300,9 @@
             "autoWidth": false,
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            order: [
+                [6, 'desc']
             ],
         });
     </script>

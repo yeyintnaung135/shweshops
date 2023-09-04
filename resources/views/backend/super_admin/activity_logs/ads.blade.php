@@ -188,6 +188,9 @@
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
+                order: [
+                    [6, 'desc']
+                ],
             });
 
             $(".adsactdatepicker").datepicker({

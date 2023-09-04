@@ -105,10 +105,12 @@
         .title {
             cursor: pointer;
         }
+
         .edit-section {
             display: none;
             cursor: pointer;
         }
+
         .sn-tab-panel ul li {
             width: 100% !important;
             background: transparent !important;
@@ -162,9 +164,12 @@
 
             ],
             dom: 'lBfrtip',
-                "responsive": true,
-                "autoWidth": false,
-            })
+            "responsive": true,
+            "autoWidth": false,
+            order: [
+                [6, 'desc']
+            ],
+        })
 
         $(document).ready(function() {
             $(".admindatepicker").datepicker({

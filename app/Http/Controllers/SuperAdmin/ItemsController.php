@@ -27,9 +27,7 @@ class ItemsController extends Controller
 
     public function all(): View
     {
-        //TODO $shopOwner is not needed. Thus, we should remove this
-        $shopOwner = Shops::all();
-        return view('backend.super_admin.items.all', ['shopOwner' => $shopOwner]);
+        return view('backend.super_admin.items.all');
     }
 
     public function get_items_ajax(Request $request): JsonResponse

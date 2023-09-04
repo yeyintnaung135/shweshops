@@ -144,6 +144,9 @@
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
+                order: [
+                    [5, 'desc']
+                ],
             })
 
             $('#visitor_search_button').click(function() {
