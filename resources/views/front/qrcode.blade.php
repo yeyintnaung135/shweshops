@@ -7,10 +7,6 @@
     <div id="page" class="site container-fluid my-0 py-0">
 
 
-    {{--MENU--}}
-
-    {{-- end Menu--}}
-    <!-- .site-content-contain -->
 
 
         <div class="site-content-contain sn-site-content">

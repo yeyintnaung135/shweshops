@@ -1,6 +1,4 @@
-{{-- <x-wrappercomponent div-id="preminumwrap" toshow-id="preminum"></x-wrappercomponent> --}}
 
-{{-- shop slide--}}
 <div id="preminum" class="col-12 d-none show_dev">
     <div id="primary2" class="sop-font">
         {{--  product title--}}
@@ -30,7 +28,7 @@
                             @if(empty($shop->shop_logo))
                             <img src="test/test1.jpg"class="sn-shop-image attachment-ftc_blog_shortcode_thumb size-ftc_blog_shortcode_thumb wp-post-image lazyloaded  sop-image-w-h"alt="">
                             @else
-                            <img src="{{url('images/logo/mid/'.$shop->shop_logo)}}"class="sn-shop-image attachment-ftc_blog_shortcode_thumb size-ftc_blog_shortcode_thumb wp-post-image lazyloaded  sop-image-w-h"
+                            <img src="{{filedopath('/logo/mid/'.$shop->shop_logo)}}"class="sn-shop-image attachment-ftc_blog_shortcode_thumb size-ftc_blog_shortcode_thumb wp-post-image lazyloaded  sop-image-w-h"
                             alt="">
                             @endif
                         </a>
@@ -44,14 +42,7 @@
                     </div>
                 </article>
                 @endforeach
-                {{-- <div class="sn-similar-seeall">
-                    <a href="">
-                      <div>
-                        <i class="fa-solid fa-arrow-right"></i>
-                      </div>
-                      <div class="see-all-text">See all</div>
-                    </a>
-                  </div> --}}
+               
             </div>
         </div>
         @endif

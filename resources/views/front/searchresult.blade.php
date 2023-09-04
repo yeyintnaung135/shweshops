@@ -27,7 +27,8 @@
                     <products_filter
                       :typesearchfromblade="'{{$searchtext}}'"
                       :initialitems="[]"
-                      :discount="'no'"
+                      :maincat_id="'all'" 
+                      :discount=false
                       :cat_list="{{$cat_list}}"
                       :cat_id="[]"
                       :shop_ids="{{$shop_ids}}"

@@ -48,7 +48,7 @@ class ShopownerLoginController extends Controller
         $data = $request->except('_token');
         $validator = Validator::make($data, [
             "value" => 'required|regex:/(^09([0-9]+)(\d+)?$)/u|min:5|max:11',
-            "password" => "required",
+            "password" => "required|max:100",
         ]);
         if ($validator->fails()) {
             return redirect()->back()->with('error', 'Something wrong!!');
