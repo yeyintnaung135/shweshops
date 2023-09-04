@@ -145,7 +145,7 @@ class CollectionController extends Controller
         $toDate = $request->input('toDate');
 
         $collectionsQuery = Collection::where('shop_id', $this->get_shopid())
-            ->select('id', 'name')
+            ->select('id', 'name', 'created_at')
             ->withCount('items')
             ->when($fromDate, fn($query) => $query->whereDate('created_at', '>=', $fromDate))
             ->when($toDate, fn($query) => $query->whereDate('created_at', '<=', $toDate));
@@ -160,6 +160,7 @@ class CollectionController extends Controller
 
                 return $urls;
             })
+            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->toJson();
     }
 

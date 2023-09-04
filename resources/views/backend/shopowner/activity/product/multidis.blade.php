@@ -213,6 +213,9 @@
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
+                order: [
+                    [15, 'desc']
+                ],
             });
 
             $(".itemdatepicker").datepicker({

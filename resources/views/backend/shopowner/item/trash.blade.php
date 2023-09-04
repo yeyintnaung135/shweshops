@@ -123,13 +123,15 @@
                 {
                     data: 'deleted_at'
                 }
-
             ],
             dom: 'lBfrtip',
             "responsive": true,
             "autoWidth": false,
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            "order": [
+                [5, "aesc"]
             ],
         });
 

@@ -24,31 +24,30 @@ class ItemsRecapUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'အလျော့တွက်' => 'integer|min:0|max:1000000000',
-            'လက်ခ' => 'integer|min:0',
-            'အထည်မပျက်ပြန်သွင်း' => 'integer|max:1000000000',
-            'အထည်ပျက်စီးချို့ယွင်း' => 'integer|max:1000000000',
-            'တန်ဖိုးမြင့်' => 'integer|max:1000000000',
+            'new_decrease' => 'integer|min:0|max:1000000000',
+            'fee' => 'integer|min:0',
+            'undamaged_product' => 'integer|max:1000000000',
+            'damaged_product' => 'integer|max:1000000000',
+            'valuable_product' => 'integer|max:1000000000',
         ];
     }
     public function messages()
     {
         return [
-            'အလျော့တွက်.min' => 'အလျော့တွက်သည် 0 ထပ် မငယ်ရ',
-            'အလျော့တွက်.integer' => 'အလျော့တွက်သည် number ဖြစ်ရမည်',
+            'new_decrease.min' => 'အလျော့တွက်သည် 0 ထပ် မငယ်ရ',
+            'new_decrease.integer' => 'အလျော့တွက်သည် number ဖြစ်ရမည်',
 
-            'လက်ခ.min' => 'လက်ခသည် 0 ထပ် မငယ်ရ',
-            'လက်ခ.integer' => 'လက်ခသည် number ဖြစ်ရမည်',
+            'fee.min' => 'လက်ခသည် 0 ထပ် မငယ်ရ',
+            'fee.integer' => 'လက်ခသည် number ဖြစ်ရမည်',
 
-            'အထည်မပျက်ပြန်သွင်း.min' => 'အထည်မပျက်ပြန်သွင်းသည် 0 ထပ် မငယ်ရ',
-            'အထည်မပျက်ပြန်သွင်း.integer' => 'အထည်မပျက်ပြန်သွင်းသည် number ဖြစ်ရမည်',
+            'undamaged_product.min' => 'အထည်မပျက်ပြန်သွင်းသည် 0 ထပ် မငယ်ရ',
+            'undamaged_product.integer' => 'အထည်မပျက်ပြန်သွင်းသည် number ဖြစ်ရမည်',
 
-            'အထည်ပျက်စီးချို့ယွင်း.min' => 'အထည်ပျက်စီးချို့ယွင်းသည် 0 ထပ် မငယ်ရ',
-            'အထည်ပျက်စီးချို့ယွင်း.integer' => 'အထည်ပျက်စီးချို့ယွင်းသည် number ဖြစ်ရမည်',
+            'damaged_product.min' => 'အထည်ပျက်စီးချို့ယွင်းသည် 0 ထပ် မငယ်ရ',
+            'damaged_product.integer' => 'အထည်ပျက်စီးချို့ယွင်းသည် number ဖြစ်ရမည်',
 
-
-            'တန်ဖိုးမြင့်.min' => 'တန်ဖိုးမြင့် အထည်နှင့်အထည်မပျက်ပြန်လဲသည် 0 ထပ် မငယ်ရ',
-            'တန်ဖိုးမြင့်.integer' => 'တန်ဖိုးမြင့် အထည်နှင့်အထည်မပျက်ပြန်လဲသည် number ဖြစ်ရမည်',
+            'valuable_product.min' => 'တန်ဖိုးမြင့် အထည်နှင့်အထည်မပျက်ပြန်လဲသည် 0 ထပ် မငယ်ရ',
+            'valuable_product.integer' => 'တန်ဖိုးမြင့် အထည်နှင့်အထည်မပျက်ပြန်လဲသည် number ဖြစ်ရမည်',
 
         ];
     }

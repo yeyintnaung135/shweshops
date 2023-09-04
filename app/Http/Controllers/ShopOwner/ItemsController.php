@@ -26,13 +26,14 @@ use App\Models\MultiplePriceLogs;
 use App\Models\PercentTemplate;
 use App\Models\Shops;
 use Carbon\Carbon;
+use Illuminate\Contracts\Validation\Validator as ValidationValidator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Validator;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
@@ -107,10 +108,6 @@ class ItemsController extends Controller
         return DataTables::of($query)
             ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->toJson();
-
-        return DataTables::of($query)
-            ->addColumn('created_at_formatted', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
-            ->toJson();
     }
 
     public function get_multiple_discount_activity_log(Request $request): JsonResponse
@@ -170,8 +167,7 @@ class ItemsController extends Controller
 
         return DataTables::of($items)
             ->addColumn('checkbox', fn($item) => $item->id)
-            ->addColumn('check_discount', fn($item) => $item->YkGetDiscount)
-            ->addColumn('price_formatted', fn($item) => $item->formatted_price)
+            ->addColumn('price_formatted', fn($item) => [($item->price != 0) ? $item->price : $item->min_price . '-' . $item->max_price, $item->id])
             ->addColumn('action', fn($item) => $item->id)
             ->editColumn('created_at', fn($item) => $item->created_at->format('F d, Y ( h:i A )'))
             ->toJson();
@@ -857,6 +853,7 @@ class ItemsController extends Controller
         if ($change->update($input)) {
 
             $shop_id = $this->get_shopid();
+            $this->ShopsEditLog($change, $shop_id);
 
             // $shopownerlogid = \ShopownerLogActivity::ShopownerEditLog($request, $shop_id);
             $old_tags = DB::table('tagging_tagged')->where('taggable_id', $request->id)->get();
@@ -1187,7 +1184,7 @@ class ItemsController extends Controller
         return redirect()->back();
     }
 
-    public function validatorformultiupdate($data): Validator
+    public function validatorformultiupdate($data): ValidationValidator
     {
         $message = [
             'price.min' => 'Price သည် 1 ထပ် မငယ်ရ', 'price.numeric' => 'Price သည် number ဖြစ်ရမည်', 'အလျော့တွက်.min' => 'အလျော့တွက်သည် 0 ထပ် မငယ်ရ',
@@ -1356,9 +1353,7 @@ class ItemsController extends Controller
                 return ($record->price != 0) ? $record->price : $record->short_price;
             })
             ->addColumn('action', fn($record) => $record->id)
-            ->addColumn('deleted_at', function ($record) {
-                return $record->deleted_at ? $record->deleted_at->format('F d, Y ( h:i A )') : '';
-            })
+            ->editColumn('deleted_at', fn($item) => $item->deleted_at->format('F d, Y ( h:i A )'))
             ->toJson();
     }
 

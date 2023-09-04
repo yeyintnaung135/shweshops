@@ -248,6 +248,9 @@
             dom: 'lBfrtip',
             "responsive": true,
             "autoWidth": false,
+            order: [
+                    [6, 'desc']
+                ],
         });
     </script>
 @endpush

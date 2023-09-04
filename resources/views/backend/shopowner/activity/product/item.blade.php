@@ -167,6 +167,9 @@
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
+                order: [
+                    [5, 'desc']
+                ],
             });
             $(".itemdatepicker").datepicker({
                 "dateFormat": "yy-mm-dd",

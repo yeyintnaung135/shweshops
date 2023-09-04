@@ -434,20 +434,24 @@
                     },
 
                     {
-                        data: 'check_discount',
+                        data: 'YkgetDiscount',
 
                         render: function(data, type) {
                             const discount = (data == 0) ? `----` :
                                 `<span class="badge bg-success">${data.percent}%</span>`;
                             return discount;
-                        }
+                        },
+                         searchable:false,
+                         orderable:false,
                     },
                     {
                         data: 'default_photo',
                         render: function(data, type) {
                             const image = `<img src= "{{ filedopath('/items/' . '${data}') }}"/>`;
                             return image;
-                        }
+                        },
+                        searchable:false,
+                         orderable:false,
                     },
                     {
                         data: 'product_code'
@@ -485,7 +489,9 @@
                             edit = edit.replace(':id', data);
                             return info + edit;
 
-                        }
+                        },
+                        searchable:false,
+                         orderable:false,
                     },
                     {
                         data: 'created_at'
@@ -497,6 +503,9 @@
                 "autoWidth": false,
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                order: [
+                    [7, 'desc']
                 ],
             });
 
@@ -1162,11 +1171,11 @@
                 data: {
                     _token: '{{ csrf_token() }}',
                     id: item_id,
-                    အလျော့တွက်: jQuery("input[name=အလျော့တွက်]").val(),
-                    လက်ခ: jQuery("input[name=လက်ခ]").val(),
+                    new_decrease: jQuery("input[name=အလျော့တွက်]").val(),
+                    fee: jQuery("input[name=လက်ခ]").val(),
                     undamaged_product: jQuery("input[name=undamaged_product]").val(),
                     damaged_product: jQuery("input[name=damaged_product]").val(),
-                    တန်ဖိုးမြင့်: jQuery("input[name=valuable_product]").val(),
+                    valuable_product: jQuery("input[name=valuable_product]").val(),
 
                 },
                 error: function(err) {

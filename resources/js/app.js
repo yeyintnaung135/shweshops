@@ -95,12 +95,10 @@ Vue.component(
     require("./components/frontend/PopitemsComponent.vue").default
 );
 
-
 Vue.component(
     "newitems-forshop",
     require("./components/frontend/NewitemsforshopComponent.vue").default
 );
-
 
 Vue.component(
     "pop-items-forshop",
@@ -170,7 +168,12 @@ Vue.component(
 
 // Vue.prototype.$hostname = "http://" + window.location.hostname;
 
-Vue.prototype.$hostname = "http://" + window.location.hostname + "/shweshops/public";
+// Vue.prototype.$hostname =
+//     "http://" + window.location.hostname + "/shweshops/public";
+
+//HostName for Laragon or Valet Virtual Host
+Vue.prototype.$hostname = "http://shweshops.test";
+
 //
 
 import VueChatScroll from "vue-chat-scroll";

@@ -477,7 +477,7 @@ class ShopOwnerController extends Controller
 
     public function edit()
     {
-        if ($this->isstaff()) {
+        if ($this->is_staff()) {
             return $this->unauthorize();
         }
         $shopowner = Shops::where('id', $this->get_shopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
@@ -486,7 +486,7 @@ class ShopOwnerController extends Controller
 
     public function update(Request $request, $id)
     {
-        if ($this->isstaff()) {
+        if ($this->is_staff()) {
             return $this->unauthorize();
         }
         //remove token and method from request

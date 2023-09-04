@@ -13,6 +13,8 @@ use App\Http\Controllers\ShopOwner\EventController;
 use App\Http\Controllers\ShopOwner\ItemsController;
 use App\Http\Controllers\ShopOwner\ManagerController;
 use App\Http\Controllers\ShopOwner\NewsController;
+use App\Http\Controllers\Shopowner\OpeningTimesController;
+use App\Http\Controllers\ShopOwner\PopupAdsController;
 use App\Http\Controllers\ShopOwner\PosController;
 use App\Http\Controllers\ShopOwner\PosSecondPhaseController;
 use App\Http\Controllers\ShopOwner\ShopOwnerController;
@@ -91,7 +93,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         // for user datable
         Route::get('/get_users_activity_log', [ManagerController::class, 'get_users_activity_log'])->name('users.getusers_activity_Log');
         Route::get('/get_backrole', [ManagerController::class, 'get_back_role_activity'])->name('getbackrole');
-        Route::get('/get_backrole/detail', [ManagerController::class, 'get_backrole_activity_detail'])->name('getbackrole.detail');
+        Route::get('/get_backrole/detail', [ManagerController::class, 'get_back_role_activity_detail'])->name('getbackrole.detail');
         Route::get('/get_itemedit/detail', [ManagerController::class, 'get_item_edit_activity_detail'])->name('getitemedit.detail');
         Route::get('/get_backroleedit/{id}', [ManagerController::class, 'back_role_edit_detail'])->name('backroleedit');
         Route::get('/get_users', [ManagerController::class, 'get_users'])->name('getUsers');
