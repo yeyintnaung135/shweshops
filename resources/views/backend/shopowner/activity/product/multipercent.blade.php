@@ -206,7 +206,7 @@
                         data: 'new_expensive_thing'
                     },
                     {
-                        data: 'created_at_formatted'
+                        data: 'created_at'
                     }
 
                 ],
@@ -215,6 +215,9 @@
                 "autoWidth": false,
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                order: [
+                    [16, 'desc']
                 ],
             });
 

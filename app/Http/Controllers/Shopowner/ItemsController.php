@@ -108,10 +108,6 @@ class ItemsController extends Controller
         return DataTables::of($query)
             ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->toJson();
-
-        return DataTables::of($query)
-            ->addColumn('created_at_formatted', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
-            ->toJson();
     }
 
     public function get_multiple_discount_activity_log(Request $request): JsonResponse
@@ -1357,9 +1353,7 @@ class ItemsController extends Controller
                 return ($record->price != 0) ? $record->price : $record->short_price;
             })
             ->addColumn('action', fn($record) => $record->id)
-            ->addColumn('deleted_at', function ($record) {
-                return $record->deleted_at ? $record->deleted_at->format('F d, Y ( h:i A )') : '';
-            })
+            ->editColumn('deleted_at', fn($item) => $item->deleted_at->format('F d, Y ( h:i A )'))
             ->toJson();
     }
 

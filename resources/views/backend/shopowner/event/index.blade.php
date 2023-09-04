@@ -55,6 +55,7 @@
                                             <th>Description</th>
                                             <th>Image</th>
                                             <th></th>
+                                            <th>Created At</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -125,6 +126,9 @@
                                 @method('DELETE')
                             </form>`;
                         }
+                    },
+                    {
+                        data: 'created_at'
                     }
                 ],
                 dom: 'lBfrtip',
@@ -132,6 +136,9 @@
                 "autoWidth": false,
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                order: [
+                    [5, 'desc']
                 ],
             });
 

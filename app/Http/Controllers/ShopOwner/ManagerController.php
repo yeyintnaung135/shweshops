@@ -32,7 +32,8 @@ class ManagerController extends Controller
         $this->middleware('auth:shop_owners_and_staffs');
     }
 
-    public function list(): View {
+    public function list(): View
+    {
         Gate::authorize('to_create_user', 3);
         $managers = $this->getuserlistbyrolelevel();
         return view('backend.shopowner.manager.list', ['managers' => $managers]);
@@ -65,7 +66,7 @@ class ManagerController extends Controller
                 return $record->id;
             })
             ->editColumn('created_at', function ($record) {
-                return $record->created_at->format('d-m-Y H:i:s');
+                return $record->created_at->format('F d, Y ( h:i A )');
             })
             ->toJson();
 
@@ -86,7 +87,7 @@ class ManagerController extends Controller
 
         return DataTables::of($query)
             ->editColumn('created_at', function ($record) {
-                return $record->created_at->format('d-m-Y H:i:s');
+                return $record->created_at->format('F d, Y ( h:i A )');
             })
             ->addColumn('check_edit', function ($record) {
                 return $record->id;

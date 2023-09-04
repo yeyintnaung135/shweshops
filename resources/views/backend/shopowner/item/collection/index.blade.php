@@ -54,6 +54,7 @@
                                             <th>Name</th>
                                             <th>Items</th>
                                             <th></th>
+                                            <th>Created At</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -129,6 +130,9 @@
                         },
                         orderable: false,
                         searchable: false
+                    },
+                    {
+                        data: 'created_at'
                     }
                 ],
                 dom: 'lBfrtip',
@@ -136,6 +140,9 @@
                 "autoWidth": false,
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                order: [
+                    [4, 'desc']
                 ],
             });
 

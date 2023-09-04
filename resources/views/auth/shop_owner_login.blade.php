@@ -1,4 +1,4 @@
-@extends('layouts.backend.datatable')
+@extends('layouts.backend.shop_owner_login_layout')
 
 @section('content')
     <div class="container py-2" >

@@ -144,7 +144,7 @@ class NewsController extends Controller
         $toDate = $request->input('toDate');
 
         $allNews = News::where('shop_id', $this->get_shop_id())
-            ->select('id', 'title', 'description', 'image')
+            ->select('id', 'title', 'description', 'image', 'created_at')
             ->when($fromDate, fn($query) => $query->whereDate('created_at', '>=', $fromDate))
             ->when($toDate, fn($query) => $query->whereDate('created_at', '<=', $toDate));
 
@@ -160,6 +160,7 @@ class NewsController extends Controller
 
                 return $urls;
             })
+            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->toJson();
     }
 }
