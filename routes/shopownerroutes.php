@@ -194,7 +194,8 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
 
             //Purchase
             //gold
-            Route::get('/purchase_list', [PosController::class, 'get_purchase_list'])->name('pos.purchase_list');
+            Route::get('/purchase_list', [PosController::class, 'purchase_list'])->name('pos.purchase_list');
+            Route::get('/get_purchase_list', [PosController::class, 'get_purchase_list'])->name('pos.purchase_list');
             Route::post('/gold_type_filter', [PosController::class, 'gold_type_filter'])->name('pos.gold_type_filter');
             Route::post('/gold_advance_filter', [PosController::class, 'gold_advance_filter'])->name('pos.gold_advance_filter');
             Route::get('/create_purchase', [PosController::class, 'create_purchase'])->name('pos.create_purchase');

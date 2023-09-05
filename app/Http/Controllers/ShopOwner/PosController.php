@@ -402,7 +402,7 @@ class PosController extends Controller
 
     //Purchase
     //gold
-    public function get_purchase_list()
+    public function purchase_list()
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         $purchases = PosPurchase::where('shop_owner_id', $this->get_shopid())->get();
@@ -468,7 +468,7 @@ class PosController extends Controller
 
     public function create_purchase()
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+        $shopowner = Shops::where('id', $this->get_shopid())->first();
         $categories = Category::all();
         $suppliers = PosSupplier::orderBy('count', 'desc')->where('shop_owner_id', $this->get_shopid())->get();
         $quality = DB::table('pos_qualities')->get();

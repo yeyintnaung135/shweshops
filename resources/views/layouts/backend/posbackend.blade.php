@@ -76,16 +76,9 @@
     type='text/css' media='all'/> --}}
     <script src="https://kit.fontawesome.com/be7d01d228.js" crossorigin="anonymous"></script>
     {{--    <meta name="csrf-token" content="{{ csrf_token() }}">--}}
-    @if(Auth::check())
+    @if(Auth::guard('shop_owners_and_staffs')->check())
         <?php
-        if(Auth::guard('shop_owner')->check()){
-            $shopid= Auth::guard('shop_owner')->user()->id;
-
-
-        }else if(Auth::guard('shop_role')->check()){
-            $shopid= Auth::guard('shop_role')->user()->shop_id;
-
-        }
+            $shopid= Auth::guard('shop_owners_and_staffs')->user()->shop_id;
         ?>
         <script>
             window.facebook='{{$is_fb_on}}';
@@ -1142,27 +1135,35 @@
 <body onbeforeunload="useroffline()" class="hold-transition sidebar-mini">
 {{--get current shop data for chat--}}
 @php
-    use App\Shopowner;
-    use App\Manager;
+    use App\Models\Shops;
+    use App\Models\ShopOwnersAndStaffs;
 if($is_chat_on){
 
-       if(isset(Auth::guard('shop_owner')->user()->id)){
-          $current_shop=Shopowner::where('id',Auth::guard('shop_owner')->user()->id)->first();
-       }else{
-           $manager= Manager::where('id', Auth::guard('shop_role')->user()->id)->pluck('shop_id');
-           $current_shop=Shopowner::where('id',$manager)->first();
-       }
+    $current_shop=Shops::where('id',Auth::guard('shop_owners_and_staffs')->user()->shop_id)->first();
 
-      if(isset(Auth::guard('shop_owner')->user()->id)) {
-        $shop_role = Auth::guard('shop_owner')->user()->name . ' (Owner)';
-      } else if(Auth::guard('shop_role')->user()->role_id == 1) {
-        $shop_role = Auth::guard('shop_role')->user()->name . ' (Admin)';
-      } else if(Auth::guard('shop_role')->user()->role_id == 2) {
-        $shop_role = Auth::guard('shop_role')->user()->name . ' (Manager)';
-      } else if(Auth::guard('shop_role')->user()->role_id == 3) {
-        $shop_role = Auth::guard('shop_role')->user()->name . ' (Staff)';
-      }
-  }
+    $user = Auth::guard('shop_owners_and_staffs')->user();
+    $role = '';
+
+    if ($user) {
+        $role = $user->name . ' ';
+
+        switch ($user->role_id) {
+            case 1:
+                $role .= '(Admin)';
+                break;
+            case 2:
+                $role .= '(Manager)';
+                break;
+            case 3:
+                $role .= '(Staff)';
+                break;
+            case 4:
+                $role .= '(Owner)';
+                break;
+        }
+    }
+    $shop_role = $role;
+    }
 
 @endphp
 {{--get current shop data for chat--}}
