@@ -1,7 +1,7 @@
 <?php
 //for superadmin
 
-use App\Http\Controllers\ShopOwner\PosSuperAdminController;
+use App\Http\Controllers\POS\PosSuperAdminController;
 
 Route::prefix('backside/pos_super_admin')->name('backside.pos_super_admin.')->group(function () {
     // Auth

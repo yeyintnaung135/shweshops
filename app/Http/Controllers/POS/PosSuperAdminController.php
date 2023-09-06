@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\ShopOwner;
+namespace App\Http\Controllers\POS;
 
 use App\Http\Controllers\Controller;
 use App\Models\CountSetting;
