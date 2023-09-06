@@ -37,6 +37,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\DataTables;
 
 class PosController extends Controller
 {
@@ -422,6 +423,34 @@ class PosController extends Controller
         }
 
     }
+
+    public function get_purchase_list(Request $request)
+    {
+        $purchases = PosPurchase::select(
+            'id', 'gold_name', 'supplier_id', 'code_number', 'sell_flag',
+            'product_gram_kyat_pe_yway', 'stock_qty', 'gold_fee', 'date')
+            ->where('shop_owner_id', $this->get_shopid());
+
+        return DataTables::of($purchases)
+            ->addColumn('product_gram_kyat_pe_yway_in_gram', function ($purchase) {
+                // Split the 'product_gram_kyat_pe_yway' by "/" and return the first part which is gram
+                $parts = explode("/", $purchase->product_gram_kyat_pe_yway);
+                return isset($parts[0]) ? $parts[0] : '';
+            })
+
+            ->addColumn('supplier', fn($purchase) => $purchase->supplier->name)
+            ->addColumn('actions', function ($purchase) {
+                $urls = [
+                    'edit_url' => route('backside.shop_owner.pos.edit_purchase', $purchase->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_purchase', $purchase->id),
+                    'detail_url' => route('backside.shop_owner.pos.detail_purchase', $purchase->id),
+                ];
+
+                return $urls;
+            })
+            ->toJson();
+    }
+
     public function gold_type_filter(Request $request)
     {
         // dd($request->all());
@@ -444,6 +473,7 @@ class PosController extends Controller
             'data' => $data,
         ]);
     }
+
     public function gold_advance_filter(Request $request)
     {
         $data = $request->all();
@@ -663,15 +693,16 @@ class PosController extends Controller
         $p = explode('/', $price)[0];
         return response()->json($p);
     }
-    public function delete_purchase(Request $request)
+
+    public function delete_purchase(PosPurchase $purchase)
     {
-        $purchase = PosPurchase::find($request->pid);
         $purchase->delete();
         Session::flash('message', 'Purchase was successfully Deleted!');
         return response()->json([
             'data' => 'success',
         ], 200);
     }
+
     public function edit_purchase($id)
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
