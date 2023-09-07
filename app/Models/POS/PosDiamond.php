@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\POS;
 
 use Illuminate\Database\Eloquent\Model;
 use MongoDB\Laravel\Eloquent\SoftDeletes;
