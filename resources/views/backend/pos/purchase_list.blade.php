@@ -18,10 +18,6 @@
             <!-- Content Header (Page header) -->
             <section class="content-header sn-content-header">
                 <div class="container-fluid">
-                    @foreach ($shopowner as $shopowner)
-                    @endforeach
-
-
                 </div><!-- /.container-fluid -->
             </section>
 
@@ -47,14 +43,31 @@
                                 </ul>
                             </div> --}}
                             </div>
-                            <div class="row mt-3">
+                            {{-- <div class="row mt-3">
                                 <input type="hidden" id="print_date" value="All">
                                 <label for="">From:<input type="date" id="start_date"></label>
                                 <label for="" class="ml-3">To:<input type="date" id="end_date"></label>
                                 <label for="" style="margin-left: 20px;margin-top:30px;">
                                     <a href="#" class="btn btn-color btn-m" onclick="goldtypefilter(2)">Search</a>
                                 </label>
+                            </div> --}}
+
+                            <div class="d-flex justify-content-start align-items-center mt-3">
+                                <div class="form-group">
+                                    <label for="fromDate" class="form-label">Choose Date</label>
+                                    <input type="text" id="fromDate" class="form-control" placeholder="From Date"
+                                        autocomplete="off">
+                                </div>
+                                <div class="form-group mx-3">
+                                    <label for="toDate" class="form-label">Choose Date</label>
+                                    <input type="text" id="toDate" class="form-control" placeholder="To Date"
+                                        autocomplete="off">
+                                </div>
+                                <div>
+                                    <button id="searchButton" class="btn btn-color btn-m mt-3">Filter</button>
+                                </div>
                             </div>
+
                             <h6 class="mt-3 text-color mb-1">ဆိုင်လက်ကျန်ကြည့်ရှုရန်
                                 {{-- <input type="checkbox" class="mt-1 ml-2" name='chkflag' id="chkflag" onclick="stockcheck(1)"> --}}
                                 <select name="" id="f_counter" onchange="stockcheck(1,this.value)">
@@ -204,11 +217,21 @@
 @push('scripts')
     <script type="text/javascript">
         $(document).ready(function() {
-            var datatable = $('#example23').DataTable({
+
+            $('#fromDate, #toDate').datepicker({
+                "dateFormat": "yy-mm-dd",
+                changeYear: true
+            });
+
+            var purchaseTable = $('#example23').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    "url": "{{ route('backside.shop_owner.pos.get_purchase_list') }}"
+                    "url": "{{ route('backside.shop_owner.pos.get_purchase_list') }}",
+                    "data": function(d) {
+                        d.fromDate = $('#fromDate').val();
+                        d.toDate = $('#toDate').val();
+                    }
                 },
                 columns: [{
                         data: 'id',
@@ -337,6 +360,12 @@
                     [8, 'desc']
                 ],
             });
+
+            //Date Filter
+            $('#searchButton').click(function() {
+                purchaseTable.draw();
+            });
+
         });
 
         function Delete(deleteUrl) {
@@ -376,118 +405,118 @@
             });
         }
 
-        function goldtypefilter(val) {
-            var dataTable = $('#example23').DataTable();
-            var html = '';
-            if ($("#female").is(":checked") == true) {
-                html += 'option1'
-            }
-            if ($("#male").is(":checked") == true) {
-                html += '/option2'
-            }
-            if ($("#unisex").is(":checked") == true) {
-                html += '/option3'
-            }
-            if ($("#child").is(":checked") == true) {
-                html += '/option4'
-            }
-            var start_date = $('#start_date').val();
-            var end_date = $('#end_date').val();
+        // function goldtypefilter(val) {
+        //     var dataTable = $('#example23').DataTable();
+        //     var html = '';
+        //     if ($("#female").is(":checked") == true) {
+        //         html += 'option1'
+        //     }
+        //     if ($("#male").is(":checked") == true) {
+        //         html += '/option2'
+        //     }
+        //     if ($("#unisex").is(":checked") == true) {
+        //         html += '/option3'
+        //     }
+        //     if ($("#child").is(":checked") == true) {
+        //         html += '/option4'
+        //     }
+        //     var start_date = $('#start_date').val();
+        //     var end_date = $('#end_date').val();
 
-            $.ajax({
+        //     $.ajax({
 
-                type: 'POST',
+        //         type: 'POST',
 
-                url: '{{ route('backside.shop_owner.pos.gold_type_filter') }}',
+        //         url: '{{ route('backside.shop_owner.pos.gold_type_filter') }}',
 
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "text": html,
-                    "start_date": start_date,
-                    "end_date": end_date,
-                    "type": val,
-                },
+        //         data: {
+        //             "_token": "{{ csrf_token() }}",
+        //             "text": html,
+        //             "start_date": start_date,
+        //             "end_date": end_date,
+        //             "type": val,
+        //         },
 
-                success: function(data) {
-                    $('#print_date').val(start_date + ' to ' + end_date);
-                    $('#print_counter').val('All');
-                    $('#print_gtype').val('All');
-                    $('#print_ptype').val('All');
-                    $('#f_counter').val('');
-                    dataTable.clear().draw();
-                    var tot_g = 0;
-                    var tot_y = 0;
-                    var tot_p = 0;
-                    var tot_k = 0;
-                    var tot_dy = 0;
-                    var tot_dp = 0;
-                    var tot_dk = 0;
-                    var count = 0;
-                    $.each(data.data, function(i, v) {
-                        count++;
-                        var html1 = '';
-                        var html2 = `<div class="d-flex">`;
-                        var url1 =
-                            '{{ route('backside.shop_owner.pos.edit_purchase', ':purchase_id') }}';
-                        var url2 =
-                            '{{ route('backside.shop_owner.pos.detail_purchase', ':purchase_id') }}';
-                        url2 = url2.replace(':purchase_id', v.id);
-                        url1 = url1.replace(':purchase_id', v.id);
-                        var arr = v.product_gram_kyat_pe_yway.split('/');
-                        var decrease = v.decrease_pe_yway.split('/');
-                        tot_g += parseInt(arr[0]);
-                        tot_y += arr[3] ? parseInt(arr[3]) : 0;
-                        tot_p += arr[2] ? parseInt(arr[2]) : 0;
-                        tot_k += arr[1] ? parseInt(arr[1]) : 0;
-                        tot_dy += decrease[1] ? parseInt(decrease[1]) : 0;
-                        tot_dp += decrease[0] ? parseInt(decrease[0]) : 0;
-                        if (tot_y >= 8) {
-                            tot_p += 1;
-                            tot_y = tot_y - 8;
-                        }
-                        if (tot_p >= 16) {
-                            tot_k += 1;
-                            tot_p = tot_p - 16;
-                        }
-                        if (tot_dy >= 8) {
-                            tot_dp += 1;
-                            tot_dy = tot_dy - 8;
-                        }
-                        if (tot_dp >= 16) {
-                            tot_dk += 1;
-                            tot_dp = tot_dp - 16;
-                        }
-                        if (arr[1] != 0) {
-                            html1 += arr[1] + 'ကျပ်';
-                        }
-                        if (arr[2] != 0) {
-                            html1 += arr[2] + 'ပဲ';
-                        }
-                        if (arr[3] != 0) {
-                            html1 += arr[3] + 'ရွေး';
-                        }
-                        if (v.sell_flag == 0) {
-                            html2 +=
-                                `<a href="#myModal${v.id}" class="text-danger" data-toggle="modal"><i class="fa fa-trash"></i></a>`;
-                        }
+        //         success: function(data) {
+        //             $('#print_date').val(start_date + ' to ' + end_date);
+        //             $('#print_counter').val('All');
+        //             $('#print_gtype').val('All');
+        //             $('#print_ptype').val('All');
+        //             $('#f_counter').val('');
+        //             dataTable.clear().draw();
+        //             var tot_g = 0;
+        //             var tot_y = 0;
+        //             var tot_p = 0;
+        //             var tot_k = 0;
+        //             var tot_dy = 0;
+        //             var tot_dp = 0;
+        //             var tot_dk = 0;
+        //             var count = 0;
+        //             $.each(data.data, function(i, v) {
+        //                 v.id;
+        //                 var html1 = '';
+        //                 var html2 = `<div class="d-flex">`;
+        //                 var url1 =
+        //                     '{{ route('backside.shop_owner.pos.edit_purchase', ':purchase_id') }}';
+        //                 var url2 =
+        //                     '{{ route('backside.shop_owner.pos.detail_purchase', ':purchase_id') }}';
+        //                 url2 = url2.replace(':purchase_id', v.id);
+        //                 url1 = url1.replace(':purchase_id', v.id);
+        //                 var arr = v.product_gram_kyat_pe_yway.split('/');
+        //                 var decrease = v.decrease_pe_yway.split('/');
+        //                 tot_g += parseInt(arr[0]);
+        //                 tot_y += arr[3] ? parseInt(arr[3]) : 0;
+        //                 tot_p += arr[2] ? parseInt(arr[2]) : 0;
+        //                 tot_k += arr[1] ? parseInt(arr[1]) : 0;
+        //                 tot_dy += decrease[1] ? parseInt(decrease[1]) : 0;
+        //                 tot_dp += decrease[0] ? parseInt(decrease[0]) : 0;
+        //                 if (tot_y >= 8) {
+        //                     tot_p += 1;
+        //                     tot_y = tot_y - 8;
+        //                 }
+        //                 if (tot_p >= 16) {
+        //                     tot_k += 1;
+        //                     tot_p = tot_p - 16;
+        //                 }
+        //                 if (tot_dy >= 8) {
+        //                     tot_dp += 1;
+        //                     tot_dy = tot_dy - 8;
+        //                 }
+        //                 if (tot_dp >= 16) {
+        //                     tot_dk += 1;
+        //                     tot_dp = tot_dp - 16;
+        //                 }
+        //                 if (arr[1] != 0) {
+        //                     html1 += arr[1] + 'ကျပ်';
+        //                 }
+        //                 if (arr[2] != 0) {
+        //                     html1 += arr[2] + 'ပဲ';
+        //                 }
+        //                 if (arr[3] != 0) {
+        //                     html1 += arr[3] + 'ရွေး';
+        //                 }
+        //                 if (v.sell_flag == 0) {
+        //                     html2 +=
+        //                         `<a href="#myModal${v.id}" class="text-danger" data-toggle="modal"><i class="fa fa-trash"></i></a>`;
+        //                 }
 
-                        html2 +=
-                            `<a href="${url1}" class="ml-4 text-warning"><i class="fa fa-edit" ></i></a>
-                                  <a href="${url2}" class="ml-4 text-success"><i class="fa fa-eye" aria-hidden="true"></i></a></div>`;
+        //                 html2 +=
+        //                     `<a href="${url1}" class="ml-4 text-warning"><i class="fa fa-edit" ></i></a>
+        //                           <a href="${url2}" class="ml-4 text-success"><i class="fa fa-eye" aria-hidden="true"></i></a></div>`;
 
-                        dataTable.row.add([++i, v.gold_name, v.supplier.name, v.code_number,
-                            arr[0],
-                            html1, v.stock_qty, v.gold_fee, v.date, html2
-                        ]).draw();
-                    })
-                    $('#tot_qty').html(count);
-                    $('#tot_g').html(tot_g);
-                    $('#tot_kpy').html(`${tot_k}ကျပ် ${tot_p}ပဲ  ${tot_y}​ရွေး`);
-                    $('#tot_dkpy').html(`${tot_dk}ကျပ် ${tot_dp}ပဲ  ${tot_dy}​ရွေး`);
-                }
-            })
+        //                 dataTable.row.add([++i, v.gold_name, v.supplier.name, v.code_number,
+        //                     arr[0],
+        //                     html1, v.stock_qty, v.gold_fee, v.date, html2
+        //                 ]).draw();
+        //             })
+        //             $('#tot_qty').html(count);
+        //             $('#tot_g').html(tot_g);
+        //             $('#tot_kpy').html(`${tot_k}ကျပ် ${tot_p}ပဲ  ${tot_y}​ရွေး`);
+        //             $('#tot_dkpy').html(`${tot_dk}ကျပ် ${tot_dp}ပဲ  ${tot_dy}​ရွေး`);
+        //         }
+        //     })
 
-        }
+        // }
 
         function stockcheck(val, text) {
             var dataTable = $('#example23').DataTable();
