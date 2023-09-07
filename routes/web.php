@@ -66,6 +66,10 @@ Route::group(
         require "superadminroutes.php";
 
         // //for super admin
+        
+        // //for pos
+        require "posroutes.php";
+        // //for pos
 
         // //for pos super admin
         // require "possuperadminroutes.php";

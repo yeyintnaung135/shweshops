@@ -476,9 +476,7 @@ class ShopController extends Controller
             ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
         return DataTables::of($shopActivityQuery)
-            ->editColumn('created_at', function ($shopActivity) {
-                return date('F d, Y ( h:i A )', strtotime($shopActivity->created_at));
-            })
+            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->make(true);
     }
 

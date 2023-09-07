@@ -196,7 +196,7 @@
                 },
 
                 {
-                    data: 'message_created_at'
+                    data: 'created_at'
                 },
 
                 {
@@ -221,6 +221,9 @@
                 "autoWidth": false,
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                order: [
+                    [7, 'desc']
                 ],
         });
     </script>

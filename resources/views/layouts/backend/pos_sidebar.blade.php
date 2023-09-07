@@ -17,17 +17,10 @@
     <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
         @php
-        use App\Shopowner;
-        use App\Manager;
+         use App\Models\Shops;
+        use App\Models\ShopOwnersAndStaffs;
 
-           if(isset(Auth::guard('shop_owner')->user()->id)){
-              $current_shop=Shopowner::where('id',Auth::guard('shop_owner')->user()->id)->first();
-           }else{
-               $manager= Manager::where('id', Auth::guard('shop_role')->user()->id)->pluck('shop_id');
-               $current_shop=Shopowner::where('id',$manager)->first();
-
-           }
-
+              $current_shop=Shops::where('id',Auth::guard('shop_owners_and_staffs')->user()->shop_id)->first();
         @endphp
 
 
@@ -62,7 +55,7 @@
         {{-- For Role Permission
             @if(Session::has('staff_role'))
             <h3>{{session::get('staff_role')}}</h3>
-            @endif 
+            @endif
         --}}
         <!-- Sidebar Menu -->
         <nav class="mt-2">
@@ -70,17 +63,20 @@
 
                 <!-- Add icons to the links using the .nav-icon class
                      with font-awesome or any other icon font library -->
-                @if(isset(Auth::guard('shop_owner')->user()->id) || Auth::guard('shop_role')->user()->role_id == 1 || Auth::guard('shop_role')->user()->role_id == 2)
+                     @if(Auth::guard('shop_owners_and_staffs')->check()
+                     && (Auth::guard('shop_owners_and_staffs')->user()->role_id == 4
+                     || Auth::guard('shop_owners_and_staffs')->user()->role_id == 1
+                     || Auth::guard('shop_owners_and_staffs')->user()->role_id == 2))
                     <li class="nav-item py-1">
                         <a href="{{route('backside.shop_owner.pos.dashboard')}}" class="nav-link">
                             {{-- <i class="fi fi-rr-home nav-icon"></i> --}}
                             <p class="font-weight-bold text-color">
-                                Dashboard 
+                                Dashboard
                             {{-- {{\Illuminate\Support\Str::limit($current_shop->shop_name, 20, '...')}} --}}
                             </p>
                         </a>
                     </li>
-                    <li class="nav-item py-1"> 
+                    <li class="nav-item py-1">
                         <a href="#" class="nav-link">
                             <!--<i class="fa fa-shopping-cart nav-icon"></i>-->
                             <p class="font-weight-bold  text-color">
@@ -126,7 +122,7 @@
 
                     @if(Session::has('staff_role'))
                     @if(Session::get('staff_role') != 3)
-                    <li class="nav-item py-1"> 
+                    <li class="nav-item py-1">
                         <a href="#" class="nav-link">
                             <!--<i class="fa fa-shopping-cart nav-icon"></i>-->
                             <p class="font-weight-bold  text-color">
@@ -151,7 +147,7 @@
                             </p>
                         </a>
                     </li>
-                    
+
                     <li class="nav-item py-1">
                         <a href="{{route('backside.shop_owner.pos.ptm_purchase_list')}}" class="nav-link">
                             {{-- <i class="fa fa-circle nav-icon"></i> --}}
@@ -160,7 +156,7 @@
                             </p>
                         </a>
                     </li>
-                    
+
                     <li class="nav-item py-1">
                         <a href="{{route('backside.shop_owner.pos.wg_purchase_list')}}" class="nav-link">
                             {{-- <i class="fa fa-circle nav-icon"></i> --}}
@@ -173,7 +169,7 @@
                     </li>
                     @endif
                     @else
-                    <li class="nav-item py-1"> 
+                    <li class="nav-item py-1">
                         <a href="#" class="nav-link">
                             <!--<i class="fa fa-shopping-cart nav-icon"></i>-->
                             <p class="font-weight-bold  text-color">
@@ -198,7 +194,7 @@
                             </p>
                         </a>
                     </li>
-                    
+
                     <li class="nav-item py-1">
                         <a href="{{route('backside.shop_owner.pos.ptm_purchase_list')}}" class="nav-link">
                             {{-- <i class="fa fa-circle nav-icon"></i> --}}
@@ -207,7 +203,7 @@
                             </p>
                         </a>
                     </li>
-                    
+
                     <li class="nav-item py-1">
                         <a href="{{route('backside.shop_owner.pos.wg_purchase_list')}}" class="nav-link">
                             {{-- <i class="fa fa-circle nav-icon"></i> --}}
@@ -219,8 +215,8 @@
                         </ul>
                     </li>
                     @endif
-                   
-                    <li class="nav-item py-1"> 
+
+                    <li class="nav-item py-1">
                         <a href="#" class="nav-link">
                             <!--<i class="fa fa-shopping-cart nav-icon"></i>-->
                             <p class="font-weight-bold  text-color">
@@ -230,7 +226,7 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item py-1">
-                        <a href="{{route('backside.shop_owner.pos.slae_purchase')}}" class="nav-link">
+                        <a href="{{route('backside.shop_owner.pos.sale_purchase')}}" class="nav-link">
                             {{-- <i class="fa fa-circle nav-icon"></i> --}}
                             <p class="font-weight-bold text-color" style="font-size:13px" >
                                 ရွှေထည်အရောင်းစာရင်းသွင်းခြင်း
@@ -263,10 +259,10 @@
                     </li>
                         </ul>
                     </li>
-                   
+
                     @if(Session::has('staff_role'))
                     @if(Session::get('staff_role') != 3)
-                    <li class="nav-item py-1"> 
+                    <li class="nav-item py-1">
                         <a href="#" class="nav-link">
                             <!--<i class="fa fa-shopping-cart nav-icon"></i>-->
                             <p class="font-weight-bold  text-color">
@@ -311,7 +307,7 @@
                     </li>
                     @endif
                     @else
-                    <li class="nav-item py-1"> 
+                    <li class="nav-item py-1">
                         <a href="#" class="nav-link">
                             <!--<i class="fa fa-shopping-cart nav-icon"></i>-->
                             <p class="font-weight-bold  text-color">
@@ -356,8 +352,8 @@
                     </li>
                     @endif
 
-                    
-                    
+
+
                     <li class="nav-item py-1">
                         <a href="{{route('backside.shop_owner.pos.assign_gold_list')}}" class="nav-link">
                             {{-- <i class="fa fa-circle nav-icon"></i> --}}
@@ -432,7 +428,7 @@
                     </li>
                     {{-- <li class="nav-item py-1">
                         <a href="{{route('backside.shop_owner.pos.purchase_lists')}}" class="nav-link">
-                       
+
                             <p class="font-weight-bold text-color" >
                                 အဝယ်စာရင်းများ
                             </p>
@@ -440,7 +436,7 @@
                     </li>
                     <li class="nav-item py-1">
                         <a href="{{route('backside.shop_owner.pos.sale_lists')}}" class="nav-link">
-                       
+
                             <p class="font-weight-bold text-color" >
                                 အရောင်းစာရင်းများ
                             </p>
@@ -483,7 +479,7 @@
                         </a>
                     </li>
                     @endif
-                    
+
                     <li class="nav-item py-1">
                         <a href="{{route('backside.shop_owner.pos.shop_profile')}}" class="nav-link">
                             {{-- <i class="fa fa-circle nav-icon"></i> --}}
@@ -494,22 +490,15 @@
                     </li>
                     <li class="nav-item py-1">
                         <a href="#" class="nav-link">
-                            
+
                             <p class="font-weight-bold text-color" >
-                                
+
                             </p>
                         </a>
                     </li>
-                    
-                    
+
+
                 @endif
-
-
-                 @isset(Auth::guard('shop_owner')->user()->id)
-
-
-                 @endisset
-
 
 
             <div class="sop-btm-right">

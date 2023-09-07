@@ -23,7 +23,8 @@ class SuperAdminRoleController extends Controller
         $this->middleware(['auth:super_admin']);
     }
 
-    function list(): View {
+    public function list(): View
+    {
         $super_admin = SuperAdmin::all();
         $super_admin_log = SuperAdminLogActivity::all();
         return view('backend.super_admin_role.list', ['super_admin' => $super_admin, 'super_admin_log' => $super_admin_log]);
@@ -41,9 +42,7 @@ class SuperAdminRoleController extends Controller
 
         return DataTables::of($data)
             ->addColumn('action', fn($record) => $record->id)
-            ->editColumn('created_at', function ($record) {
-                return date('F d, Y ( h:i A )', strtotime($record->created_at));
-            })
+            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->rawColumns(['action', 'created_at'])
             ->make(true);
     }

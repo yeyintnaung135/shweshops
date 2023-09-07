@@ -171,6 +171,9 @@
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
+                order: [
+                [3, 'desc']
+            ],
         });
 
         $(document).ready(function() {

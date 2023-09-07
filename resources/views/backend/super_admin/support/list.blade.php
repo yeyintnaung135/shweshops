@@ -43,6 +43,7 @@
                                                     <td>Category</td>
                                                     <td>Video</td>
                                                     <td>Action</td>
+                                                    <td>Created At</td>
                                                 </tr>
                                             </thead>
                                         </table>
@@ -157,12 +158,15 @@
 
             ],
             dom: 'lBfrtip',
-                "responsive": true,
-                "autoWidth": false,
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ],
-            });
+            "responsive": true,
+            "autoWidth": false,
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            order: [
+                [5, 'desc']
+            ],
+        });
 
 
         function get(obj) {

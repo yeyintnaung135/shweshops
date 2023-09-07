@@ -38,8 +38,8 @@
                                     <div class="card-header">
                                         <div class=" d-flex justify-content-between align-items-center">
                                             <h2><i class="fas fa-users"></i> Admins Lists </h2>
-                                            <a href="{{ route('backside.super_admin.super_admin_role.create') }}" role="button"
-                                                class="btn btn-primary"> Create Admin </a>
+                                            <a href="{{ route('backside.super_admin.super_admin_role.create') }}"
+                                                role="button" class="btn btn-primary"> Create Admin </a>
                                         </div>
                                     </div>
                                     <div class="card-body p-lg-3">
@@ -153,7 +153,8 @@
                             var result = '<span class="badge badge-primary">Request</span>'
                         }
                         return result;
-                    }, searchable: false
+                    },
+                    searchable: false
                 },
                 {
                     data: 'action',
@@ -225,7 +226,9 @@
               ${ remove }
            </div>
           `;
-                    },orderable: false, searchable: false
+                    },
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'created_at',
@@ -234,8 +237,11 @@
             ],
 
             dom: 'lBfrtip',
-                "responsive": true,
-                "autoWidth": false,
+            "responsive": true,
+            "autoWidth": false,
+            order: [
+                [5, 'desc']
+            ],
         });
     </script>
 @endpush

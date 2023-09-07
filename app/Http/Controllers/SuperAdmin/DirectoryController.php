@@ -40,9 +40,7 @@ class DirectoryController extends Controller
             ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
         return DataTables::of($totalRecordsQuery)
-            ->addColumn('created_at', function ($record) {
-                return date('F d, Y ( h:i A )', strtotime($record->created_at));
-            })
+            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->addColumn('action', function ($record) {
                 return $record->id;
             })
@@ -187,7 +185,8 @@ class DirectoryController extends Controller
         return redirect('backside/super_admin/directory/all');
 
     }
-    public function list(): View {
+    public function list(): View
+    {
         $alltt = Tooltips::all();
         return view('backend.super_admin.tooltips.list', ['alltt' => $alltt]);
     }

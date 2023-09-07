@@ -19,8 +19,8 @@
         <!-- Content Header (Page header) -->
         <section class="content-header sn-content-header">
             <div class="container-fluid">
-                @foreach($shopowner as $shopowner )
-                @endforeach
+                {{-- @foreach($shopowner as $shopowner )
+                @endforeach --}}
 
 
             </div><!-- /.container-fluid -->

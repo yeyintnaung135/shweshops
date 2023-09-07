@@ -163,6 +163,9 @@
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
+                order: [
+                    [6, 'desc']
+                ],
 
             }).columns.adjust().responsive.recalc();
 

@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\ShopOwner;
+namespace App\Http\Controllers\POS;
 
 use App\Http\Controllers\Controller;
 use App\Models\CountSetting;
 use App\Models\FeaturesForShops;
-use App\Models\PosSuperAdmin;
+use App\Models\PercentTemplate;
+use App\Models\POS\PosSuperAdmin;
 use App\Models\ShopBanner;
 use App\Models\ShopDirectory;
 use App\Models\ShopOwner;
+use App\Models\Shops;
 use App\Models\State;
 use App\Models\Township;
 use App\Providers\RouteServiceProvider;
@@ -36,7 +38,7 @@ class PosSuperAdminController extends Controller
     }
 
     //if user emial and password is correct loginned
-    public function login(Request $request): mixed
+    public function login(Request $request)
     {
         $data = $request->except('_token');
         $validator = Validator::make($data, [
@@ -75,7 +77,7 @@ class PosSuperAdminController extends Controller
     //Shops
     public function all(): View
     {
-        $shopowner = ShopOwner::all();
+        $shopowner = Shops::all();
         // dd($shopowner);
         $features = FeaturesForShops::all();
         return view('backend.pos_super_admin.shops.all', ['shopowner' => $shopowner, 'features' => $features]);
@@ -91,7 +93,7 @@ class PosSuperAdminController extends Controller
         if ($searchByTodate == null) {
             $searchByTodate = Carbon::now();
         }
-        $shopowner = ShopOwner::whereDate('created_at', '<=', $searchByFromdate)
+        $shopowner = Shops::whereDate('created_at', '<=', $searchByFromdate)
             ->whereDate('created_at', '>=', $searchByTodate)
             ->get();
 
@@ -172,7 +174,7 @@ class PosSuperAdminController extends Controller
         $data['additional_phones'] = json_encode($add_ph_array);
         // $data['state']=$request->state;
         // $data['township']=$request->township;
-        $shopdata = ShopOwner::create($data);
+        $shopdata = Shops::create($data);
         $shopdata->pos_only = 'yes';
         $shopdata->save();
 
@@ -197,7 +199,7 @@ class PosSuperAdminController extends Controller
                 'valuable_product' => $data['valuable_product'],
             ];
 
-            Percent_template::create($template_percent);
+            PercentTemplate::create($template_percent);
 
             $shop_dir['shop_id'] = $shop_id;
             ShopDirectory::updateOrCreate($shop_dir);
@@ -208,19 +210,19 @@ class PosSuperAdminController extends Controller
 
             return redirect()->route('pos_super_admin_shops.all');
         } else {
-            return 'false';
+            return redirect()->back();
         }
     }
     public function shop_edit($id): View
     {
         $states = State::get();
-        $shopowner = ShopOwner::findOrFail($id);
+        $shopowner = Shops::findOrFail($id);
         return view('backend.pos_super_admin.shops.edit', ['shopowner' => $shopowner, 'states' => $states]);
     }
     public function shop_update(Request $request, $id)
     {
         $input = $request->except('_token', '_method');
-        $shopowner = ShopOwner::findOrFail($id);
+        $shopowner = Shops::findOrFail($id);
 //        return $shopowner;
         $request->validate(
             [
@@ -328,7 +330,7 @@ class PosSuperAdminController extends Controller
     public function shop_trash($id): RedirectResponse
     {
         // dd($id);
-        $shop_owner = ShopOwner::findOrFail($id);
+        $shop_owner = Shops::findOrFail($id);
         if (isset($shop_owner->getPhotos)) {
             $del = $shop_owner->getPhotos->pluck("id");
             ShopBanner::destroy($del);
@@ -338,7 +340,7 @@ class PosSuperAdminController extends Controller
     }
     public function shop_show($id): View
     {
-        $shop = ShopOwner::findOrFail($id);
+        $shop = Shops::findOrFail($id);
         $all = CountSetting::where('shop_id', $shop->id)->where('name', 'all')->get();
         $products_count_setting = CountSetting::where('shop_id', $shop->id)->where('name', 'item')->get();
         $users_count_setting = CountSetting::where('shop_id', $shop->id)->where('name', 'users')->get();
@@ -409,7 +411,7 @@ class PosSuperAdminController extends Controller
         return view('backend.pos_super_admin.edit', ['super_admin' => $super_admin]);
 
     }
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, $id)
     {
 
         $admin = PosSuperAdmin::findOrFail($id);

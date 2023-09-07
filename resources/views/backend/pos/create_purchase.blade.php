@@ -19,8 +19,7 @@
         <!-- Content Header (Page header) -->
         <section class="content-header sn-content-header">
             <div class="container-fluid">
-                @foreach($shopowner as $shopowner )
-                @endforeach
+
 
 
             </div><!-- /.container-fluid -->
@@ -285,9 +284,9 @@
                                     </div>
                                 </div>
                             </div>
-                           
-                            
-                            @if (Auth::guard('shop_owner')->user()->pos_only == 'no')
+
+
+                            @if ($shopowner->pos_only == 'no')
                                  <!-- ShweShop Item -->
                             <div class="col-12 mt-3" >
                                 <label for="shwe_item">Shwe Shop Item သွင်းမည်</label>
@@ -295,7 +294,7 @@
                             </div>
                             <!-- End -->
                             @endif
-                           
+
                             <div class="col-12 mt-2">
                                 <hr/>
                             </div>

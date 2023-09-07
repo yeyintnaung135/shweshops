@@ -13,7 +13,7 @@ return [
     | to use as your default connection for all database work. Of course
     | you may use many connections at once using the Database library.
     |
-    */
+     */
 
     'default' => env('DB_CONNECTION', 'mysql'),
 
@@ -31,7 +31,7 @@ return [
     | so make sure you have the driver for your particular database of
     | choice installed on your machine before you begin development.
     |
-    */
+     */
 
     'connections' => [
 
@@ -93,6 +93,21 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'mongodb' => [
+            'driver' => 'mongodb',
+            'host' => env('MongoDB_HOST', '127.0.0.1'),
+            'port' => env('MongoDB_PORT', 27017),
+            'database' => env('MongoDB_DATABASE', 'homestead'),
+            'username' => env('MongoDB_USERNAME', ''),
+            'password' => env('MongoDB_PASSWORD', ''),
+            'options' => [
+                // here you can pass more settings to the Mongo Driver Manager
+                // see https://www.php.net/manual/en/mongodb-driver-manager.construct.php under "Uri Options" for a list of complete parameters that you can use
+
+                'database' => env('DB_AUTHENTICATION_DATABASE', 'admin'), // required with Mongo 3+
+            ],
+        ],
+
     ],
 
     /*
@@ -104,7 +119,7 @@ return [
     | your application. Using this information, we can determine which of
     | the migrations on disk haven't actually been run in the database.
     |
-    */
+     */
 
     'migrations' => 'migrations',
 
@@ -117,7 +132,7 @@ return [
     | provides a richer body of commands than a typical key-value system
     | such as APC or Memcached. Laravel makes it easy to dig right in.
     |
-    */
+     */
 
     'redis' => [
 
@@ -125,7 +140,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
         ],
 
         'default' => [
