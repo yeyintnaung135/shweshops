@@ -604,12 +604,7 @@ const app = new Vue({
             }
         },
 
-        test: function ($event) {
-            console.log("afeafaefa");
-            if (this.$refs.catref.$refs.ykf.hidefrompriceoption == false) {
-                this.$refs.catref.$refs.ykf.hidefrompriceoption = true;
-            }
-        },
+    
 
         //for facebook
 

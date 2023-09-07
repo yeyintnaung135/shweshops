@@ -10,12 +10,16 @@
 
             <div class="logo-wrapper is-mobile">
                 <div class="logo" style="font-family: sans-serif">
-                    <a href="/"><h3 style="color:#780117; font-family: 'Gabriela', Sans-Serif !important; font-weight:bolder">SHWESHOPS</h3></a>
+                    <a href="/">
+                        <h3 style="color:#780117; font-family: 'Gabriela', Sans-Serif !important; font-weight:bolder">
+                            SHWESHOPS</h3>
+                    </a>
                 </div>
             </div>
 
             {{-- <div class="elementor-widget-container is-mobile d-flex"> --}}
-                @if(isset(Auth::guard('web')->user()->id)|| isset(Auth::guard('shop_owners_and_staffs')->user()->id)))
+            @if (isset(Auth::guard('web')->user()->id) || isset(Auth::guard('shop_owners_and_staffs')->user()->id))
+                )
                 <div class="ftc-cart-element is-mobile mt-1 me-4">
 
                     <div class="ftc-tini-cart">
@@ -27,106 +31,46 @@
                         </div>
                     </div>
                 </div>
-                @endif
+            @endif
 
-                <div class="ftc-cart-element is-mobile">
-                    <i class=""></i>
-                    <div class="ftc-tini-cart">
-                        <div class="cart-item">
-                            <a href="{{ url('myfav') }}">
-                                <div class="cart-total">
+            <div class="ftc-cart-element is-mobile">
+                <i class=""></i>
+                <div class="ftc-tini-cart">
+                    <div class="cart-item">
+                        <a href="{{ url('myfav') }}">
+                            <div class="cart-total">
 
-                                    <i id="windowFavNav"
-                                        class="fa-regular fa-heart fa-xl"
-                                        style="color:#6f6a6a !important"></i>
-                                    {{-- <span id="favw-a2c-count" class="sop-cart-count">0</span> --}}
-                                </div>
-                            </a>
-                        </div>
+                                <i id="windowFavNav" class="fa-regular fa-heart fa-xl"
+                                    style="color:#6f6a6a !important"></i>
+                                {{-- <span id="favw-a2c-count" class="sop-cart-count">0</span> --}}
+                            </div>
+                        </a>
                     </div>
                 </div>
+            </div>
             {{-- </div> --}}
 
-            <div class="pe-3 dropdown sop-drop d-none">
-                {{-- ဘာသာစကား<i class="fa-solid fa-angle-down ps-1"></i> --}}
-                <ul>
-                    <li class="nav-item dropdown" style="list-style-type:none;margin-right: 0px;">
-                        <a href="#language-change" class="nav-link" data-toggle="dropdown">
-                            ဘာသာစကား<i class="fa-solid fa-angle-down ps-1"></i>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a href="" class="dropdown-item">မြန်မာ</a>
-                            <a href="" class="dropdown-item">English</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            
+
+
         </div>
 
         <div class="header-content">
             {{-- container --}}
             <div class="">
                 <div data-elementor-type="wp-post" data-elementor-id="13125" class="elementor elementor-13125"
-                     data-elementor-settings="[]">
+                    data-elementor-settings="[]">
                     <div class="elementor-section-wrap">
-                        {{-- <section
-                            class="elementor-section elementor-top-section elementor-element elementor-element-1468d7e elementor-section-full_width elementor-section-stretched elementor-section-height-default elementor-section-height-default selection-is-not-sticked"
-                            data-id="1468d7e" data-element_type="section"
-                            data-settings="{&quot;stretch_section&quot;:&quot;section-stretched&quot;}">
-                            <div class="elementor-container elementor-column-gap-default">
-                                <div
-                                class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-b3308dc"
-                                data-id="b3308dc" data-element_type="column">
-                                <div class="elementor-widget-wrap elementor-element-populated">
-                                    <div
-                                    class="elementor-element elementor-element-c2f83ec elementor-widget elementor-widget-spacer"
-                                    data-id="c2f83ec" data-element_type="widget"
-                                    data-widget_type="spacer.default">
-                                    <div class="elementor-widget-container">
-                                        <div class="elementor-spacer">
-                                            <div class="elementor-spacer-inner"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section> --}}
+
                         <section
                             class="pt-xl-2 pb-xl-3 pt-lg-1 pb-lg-2 elementor-section elementor-top-section elementor-element elementor-element-6fc1126d elementor-section-full_width elementor-section-stretched elementor-section-height-default elementor-section-height-default selection-is-not-sticked"
                             data-id="6fc1126d" data-element_type="section"
                             data-settings="{&quot;stretch_section&quot;:&quot;section-stretched&quot;,&quot;background_background&quot;:&quot;classic&quot;}">
                             <div class="px-lg-3 mx-lg-3 elementor-container elementor-column-gap-extended">
-                                {{-- <div
-                                    class="elementor-column elementor-col-20 elementor-top-column elementor-element elementor-element-43a0ff17"
-                                    data-id="43a0ff17" data-element_type="column">
-                                    <div class="elementor-widget-wrap elementor-element-populated">
-                                        <div
-                                        class="elementor-element elementor-element-1fcb831a elementor-widget elementor-widget-ftc_logo"
-                                        data-id="1fcb831a" data-element_type="widget"
-                                        data-widget_type="ftc_logo.default">
-                                        <div class="elementor-widget-container">
-                                            <div class="ftc-element-logo">
-                                                <div class="image-logo">
-                                                    <a href="{{url('/')}}">
-                                                        <h1 style="color:#780117">
-                                                            ShweShops
-                                                        </h1>
-                                                    </a>
-                                                </div>
-                                                <div class="description-logo"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> --}}
-                                <div
-                                    class="elementor-column elementor-col-20 elementor-top-column elementor-element elementor-element-32c3785c"
+
+                                <div class="elementor-column elementor-col-20 elementor-top-column elementor-element elementor-element-32c3785c"
                                     data-id="32c3785c" data-element_type="column" style="flex-grow: 5;">
                                     <div class="elementor-widget-wrap elementor-element-populated">
-                                        <div
-                                            class="elementor-element elementor-element-15a73719 mme-hover-style-background elementor-nav-menu--indicator-classic elementor-nav-menu--dropdown-tablet elementor-nav-menu__text-align-aside elementor-nav-menu--toggle elementor-nav-menu--burger elementor-widget elementor-widget-ftc-nav"
+                                        <div class="elementor-element elementor-element-15a73719 mme-hover-style-background elementor-nav-menu--indicator-classic elementor-nav-menu--dropdown-tablet elementor-nav-menu__text-align-aside elementor-nav-menu--toggle elementor-nav-menu--burger elementor-widget elementor-widget-ftc-nav"
                                             data-id="15a73719" data-element_type="widget"
                                             data-settings="{&quot;layout&quot;:&quot;horizontal&quot;,&quot;toggle&quot;:&quot;burger&quot;}"
                                             data-widget_type="ftc-nav.default">
@@ -135,22 +79,20 @@
 
                                                     <!-- begin "mega_main_menu" -->
                                                     <div id="primary"
-                                                         class="mega_main_menu primary primary_style-flat icons-left first-lvl-align-center first-lvl-separator-none direction-horizontal fullwidth-disable pushing_content-disable mobile_minimized-enable dropdowns_trigger-hover dropdowns_animation-none no-search no-woo_cart no-buddypress responsive-enable coercive_styles-disable indefinite_location_mode-disable language_direction-ltr version-2-2-1 mega_main">
+                                                        class="mega_main_menu primary primary_style-flat icons-left first-lvl-align-center first-lvl-separator-none direction-horizontal fullwidth-disable pushing_content-disable mobile_minimized-enable dropdowns_trigger-hover dropdowns_animation-none no-search no-woo_cart no-buddypress responsive-enable coercive_styles-disable indefinite_location_mode-disable language_direction-ltr version-2-2-1 mega_main">
                                                         <div class="menu_holder">
                                                             <div class="mmm_fullwidth_container"></div>
                                                             <!-- class="fullwidth_container" -->
                                                             <div class="menu_inner" role="navigation">
                                                                 <ul id="main_ul-primary"
-                                                                    class="mega_main_menu_ul d-flex"
-                                                                    role="menubar" aria-label="Menu">
-                                                                    <li
-                                                                        style="margin-right: 5px;"
+                                                                    class="mega_main_menu_ul d-flex" role="menubar"
+                                                                    aria-label="Menu">
+                                                                    <li style="margin-right: 5px;"
                                                                         class="home-demo menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-has-children menu-item-8660 multicolumn_dropdown default_style drop_to_right submenu_default_width columns5">
-                                                                        <a href="{{url('/')}}"
-                                                                           class="item_link   disable_icon"
-                                                                           aria-haspopup="true"
-                                                                           aria-expanded="false" role="menuitem"
-                                                                           tabindex="0">
+                                                                        <a href="{{ url('/') }}"
+                                                                            class="item_link   disable_icon"
+                                                                            aria-haspopup="true" aria-expanded="false"
+                                                                            role="menuitem" tabindex="0">
                                                                             <i class=""></i>
                                                                             <span class="link_content">
                                                                                 <span class="link_text yk_link_content">
@@ -158,12 +100,11 @@
                                                                                 </span><!-- /.link_text -->
                                                                             </span><!-- /.link_content -->
                                                                         </a><!-- /.item_link  -->
-                                                                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8260 multicolumn_dropdown default_style drop_to_right submenu_full_width columns5">
-                                                                        <a href="\shops"
-                                                                           class="item_link disable_icon"
-                                                                           aria-haspopup="true"
-                                                                           aria-expanded="false" role="menuitem"
-                                                                           tabindex="0">
+                                                                    <li
+                                                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8260 multicolumn_dropdown default_style drop_to_right submenu_full_width columns5">
+                                                                        <a href="\shops" class="item_link disable_icon"
+                                                                            aria-haspopup="true" aria-expanded="false"
+                                                                            role="menuitem" tabindex="0">
                                                                             <i class=""></i>
                                                                             <span class="link_content">
                                                                                 <span class="link_text yk_link_content">
@@ -173,12 +114,12 @@
                                                                         </a><!-- /.item_link  -->
 
                                                                     </li>
-                                                                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8260 multicolumn_dropdown default_style drop_to_right submenu_full_width columns5">
+                                                                    <li
+                                                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8260 multicolumn_dropdown default_style drop_to_right submenu_full_width columns5">
                                                                         <a href="{{ url('see_by_categories') }}"
-                                                                           class="item_link   disable_icon"
-                                                                           aria-haspopup="true"
-                                                                           aria-expanded="false" role="menuitem"
-                                                                           tabindex="0">
+                                                                            class="item_link   disable_icon"
+                                                                            aria-haspopup="true" aria-expanded="false"
+                                                                            role="menuitem" tabindex="0">
                                                                             <i class=""></i>
                                                                             <span class="link_content">
                                                                                 <span class="link_text yk_link_content">
@@ -188,66 +129,73 @@
                                                                         </a><!-- /.item_link  -->
                                                                     </li>
 
-                                                                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-8299 default_dropdown  drop_to_right submenu_default_width columns1">
-                                                                        <a href="{{ url('/news') }}" class="item_link"
-                                                                           aria-haspopup="true"
-                                                                           aria-expanded="false" role="menuitem"
-                                                                           tabindex="0">
+                                                                    <li
+                                                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-8299 default_dropdown  drop_to_right submenu_default_width columns1">
+                                                                        <a href="{{ url('/news') }}"
+                                                                            class="item_link" aria-haspopup="true"
+                                                                            aria-expanded="false" role="menuitem"
+                                                                            tabindex="0">
                                                                             <i class=""></i>
                                                                             <span class="link_content ">
-                                                                                  <span class="link_text yk_link_content">
+                                                                                <span
+                                                                                    class="link_text yk_link_content">
                                                                                     News&nbsp;&&nbsp;Events
-                                                                                  </span><!-- /.link_text -->
+                                                                                </span><!-- /.link_text -->
                                                                             </span><!-- /.link_content -->
                                                                         </a><!-- /.item_link  -->
                                                                     </li>
-                                                                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8260 multicolumn_dropdown default_style drop_to_right submenu_full_width columns5">
+                                                                    <li
+                                                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8260 multicolumn_dropdown default_style drop_to_right submenu_full_width columns5">
                                                                         <a href="{{ url('contact-us') }}"
-                                                                           class="item_link "
-                                                                           aria-haspopup="true"
-                                                                           aria-expanded="false" role="menuitem"
-                                                                           tabindex="0">
+                                                                            class="item_link " aria-haspopup="true"
+                                                                            aria-expanded="false" role="menuitem"
+                                                                            tabindex="0">
                                                                             <i class=""></i>
                                                                             <span class="link_content">
-                                                                                <span class="link_text yk_link_content">
+                                                                                <span
+                                                                                    class="link_text yk_link_content">
                                                                                     Contact&nbsp;Us
                                                                                 </span><!-- /.link_text -->
                                                                             </span><!-- /.link_content -->
                                                                         </a><!-- /.item_link  -->
                                                                     </li>
-                                                                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8260 multicolumn_dropdown default_style drop_to_right submenu_full_width columns5">
+                                                                    <li
+                                                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8260 multicolumn_dropdown default_style drop_to_right submenu_full_width columns5">
                                                                         <a href="{{ url('support') }}"
-                                                                           class="item_link "
-                                                                           aria-haspopup="true"
-                                                                           aria-expanded="false" role="menuitem"
-                                                                           tabindex="0">
+                                                                            class="item_link " aria-haspopup="true"
+                                                                            aria-expanded="false" role="menuitem"
+                                                                            tabindex="0">
                                                                             <i class=""></i>
-                                                                            <span class="link_content" style="width: 125px;">
-                            <span class="link_text yk_link_content">
-                                Help & Support
-                            </span><!-- /.link_text -->
-                        </span><!-- /.link_content -->
+                                                                            <span class="link_content"
+                                                                                style="width: 125px;">
+                                                                                <span
+                                                                                    class="link_text yk_link_content">
+                                                                                    Help & Support
+                                                                                </span><!-- /.link_text -->
+                                                                            </span><!-- /.link_content -->
                                                                         </a><!-- /.item_link  -->
                                                                     </li>
 
-                                                                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8260 multicolumn_dropdown default_style drop_to_right submenu_full_width columns5">
+                                                                    <li
+                                                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8260 multicolumn_dropdown default_style drop_to_right submenu_full_width columns5">
                                                                         <a href="{{ url('directory/all') }}"
-                                                                           class="item_link "
-                                                                           aria-haspopup="true"
-                                                                           aria-expanded="false" role="menuitem"
-                                                                           tabindex="0">
+                                                                            class="item_link " aria-haspopup="true"
+                                                                            aria-expanded="false" role="menuitem"
+                                                                            tabindex="0">
                                                                             <i class=""></i>
-                                                                            <span class="link_content" style="width: 125px;">
-                            <span class="link_text yk_link_content">
-                               Shop Directory
-                            </span><!-- /.link_text -->
-                        </span><!-- /.link_content -->
+                                                                            <span class="link_content"
+                                                                                style="width: 125px;">
+                                                                                <span
+                                                                                    class="link_text yk_link_content">
+                                                                                    Shop Directory
+                                                                                </span><!-- /.link_text -->
+                                                                            </span><!-- /.link_content -->
                                                                         </a><!-- /.item_link  -->
                                                                     </li>
 
 
 
-                                                                {{-- <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8260 multicolumn_dropdown default_style drop_to_right submenu_full_width columns5">
+                                                                    {{-- <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8260 multicolumn_dropdown default_style drop_to_right submenu_full_width columns5">
                                                                     <a href="{{url('see_all_discount/all')}}"
                                                                         class="item_link   disable_icon"
                                                                         aria-haspopup="true"
@@ -261,12 +209,13 @@
                                                                         </span><!-- /.link_content -->
                                                                     </a><!-- /.item_link  -->
                                                                 </li> --}}
-                                                                <!-- /.mega_dropdown -->
+                                                                    <!-- /.mega_dropdown -->
 
                                                                 </ul>
                                                             </div><!-- /class="menu_inner" -->
                                                         </div><!-- /class="menu_holder" -->
-                                                    </div><!-- /id="mega_main_menu" --></nav>
+                                                    </div><!-- /id="mega_main_menu" -->
+                                                </nav>
                                                 <!-- #site-navigation -->
                                             </div>
                                         </div>
@@ -274,16 +223,18 @@
                                 </div>
 
                                 {{-- Search Bar --}}
-                                @if (!empty($display) && $display == "product")
+                                @if (!empty($display) && $display == 'product')
                                     <div>
                                         <form action="" id="productSearchForm">
                                             <div class="d-flex align-items-center">
                                                 {{-- <i class="fa-solid fa-search"></i> --}}
                                                 <svg class="fa-search" viewBox="0 0 20 20">
-                                                    <path fill="none" d="M18.109,17.776l-3.082-3.081c-0.059-0.059-0.135-0.077-0.211-0.087c1.373-1.38,2.221-3.28,2.221-5.379c0-4.212-3.414-7.626-7.625-7.626c-4.212,0-7.626,3.414-7.626,7.626s3.414,7.627,7.626,7.627c1.918,0,3.665-0.713,5.004-1.882c0.006,0.085,0.033,0.17,0.098,0.234l3.082,3.081c0.143,0.142,0.371,0.142,0.514,0C18.25,18.148,18.25,17.918,18.109,17.776zM9.412,16.13c-3.811,0-6.9-3.089-6.9-6.9c0-3.81,3.089-6.899,6.9-6.899c3.811,0,6.901,3.09,6.901,6.899C16.312,13.041,13.223,16.13,9.412,16.13z"></path>
+                                                    <path fill="none"
+                                                        d="M18.109,17.776l-3.082-3.081c-0.059-0.059-0.135-0.077-0.211-0.087c1.373-1.38,2.221-3.28,2.221-5.379c0-4.212-3.414-7.626-7.625-7.626c-4.212,0-7.626,3.414-7.626,7.626s3.414,7.627,7.626,7.627c1.918,0,3.665-0.713,5.004-1.882c0.006,0.085,0.033,0.17,0.098,0.234l3.082,3.081c0.143,0.142,0.371,0.142,0.514,0C18.25,18.148,18.25,17.918,18.109,17.776zM9.412,16.13c-3.811,0-6.9-3.089-6.9-6.9c0-3.81,3.089-6.899,6.9-6.899c3.811,0,6.901,3.09,6.901,6.899C16.312,13.041,13.223,16.13,9.412,16.13z">
+                                                    </path>
                                                 </svg>
                                                 <input class="" type="text" id="productSearchText"
-                                                       placeholder="Productများရှာဖွေပါ" value="">
+                                                    placeholder="Productများရှာဖွေပါ" value="">
                                                 <button class="product-search-button" type="submit">Go</button>
 
                                             </div>
@@ -294,10 +245,9 @@
                                         <form action="" id="searchform">
                                             <div class="cart-total d-flex align-items-end position-relative">
                                                 <input class="sop-search" type="text" id="searchText"
-                                                       placeholder="Search" value="">
-                                                <button type="submit"
-                                                        class="sop-search-btm fa-solid fa-search px-2 "
-                                                        style="font-size:1rem;opacity:0.9;color:#780116;position: absolute;right: 5px;top: -4px;"></button>
+                                                    placeholder="Search" value="">
+                                                <button type="submit" class="sop-search-btm fa-solid fa-search px-2 "
+                                                    style="font-size:1rem;opacity:0.9;color:#780116;position: absolute;right: 5px;top: -4px;"></button>
 
                                             </div>
                                         </form>
@@ -306,12 +256,10 @@
 
                                 {{-- Search Bar --}}
 
-                                <div
-                                    class="align-items-end elementor-column elementor-col-20 elementor-top-column elementor-element elementor-element-6aab2496"
+                                <div class="align-items-end elementor-column elementor-col-20 elementor-top-column elementor-element elementor-element-6aab2496"
                                     data-id="6aab2496" data-element_type="column">
                                     <div class="elementor-widget-wrap elementor-element-populated">
-                                        <div
-                                            class="elementor-element elementor-element-46ef4145 elementor-widget elementor-widget-ftc_shooping_cart"
+                                        <div class="elementor-element elementor-element-46ef4145 elementor-widget elementor-widget-ftc_shooping_cart"
                                             data-id="46ef4145" data-element_type="widget"
                                             data-widget_type="ftc_shooping_cart.default">
                                             <div class="elementor-widget-container">
@@ -323,10 +271,10 @@
                                                                 <div class="cart-total">
 
                                                                     <i id="windowA2cNav"
-                                                                       class="fa-solid fa-shopping-bag fa-xl"
-                                                                       style="color:#1B1A17"></i>
+                                                                        class="fa-solid fa-shopping-bag fa-xl"
+                                                                        style="color:#1B1A17"></i>
                                                                     <span id="navw-a2c-count"
-                                                                          class="sop-cart-count">0</span>
+                                                                        class="sop-cart-count">0</span>
                                                                 </div>
                                                             </a>
                                                         </div>
@@ -336,16 +284,14 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div
-                                    class="align-items-end elementor-column elementor-col-20 elementor-top-column elementor-element elementor-element-6aab2496"
+                                <div class="align-items-end elementor-column elementor-col-20 elementor-top-column elementor-element elementor-element-6aab2496"
                                     data-id="6aab2496" data-element_type="column">
                                     <div class="elementor-widget-wrap elementor-element-populated">
-                                        <div
-                                            class="elementor-element elementor-element-46ef4145 elementor-widget elementor-widget-ftc_shooping_cart"
+                                        <div class="elementor-element elementor-element-46ef4145 elementor-widget elementor-widget-ftc_shooping_cart"
                                             data-id="46ef4145" data-element_type="widget"
                                             data-widget_type="ftc_shooping_cart.default">
                                             {{-- <div class="elementor-widget-container">
-                                                @if(isset(Auth::guard('web')->user()->id))
+                                                @if (isset(Auth::guard('web')->user()->id))
                                                 <form type="hidden" id="fav-2server"  method="POST" style="display: none;">
                                                     @csrf
                                                 </form>
@@ -394,8 +340,8 @@
                                                                 <div class="cart-total">
 
                                                                     <i id="windowFavNav"
-                                                                       class="fa-regular fa-heart fa-xl"
-                                                                       style="color:#780116!important"></i>
+                                                                        class="fa-regular fa-heart fa-xl"
+                                                                        style="color:#780116!important"></i>
                                                                     {{-- <span id="favw-a2c-count" class="sop-cart-count">0</span> --}}
                                                                 </div>
                                                             </a>
@@ -440,56 +386,32 @@
 @endpush
 
 @push('custom-scripts')
-    <Script>
+    <script>
+       
 
-
-
-        function ifChosenSelectionLength() {
-            var selection = JSON.parse(window.localStorage.getItem("selection"));
-            var selectionlength = 0;
-            if (selection != null) {
-                selectionlength = Object.keys(selection).length;
-
-            }
-            return document.getElementById('navw-a2c-count').innerHTML = selectionlength;
-
-        }
-
-        function ifChosenFavLength() {
-            var fav = JSON.parse(window.localStorage.getItem("fav"));
-            var favlength = 0;
-            if (fav != null) {
-                favlength = Object.keys(fav).length;
-            }
-
-            return document.getElementById('favw-a2c-count').innerHTML = favlength,
-                document.getElementById('favm-a2c-count').innerHTML = favlength;
-
-        }
-
-        $(document).ready(function () {
+        $(document).ready(function() {
             // if(window.localStorage.getItem('searchtext') != undefined){
             //     $('#searchText').val(window.localStorage.getItem('searchtext'));
             // }else{
             //     $('#searchText').val('');
             // }
-            if(window.localStorage.getItem('searchtext') != undefined){
+            if (window.localStorage.getItem('searchtext') != undefined) {
                 $('#productSearchText').val(window.localStorage.getItem('searchtext'));
-            }else{
+            } else {
                 $('#productSearchText').val('');
             }
             //for search form
-            $("#searchform").submit(function (event) {
+            $("#searchform").submit(function(event) {
                 var inputval = $('#searchText').val();
-                window.localStorage.setItem('searchtext',inputval);
+                window.localStorage.setItem('searchtext', inputval);
                 event.preventDefault();
-                return location.assign("{{url('ajax_search_result')}}" + '/' + inputval);
+                return location.assign("{{ url('ajax_search_result') }}" + '/' + inputval);
             });
-            $('#productSearchForm').submit(function (event) {
+            $('#productSearchForm').submit(function(event) {
                 var inputval = $('#productSearchText').val();
-                window.localStorage.setItem('productSearchtext',inputval);
+                window.localStorage.setItem('productSearchtext', inputval);
                 event.preventDefault();
-                return location.assign("{{url('ajax_search_result')}}" + '/' + inputval);
+                return location.assign("{{ url('ajax_search_result') }}" + '/' + inputval);
             });
 
             //for search form
@@ -502,11 +424,13 @@
             // }
             const pageUrl = window.location.href;
             const anchors = document.querySelectorAll('.menu-item a.item_link');
-            const parent = document.querySelectorAll('#main_ul-primary .menu-item.menu-item-type-post_type.menu-item-object-page')
+            const parent = document.querySelectorAll(
+                '#main_ul-primary .menu-item.menu-item-type-post_type.menu-item-object-page')
             for (i = 0; i < anchors.length; i++) {
                 var anchor = anchors[i]
                 if (anchor.href == pageUrl) {
-                    parent[i].classList.add('current-menu-ancestor', 'current_page_ancestor', 'current-menu-item', 'current_page_item');
+                    parent[i].classList.add('current-menu-ancestor', 'current_page_ancestor', 'current-menu-item',
+                        'current_page_item');
                 }
             }
         });
@@ -523,6 +447,7 @@
             stroke: #808080;
             stroke-width: 1;
         }
+
         .sop-m-search {
             width: 80px;
             background-color: #780116;
@@ -547,7 +472,14 @@
             color: #780116 !important;
         }
 
-        .mega_main_menu.primary > .menu_holder > .menu_inner > ul > li:hover > .item_link, .mega_main_menu.primary > .menu_holder > .menu_inner > ul > li > .item_link:hover, .mega_main_menu.primary > .menu_holder > .menu_inner > ul > li > .item_link:focus, .mega_main_menu.primary > .menu_holder > .menu_inner > ul > li.keep_open > .item_link, .mega_main_menu.primary > .menu_holder > .menu_inner > ul > li.current-menu-ancestor > .item_link, .mega_main_menu.primary > .menu_holder > .menu_inner > ul > li.current-page-ancestor > .item_link, .mega_main_menu.primary > .menu_holder > .menu_inner > ul > li.current-post-ancestor > .item_link, .mega_main_menu.primary > .menu_holder > .menu_inner > ul > li.current-menu-item > .item_link {
+        .mega_main_menu.primary>.menu_holder>.menu_inner>ul>li:hover>.item_link,
+        .mega_main_menu.primary>.menu_holder>.menu_inner>ul>li>.item_link:hover,
+        .mega_main_menu.primary>.menu_holder>.menu_inner>ul>li>.item_link:focus,
+        .mega_main_menu.primary>.menu_holder>.menu_inner>ul>li.keep_open>.item_link,
+        .mega_main_menu.primary>.menu_holder>.menu_inner>ul>li.current-menu-ancestor>.item_link,
+        .mega_main_menu.primary>.menu_holder>.menu_inner>ul>li.current-page-ancestor>.item_link,
+        .mega_main_menu.primary>.menu_holder>.menu_inner>ul>li.current-post-ancestor>.item_link,
+        .mega_main_menu.primary>.menu_holder>.menu_inner>ul>li.current-menu-item>.item_link {
             background: -moz-linear-gradient(top, #fff%, #fffee%) !important;
             background: -webkit-linear-gradient(top, #fff%, #fffee%) !important;
             background: -o-linear-gradient(top, #fff%, #fffee%) !important;
@@ -560,11 +492,12 @@
             border-radius: 0px !important;
         }
 
-        .mega_main_menu > .menu_holder > .menu_inner > ul > li > .item_link {
+        .mega_main_menu>.menu_holder>.menu_inner>ul>li>.item_link {
 
             padding: 0px 10px !important;
 
         }
+
         #productSearchForm {
             border: 1px solid #7e7e7e;
             border-radius: 4px;
@@ -572,17 +505,20 @@
             width: 320px;
             margin-right: 10px;
         }
+
         #productSearchForm #productSearchText {
             height: 40px;
             border: none;
         }
+
         #productSearchForm .product-search-button {
             border-radius: 3px;
             background: #780116;
             color: #fff;
         }
-        .ftc-header-template .mega_main_menu>.menu_holder>.menu_inner>ul> li {
-          margin-right: 0 !important;
+
+        .ftc-header-template .mega_main_menu>.menu_holder>.menu_inner>ul>li {
+            margin-right: 0 !important;
         }
 
         @media (min-width: 768px) {
@@ -637,7 +573,9 @@
             padding-left: 10px;
 
             /*=======*/
-        };
+        }
+
+        ;
     </style>
     <style type="text/css">
         @font-face {
@@ -648,14 +586,15 @@
 @endpush
 @push('css')
     <style>
-
         .elementor-container.elementor-column-gap-extended {
-            max-width: 100%!important;
+            max-width: 100% !important;
             margin: auto;
         }
-        .current-menu-ancestor .yk_link_content{
-            color: #780116!important;
+
+        .current-menu-ancestor .yk_link_content {
+            color: #780116 !important;
         }
+
         .menu-item:hover .yk_link_content {
             color: #780116 !important;
         }
@@ -663,7 +602,15 @@
         .menu-item:focus .yk_link_content {
             color: #780116 !important;
         }
-        .mega_main_menu.primary > .menu_holder > .menu_inner > ul > li:hover > .item_link, .mega_main_menu.primary > .menu_holder > .menu_inner > ul > li > .item_link:hover, .mega_main_menu.primary > .menu_holder > .menu_inner > ul > li > .item_link:focus, .mega_main_menu.primary > .menu_holder > .menu_inner > ul > li.keep_open > .item_link, .mega_main_menu.primary > .menu_holder > .menu_inner > ul > li.current-menu-ancestor > .item_link, .mega_main_menu.primary > .menu_holder > .menu_inner > ul > li.current-page-ancestor > .item_link, .mega_main_menu.primary > .menu_holder > .menu_inner > ul > li.current-post-ancestor > .item_link, .mega_main_menu.primary > .menu_holder > .menu_inner > ul > li.current-menu-item > .item_link {
+
+        .mega_main_menu.primary>.menu_holder>.menu_inner>ul>li:hover>.item_link,
+        .mega_main_menu.primary>.menu_holder>.menu_inner>ul>li>.item_link:hover,
+        .mega_main_menu.primary>.menu_holder>.menu_inner>ul>li>.item_link:focus,
+        .mega_main_menu.primary>.menu_holder>.menu_inner>ul>li.keep_open>.item_link,
+        .mega_main_menu.primary>.menu_holder>.menu_inner>ul>li.current-menu-ancestor>.item_link,
+        .mega_main_menu.primary>.menu_holder>.menu_inner>ul>li.current-page-ancestor>.item_link,
+        .mega_main_menu.primary>.menu_holder>.menu_inner>ul>li.current-post-ancestor>.item_link,
+        .mega_main_menu.primary>.menu_holder>.menu_inner>ul>li.current-menu-item>.item_link {
             background: -moz-linear-gradient(top, #fff%, #fffee%) !important;
             background: -webkit-linear-gradient(top, #fff%, #fffee%) !important;
             background: -o-linear-gradient(top, #fff%, #fffee%) !important;
@@ -671,19 +618,20 @@
             background: -webkit-gradient(linear, left top, left bottom, color-stop(%, #fff), color-stop(%, #fff)) !important;
             background: linear-gradient(to bottom, #fff%, #fffee%) !important;
             -ms-filter: "progid:DXImageTransform.Microsoft.gradient( startColorstr='#fff', endColorstr='#fff',GradientType=0 )" !important;
-            background-color: #fff!important;
-            border-bottom: 2px solid #780116!important;
-            border-radius:0px!important;
-        }
-        .mega_main_menu > .menu_holder > .menu_inner > ul > li > .item_link {
-
-            padding: 0px 10px!important;
-
+            background-color: #fff !important;
+            border-bottom: 2px solid #780116 !important;
+            border-radius: 0px !important;
         }
 
-        @media (min-width: 768px){
+        .mega_main_menu>.menu_holder>.menu_inner>ul>li>.item_link {
+
+            padding: 0px 10px !important;
+
+        }
+
+        @media (min-width: 768px) {
             .elementor-13125 .elementor-element.elementor-element-32c3785c {
-                width: 69.916%!important;
+                width: 69.916% !important;
             }
 
             .log img {
@@ -699,7 +647,8 @@
                 box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
             }
 
-            .dropdown-item.active, .dropdown-item:active {
+            .dropdown-item.active,
+            .dropdown-item:active {
                 background-color: #aeaeae !important;
             }
 

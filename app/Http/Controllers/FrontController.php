@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class FrontController extends Controller
 {
@@ -228,42 +229,16 @@ class FrontController extends Controller
         //randomize result
 
         //for all cat count
-//        $all = Item::where('id', '!=', 0)->get();
 
-        //values function is beacause filter retrun {{}} but i need [{}]
         $remove_discount_new = collect($get_by_shopid)->filter(function ($value, $key) {
             return $value->check_discount == 0;
         })->values();
 
-//        //for all cat count
-//        $all = Item::where('id', '!=', 0)->get();
-
-        //        return $allcatcount;
         $catlist = Cache::get('cat');
-        //
-        //  foreach ($catlist as $c) {
-        //      if (empty($allcatcount[$c->name])) {
-        //            $allcatcount[$c->name] = 0;
-        //         }
-        //
-        //
-        //    }
-
-//        $col_count = Collection::where('id', '!=', 0)->get();
-//        $collection_item = Item::orderBy('name', 'desc')->where('collection_id', '!=', 0)->groupBy('collection_id')->limit(20)->get();
-
-        //for all cat count
-
-//        $shops = Shops::orderBy('created_at', 'desc')->limit(20)->get();
-//        $shops = $shops->shuffle()->values();
+   
         $premiumshops = Shops::orderBy('created_at', 'desc')->where('premium', 'yes')->where('pos_only', 'no')->limit(20)->get();
 
-//        //for discount slide and promotion pannel
-//        $discount = discount::orderBy('percent', 'desc')->get();
-//        //for discount slide and promotion pannel
 
-        // for account
-        //forlogs
         $this->addlog(url()->current(), 'all', 'all', 'homepage', '0');
 
         //forlogs
@@ -351,16 +326,7 @@ class FrontController extends Controller
     public function get_popitems_ajax($latest, $limit)
     {
 
-//        $latestviewcount = Item::where('id', $latestid)->first()->view_count;
-//
-//        $pop_items = Item::where('view_count', '=', $latestviewcount)->limit(20)->get();
-//        if (count($pop_items) != 0) {
-//            $pop_items = Item::Where([['view_count', '=', $latestviewcount], ['id', '>', $latestid]])->orWhere([['view_count', '<', $latestviewcount], ['id', '!=', $latestid]])->orderBy('view_count', 'desc')->limit(20)->get();
-//
-//        } else {
-//            $pop_items = Item::Where([['view_count', '<', $latestviewcount], ['id', '!=', $latestid]])->orderBy('view_count', 'desc')->limit(20)->get();
-//
-//        }
+
         if ($latest === "true") {
             $date = '>';
         } else {
@@ -445,7 +411,7 @@ class FrontController extends Controller
 
     }
 
-    public function product_detail($shop_name, $product_id)
+    public function product_detail($shop_name, $product_id):View
     {
 
         $itemc = Item::where('id', $product_id);
@@ -454,10 +420,6 @@ class FrontController extends Controller
         }
         $item = Item::where('id', $product_id)->first();
 
-        // return dd($item->id);
-
-        // zh item-log
-        //forlogs
         $this->addlog(url()->current(), $product_id, $item->shop_id, 'product_detail', '0');
         //forlogs
 
@@ -486,13 +448,10 @@ class FrontController extends Controller
 
         // for account
 
-        $checkShopOwnerFav = Shop_owners_fav::where('fav_id', $product_id)->pluck('user_id');
-        $checkManagerFav = Manager_fav::where('fav_id', $product_id)->pluck('user_id');
-        $checkUserFav = Users_fav::where('fav_id', $product_id)->pluck('user_id');
+   
 
-        $fav_total_count = count($checkShopOwnerFav) + count($checkManagerFav) + count($checkUserFav);
 
-        return view('front.product_detail', ['item' => $item, 'category' => $item->category_id, 'sim_items' => $similar_minimum_products, 'sim_items_othershops' => $similar_minimum_products_other_shops, 'fav_total_count' => $fav_total_count]);
+        return view('front.product_detail', ['item' => $item, 'category' => $item->category_id, 'sim_items' => $similar_minimum_products, 'sim_items_othershops' => $similar_minimum_products_other_shops, 'fav_total_count' => 0]);
 
     }
 

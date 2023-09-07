@@ -39,29 +39,29 @@
                             <div class="details-img col-12 col-md-6 col-xl-4">
 
                                 <div id="mainCarousel" class="carousel w-10/12 max-w-5xl mx-auto">
-                                    @if(dofile_exists('/items/'.$item->default_photo))
+                                    @if (dofile_exists('/items/' . $item->default_photo))
 
-                                    @if ($item->default_photo != '')
-                                        <div class="carousel__slide "
-                                            data-src="{{ filedopath('/items/' . $item->default_photo) }}"
-                                            data-fancybox="group">
-                                            @if ($item->check_discount != '0')
-                                                <div class="sop-ribbon-pd ">
-                                                    <span>-{{ $get_dis->percent }}%</span>
-                                                </div>
-                                            @endif
+                                        @if ($item->default_photo != '')
+                                            <div class="carousel__slide "
+                                                data-src="{{ filedopath('/items/' . $item->default_photo) }}"
+                                                data-fancybox="group">
+                                                @if ($item->check_discount != '0')
+                                                    <div class="sop-ribbon-pd ">
+                                                        <span>-{{ $get_dis->percent }}%</span>
+                                                    </div>
+                                                @endif
 
-                                            @if (dofile_exists('/items/mid/' . $item->default_photo))
-                                                <img class="yk-product-image" id="zoom_07"
-                                                    src="{{ filedopath('/items/mid/' . $item->default_photo) }}" />
-                                            @else
-                                                <img class="yk-product-image" id="zoom_07"
-                                                    src="{{ filedopath('/items/' . $item->default_photo) }}" />
-                                            @endif
-                                            <div class="yk-photozoom-text">Click Photo to zoom</div>
+                                                @if (dofile_exists('/items/mid/' . $item->default_photo))
+                                                    <img class="yk-product-image" id="zoom_07"
+                                                        src="{{ filedopath('/items/mid/' . $item->default_photo) }}" />
+                                                @else
+                                                    <img class="yk-product-image" id="zoom_07"
+                                                        src="{{ filedopath('/items/' . $item->default_photo) }}" />
+                                                @endif
+                                                <div class="yk-photozoom-text">Click Photo to zoom</div>
 
-                                        </div>
-                                    @endif
+                                            </div>
+                                        @endif
                                     @endif
 
 
@@ -128,7 +128,8 @@
                                     @endif
                                     @if ($item->photo_four != '' && $item->photo_four != $item->default_photo)
                                         <div class="carousel__slide "
-                                            data-src="{{ filedopath('/items/' . $item->photo_four) }}" data-fancybox="group">
+                                            data-src="{{ filedopath('/items/' . $item->photo_four) }}"
+                                            data-fancybox="group">
                                             @if ($item->check_discount != '0')
                                                 <div class="sop-ribbon-pd ">
                                                     <span>-{{ $get_dis->percent }}%</span>
@@ -147,7 +148,8 @@
                                     @endif
                                     @if ($item->photo_five != '' && $item->photo_five != $item->default_photo)
                                         <div class="carousel__slide "
-                                            data-src="{{ filedopath('/items/' . $item->photo_five) }}" data-fancybox="group">
+                                            data-src="{{ filedopath('/items/' . $item->photo_five) }}"
+                                            data-fancybox="group">
                                             @if ($item->check_discount != '0')
                                                 <div class="sop-ribbon-pd ">
                                                     <span>-{{ $get_dis->percent }}%</span>
@@ -166,7 +168,8 @@
                                     @endif
                                     @if ($item->photo_six != '' && $item->photo_six != $item->default_photo)
                                         <div class="carousel__slide "
-                                            data-src="{{ filedopath('/items/' . $item->photo_six) }}" data-fancybox="group">
+                                            data-src="{{ filedopath('/items/' . $item->photo_six) }}"
+                                            data-fancybox="group">
                                             @if ($item->check_discount != '0')
                                                 <div class="sop-ribbon-pd ">
                                                     <span>-{{ $get_dis->percent }}%</span>
@@ -269,21 +272,21 @@
 
 
                                 <div id="thumbCarousel" class="carousel max-w-xl mx-auto">
-                                    @if(dofile_exists('/items/'.$item->default_photo))
-                                    @if ($item->default_photo != '')
-                                        @if (dofile_exists('/images/items/thumbs/' . $item->default_photo))
-                                            <div class="carousel__slide">
-                                                <img class=""
-                                                    src="{{ filedopath('/items/thumbs/' . $item->default_photo) }}" />
-                                            </div>
-                                        @else
-                                            <div class="carousel__slide">
-                                                <img class=""
-                                                    src="{{ filedopath('/items/' . $item->default_photo) }}" />
+                                    @if (dofile_exists('/items/' . $item->default_photo))
+                                        @if ($item->default_photo != '')
+                                            @if (dofile_exists('/images/items/thumbs/' . $item->default_photo))
+                                                <div class="carousel__slide">
+                                                    <img class=""
+                                                        src="{{ filedopath('/items/thumbs/' . $item->default_photo) }}" />
+                                                </div>
+                                            @else
+                                                <div class="carousel__slide">
+                                                    <img class=""
+                                                        src="{{ filedopath('/items/' . $item->default_photo) }}" />
 
-                                            </div>
+                                                </div>
+                                            @endif
                                         @endif
-                                    @endif
                                     @endif
                                     @if ($item->photo_one != '' && $item->photo_one != $item->default_photo)
                                         @if (dofile_exists('/items/thumbs/' . $item->photo_one))
@@ -293,7 +296,8 @@
                                             </div>
                                         @else
                                             <div class="carousel__slide">
-                                                <img class="" src="{{ filedopath('/items/' . $item->photo_one) }}" />
+                                                <img class=""
+                                                    src="{{ filedopath('/items/' . $item->photo_one) }}" />
 
                                             </div>
                                         @endif
@@ -306,7 +310,8 @@
                                             </div>
                                         @else
                                             <div class="carousel__slide">
-                                                <img class="" src="{{ filedopath('/items/' . $item->photo_two) }}" />
+                                                <img class=""
+                                                    src="{{ filedopath('/items/' . $item->photo_two) }}" />
 
                                             </div>
                                         @endif
@@ -361,7 +366,8 @@
                                             </div>
                                         @else
                                             <div class="carousel__slide">
-                                                <img class="" src="{{ filedopath('/items/' . $item->photo_six) }}" />
+                                                <img class=""
+                                                    src="{{ filedopath('/items/' . $item->photo_six) }}" />
 
                                             </div>
                                         @endif
@@ -416,7 +422,8 @@
                                             </div>
                                         @else
                                             <div class="carousel__slide">
-                                                <img class="" src="{{ filedopath('/items/' . $item->photo_ten) }}" />
+                                                <img class=""
+                                                    src="{{ filedopath('/items/' . $item->photo_ten) }}" />
 
                                             </div>
                                         @endif
@@ -492,72 +499,20 @@
                                         </h1>
 
                                     </div>
-                                    @if ($item->check_discount != 0)
-                                        <div class="col-4 d-flex justify-content-end ">
-                                            @if (isset(Auth::guard('web')->user()->id) ||
-                                                    isset(Auth::guard('shop_owner')->user()->id) ||
-                                                    isset(Auth::guard('shop_role')->user()->id))
-                                                <div onclick="asywhisclick('{{ $item->id }}')" id="fav"
-                                                    class="sop-product-d-p c-pointer d-flex flex-column justify-content-start align-items-center h-100">
+                                    <div class="col-4 d-flex justify-content-end ">
+                                        <div onclick="favclick('{{ $item->id }}','{{ Auth::check() }}')"
+                                            id="fav"
+                                            class="sop-product-d-p c-pointer d-flex flex-column justify-content-start align-items-center h-100">
 
-                                                    <div>
-                                                        <i id="icon" class="zh-icon fa-regular fa-heart fa-2xl"></i>
-                                                    </div>
-                                                    <div class="pt-2">
-                                                        <p class="sop-font">ကြိုက်တယ်</p>
-                                                    </div>
-                                                </div>
-                                            @else
-                                                <div onclick="asywhisclick('{{ $item->id }}')" id="fav-disc">
-
-                                                    <div id="fav"
-                                                        class="sop-product-d-p c-pointer d-flex flex-column justify-content-start align-items-center h-100">
-
-                                                        <div>
-                                                            <i id="icon"
-                                                                class="zh-icon fa-regular fa-heart fa-2xl"></i>
-                                                        </div>
-                                                        <div class="pt-2">
-                                                            <p class="sop-font">ကြိုက်တယ်</p>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            @endif
+                                            <div>
+                                                <i id="ficon" class="zh-icon fa-regular fa-heart fa-2xl"></i>
+                                            </div>
+                                            <div class="pt-2">
+                                                <p class="sop-font">ကြိုက်တယ်</p>
+                                            </div>
                                         </div>
-                                    @else
-                                        <div onclick="asywhisclick('{{ $item->id }}')"
-                                            class="col-4 d-flex justify-content-end ">
-                                            @if (isset(Auth::guard('web')->user()->id) ||
-                                                    isset(Auth::guard('shop_owner')->user()->id) ||
-                                                    isset(Auth::guard('shop_role')->user()->id))
-                                                <div id="fav"
-                                                    class=" d-flex flex-column c-pointer justify-content-start align-items-center h-100">
-                                                    <div>
-                                                        <i id="icon" class="zh-icon fa-regular fa-heart fa-2xl"></i>
-                                                    </div>
-                                                    <div class="pt-2">
-                                                        <p class="sop-font">ကြိုက်တယ်</p>
-                                                    </div>
-                                                </div>
-                                            @else
-                                                <div onclick="asywhisclick('{{ $item->id }}')" id="fav-no-disc">
+                                    </div>
 
-                                                    <div id="fav"
-                                                        class=" d-flex flex-column c-pointer justify-content-start align-items-center h-100">
-                                                        <div>
-                                                            <i id="icon"
-                                                                class="zh-icon fa-regular fa-heart fa-2xl"></i>
-                                                        </div>
-                                                        <div class="pt-2">
-                                                            <p class="sop-font">ကြိုက်တယ်</p>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            @endif
-                                        </div>
-                                    @endif
 
                                     <div class="col-12">
                                         <!-- zh view count -->
@@ -818,8 +773,8 @@
                                                     @endif
                                                     <div class="zh-row row">
                                                         <div class="col-4 ">
-                                                            <span
-                                                                class="sn-detail-title font-red sop-font">အထည်မပျက် ပြန်သွင်း</span>
+                                                            <span class="sn-detail-title font-red sop-font">အထည်မပျက်
+                                                                ပြန်သွင်း</span>
                                                         </div>
                                                         <div class="col-8 ">
                                                             <span class="sku sop-font"
@@ -829,8 +784,8 @@
 
                                                     <div class="zh-row row">
                                                         <div class="col-4 ">
-                                                            <span
-                                                                class="sn-detail-title font-red sop-font">အထည်ပျက်စီး ချို့ယွင်း</span>
+                                                            <span class="sn-detail-title font-red sop-font">အထည်ပျက်စီး
+                                                                ချို့ယွင်း</span>
                                                         </div>
                                                         <div class="col-8 ">
                                                             <span class="sku sop-font"
@@ -871,24 +826,7 @@
                                 </div>
 
                                 <div class="row g-1 g-md-2 position-relative mt-3">
-                                    {{--                                    <?php--}}
-                                                                        {{--                                    $check_facebook_function = \App\sitesettings::where('name', 'facebook')->first();--}}
-                                                                        {{--                                    $check_connect=\App\facebooktable::where('shop_id',$item->shop_id);--}}
-                                                                        {{--                                    ?> ?> --}}
-                                    {{--                                    @if ($check_facebook_function->action == 'on' and $check_connect->count() != 0) --}}
-                                    {{--                                        <div class="col-6"> --}}
-                                    {{--                                            <a onclick="buyNow('{{$item->id}}')" href= "{{'http://m.me/'.$check_connect->first()->page_id.'?ref='.$item->id}}" --}}
-                                    {{--                                               class="btn btn-primary sn-buynow-button sop-font" target="_blank" --}}
-                                    {{--                                               >ဝယ်မယ်</a> --}}
-                                    {{--                                        </div> --}}
-                                    {{--                                        @else --}}
-                                    {{--                                            <div class="col-6"> --}}
-                                    {{--                                                <a onclick="buyNow('{{$item->id}}')" href="{{$item->shop_name->messenger_link}}" --}}
-                                    {{--                                                   class="btn btn-primary sn-buynow-button sop-font" target="_blank" --}}
-                                    {{--                                                   >ဝယ်မယ်</a> --}}
-                                    {{--                                            </div> --}}
-                                    {{--                                    @endif --}}
-                                    {{-- @if (\Illuminate\Support\Facades\Auth::guard('web')->check()) --}}
+
                                     @if ($is_chat_on == 'on')
 
                                         <div id="chatWithUs"
@@ -960,7 +898,6 @@
                                                                     </div>
                                                                 </a>
                                                             @endif
-
                                                         @endif
 
                                                     </li>
@@ -1004,23 +941,11 @@
                                     @endif
 
                                     <div class="col-5 px-1">
-                                        @if (isset(Auth::guard('web')->user()->id) ||
-                                                isset(Auth::guard('shop_owner')->user()->id) ||
-                                                isset(Auth::guard('shop_role')->user()->id))
-                                            <div onclick="addToCart('{{ $item->id }}')" id="selection-div"
-                                                class="btn btn-primary sn-buynow-button py-3">
-                                                <i id="selection-icon" class="fa-solid d-none fa-check"></i>
-                                                <span id="selection" class="sop-font buy-font">ရွေးထားမယ်</span>
-                                            </div>
-                                        @else
-                                            <div id="selectionNoAuth">
-                                                <div onclick="addToCart('{{ $item->id }}')" id="selection-div"
-                                                    class="btn btn-primary sn-buynow-button py-3">
-                                                    <i id="selection-icon" class="fa-solid d-none fa-check"></i>
-                                                    <span id="selection" class="sop-font buy-font">ရွေးထားမယ်</span>
-                                                </div>
-                                            </div>
-                                        @endif
+                                        <div onclick="addToCart('{{ $item->id }}')" id="selection-div"
+                                            class="btn btn-primary sn-buynow-button py-3">
+                                            <i id="selection-icon" class="fa-solid d-none fa-check"></i>
+                                            <span id="selection" class="sop-font buy-font">ရွေးထားမယ်</span>
+                                        </div>
 
                                     </div>
                                 </div>
@@ -1308,7 +1233,7 @@
     <div id="to-top" class="scroll-button">
         <a class="" onclick="scrollToTop()" title="Back to Top">Back to Top</a>
     </div>
-    
+
 
 
 
@@ -1316,17 +1241,130 @@
 @endsection
 @push('custom-scripts')
     <script src="{{ url('test/js/fancybox.js') }}"></script>
+
     <script>
-        if (document.getElementById('clickpayment') != null) {
+        var FAVBUSY = false;
+        const favclick = async (itemid, checkauth) => {
+            if (!FAVBUSY) {
+                FAVBUSY = true;
+                if (checkauth == '1') {
+                    if ($('#ficon').hasClass('fa-regular')) {
+                        let serverdata = await store_or_remove_fav_item_to_server(itemid, 'add');
+                        FAVBUSY = false;
 
-            if (document.getElementById('clickpayment').value == 'click') {
+                    } else {
+                        let serverdata = await store_or_remove_fav_item_to_server(itemid, 'remove');
+                        FAVBUSY = false;
 
-                location.assign('{{ url('payment/order/' . $item->id) }}');
+                    }
+
+
+                } else {
+
+                }
             }
+
         }
-    </script>
-    <script>
+
+        const fav_action_to_local_storage = (itemid, action) => {
+            if (action == 'add') {
+                if (localStorage.getItem("favorite") === null) {
+                    var tmparray = [];
+
+                } else {
+                    var tmparray = JSON.parse(localStorage.getItem('favorite'));
+
+
+                }
+                tmparray.push({
+                    fav_id: itemid
+                });
+                localStorage.setItem('favorite', JSON.stringify(tmparray));
+                console.log('FAV LOCAL', localStorage.getItem('favorite'));
+            }
+            if (action == 'remove') {
+                if (localStorage.getItem("favorite") !== null) {
+
+                    let remove_tmparray = JSON.parse(localStorage.getItem('favorite'));
+                    let index = remove_tmparray.findIndex((d) => {
+                        return d.fav_id !== itemid;
+                    });
+                    remove_tmparray.splice(index, 1);
+
+                    localStorage.setItem('favorite', JSON.stringify(remove_tmparray));
+
+                    console.log('FAV LOCAL REMOVE', remove_tmparray);
+                }
+
+            }
+
+
+        }
+        const ini_fav_check = (itemid, auth) => {
+            if (auth == 1) {
+                axios.post("{{ url('/myfav/check') }}", {
+                    fav_id: itemid,
+                }).then(response => {
+                    if (response.data.success) {
+
+
+                        $('#ficon').removeClass('fa-regular');
+                        $('#ficon').addClass('fa-solid');
+
+
+
+
+                    }
+                });
+
+            } else {
+                let remove_tmparray = JSON.parse(localStorage.getItem('favorite'));
+
+                let index = remove_tmparray.findIndex((d) => {
+                    return d.fav_id !== itemid;
+                });
+                if (index > -1) {
+
+                    $('#ficon').removeClass('fa-regular');
+                    $('#ficon').addClass('fa-solid');
+
+
+                }
+            }
+            console.log('ini check', itemid);
+        }
+        ini_fav_check('{{ $item->id }}', '{{ Auth::check() }}');
+
+        const store_or_remove_fav_item_to_server = (itemid, action) => {
+            var act = action;
+            return new Promise((resolve, reject) => {
+                axios.post("{{ url('/myfav/action') }}", {
+                    fav_id: itemid,
+                    action: action
+                }).then(response => {
+                    if (response.data.success) {
+                        if (act == 'add') {
+                            $('#ficon').removeClass('fa-regular');
+                            $('#ficon').addClass('fa-solid');
+                            localStorage.setItem('favorite', JSON.stringify(response.data.data));
+
+                        } else {
+                            $('#ficon').removeClass('fa-solid');
+                            $('#ficon').addClass('fa-regular');
+                            fav_action_to_local_storage(itemid, 'remove');
+                        }
+
+
+
+                    }
+                    resolve(response);
+                });
+            });
+        }
+
+
         $(document).ready(function() {
+
             $('#similar_slide').owlCarousel({
                 loop: false,
                 margin: 2,
@@ -1404,33 +1442,6 @@
         });
         var busy = false;
 
-        async function asywhisclick(id) {
-            if (!busy) {
-                busy = true;
-                const result = await whislist(id);
-                busy = false;
-
-            }
-
-            if (`{{ Auth::guard('web')->check() }}`) {
-                $.ajax({
-                    method: "POST",
-                    url: "{{ route('backside.user.whilist.point') }}",
-                    cache: false,
-                    dataType: "json",
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        p_id: id,
-                    },
-
-                    success: function(response) {
-                        console.log(response['data'])
-
-                    },
-                });
-            }
-
-        }
 
         // zh buynow log
         function buyNow(id) {
@@ -1469,72 +1480,8 @@
             })
         }
 
-        //zh add to cart log
-        function addToCart(id) {
-            if (`{{ Auth::guard('web')->check() }}`) {
-                $.ajax({
-                    method: "POST",
-                    url: "{{ route('backside.user.addtocart.point') }}",
-                    cache: false,
-                    dataType: "json",
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        add_id: id,
-                    },
-
-                    success: function(response) {
-                        console.log(response['data'])
-
-                    },
-                });
-            }
-            $.ajax({
-                method: "Get",
-                url: "{{ route('addtocartclick') }}",
-                cache: false,
-                dataType: "json",
-                data: {
-                    id: id,
-                },
-                success: function(data) {
-
-                },
-                error: function(err) {
-                    console.log(err);
-                }
-
-            });
-
-        }
 
 
-        // zh whislist log
-        function whislist(id) {
-            return new Promise(resolve => {
-                $.ajax({
-                    method: "post",
-                    url: "{{ route('whislistclick') }}",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    cache: false,
-                    dataType: "json",
-                    data: {
-                        id: id,
-                    },
-                    success: function(data) {
-                        resolve('success');
-
-                    },
-                    error: function(err) {
-                        console.log(err);
-                    }
-
-                });
-
-            })
-
-        }
 
 
         // Initialise Carousel
@@ -1568,15 +1515,7 @@
             },
         });
 
-        function ifChosenFav() {
-            var favourited = JSON.parse(window.localStorage.getItem("fav"));
-            console.log("favCheck", favourited)
-            if (favourited != null && favourited[{!! json_encode($item->id) !!}] != null) {
-                $("#icon").toggleClass("fa-regular fa-solid")
-                $("#icon2").toggleClass("fa-regular fa-solid")
-                return
-            }
-        }
+
 
         function ifChosenSelection() {
 
@@ -1592,66 +1531,8 @@
             }
         }
 
-        function favCount() {
-            let favourited = {!! json_encode($fav_total_count) !!}
-            let
-                favCount = favourited;
-            if (favCount != null) {
-                $("#vf-count").html(`<i class=" fa fa-heart" style="
-                                            margin-bottom: 20px;
-                                            margin-top: 12px;
-                                            margin-left: 11px;
-                                            color: grey;
-                                            text-color: grey;
-                                        "></i><span id="fav-count"
-                                                    style="
-                                                    margin-left: 3px;
-                                                    color: grey;
-                                                "></span>
-                                        <span  class="sop-font">ကြိုက်နှစ်သက်မူ</span>`);
-                $("#fav-count").html(favCount);
-                return
-            }
-        }
 
-        function authAndFavCount() {
-            let favourited = JSON.parse(window.localStorage.getItem("fav"));
-            let favLocalCount = 0;
-            if (favourited != null) {
-                favLocalCount = Object.keys(favourited).length;
-            }
-            if (favLocalCount >= 3) {
-                $("#fav-disc").html(`<a href="" title="Login" data-toggle="modal" data-target="#orangeModalSubscription">
-                                                        <div id="fav"
-                                                            class="sop-product-d-p c-pointer d-flex flex-column justify-content-start align-items-center h-100"
-                                                            >
 
-                                                            <div>
-                                                                <i id="icon2" class="zh-icon fa-regular fa-heart fa-2xl"
-                                                                ></i>
-                                                            </div>
-                                                            <div class="pt-2">
-                                                                <p  class="sop-font">ကြိုက်တယ်</p>
-                                                            </div>
-                                                        </div>
-                                                    </a>`)
-                $("#fav-no-disc").html(`<a href="" title="Login" data-toggle="modal" data-target="#orangeModalSubscription">
-                                                        <div id="fav"
-                                                            class=" d-flex flex-column c-pointer justify-content-start align-items-center h-100">
-                                                            <div>
-                                                                <i id="icon2" class="zh-icon fa-regular fa-heart fa-2xl"
-                                                                ></i>
-                                                            </div>
-                                                            <div class="pt-2">
-                                                                <p  class="sop-font">ကြိုက်တယ်</p>
-                                                            </div>
-                                                        </div>
-                                                    </a>`)
-            } else {
-                return
-            }
-
-        }
 
         function authAndSelectionCount() {
             let selected = JSON.parse(window.localStorage.getItem("selection"));
@@ -1673,15 +1554,11 @@
 
         $(document).ready(function() {
 
-            authAndFavCount();
             authAndSelectionCount();
 
-            ifChosenFav();
             ifChosenSelection();
-            favCount();
             ifChosenSelectionLength();
             // ifChosenSelectionLengthM();
-            ifChosenFavLength();
 
         });
 
@@ -1693,221 +1570,8 @@
             });
 
 
-            $("#fav").click(function() {
-
-                let fav = {
-                    {!! json_encode($item->id) !!}: {!! json_encode($item->toArray()) !!}
-                };
-
-                const oldFav = JSON.parse(window.localStorage.getItem("fav") || "{}");
-
-                let setData = function() {
 
 
-                    if (oldFav === null || oldFav == "{}") {
-                        newFav = fav;
-                    } else {
-                        newFav = Object.assign(oldFav, fav);
-                    }
-
-                    localStorage.setItem("fav", JSON.stringify(newFav));
-
-
-                    document.getElementById('fav-count').innerHTML = parseInt(document.getElementById(
-                        'fav-count').innerHTML) + 1;
-                    // document.getElementById('favw-a2c-count').innerHTML = parseInt(document.getElementById('favw-a2c-count').innerHTML) + 1;
-                    // document.getElementById('favm-a2c-count').innerHTML = parseInt(document.getElementById('favm-a2c-count').innerHTML) + 1;
-                    if ($("#mobileFootHeart").hasClass("fa-regular")) {
-                        $("#mobileFootHeart").removeClass("fa-regular").addClass("fa-solid");
-                    }
-                    $("#mobileFootHeart").removeClass("op-100");
-                    $("#mobileFootHeart").width();
-                    $("#mobileFootHeart").addClass("op-100");
-
-                    if ($("#windowFavNav").hasClass("fa-regular")) {
-                        $("#windowFavNav").removeClass("fa-regular").addClass("fa-solid");
-                    }
-                    $("#windowFavNav").removeClass("op-100");
-                    $("#windowFavNav").width();
-                    $("#windowFavNav").addClass("op-100");
-                }
-
-
-                let deleteData = function() {
-                    if (oldFav.hasOwnProperty({!! json_encode($item->id) !!})) {
-                        delete oldFav[{!! json_encode($item->id) !!}];
-                        localStorage.fav = JSON.stringify(oldFav);
-                        if (document.getElementById('fav-count').innerHTML > 0) {
-                            document.getElementById('fav-count').innerHTML = parseInt(document
-                                .getElementById('fav-count').innerHTML) - 1;
-                        }
-                        // document.getElementById('favw-a2c-count').innerHTML = parseInt(document.getElementById('favw-a2c-count').innerHTML) - 1;
-                        // document.getElementById('favm-a2c-count').innerHTML = parseInt(document.getElementById('favm-a2c-count').innerHTML) - 1;
-                        // if (document.getElementById('fav-count').innerHTML == 0) {
-                        //     $("#vf-count").html("");
-                        // }
-
-                        if (Object.keys(oldFav).length == 0) {
-
-                            $("#mobileFootHeart").removeClass("fa-solid").addClass("fa-regular");
-
-                        }
-                        $("#mobileFootHeart").removeClass("op-100");
-                        $("#mobileFootHeart").width();
-                        $("#mobileFootHeart").addClass("op-100");
-
-                        if (Object.keys(oldFav).length == 0) {
-
-                            $("#windowFavNav").removeClass("fa-solid").addClass("fa-regular");
-
-                        }
-                        $("#windowFavNav").removeClass("op-100");
-                        $("#windowFavNav").width();
-                        $("#windowFavNav").addClass("op-100");
-                    }
-
-                }
-
-                $("#icon").toggleClass("fa-regular fa-solid")
-                $("#icon").hasClass('fa-solid') ?
-                    setData() :
-                    deleteData();
-
-                let newFavSync = window.localStorage.getItem("fav") != null ? Object.keys(JSON.parse(window
-                    .localStorage.getItem("fav"))) : [];
-
-                @if (isset(Auth::guard('web')->user()->id))
-                    let userType = "Users"
-                @elseif (isset(Auth::guard('shop_owner')->user()->id))
-                    let userType = "Shop_owners"
-                @elseif (isset(Auth::guard('shop_role')->user()->id))
-                    let userType = "Manager"
-                @endif
-
-                @if (isset(Auth::guard('web')->user()->id) ||
-                        isset(Auth::guard('shop_owner')->user()->id) ||
-                        isset(Auth::guard('shop_role')->user()->id))
-                    localStorage.setItem("favID", JSON.stringify(newFavSync));
-                    $.ajax({
-                        url: "{{ url('/myfav/update') }}",
-                        type: "post",
-                        data: {
-                            users: userType,
-                            newFav: newFavSync,
-                            id: userID.id,
-                            _token: _token,
-                        },
-                        success: function(response) {
-                            console.log(response)
-                        },
-                        error: function(error) {
-                            console.log(error);
-                        }
-                    });
-                @endif
-            });
-
-            $("#selection-div").click(function() {
-
-
-                if ($("#selection").html() != "ရွေးပြီးပြီ") {
-                    $("#selection-icon").removeClass("d-none");
-                    $("#selection").html("ရွေးပြီးပြီ");
-                } else {
-                    $("#selection-icon").addClass("d-none");
-                    $("#selection").html("ရွေးထားမယ်");
-                }
-
-                let selection = {
-                    {!! json_encode($item->id) !!}: {!! json_encode($item->toArray()) !!}
-                };
-
-                const oldSelection = JSON.parse(window.localStorage.getItem("selection") || "{}");
-
-                let setData = function() {
-
-
-                    if (oldSelection === null || oldSelection == "{}") {
-                        newselection = selection;
-                    } else {
-                        newselection = Object.assign(oldSelection, selection);
-                    }
-                    localStorage.setItem("selection", JSON.stringify(newselection));
-                    document.getElementById('temp').innerHTML = parseInt(document.getElementById('temp')
-                        .innerHTML) + 1;
-                    // document.getElementById('nav-a2c-count').innerHTML = parseInt(document.getElementById('nav-a2c-count').innerHTML) + 1;
-                    document.getElementById('navw-a2c-count').innerHTML = parseInt(document
-                        .getElementById('navw-a2c-count').innerHTML) + 1;
-                    if ($("#mobile-a2c-icon").hasClass("op-50")) {
-                        $("#mobile-a2c-icon").removeClass("op-50").addClass("op-100")
-
-                    } else {
-                        $("#mobile-a2c-icon").removeClass("op-100")
-                        $("#mobile-a2c-icon").width();
-                        $("#mobile-a2c-icon").addClass("op-100")
-                        $("#windowA2cNav").removeClass("op-100")
-                        $("#windowA2cNav").width();
-                        $("#windowA2cNav").addClass("op-100")
-                    }
-                    return
-                }
-
-
-                let deleteData = function() {
-                    if (oldSelection.hasOwnProperty({!! json_encode($item->id) !!})) {
-                        delete oldSelection[{!! json_encode($item->id) !!}];
-                        localStorage.selection = JSON.stringify(oldSelection);
-                        document.getElementById('temp').innerHTML = parseInt(document.getElementById(
-                            'temp').innerHTML) - 1;
-                        // document.getElementById('nav-a2c-count').innerHTML = parseInt(document.getElementById('nav-a2c-count').innerHTML) - 1;
-                        document.getElementById('navw-a2c-count').innerHTML = parseInt(document
-                            .getElementById('navw-a2c-count').innerHTML) - 1;
-
-                        const updateSelection = JSON.parse(window.localStorage.getItem("selection") ||
-                            "{}");
-                        if (Object.keys(updateSelection).length == 0) {
-
-                            $("#mobile-a2c-icon").removeClass("op-100").addClass("op-50")
-
-                        } else {
-                            $("#mobile-a2c-icon").removeClass("op-100")
-                            $("#mobile-a2c-icon").width();
-                            $("#mobile-a2c-icon").addClass("op-100")
-                            $("#windowA2cNav").removeClass("op-100")
-                            $("#windowA2cNav").width();
-                            $("#windowA2cNav").addClass("op-100")
-                        }
-                    }
-                    return
-                }
-                $("#selection").text() == "ရွေးပြီးပြီ" ?
-                    setData() :
-                    deleteData();
-                let newSelectionSync = window.localStorage.getItem("selection") != null ? Object.keys(JSON
-                    .parse(window.localStorage.getItem("selection"))) : [];
-                @if (isset(Auth::guard('web')->user()->id) ||
-                        isset(Auth::guard('shop_owner')->user()->id) ||
-                        isset(Auth::guard('shop_role')->user()->id))
-                    localStorage.setItem("selectionID", JSON.stringify(newSelectionSync));
-                    $.ajax({
-                        url: "{{ url('/addtocart/update') }}",
-                        type: "post",
-                        data: {
-                            users: userType,
-                            newSelection: newSelectionSync,
-                            id: userID.id,
-                            _token: _token,
-                        },
-                        success: function(response) {
-                            console.log(response)
-                        },
-                        error: function(error) {
-                            console.log(error);
-                        }
-                    });
-                @endif
-
-            });
 
             $('#button_slide_collection').owlCarousel({
                 loop: false,

@@ -25,7 +25,7 @@ class YkforgotpasswordController extends Controller
 {
     use SendsPasswordResetEmails;
 
-    public function showLinkRequestForm()
+    public function showLinkRequestForm():mixed
     {
         if (Str::contains(url()->current(), 'shop_owner')) {
             return view('auth.passwords.email');
@@ -34,7 +34,7 @@ class YkforgotpasswordController extends Controller
         }
     }
 
-    public function send_reset_code_form(Request $request)
+    public function send_reset_code_form(Request $request):mixed
     {
 
         $input = $request->except('_token');
@@ -85,7 +85,7 @@ class YkforgotpasswordController extends Controller
     }
 
 
-    public function add_new_password(Request $request)
+    public function add_new_password(Request $request):mixed
 
     {
 
@@ -95,22 +95,12 @@ class YkforgotpasswordController extends Controller
         if (is_numeric($input['code'])) {
             $tocheck = PasswordResetForShop::where([['emailorphone', '=', $input['emailorphone']], ['code', '=', $input['code']], ['expire_at', '>', Carbon::now()]]);
             if ($tocheck->count() != 0) {
-                if (Str::contains(url()->current(), 'shop_owner')) {
+                $validate = Validator::make($input, [
 
-                    $validate = Validator::make($input, [
-
-                        'password' => ['required', 'string', 'min:8', 'confirmed'],
+                    'password' => ['required', 'numeric', 'digits_between:6,13', 'confirmed'],
 
 
-                    ]);
-                } else {
-                    $validate = Validator::make($input, [
-
-                        'password' => ['required', 'numeric', 'digits_between:6,13', 'confirmed'],
-
-
-                    ]);
-                }
+                ]);
                 if ($validate->fails()) {
                     if (Str::contains(url()->current(), 'shop_owner')) {
 
@@ -151,7 +141,7 @@ class YkforgotpasswordController extends Controller
     }
 
 
-    public function codeCheck(Request $request)
+    public function codeCheck(Request $request):mixed
     {
         $input = $request->except('_token', 'method');
 
@@ -175,7 +165,7 @@ class YkforgotpasswordController extends Controller
     }
 
 
-    public function sendResetCode($input)
+    public function sendResetCode($input):mixed
     {
 
         $generate_code = rand(100000, 999999);

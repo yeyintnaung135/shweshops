@@ -3977,7 +3977,11 @@ header('X-Content-Type-Options: nosniff');
     <script type='text/javascript' src="{{ url('test/js/owl.js') }}" id='owl-carousel-js'></script>
     <script src='{{ url('test/js/owl.thumbs.js') }}'></script>
 
-
+    @if(session()->has('logined'))
+    <script>
+        alert('fefef');
+    </script>
+    @endif
 
 
     @if (session()->has('show_add_to_home'))
@@ -4071,9 +4075,12 @@ header('X-Content-Type-Options: nosniff');
         let _token = $('meta[name="csrf-token"]').attr('content');
     </script>
     @stack('custom-scripts')
+   
 
 
     <script type="text/javascript">
+
+        
         function useroffline() {
             if (typeof Window.userid != undefined) {
                 return Window.allfrommsg.sendwhatuserisoffline(window.userid);

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\UserLoginandRegisterController;
 use App\Http\Controllers\Auth\YkforgotpasswordController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\forfacebook\FacebookController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\FrontForCatController;
@@ -235,6 +236,9 @@ Route::group(
         Route::post('/addtocart/update', [FrontController::class, 'addtocart_update']);
         Route::post('/myfav/update', [FrontController::class, 'fav_update']);
         Route::get('/contact-us', [FrontController::class, 'contact_us']);
+        Route::post('/myfav/action', [FavoriteController::class, 'action_favorite']);
+        Route::post('/myfav/check', [FavoriteController::class, 'check']);
+
 
 // News and Events
         Route::get('news&events', [NewsFrontController::class, 'index']);
