@@ -4,28 +4,22 @@ namespace App\Http\Controllers\Auth;
 
 use App\Models\Sign;
 use App\Models\User;
-use App\Models\Point;
-use App\Models\UserPoint;
 use Carbon\Carbon;
-use App\Models\Superadmin;
 use App\Models\BuyNowClickLog;
-use App\Models\VisitorLogActivity;
 use Illuminate\Http\Request;
 use App\Models\Passwordresetforshop;
-use Illuminate\Validation\Rule;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\Logs;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Auth\Events\Registered;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Trait\LoginPoint;
 use App\Rules\LoginTrottle;
+use Illuminate\Contracts\Validation\Validator as ValidationValidator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
 
@@ -63,10 +57,6 @@ class UserLoginandRegisterController extends Controller
         $this->middleware('guest');
     }
 
-    public function showSuperAdminRegisterForm()
-    {
-        return view('auth.register', ['url' => 'super_admin']);
-    }
 
     /**
      * Get a validator for an incoming registration request.
@@ -74,13 +64,13 @@ class UserLoginandRegisterController extends Controller
      * @param array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data)
+    protected function validator(array $data): ValidationValidator
     {
         return Validator::make(
             $data,
             [
                 'name' => 'required|max:100',
-                'phone' => ['required','regex:/(^09([0-9]+)(\d+)?$)/u','min:11','max:11','unique:users,phone', new LoginTrottle],
+                'phone' => ['required', 'regex:/(^09([0-9]+)(\d+)?$)/u', 'min:11', 'max:11', 'unique:users,phone', new LoginTrottle],
 
             ],
             [
@@ -91,7 +81,7 @@ class UserLoginandRegisterController extends Controller
         );
     }
 
-    protected function login_validator(array $data)
+    protected function login_validator(array $data): ValidationValidator
     {
         return Validator::make(
             $data,
@@ -106,7 +96,7 @@ class UserLoginandRegisterController extends Controller
         );
     }
 
-    public function resend_code(Request $request)
+    public function resend_code(Request $request): JsonResponse
     {
         $generate_code = rand(100000, 999999);
         $code = $generate_code;
@@ -132,7 +122,7 @@ class UserLoginandRegisterController extends Controller
         }
     }
 
-    public function checkvalidate(Request $request)
+    public function checkvalidate(Request $request): JsonResponse
     {
         $isUser = User::where('phone', $request->phone)->first();
         $validator = $this->login_validator($request->all());
@@ -169,7 +159,7 @@ class UserLoginandRegisterController extends Controller
             }
         }
     }
-    public function check_validate_register(Request $request)
+    public function check_validate_register(Request $request): JsonResponse
     {
         $validator = $this->validator($request->all());
         if ($validator->fails()) {
@@ -192,7 +182,7 @@ class UserLoginandRegisterController extends Controller
         }
     }
 
-    public function checkcodereg(Request $request)
+    public function checkcodereg(Request $request): JsonResponse
     {
         $request->validate([
             'phone' => 'required|regex:/(^09([0-9]+)(\d+)?$)/u|min:5|max:11',
@@ -461,7 +451,7 @@ class UserLoginandRegisterController extends Controller
      * @param array $data
      * @return \App\User
      */
-    protected function create(array $data)
+    protected function create(array $data):User
     {
         $password = 'thantzaw123!@#';
         return User::create([
@@ -472,7 +462,7 @@ class UserLoginandRegisterController extends Controller
         ]);
     }
 
-    protected function update_name(Request $request)
+    protected function update_name(Request $request):JsonResponse
     {
         $request->validate([
             'name' => 'required|max:100'

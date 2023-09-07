@@ -43,7 +43,7 @@ class User extends Authenticatable
 
     public function getFavIdsAttribute()
     {
-        $fav_ids = UsersFav::where('user_id', $this->id)->get();
+        $fav_ids = FavoriteItems::where('user_id', $this->id)->get();
         return $fav_ids;
     }
     public function getSelectionIdsAttribute()

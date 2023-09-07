@@ -8,7 +8,8 @@ use App\Rules\MatchOldPassword;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Shopowner;
-  
+use Illuminate\View\View;
+
 class ChangePasswordController extends Controller
 {
     /**
@@ -26,7 +27,7 @@ class ChangePasswordController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index():View
     {
         return view('changePassword');
     } 

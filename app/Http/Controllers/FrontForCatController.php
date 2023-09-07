@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\CatFilterRequest;
 
-class FrontforcatController extends Controller
+class FrontForCatController extends Controller
 {
 
     use SimilarLogic, ForYouLogic, Category;
