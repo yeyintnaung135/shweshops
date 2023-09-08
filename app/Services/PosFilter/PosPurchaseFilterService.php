@@ -17,6 +17,9 @@ class PosPurchaseFilterService
         $fCounter = $request->input('f_counter');
         $fromDate = $request->input('fromDate');
         $toDate = $request->input('toDate');
+        $supId = $request->input('sup');
+        $qualId = $request->input('qual');
+        $ptypeId = $request->input('ptype');
 
         $query = PosPurchase::select(
             'id', 'gold_name', 'supplier_id', 'code_number', 'sell_flag',
@@ -39,6 +42,20 @@ class PosPurchaseFilterService
             $query->whereDate('created_at', '<=', $toDate);
         }
 
+        // Additional filters
+        if ($supId) {
+            $query->where('supplier_id', $supId);
+        }
+
+        if ($qualId) {
+            $query->where('quality_id', $qualId);
+        }
+
+        if ($ptypeId) {
+            $query->where('category_id', $ptypeId);
+        }
+
         return $query;
     }
+
 }

@@ -71,8 +71,8 @@
                             <h6 class="mt-3 text-color mb-1">ဆိုင်လက်ကျန်ကြည့်ရှုရန်
                                 {{-- <input type="checkbox" class="mt-1 ml-2" name='chkflag' id="chkflag" onclick="stockcheck(1)"> --}}
                                 <select name="f_counter" id="f_counter">
-                                    <option value="all_shop" selected>အားလုံး</option>
                                     <option disabled>ဆိုင်ခွဲများ</option>
+                                    <option value="all_shop" selected>အားလုံး</option>
                                     @foreach ($counters as $counter)
                                         <option value="{{ $counter->shop_name }}">{{ $counter->shop_name }}</option>
                                     @endforeach
@@ -90,27 +90,24 @@
                                 <div class="col-1">
                                     <input type="checkbox" class="sup mt-4" onclick="advanceFilter()">
                                     <input type="checkbox" class="qual mt-4" onclick="advanceFilter()">
-                                    <input type="checkbox" class="ptype mt-4" onclick="advanceFilter()">
+                                    <input type="checkbox" class="cat mt-4" onclick="advanceFilter()">
                                 </div>
                                 <div class="col-4">
-                                    <select name="" id="sup" class="mt-2 form-control"
-                                        onchange="filtergoldadvance(this.value,1)">
+                                    <select name="" id="sup" class="mt-2 form-control" >
                                         <option value="">​ပန်းထိမ်ဆိုင်များ</option>
                                         @foreach ($sups as $sup)
                                             <option value="{{ $sup->id }}">{{ $sup->name }}</option>
                                         @endforeach
                                     </select>
                                     <input type="hidden" id="print_gtype" value="All">
-                                    <select name="" id="qual" class="mt-2 form-control"
-                                        onchange="filtergoldadvance(this.value,2)">
+                                    <select name="" id="qual" class="mt-2 form-control">
                                         <option value="">ရွှေ​အမျိုးအစားများ</option>
                                         @foreach ($quals as $qual)
                                             <option value="{{ $qual->id }}">{{ $qual->name }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" id="print_ptype" value="All">
-                                    <select name="" id="ptype" class="mt-2 form-control"
-                                        onchange="filtergoldadvance(this.value,3)">
+                                    <input type="hidden" id="print_cat" value="All">
+                                    <select name="" id="cat" class="mt-2 form-control">
                                         <option value="">ပစ္စည်း​အမျိုးအစားများ</option>
                                         @foreach ($cats as $cat)
                                             <option value="{{ $cat->id }}">{{ $cat->mm_name }}</option>
@@ -232,6 +229,9 @@
                         d.fromDate = $('#fromDate').val();
                         d.toDate = $('#toDate').val();
                         d.f_counter = $('#f_counter').val();
+                        d.sup = $('#sup').val();
+                        d.qual = $('#qual').val();
+                        d.cat = $('#cat').val();
                     }
                 },
                 columns: [{
@@ -332,7 +332,7 @@
                             var date = $('#print_date').val();
                             var counter = $('#print_counter').val();
                             var gtype = $('#print_gtype').val();
-                            var ptype = $('#print_ptype').val();
+                            var cat = $('#print_cat').val();
                             var existingData = $(win.document.body).html();
                             var extraText1 = `<div class="row">
                             <div class="col-3 card" style="max-height: 70px;"><h6 class="text-color mt-2" >စုစု​ပေါင်းအ​ရေအတွက် &nbsp;&nbsp;&nbsp;<span>${tot_qty}</span></h6></div>
@@ -349,7 +349,7 @@
                             var extraText2 = `
                             <h6 class='text-color'>​ကောင်တာ : ${counter}</h6>
                             <h6 class='text-color'>​​ရွှေရည် : ${gtype}</h6>
-                            <h6 class='text-color'>​အမျိုးအစား : ${ptype}</h6>
+                            <h6 class='text-color'>​အမျိုးအစား : ${cat}</h6>
                             <h6 class='text-color'>​Date : ${date}</h6>
                         `;
                             $(win.document.body).html(extraText1 + existingData +
@@ -368,6 +368,18 @@
             });
 
             $('#f_counter').change(function() {
+                purchaseTable.draw();
+            });
+
+            $('#sup').change(function() {
+                purchaseTable.draw();
+            });
+
+            $('#qual').change(function() {
+                purchaseTable.draw();
+            });
+
+            $('#cat').change(function() {
                 purchaseTable.draw();
             });
 
@@ -410,330 +422,10 @@
             });
         }
 
-        // function goldtypefilter(val) {
-        //     var dataTable = $('#example23').DataTable();
-        //     var html = '';
-        //     if ($("#female").is(":checked") == true) {
-        //         html += 'option1'
-        //     }
-        //     if ($("#male").is(":checked") == true) {
-        //         html += '/option2'
-        //     }
-        //     if ($("#unisex").is(":checked") == true) {
-        //         html += '/option3'
-        //     }
-        //     if ($("#child").is(":checked") == true) {
-        //         html += '/option4'
-        //     }
-        //     var start_date = $('#start_date').val();
-        //     var end_date = $('#end_date').val();
-
-        //     $.ajax({
-
-        //         type: 'POST',
-
-        //         url: '{{ route('backside.shop_owner.pos.gold_type_filter') }}',
-
-        //         data: {
-        //             "_token": "{{ csrf_token() }}",
-        //             "text": html,
-        //             "start_date": start_date,
-        //             "end_date": end_date,
-        //             "type": val,
-        //         },
-
-        //         success: function(data) {
-        //             $('#print_date').val(start_date + ' to ' + end_date);
-        //             $('#print_counter').val('All');
-        //             $('#print_gtype').val('All');
-        //             $('#print_ptype').val('All');
-        //             $('#f_counter').val('');
-        //             dataTable.clear().draw();
-        //             var tot_g = 0;
-        //             var tot_y = 0;
-        //             var tot_p = 0;
-        //             var tot_k = 0;
-        //             var tot_dy = 0;
-        //             var tot_dp = 0;
-        //             var tot_dk = 0;
-        //             var count = 0;
-        //             $.each(data.data, function(i, v) {
-        //                 v.id;
-        //                 var html1 = '';
-        //                 var html2 = `<div class="d-flex">`;
-        //                 var url1 =
-        //                     '{{ route('backside.shop_owner.pos.edit_purchase', ':purchase_id') }}';
-        //                 var url2 =
-        //                     '{{ route('backside.shop_owner.pos.detail_purchase', ':purchase_id') }}';
-        //                 url2 = url2.replace(':purchase_id', v.id);
-        //                 url1 = url1.replace(':purchase_id', v.id);
-        //                 var arr = v.product_gram_kyat_pe_yway.split('/');
-        //                 var decrease = v.decrease_pe_yway.split('/');
-        //                 tot_g += parseInt(arr[0]);
-        //                 tot_y += arr[3] ? parseInt(arr[3]) : 0;
-        //                 tot_p += arr[2] ? parseInt(arr[2]) : 0;
-        //                 tot_k += arr[1] ? parseInt(arr[1]) : 0;
-        //                 tot_dy += decrease[1] ? parseInt(decrease[1]) : 0;
-        //                 tot_dp += decrease[0] ? parseInt(decrease[0]) : 0;
-        //                 if (tot_y >= 8) {
-        //                     tot_p += 1;
-        //                     tot_y = tot_y - 8;
-        //                 }
-        //                 if (tot_p >= 16) {
-        //                     tot_k += 1;
-        //                     tot_p = tot_p - 16;
-        //                 }
-        //                 if (tot_dy >= 8) {
-        //                     tot_dp += 1;
-        //                     tot_dy = tot_dy - 8;
-        //                 }
-        //                 if (tot_dp >= 16) {
-        //                     tot_dk += 1;
-        //                     tot_dp = tot_dp - 16;
-        //                 }
-        //                 if (arr[1] != 0) {
-        //                     html1 += arr[1] + 'ကျပ်';
-        //                 }
-        //                 if (arr[2] != 0) {
-        //                     html1 += arr[2] + 'ပဲ';
-        //                 }
-        //                 if (arr[3] != 0) {
-        //                     html1 += arr[3] + 'ရွေး';
-        //                 }
-        //                 if (v.sell_flag == 0) {
-        //                     html2 +=
-        //                         `<a href="#myModal${v.id}" class="text-danger" data-toggle="modal"><i class="fa fa-trash"></i></a>`;
-        //                 }
-
-        //                 html2 +=
-        //                     `<a href="${url1}" class="ml-4 text-warning"><i class="fa fa-edit" ></i></a>
-    //                           <a href="${url2}" class="ml-4 text-success"><i class="fa fa-eye" aria-hidden="true"></i></a></div>`;
-
-        //                 dataTable.row.add([++i, v.gold_name, v.supplier.name, v.code_number,
-        //                     arr[0],
-        //                     html1, v.stock_qty, v.gold_fee, v.date, html2
-        //                 ]).draw();
-        //             })
-        //             $('#tot_qty').html(count);
-        //             $('#tot_g').html(tot_g);
-        //             $('#tot_kpy').html(`${tot_k}ကျပ် ${tot_p}ပဲ  ${tot_y}​ရွေး`);
-        //             $('#tot_dkpy').html(`${tot_dk}ကျပ် ${tot_dp}ပဲ  ${tot_dy}​ရွေး`);
-        //         }
-        //     })
-
-        // }
-
-        // function stockcheck(val, text) {
-        //     var dataTable = $('#example23').DataTable();
-        //     $.ajax({
-
-        //         type: 'POST',
-
-        //         url: '{{ route('backside.shop_owner.pos.sell_flag_filter') }}',
-
-        //         data: {
-        //             "_token": "{{ csrf_token() }}",
-        //             'val': val,
-        //             'text': text,
-        //         },
-
-        //         success: function(data) {
-        //             $('#print_counter').val(text);
-        //             $('#print_date').val('All');
-        //             $('#print_gtype').val('All');
-        //             $('#print_ptype').val('All');
-        //             $('#start_date').val('');
-        //             $('#end_date').val('');
-        //             dataTable.clear().draw();
-        //             var tot_g = 0;
-        //             var tot_y = 0;
-        //             var tot_p = 0;
-        //             var tot_k = 0;
-        //             var tot_dy = 0;
-        //             var tot_dp = 0;
-        //             var tot_dk = 0;
-        //             var count = 0;
-        //             $.each(data.data, function(i, v) {
-        //                 count++;
-        //                 var html1 = '';
-        //                 var html2 = `<div class="d-flex">`;
-        //                 var url1 =
-        //                     '{{ route('backside.shop_owner.pos.edit_purchase', ':purchase_id') }}';
-        //                 var url2 =
-        //                     '{{ route('backside.shop_owner.pos.detail_purchase', ':purchase_id') }}';
-        //                 url2 = url2.replace(':purchase_id', v.id);
-        //                 url1 = url1.replace(':purchase_id', v.id);
-        //                 var arr = v.product_gram_kyat_pe_yway.split('/');
-        //                 var decrease = v.decrease_pe_yway.split('/');
-        //                 tot_g += parseInt(arr[0]);
-        //                 tot_y += arr[3] ? parseInt(arr[3]) : 0;
-        //                 tot_p += arr[2] ? parseInt(arr[2]) : 0;
-        //                 tot_k += arr[1] ? parseInt(arr[1]) : 0;
-        //                 tot_dy += decrease[1] ? parseInt(decrease[1]) : 0;
-        //                 tot_dp += decrease[0] ? parseInt(decrease[0]) : 0;
-        //                 if (tot_y >= 8) {
-        //                     tot_p += 1;
-        //                     tot_y = tot_y - 8;
-        //                 }
-        //                 if (tot_p >= 16) {
-        //                     tot_k += 1;
-        //                     tot_p = tot_p - 16;
-        //                 }
-        //                 if (tot_dy >= 8) {
-        //                     tot_dp += 1;
-        //                     tot_dy = tot_dy - 8;
-        //                 }
-        //                 if (tot_dp >= 16) {
-        //                     tot_dk += 1;
-        //                     tot_dp = tot_dp - 16;
-        //                 }
-        //                 if (arr[1] != 0) {
-        //                     html1 += arr[1] + 'ကျပ်';
-        //                 }
-        //                 if (arr[2] != 0) {
-        //                     html1 += arr[2] + 'ပဲ';
-        //                 }
-        //                 if (arr[3] != 0) {
-        //                     html1 += arr[3] + 'ရွေး';
-        //                 }
-        //                 if (v.sell_flag == 0) {
-        //                     html2 +=
-        //                         `<a href="#myModal${v.id}" class="text-danger" data-toggle="modal"><i class="fa fa-trash"></i></a>`;
-        //                 }
-
-        //                 html2 +=
-        //                     `<a href="${url1}" class="ml-4 text-warning"><i class="fa fa-edit" ></i></a>
-    //                           <a href="${url2}" class="ml-4 text-success"><i class="fa fa-eye" aria-hidden="true"></i></a></div>`;
-
-        //                 dataTable.row.add([++i, v.gold_name, v.supplier.name, v.code_number,
-        //                     arr[0],
-        //                     html1, v.stock_qty, v.gold_fee, v.date, html2
-        //                 ]).draw();
-        //             })
-        //             $('#tot_qty').html(count);
-        //             $('#tot_g').html(tot_g);
-        //             $('#tot_kpy').html(`${tot_k}ကျပ် ${tot_p}ပဲ  ${tot_y}​ရွေး`);
-        //             $('#tot_dkpy').html(`${tot_dk}ကျပ် ${tot_dp}ပဲ  ${tot_dy}​ရွေး`);
-        //         }
-        //     })
-        // }
-
-        function filtergoldadvance(val, type) {
-            $('#start_date').val('');
-            $('#end_date').val('');
-            $('#f_counter').val('');
-            var dataTable = $('#example23').DataTable();
-            if (type == 1) {
-                $('#supid').val(val);
-            }
-            if (type == 2) {
-                $('#qualid').val(val);
-                $('#print_gtype').val($("#qual option:selected").text());
-                $('#print_date').val('All');
-                $('#print_counter').val('All');
-            }
-            if (type == 3) {
-                $('#catid').val(val);
-                $('#print_ptype').val($("#ptype option:selected").text());
-                $('#print_date').val('All');
-                $('#print_counter').val('All');
-            }
-            var supid = $('#supid').val();
-            var qualid = $('#qualid').val();
-            var catid = $('#catid').val();
-            $.ajax({
-
-                type: 'POST',
-
-                url: '{{ route('backside.shop_owner.pos.gold_advance_filter') }}',
-
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    'text': val,
-                    'supid': supid,
-                    'qualid': qualid,
-                    'catid': catid,
-                    "type": type,
-                },
-                success: function(data) {
-                    dataTable.clear().draw();
-                    var tot_g = 0;
-                    var tot_y = 0;
-                    var tot_p = 0;
-                    var tot_k = 0;
-                    var tot_dy = 0;
-                    var tot_dp = 0;
-                    var tot_dk = 0;
-                    var count = 0;
-                    $.each(data.data, function(i, v) {
-                        count++;
-                        var html1 = '';
-                        var html2 = `<div class="d-flex">`;
-                        var url1 =
-                            '{{ route('backside.shop_owner.pos.edit_purchase', ':purchase_id') }}';
-                        var url2 =
-                            '{{ route('backside.shop_owner.pos.detail_purchase', ':purchase_id') }}';
-                        url2 = url2.replace(':purchase_id', v.id);
-                        url1 = url1.replace(':purchase_id', v.id);
-                        var arr = v.product_gram_kyat_pe_yway.split('/');
-                        var decrease = v.decrease_pe_yway.split('/');
-                        tot_g += parseInt(arr[0]);
-                        tot_y += arr[3] ? parseInt(arr[3]) : 0;
-                        tot_p += arr[2] ? parseInt(arr[2]) : 0;
-                        tot_k += arr[1] ? parseInt(arr[1]) : 0;
-                        tot_dy += decrease[1] ? parseInt(decrease[1]) : 0;
-                        tot_dp += decrease[0] ? parseInt(decrease[0]) : 0;
-                        if (tot_y >= 8) {
-                            tot_p += 1;
-                            tot_y = tot_y - 8;
-                        }
-                        if (tot_p >= 16) {
-                            tot_k += 1;
-                            tot_p = tot_p - 16;
-                        }
-                        if (tot_dy >= 8) {
-                            tot_dp += 1;
-                            tot_dy = tot_dy - 8;
-                        }
-                        if (tot_dp >= 16) {
-                            tot_dk += 1;
-                            tot_dp = tot_dp - 16;
-                        }
-                        if (arr[1] != 0) {
-                            html1 += arr[1] + 'ကျပ်';
-                        }
-                        if (arr[2] != 0) {
-                            html1 += arr[2] + 'ပဲ';
-                        }
-                        if (arr[3] != 0) {
-                            html1 += arr[3] + 'ရွေး';
-                        }
-                        if (v.sell_flag == 0) {
-                            html2 +=
-                                `<a href="#myModal${v.id}" class="text-danger" data-toggle="modal"><i class="fa fa-trash"></i></a>`;
-                        }
-
-                        html2 +=
-                            `<a href="${url1}" class="ml-4 text-warning"><i class="fa fa-edit" ></i></a>
-                                  <a href="${url2}" class="ml-4 text-success"><i class="fa fa-eye" aria-hidden="true"></i></a></div>`;
-
-                        dataTable.row.add([++i, v.gold_name, v.supplier.name, v.code_number,
-                            arr[0],
-                            html1, v.stock_qty, v.gold_fee, v.date, html2
-                        ]).draw();
-                    })
-                    $('#tot_qty').html(count);
-                    $('#tot_g').html(tot_g);
-                    $('#tot_kpy').html(`${tot_k}ကျပ် ${tot_p}ပဲ  ${tot_y}​ရွေး`);
-                    $('#tot_dkpy').html(`${tot_dk}ကျပ် ${tot_dp}ပဲ  ${tot_dy}​ရွေး`);
-                }
-            })
-        }
-
         $(document).ready(function() {
             $('#sup').hide();
             $('#qual').hide();
-            $('#ptype').hide();
+            $('#cat').hide();
 
             function alignModal() {
                 var modalDialog = $(this).find(".modal-dialog");
@@ -763,15 +455,16 @@
                 $('#qual').hide();
                 $('#qualid').val('');
             }
-            if ($('.ptype').is(':checked', true)) {
-                $('#ptype').show();
+            if ($('.cat').is(':checked', true)) {
+                $('#cat').show();
             } else {
-                $('#ptype').hide();
+                $('#cat').hide();
                 $('#catid').val('');
             }
         }
     </script>
 @endpush
+
 @push('css')
     <style>
         body {
