@@ -16,81 +16,130 @@ class FavoriteController extends Controller
     //
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except(['see_all']);
     }
+ 
+
+    public function see_all(){
+        return view('front.AllFavorite');
+    }
+
+
     public function action_favorite(Request $request)
     {
-        $input=$request->except(['action']);
+        $input = $request->except(['action']);
         $validator = Validator::make($request->all(), [
-            'fav_id' => ['required', 'numeric'],'action'=>[Rule::in(['add','remove'])]
+            'fav_id' => ['required', 'numeric'], 'action' => [Rule::in(['add', 'remove'])]
         ]);
-        if($validator->fails()){
-            return response()->json(['success'=>false,'data'=>$validator->errors()]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'data' => $validator->errors()]);
         }
-        if($request->action == 'add'){
-           return $this->store_fav_item_to_db($input);
+        if ($request->action == 'add') {
+             $this->store_fav_item_to_db($input);
+             
         }
-        if($request->action == 'remove'){
-            return $this->remove_fav_item_to_db($input);
-         }
-         
+        if ($request->action == 'remove') {
+             $this->remove_fav_item_to_db($input);
+        }
+        $useridandtypearry = $this->get_usertype_and_id();
+
+        $getfavdata = FavoriteItems::select('fav_id')->where('user_id', $useridandtypearry['id'])->where('type',$useridandtypearry['type'])->get();
+
+        return response()->json(['success' => true, 'data' => $getfavdata]);
     }
-    public function remove_fav_item_to_db($data):JsonResponse
+
+
+
+    public function upload_after_logined(Request $request):JsonResponse
     {
-      
-       
-        if(Auth::guard('shop_owners_and_staffs')->check()){
-          $data['type']='shop_owners';
-          $data['user_id']=Auth::guard('shop_owners_and_staffs')->user()->id;
-        }else{
-            $data['type']='user';
-            $data['user_id']=Auth::guard('web')->user()->id;
+        $validator = Validator::make($request->all(), [
+            'fav_ids' => ['required', 'string', 'max:2000']
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'data' => $validator->errors()]);
         }
+        $useridandtypearry = $this->get_usertype_and_id();
+        $type=$useridandtypearry['type'];
+        $id=$useridandtypearry['id'];
 
-        $deletefav=FavoriteItems::where([['user_id','=',$data['user_id']],['type','=',$data['type']],['fav_id','=',$data['fav_id']]])->delete();
-        $getfavdata=FavoriteItems::select('fav_id')->where('user_id',$data['user_id'])->get();
+        if ($request->fav_ids != 'null' or !empty($request->fav_ids)) {
+            $json_encoded = json_decode($request->fav_ids, true);
+            foreach ($json_encoded as $je) {
+               
+    
+                $this->store_fav_item_to_db($je);
+            }
+        }
+        if ($request->fav_rm_ids != 'null' or !empty($request->fav_rm_ids)) {
+            $json_encoded_rm = json_decode($request->fav_rm_ids, true);
+            foreach ($json_encoded_rm as $jerm) {
+             
+    
+                $this->remove_fav_item_to_db($jerm);
+            }
+        }
+       
+       
+        $getfavdata = FavoriteItems::select('fav_id')->where('user_id', $id)->where('type',$type)->get();
 
-        return response()->json(['success'=>true,'data'=>$getfavdata]);
+
+        return response()->json(['success' => true, 'data' => $getfavdata]);
     }
-    public function store_fav_item_to_db($data):JsonResponse
+    public function remove_fav_item_to_db($data): string
     {
-      
-       
-        if(Auth::guard('shop_owners_and_staffs')->check()){
-          $data['type']='shop_owners';
-          $data['user_id']=Auth::guard('shop_owners_and_staffs')->user()->id;
-        }else{
-            $data['type']='user';
-            $data['user_id']=Auth::guard('web')->user()->id;
-        }
 
-        $updateorcreate=FavoriteItems::updateOrCreate($data);
-        $getfavdata=FavoriteItems::select('fav_id')->where('user_id',$data['user_id'])->get();
 
-        return response()->json(['success'=>true,'data'=>$getfavdata]);
+        $useridandtypearry = $this->get_usertype_and_id();
+        $data['user_id'] = $useridandtypearry['id'];
+        $data['type'] = $useridandtypearry['type'];
+
+
+        $deletefav = FavoriteItems::where([['user_id', '=', $data['user_id']], ['type', '=', $data['type']], ['fav_id', '=', $data['fav_id']]])->delete();
+
+        return 'done';
     }
-    public function check(Request $request):JsonResponse
+    public function get_usertype_and_id(): array
     {
-        $data=$request->all();
-      
-       
-        if(Auth::guard('shop_owners_and_staffs')->check()){
-          $data['type']='shop_owners';
-          $data['user_id']=Auth::guard('shop_owners_and_staffs')->user()->id;
-        }else{
-            $data['type']='user';
-            $data['user_id']=Auth::guard('web')->user()->id;
+        if (Auth::guard('shop_owners_and_staffs')->check()) {
+            $type = 'shop_owners';
+            $id = Auth::guard('shop_owners_and_staffs')->user()->id;
+        } else {
+            $type = 'user';
+            $id = Auth::guard('web')->user()->id;
+        }
+        return ['type' => $type, 'id' => $id];
+    }
+    public function store_fav_item_to_db($data): string
+    {
+        $useridandtypearry = $this->get_usertype_and_id();
+        $data['user_id'] = $useridandtypearry['id'];
+        $data['type'] = $useridandtypearry['type'];
+
+
+
+        $updateorcreate = FavoriteItems::updateOrCreate($data);
+        return 'done';
+   
+    }
+    public function check(Request $request): JsonResponse
+    {
+        $data = $request->all();
+
+
+        if (Auth::guard('shop_owners_and_staffs')->check()) {
+            $data['type'] = 'shop_owners';
+            $data['user_id'] = Auth::guard('shop_owners_and_staffs')->user()->id;
+        } else {
+            $data['type'] = 'user';
+            $data['user_id'] = Auth::guard('web')->user()->id;
         }
 
-        $check=FavoriteItems::where([['user_id','=',$data['user_id']],['type','=',$data['type']],['fav_id','=',$data['fav_id']]])->first();
-        if(!empty($check)){
-            return response()->json(['success'=>true,'data'=>true]);
-
-        }else{
-            return response()->json(['success'=>false,'data'=>false]);
-
+        $check = FavoriteItems::where([['user_id', '=', $data['user_id']], ['type', '=', $data['type']], ['fav_id', '=', $data['fav_id']]])->first();
+        if (!empty($check)) {
+            return response()->json(['success' => true, 'data' => true]);
+        } else {
+            return response()->json(['success' => false, 'data' => false]);
         }
-
-
     }
 }

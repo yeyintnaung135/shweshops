@@ -37,23 +37,7 @@ header('X-Content-Type-Options: nosniff');
 
     {{--    </script> --}}
 
-    @if (\Illuminate\Support\Facades\Session::has('logined'))
-        <script>
-            var foratclstmp = localStorage.getItem("foraddtocartitems");
-            var dtlstmp = localStorage.getItem("datenow");
-            var myItem = localStorage.getItem('guest_id');
 
-            localStorage.clear();
-            localStorage.setItem("datenow", dtlstmp);
-            localStorage.setItem("foraddtocartitems", foratclstmp);
-
-
-            localStorage.setItem("guest_id", foratclstmp);
-
-
-            window.userid = {{ \Illuminate\Support\Facades\Auth::user('guard')->id }};
-        </script>
-    @endif
     @if (Auth::check())
         <script>
             window.userid = {{ \Illuminate\Support\Facades\Auth::user('guard')->id }};
@@ -3927,38 +3911,6 @@ header('X-Content-Type-Options: nosniff');
         };
 
 
-        // (function(d, s, id){
-        //     var js, fjs = d.getElementsByTagName(s)[0];
-        //     if (d.getElementById(id)) {return;}
-        //     js = d.createElement(s); js.id = id;
-        //     js.src = "https://connect.facebook.net/en_US/sdk.js";
-        //     fjs.parentNode.insertBefore(js, fjs);
-        // }(document, 'script', 'facebook-jssdk'));
-        // function facebooklogin(){
-        //     FB.login(function(response) {
-        //         FB.api('/me', 'get', {fields: ['last_name','first_name','email']}, function (response){
-        //             console.log(response)
-        //
-        //         });
-        //
-        //         // handle the response
-        //     }, {scope: 'public_profile,email,pages_manage_ads'});
-        // };
-        //
-        // function checkLoginState() {
-        //     FB.getLoginStatus(function(response) {
-        //         statusChangeCallback(response);
-        //     });
-        // }
-        // function statusChangeCallback(response) {
-        //     console.log('statusChangeCallback');
-        //     console.log(response);
-        //     // The response object is returned with a status field that lets the
-        //     // app know the current login status of the person.
-        //     // Full docs on the response object can be found in the documentation
-        //     // for FB.getLoginStatus().
-        //
-        // }
     </script>
 
 
@@ -3977,11 +3929,7 @@ header('X-Content-Type-Options: nosniff');
     <script type='text/javascript' src="{{ url('test/js/owl.js') }}" id='owl-carousel-js'></script>
     <script src='{{ url('test/js/owl.thumbs.js') }}'></script>
 
-    @if(session()->has('logined'))
-    <script>
-        alert('fefef');
-    </script>
-    @endif
+
 
 
     @if (session()->has('show_add_to_home'))
@@ -4059,7 +4007,56 @@ header('X-Content-Type-Options: nosniff');
         </script>
     @endif
     {{-- add to home screen --}}
+    @if (\Illuminate\Support\Facades\Session::has('logined'))
+        <script>
+            const upload_fav_localstorage_to_server_after_logined = () => {
+                if (localStorage.getItem('favorite') !== undefined && localStorage.getItem('favorite') !== null) {
+                    var tmp_rm='[]';
+                    if (localStorage.getItem('favorite_rm') !== undefined && localStorage.getItem('favorite_rm') !== null) {
+                        var tmp_rm=localStorage.getItem('favorite_rm');
 
+                    }
+                    return new Promise((resolve, reject) => {
+                        axios.post("{{ url('/myfav/upload_after_logined') }}", {
+                            fav_ids: localStorage.getItem('favorite'),
+                            fav_rm_ids:tmp_rm,
+                        }).then(response => {
+                            if(response.data.success){
+                                localStorage.setItem('favorite',JSON.stringify(response.data.data));
+                                localStorage.setItem('favorite_rm','[]');
+
+                            }
+                        });
+                    })
+
+
+                }
+            }
+            const clearls = async () => {
+                var foratclstmp = localStorage.getItem("foraddtocartitems");
+                var dtlstmp = localStorage.getItem("datenow");
+                var myItem = localStorage.getItem('guest_id');
+                var favorite = localStorage.getItem('favorite');
+                var favorite_rm = localStorage.getItem('favorite_rm');
+
+                localStorage.clear();
+                localStorage.setItem("datenow", dtlstmp);
+                localStorage.setItem("foraddtocartitems", foratclstmp);
+                localStorage.setItem("favorite", favorite);
+                localStorage.setItem("favorite_rm", favorite_rm);
+
+
+
+                localStorage.setItem("guest_id", foratclstmp);
+
+
+                window.userid = {{ \Illuminate\Support\Facades\Auth::user('guard')->id }};
+                await upload_fav_localstorage_to_server_after_logined();
+
+            }
+            clearls();
+        </script>
+    @endif
     <script>
         //array to object with key from object data
         const convertArrayToObject = (array, key) => {
@@ -4075,12 +4072,10 @@ header('X-Content-Type-Options: nosniff');
         let _token = $('meta[name="csrf-token"]').attr('content');
     </script>
     @stack('custom-scripts')
-   
+@stack('favorite')
 
 
     <script type="text/javascript">
-
-        
         function useroffline() {
             if (typeof Window.userid != undefined) {
                 return Window.allfrommsg.sendwhatuserisoffline(window.userid);

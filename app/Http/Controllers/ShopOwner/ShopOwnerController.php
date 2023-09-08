@@ -14,6 +14,7 @@ use App\Models\CountSetting;
 use App\Models\Discount;
 use App\Models\FrontUserLogs;
 use App\Models\GoldPoint;
+use App\Models\SiteSettings;
 use App\Models\Item;
 use App\Models\ItemLogActivity;
 use App\Models\ShopBanner;
@@ -26,6 +27,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
@@ -242,7 +245,7 @@ class ShopOwnerController extends Controller
     {
         if (count($this->uniqueDiscountCheck($this->get_shopid())) != 0) {
             $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-            return view('backend.shopowner.count.discount_product_view', ['shopowner' => $shopowner]);
+            return view('backend.shopowner.count.product_view', ['shopowner' => $shopowner]);
         } else {
             return abort(404);
         }

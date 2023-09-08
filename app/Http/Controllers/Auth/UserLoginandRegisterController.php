@@ -70,7 +70,7 @@ class UserLoginandRegisterController extends Controller
             $data,
             [
                 'name' => 'required|max:100',
-                'phone' => ['required', 'regex:/(^09([0-9]+)(\d+)?$)/u', 'min:11', 'max:11', 'unique:users,phone', new LoginTrottle],
+                'phone' => ['required', 'regex:/(^09([0-9]+)(\d+)?$)/u', 'min:5', 'max:11', 'unique:users,phone', new LoginTrottle],
 
             ],
             [
@@ -86,7 +86,7 @@ class UserLoginandRegisterController extends Controller
         return Validator::make(
             $data,
             [
-                'phone' => 'required|regex:/(^09([0-9]+)(\d+)?$)/u|min:5|max:11',
+                'phone' => ['required', 'regex:/(^09([0-9]+)(\d+)?$)/u', 'min:5', 'max:11', new LoginTrottle],
 
             ],
             [
@@ -140,7 +140,9 @@ class UserLoginandRegisterController extends Controller
 
                 if ($request->phone != '09425472782') {
 
-                    $sendresponse = $this->sendresetcode($request->phone, $generate_code);
+                    // $sendresponse = $this->sendresetcode($request->phone, $generate_code);
+                    $sendresponse ='done';
+
                 }
 
                 if ($sendresponse == 'done') {

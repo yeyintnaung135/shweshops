@@ -11,13 +11,16 @@
     {{-- end Menu--}}
 
     <div class="mb-5 pb-5">
+      @if(Auth::check())
+      <?php $logined=false;?>
+      @else
+      <?php $logined=true;?>
+      @endif
+
          <addtocart
-            :userid="{{(Auth::guard('web')->user())}}"
-            :usertype='"Users"'
-            :localkey="'fav'"
+            :localkey="'favorite'"
             :headertext="'My Favorite Items'"
-            :checkauth='{{Auth::guard('web')->check()}}'
-            :username="'{{\Illuminate\Support\Facades\Auth::guard('web')->check() == 1 ? \Illuminate\Support\Facades\Auth::guard('web')->user()->username : '' }}'"
+            :checkauth='{{$logined}}'
             :fordate="'{{\Carbon\Carbon::now()}}'"
           ></addtocart>
 

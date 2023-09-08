@@ -4,174 +4,6 @@
             <h1 style="font-family: sans-serif !important">{{ header }}</h1>
         </div>
 
-        <div
-            class="row g-3 justify-content-center"
-            v-if="Object.keys(localData).length != 0"
-        >
-            <div
-                class="col-12 col-md-8 col-lg-6 col-xxl-4"
-                v-for="(item, index) in this.localData"
-                :key="index"
-            >
-                <div class="sop-border d-flex flex-warp">
-                    <div class="col-5 h-100">
-                        <div
-                            class="images post-img sop-img sop-font ftc-product product"
-                            :data-src="imgurl + item.CheckPhoto"
-                            data-fancybox="group"
-                        >
-                            <div v-if="item.YkgetDiscount != ''">
-                                <div class="sop-ribbon">
-                                    <span>
-                                        -{{ item.YkgetDiscount.percent }}%
-                                    </span>
-                                </div>
-                            </div>
-                            <span class="fa fa-user yk-viewcount">
-                                {{ item.YkView }}
-                            </span>
-
-                            <img
-                                v-lazy="imgurl + item.CheckPhoto"
-                                class="sop-atc-img"
-                            />
-                        </div>
-                    </div>
-                    <div
-                        class="col-7 h-100 addtocart-p d-flex flex-column justify-content-between"
-                    >
-                        <div class="d-flex flex-warp">
-                            <div class="col-10">
-                                <div class="mmprice">
-                                    <a
-                                        :href="
-                                            host +
-                                            '/' +
-                                            item.ShopName.shop_name +
-                                            '/product_detail/' +
-                                            item.id
-                                        "
-                                    >
-                                        <div v-html="item.MmPrice"></div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-2 d-flex justify-content-end">
-                                <div
-                                    class="sop-btn"
-                                    @click="deleteCardFunction(index)"
-                                >
-                                    <i
-                                        class="fas fa-times"
-                                        style="color: #780116"
-                                    ></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="category_id pt-1">
-                            <a
-                                :href="
-                                    host +
-                                    '/see_by_categories/' +
-                                    item.category_id
-                                "
-                            >
-                                {{ item.category_id }}
-                            </a>
-                        </div>
-                        <div class="product_code">
-                            Code:
-                            <a
-                                :href="
-                                    host +
-                                    '/' +
-                                    item.ShopName.shop_name +
-                                    '/product_detail/' +
-                                    item.id
-                                "
-                            ><span>{{ item.product_code }}</span>
-                            </a>
-                        </div>
-                        <div class="ShopName">
-
-                            <a :href="host + '/' + item.WithoutspaceShopname"
-
-                            >by
-                                <span>{{ item.ShopName.shop_name }}</span></a
-                            >
-                        </div>
-                        <div class="d-flex flex-warp align-items-end">
-                            <div class="col-7">
-                                <div
-                                    class="h-100 detail d-flex align-items-end"
-                                >
-                                    <a
-                                        :href="
-                                            host +
-                                            '/' +
-                                            item.ShopName.shop_name +
-                                            '/product_detail/' +
-                                            item.id
-                                        "
-                                        style="margin-bottom: 10px"
-                                    >
-                                        အသေးစိတ်ကြည့်မယ်
-                                    </a>
-                                </div>
-                            </div>
-                            <div
-                                class="h-100 col-5 d-flex flex-row justify-content-end"
-                            >
-                                <!-- <a
-                                    v-if="
-                                        item.ShopName.ConnectedwithFacebook ==
-                                        'yes'
-                                    "
-                                    :href="
-                                        item.ShopName.Ykmessengerlink +
-                                        '?ref=' +
-                                        item.id
-                                    "
-                                    class="btn sop-buynow-button"
-                                    >ဝယ်မယ်</a
-                                >
-                                <a
-                                    v-else
-                                    :href="item.ShopName.Ykmessengerlink"
-                                    class="btn sop-buynow-button"
-                                    >ဝယ်မယ်</a
-                                > -->
-                                <a
-                                    class="btn btn-primary atc-buynow-button sop-font reg"
-                                    @click="
-                                        buynowbuttonclick(
-                                            item.id
-                                        )
-                                    "
-                                    id="buynowbutton"
-                                    target="_blank"
-                                    style=""
-                                >ဝယ်မယ်</a
-                                >
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div
-            v-else
-            class="d-flex flex-column justify-content-center align-items-center"
-            style="height: 50vh"
-        >
-            <h2 class="text-center">ရွေးထားတာလေးတွေတော့ မရှိသေးပါဘူးနော်</h2>
-            <p class="sop-p">ပစ္စည်းလေးတွေကြည့် ကြမလား</p>
-            <a
-                :href="host + '/see_by_categories'"
-                class="btn btn-primary sn-buynow-button"
-            >ပစ္စည်းလေးတွေကြည့် ကြမယ်</a
-            >
-        </div>
     </div>
 </template>
 <script>
@@ -187,15 +19,7 @@ Vue.use(VueLazyload, {
 });
 
 export default {
-    props: [
-        "localkey",
-        "headertext",
-        "userid",
-        "usertype",
-        "checkauth",
-        "name",
-        "fordate",
-    ],
+    props: ["localkey", "headertext", "checkauth", "fordate"],
 
     data: function () {
         return {
@@ -207,7 +31,7 @@ export default {
 
             SyncID: "",
             id: "",
-            imgurl:'',
+            imgurl: "",
         };
     },
     mounted() {
@@ -216,10 +40,11 @@ export default {
         this.userid != null ? (this.id = this.userid.id) : (this.id = "");
         this.header = this.headertext;
         if (process.env.MIX_USE_DO == "true") {
-      this.imgurl = process.env.MIX_DO_URL;
-    } else {
-      this.imgurl = this.$hostname;
-    }
+            this.imgurl = process.env.MIX_DO_URL;
+        } else {
+            this.imgurl = this.$hostname;
+        }
+        this.getfav_or_addtocarddata();
     },
     filters: {
         strlimit: function (str, limit, other) {
@@ -233,40 +58,38 @@ export default {
     },
 
     methods: {
-        getitemdata:function(id){
-            return new Promise(resolve=>{
-                axios.post(this.host+'/getitemdata', {'itemid':id},
-                    {
-                    })
+        getitemdata: function (id) {
+            return new Promise((resolve) => {
+                axios
+                    .post(this.host + "/getitemdata", { itemid: id }, {})
                     .then(async (response) => {
                         resolve(response);
                     });
             });
         },
         buynowbuttonclick: async function (itemid) {
-
             //get itemdat by id
-            const itemdata=await this.getitemdata(itemid);
+            const itemdata = await this.getitemdata(itemid);
             //get itemdat by id
 
             //set data to LS because if use is not logined user will login login form is made with Form this can be redirect
             // localStorage.removeItem('foraddtocartitems');
             // localStorage.removeItem('datenow');
 
-
-            if(this.checkauth != 1){
-
-
-              localStorage.setItem('foraddtocartitems',JSON.stringify(itemdata));
-              localStorage.setItem('datenow',this.fordate);
-          }
-
-
+            if (this.checkauth != 1) {
+                localStorage.setItem(
+                    "foraddtocartitems",
+                    JSON.stringify(itemdata)
+                );
+                localStorage.setItem("datenow", this.fordate);
+            }
 
             //set data to LS because if use is not logined user will login login form is made with Form this can be redirect
 
-
-            console.log('localStorage in vue', localStorage.getItem('foraddtocartitems'))
+            console.log(
+                "localStorage in vue",
+                localStorage.getItem("foraddtocartitems")
+            );
 
             this.$root.buynowbuttonclick(
                 this.checkauth,
@@ -278,110 +101,28 @@ export default {
                 this.fordate
             );
         },
+        getfav_or_addtocarddata: async function() {
+            if (!this.checkauth) {
+                let localdata = this.getDataFromLocal();
+                let getallfavlist = await new Promise((resolve) => {
+                    axios
+                        .post(this.host + "/myfav/see_all", {
+                            fav_ids: localdata,
+                        })
+                        .then(async (response) => {
+                            resolve(response);
+                        });
+                });
+                console.log("auth check", 'ff');
+
+            }
+            console.log("auth check", this.checkauth);
+        },
         getDataFromLocal: function () {
             const data = JSON.parse(
                 window.localStorage.getItem(this.localkey) || "{}"
             );
-            this.localData = data;
-            console.log("local data", this.localData);
-        },
-        deleteCardFunction: function (index) {
-            this.isDeleted = index;
-
-            this.$delete(this.localData, this.isDeleted);
-
-            localStorage.setItem(this.localkey, JSON.stringify(this.localData));
-
-            this.SyncID = Object.keys(
-                JSON.parse(window.localStorage.getItem(this.localkey))
-            );
-
-            if (this.localkey == "selection") {
-                document.getElementById("temp").innerHTML =
-                    parseInt(document.getElementById("temp").innerHTML) - 1;
-                document.getElementById("navw-a2c-count").innerHTML =
-                    parseInt(document.getElementById("navw-a2c-count").innerHTML) - 1;
-
-                const updateSelection = JSON.parse(
-                    window.localStorage.getItem("selection") || "{}"
-                );
-                if (Object.keys(updateSelection).length == 0) {
-                    if ($("#mobile-a2c-icon").hasClass("op-100")) {
-                        $("#mobile-a2c-icon")
-                            .removeClass("op-100")
-                            .addClass("op-50");
-                    }
-                }
-
-                if (this.id != "") {
-                    localStorage.setItem(
-                        "selectionID",
-                        JSON.stringify(this.SyncID)
-                    );
-                    this.SyncID = JSON.parse(
-                        window.localStorage.getItem("selectionID")
-                    );
-                    $.ajax({
-                        url: "/addtocart/update",
-                        type: "post",
-                        data: {
-                            users: this.usertype,
-                            newSelection: this.SyncID,
-                            id: userID.id,
-                            _token: _token,
-                        },
-                        success: function (response) {
-                            console.log("synced", response);
-                        },
-                        error: function (error) {
-                            console.log(error);
-                        },
-                    });
-                }
-            }
-            else {
-                var favourited = JSON.parse(window.localStorage.getItem("fav"));
-
-                if (Object.keys(favourited).length == 0) {
-                    $("#mobileFootHeart").toggleClass("fa-regular fa-solid");
-                    this.$forceUpdate();
-                }
-                // document.getElementById("favw-a2c-count").innerHTML =
-                //     parseInt(
-                //         document.getElementById("favw-a2c-count").innerHTML
-                //     ) - 1;
-                // document.getElementById("favm-a2c-count").innerHTML =
-                //     parseInt(
-                //         document.getElementById("favm-a2c-count").innerHTML
-                //     ) - 1;
-
-                if (this.id != "") {
-                    localStorage.setItem("favID", JSON.stringify(this.SyncID));
-                    this.SyncID = JSON.parse(
-                        window.localStorage.getItem("favID")
-                    );
-                    console.log("SyncIDfav", this.SyncID);
-                    $.ajax({
-                        url: "/myfav/update",
-                        type: "post",
-                        data: {
-                            users: this.usertype,
-                            newFav: this.SyncID,
-                            id: userID.id,
-                            _token: _token,
-                        },
-                        success: function (response) {
-                            console.log("synced");
-                        },
-                        error: function (error) {
-                            console.log(error);
-                        },
-                    });
-                }
-            }
-
-            //had to force it which is not recommended way, delete below if there is better way
-            // this.$forceUpdate();
+            return data;
         },
     },
 };
@@ -428,7 +169,7 @@ export default {
     /* font-size: 18px !important; */
     padding: 7px 0 !important;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     font-weight: 500 !important;
 }
 
@@ -459,7 +200,6 @@ export default {
 }
 
 @media only screen and (max-width: 576px) {
-    
     .mmprice {
         font-size: 1.2em;
     }
@@ -499,8 +239,8 @@ export default {
         height: 158px;
         object-fit: cover;
     }
-    .atc-buynow-button{
-      padding: 3px 10px !important;
+    .atc-buynow-button {
+        padding: 3px 10px !important;
     }
 }
 
@@ -544,7 +284,5 @@ export default {
         height: 200px;
         object-fit: cover;
     }
-
 }
-
 </style>

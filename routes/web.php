@@ -164,23 +164,7 @@ Route::group(
                 return view('front.temp.addtocart');
             }
         });
-        Route::get('/myfav', function () {
-            // for account
-            if (isset(Auth::guard('shop_owner')->user()->id)) {
-                $shopowner_acc = Shops::where('id', Auth::guard('shop_owner')->user()->id)->orderBy('created_at', 'desc')->get();
-            } else if (isset(Auth::guard('shop_role')->user()->id)) {
-                $manager = Manager::where('id', Auth::guard('shop_role')->user()->id)->pluck('shop_id');
-                $shopowner_acc = Shops::where('id', $manager)->orderBy('created_at', 'desc')->get();
-            }
-
-            if (isset(Auth::guard('shop_owner')->user()->id)) {
-                return view('front.temp.fav', ['shopowner_acc' => $shopowner_acc]);
-            } elseif (isset(Auth::guard('shop_role')->user()->id)) {
-                return view('front.temp.fav', ['shopowner_acc' => $shopowner_acc]);
-            } else {
-                return view('front.temp.fav');
-            }
-        });
+        Route::get('/myfav/all', [FrontController::class, 'all']);
 
         Route::put('/addtocart', [FrontController::class, 'addtocart_search']);
         Route::put('/myfav', [FrontController::class, 'fav_search']);
@@ -236,8 +220,12 @@ Route::group(
         Route::post('/addtocart/update', [FrontController::class, 'addtocart_update']);
         Route::post('/myfav/update', [FrontController::class, 'fav_update']);
         Route::get('/contact-us', [FrontController::class, 'contact_us']);
+        Route::get('/myfav/see_all', [FavoriteController::class, 'see_all']);
+        Route::post('/myfav/see_all', [FavoriteController::class, 'see_all_post']);
+
         Route::post('/myfav/action', [FavoriteController::class, 'action_favorite']);
         Route::post('/myfav/check', [FavoriteController::class, 'check']);
+        Route::post('/myfav/upload_after_logined', [FavoriteController::class, 'upload_after_logined']);
 
 
 // News and Events
