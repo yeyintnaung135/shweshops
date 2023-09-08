@@ -19,7 +19,7 @@ class PosPurchaseFilterService
         $toDate = $request->input('toDate');
         $supId = $request->input('sup');
         $qualId = $request->input('qual');
-        $ptypeId = $request->input('ptype');
+        $catId = $request->input('cat');
 
         $query = PosPurchase::select(
             'id', 'gold_name', 'supplier_id', 'code_number', 'sell_flag',
@@ -51,8 +51,8 @@ class PosPurchaseFilterService
             $query->where('quality_id', $qualId);
         }
 
-        if ($ptypeId) {
-            $query->where('category_id', $ptypeId);
+        if ($catId) {
+            $query->where('category_id', $catId);
         }
 
         return $query;
