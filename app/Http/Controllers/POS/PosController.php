@@ -30,6 +30,7 @@ use App\Models\POS\PosWhiteGoldPurchase;
 use App\Models\POS\PosWhiteGoldSale;
 use App\Models\Shops;
 use App\Models\State;
+use App\Services\PosFilter\PosPurchaseFilterService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -48,9 +49,12 @@ class PosController extends Controller
 
     public $err_data = [];
 
-    public function __construct()
+    protected $posFilterService;
+
+    public function __construct(PosPurchaseFilterService $posFilterService)
     {
         $this->middleware('auth:shop_owners_and_staffs');
+        $this->posFilterService = $posFilterService;
     }
 
     public function get_dashboard(): View
@@ -429,15 +433,7 @@ class PosController extends Controller
 
     public function get_purchase_list(Request $request): JsonResponse
     {
-        $fromDate = $request->input('fromDate');
-        $toDate = $request->input('toDate');
-
-        $purchases = PosPurchase::select(
-            'id', 'gold_name', 'supplier_id', 'code_number', 'sell_flag',
-            'product_gram_kyat_pe_yway', 'stock_qty', 'gold_fee', 'date')
-            ->where('shop_owner_id', $this->get_shopid())
-            ->when($fromDate, fn($query) => $query->whereDate('created_at', '>=', $fromDate))
-            ->when($toDate, fn($query) => $query->whereDate('created_at', '<=', $toDate));
+        $purchases = $this->posFilterService->filterPurchases($request);
 
         return DataTables::of($purchases)
             ->addColumn('product_gram_kyat_pe_yway_in_gram', function ($purchase) {
@@ -445,7 +441,9 @@ class PosController extends Controller
                 $parts = explode("/", $purchase->product_gram_kyat_pe_yway);
                 return isset($parts[0]) ? $parts[0] : '';
             })
-            ->addColumn('supplier', fn($purchase) => $purchase->supplier->name)
+            ->addColumn('supplier', function ($purchase) {
+                return $purchase->supplier->name;
+            })
             ->addColumn('actions', function ($purchase) {
                 $urls = [
                     'edit_url' => route('backside.shop_owner.pos.edit_purchase', $purchase->id),
