@@ -456,22 +456,6 @@ class PosController extends Controller
             ->toJson();
     }
 
-    public function gold_advance_filter(Request $request)
-    {
-        $data = $request->all();
-
-        $results = PosPurchase::query()
-            ->when(!empty($data['supid']), fn($query) => $query->where('supplier_id', $data['supid']))
-            ->when(!empty($data['qualid']), fn($query) => $query->where('quality_id', $data['qualid']))
-            ->when(!empty($data['catid']), fn($query) => $query->where('category_id', $data['catid']))
-            ->where('shop_owner_id', $this->get_shopid())
-            ->with('supplier')
-            ->get();
-
-        return $results;
-
-    }
-
     public function create_purchase(): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->first();
@@ -670,13 +654,11 @@ class PosController extends Controller
         return response()->json($p);
     }
 
-    public function delete_purchase(PosPurchase $purchase): JsonResponse
+    public function delete_purchase(PosPurchase $purchase): RedirectResponse
     {
         $purchase->delete();
         Session::flash('message', 'Purchase was successfully Deleted!');
-        return response()->json([
-            'data' => 'success',
-        ], 200);
+        return redirect()->route('backside.shop_owner.pos.purchase_list');
     }
 
     public function edit_purchase($id): View
@@ -792,66 +774,49 @@ class PosController extends Controller
     }
 
     //kyout
-    public function get_kyout_purchase_list(): View
+    public function kyout_purchase_list(): View
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosKyoutPurchase::where('shop_owner_id', $this->get_shopid())->get();
-        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->get();
-        $dias = PosDiamond::where('shop_owner_id', $this->get_shopid())->get();
-        $cats = Category::all();
-        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
-        $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
-        if ($assign_gold_price) {
-            return view('backend.pos.kyout_purchase_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'dias' => $dias, 'cats' => $cats]);
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
+        $purchases = PosKyoutPurchase::where('shop_owner_id', $this->get_shopid())
+            ->select('gold_gram_kyat_pe_yway', 'decrease_pe_yway')
+            ->get();
+        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->select('id', 'name')->get();
+        $dias = PosDiamond::where('shop_owner_id', $this->get_shopid())->select('diamond_name')->get();
+        $cats = Category::select('id', 'mm_name')->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
+        if (PosAssignGoldPrice::where('shop_owner_id', $this->get_shopid())->exists()) {
+            return view('backend.pos.kyout_purchase_list', ['counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'dias' => $dias, 'cats' => $cats]);
         } else {
             Session::flash('message', '​ရွှေ​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
-            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
-            return view('backend.pos.assign_gold_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
+            return view('backend.pos.assign_gold_price', ['assign_gold_price' => $assign_gold_price]);
         }
     }
-    public function kyout_type_filter(Request $request): JsonResponse
+
+    public function get_kyout_purchase_list(Request $request): JsonResponse
     {
-        if ($request->type == 1) {
-            $type = explode('/', $request->text);
-            $types = [];
-            foreach ($type as $t) {
-                $sup = PosKyoutPurchase::where('type', 'like', '%' . $t . '%')->where('shop_owner_id', $this->get_shopid())->with('supplier')->get();
-                array_push($types, $sup);
-            }
-            foreach ($types as $tp) {
-                $data = collect($tp)->unique('id')->all();
-            }
-        }
-        if ($request->type == 2) {
-            $data = PosKyoutPurchase::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->with('supplier')->with('quality')->get();
-        }
+        $purchases = $this->posFilterService->filterKyoutPurchases($request);
 
-        return response()->json([
-            'data' => $data,
-        ]);
+        return DataTables::of($purchases)
+            ->addColumn('supplier', function ($purchase) {
+                return $purchase->supplier->name;
+            })
+            ->addColumn('quality', function ($purchase) {
+                return $purchase->quality->name;
+            })
+            ->addColumn('actions', function ($purchase) {
+                $urls = [
+                    'edit_url' => route('backside.shop_owner.pos.edit_kyout_purchase', $purchase->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_kyout_purchase', $purchase->id),
+                    'detail_url' => route('backside.shop_owner.pos.detail_kyout_purchase', $purchase->id),
+                ];
+
+                return $urls;
+            })
+            ->toJson();
     }
-    public function kyout_advance_filter(Request $request): JsonResponse
-    {
-        $data = $request->all();
-        $query = PosKyoutPurchase::query();
-        if (!empty($data['supid'])) {
-            $result = $query->where('supplier_id', $data['supid']);
-        }
 
-        if (!empty($data['qualid'])) {
-            $result = $query->where('diamonds', 'like', '%' . $data['qualid'] . '%');
-        }
-
-        if (!empty($data['catid'])) {
-            $result = $query->where('category_id', $data['catid']);
-        }
-        $results = $query->where('shop_owner_id', $this->get_shopid())->with('supplier')->with('quality')->get();
-        return response()->json([
-            'data' => $results,
-        ]);
-    }
     public function create_kyout_purchase(): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -1183,15 +1148,13 @@ class PosController extends Controller
         }
     }
 
-    public function delete_kyout_purchase(Request $request): JsonResponse
+    public function delete_kyout_purchase(PosKyoutPurchase $purchase): RedirectResponse
     {
-        $purchase = PosKyoutPurchase::find($request->pid);
         $purchase->delete();
         Session::flash('message', 'Kyout Purchase was successfully Deleted!');
-        return response()->json([
-            'data' => 'success',
-        ], 200);
+        return redirect()->route('backside.shop_owner.pos.kyout_purchase_list');
     }
+
     public function detail_kyout_purchase($id): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -1209,24 +1172,41 @@ class PosController extends Controller
     }
 
     //Platinum
-    public function get_ptm_purchase_list(): View
+    public function ptm_purchase_list(): View
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosPlatinumPurchase::where('shop_owner_id', $this->get_shopid())->get();
-        $cats = Category::all();
-        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
-        $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
-        if ($assign_gold_price) {
-            return view('backend.pos.platinum_purchase_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'cats' => $cats]);
+        $purchases = PosPlatinumPurchase::where('shop_owner_id', $this->get_shopid())
+            ->select('product_gram')
+            ->get();
+        $cats = Category::select('id', 'mm_name')->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
+        if (PosAssignGoldPrice::where('shop_owner_id', $this->get_shopid())->exists()) {
+            return view('backend.pos.platinum_purchase_list', ['counters' => $counters, 'purchases' => $purchases, 'cats' => $cats]);
         } else {
             Session::flash('message', 'ပလက်တီနမ်​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
-            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
-            return view('backend.pos.assign_platinum_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
+            return view('backend.pos.assign_platinum_price', ['assign_gold_price' => $assign_gold_price]);
         }
 
     }
+
+    public function get_ptm_purchase_list(Request $request): JsonResponse
+    {
+        $purchases = $this->posFilterService->filterPlatinumPurchases($request);
+
+        return DataTables::of($purchases)
+            ->addColumn('actions', function ($purchase) {
+                $urls = [
+                    'edit_url' => route('backside.shop_owner.pos.edit_ptm_purchase', $purchase->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_ptm_purchase', $purchase->id),
+                    'detail_url' => route('backside.shop_owner.pos.detail_ptm_purchase', $purchase->id),
+                ];
+
+                return $urls;
+            })
+            ->toJson();
+    }
+
     public function create_ptm_purchase(): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -1374,15 +1354,13 @@ class PosController extends Controller
 
         return view('backend.pos.edit_platinum_purchase', ['shopowner' => $shopowner, 'counters' => $counters, 'categories' => $categories, 'gradeA' => $gradeA, 'gradeB' => $gradeB, 'purchase' => $purchase, 'staffs' => $staffs]);
     }
-    public function delete_ptm_purchase(Request $request): JsonResponse
+    public function delete_ptm_purchase(PosPlatinumPurchase $purchase): RedirectResponse
     {
-        $purchase = PosPlatinumPurchase::find($request->pid);
         $purchase->delete();
-        Session::flash('message', 'Purchase was successfully Deleted!');
-        return response()->json([
-            'data' => 'success',
-        ], 200);
+        Session::flash('message', 'Platinum Purchase was successfully Deleted!');
+        return redirect()->route('backside.shop_owner.pos.ptm_purchase_list');
     }
+
     public function update_ptm_purchase(Request $request, $id): RedirectResponse
     {
         try {
@@ -1456,45 +1434,7 @@ class PosController extends Controller
             return redirect()->back();
         }
     }
-    public function ptm_type_filter(Request $request): JsonResponse
-    {
-        if ($request->type == 1) {
-            $type = explode('/', $request->text);
-            $types = [];
-            foreach ($type as $t) {
-                $sup = PosPlatinumPurchase::where('type', 'like', '%' . $t . '%')->where('shop_owner_id', $this->get_shopid())->get();
-                array_push($types, $sup);
-            }
-            foreach ($types as $tp) {
-                $data = collect($tp)->unique('id')->all();
-            }
-        }
-        if ($request->type == 2) {
-            $data = PosPlatinumPurchase::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->get();
-        }
 
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    public function platinum_advance_filter(Request $request): JsonResponse
-    {
-        $data = $request->all();
-        $query = PosPlatinumPurchase::query();
-
-        if (!empty($data['qualid'])) {
-            $result = $query->where('quality', $data['qualid']);
-        }
-
-        if (!empty($data['catid'])) {
-            $result = $query->where('category_id', $data['catid']);
-        }
-        $results = $query->where('shop_owner_id', $this->get_shopid())->get();
-
-        return response()->json([
-            'data' => $results,
-        ]);
-    }
     public function detail_ptm_purchase($id): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -2195,6 +2135,7 @@ class PosController extends Controller
             return redirect()->back();
         }
     }
+
     public function delete_kyout_sale(Request $request): JsonResponse
     {
         $diamond = PosKyoutSale::find($request->pid);

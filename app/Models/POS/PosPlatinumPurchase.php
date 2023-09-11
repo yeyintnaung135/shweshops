@@ -2,6 +2,7 @@
 
 namespace App\Models\POS;
 
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Model;
 
 class PosPlatinumPurchase extends Model

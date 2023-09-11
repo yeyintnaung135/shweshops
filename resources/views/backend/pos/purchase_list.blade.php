@@ -179,7 +179,7 @@
                             </div>
                             <div class=" table-responsive text-black">
                                 {{-- <button id="printButton">Print Data</button> --}}
-                                <table class="table table-striped" id="example23">
+                                <table class="table table-striped" id="purchaseTable">
                                     <thead>
                                         <th>နံပါတ်</th>
                                         <th>​ရွှေထည်အမည်</th>
@@ -220,7 +220,7 @@
                 changeYear: true
             });
 
-            var purchaseTable = $('#example23').DataTable({
+            var purchaseTable = $('#purchaseTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
