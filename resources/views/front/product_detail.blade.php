@@ -1243,7 +1243,7 @@
 
 @push('custom-scripts')
     <script src="{{ url('test/js/fancybox.js') }}"></script>
-    @include('JsScripts.Front.favorite')
+    @include('JsScripts.Front.favourite')
     <script>
         $(document).ready(function() {
 

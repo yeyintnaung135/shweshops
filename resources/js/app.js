@@ -119,7 +119,7 @@ Vue.component(
     require("./components/backend/ShopsCreateValidate.vue").default
 );
 
-Vue.component("addtocart", require("./components/temp/addtocart.vue").default);
+Vue.component("favand-addtocard", require("./components/frontend/FavAndAddtocard.vue").default);
 Vue.component("a2cicon-com", require("./components/temp/a2cicon.vue").default);
 Vue.component(
     "tags-com",
@@ -166,10 +166,9 @@ Vue.component(
 
 // Vue.prototype.$hostname = "https://" + window.location.hostname;
 
-Vue.prototype.$hostname = "http://" + window.location.hostname;
+// Vue.prototype.$hostname = "http://" + window.location.hostname;
 
-// Vue.prototype.$hostname =
-//     "http://" + window.location.hostname + "/shweshops/public";
+Vue.prototype.$hostname ="http://" + window.location.hostname + "/shweshops/public";
 
 //HostName for Laragon or Valet Virtual Host
 // Vue.prototype.$hostname = "http://shweshops.test";

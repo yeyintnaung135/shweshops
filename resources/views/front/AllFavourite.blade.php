@@ -12,17 +12,26 @@
 
     <div class="mb-5 pb-5">
       @if(Auth::check())
-      <?php $logined=false;?>
+      <?php 
+      $logined='true';
+      if(session()->has('logined')){
+        $checkloginnow='true';
+      }else{
+        $checkloginnow='false';
+
+      }
+      ?>
       @else
-      <?php $logined=true;?>
+      <?php $logined='false';$checkloginnow='false';?>
       @endif
 
-         <addtocart
-            :localkey="'favorite'"
-            :headertext="'My Favorite Items'"
-            :checkauth='{{$logined}}'
+         <favand-addtocard
+            :checkloginnow="{{$checkloginnow}}"
+            :localkey="'favourite'"
+            :headertext="'My Favourite Items'"
+            :checkauth="{{$logined}}"
             :fordate="'{{\Carbon\Carbon::now()}}'"
-          ></addtocart>
+          ></favand-addtocard>
 
     </div>
 

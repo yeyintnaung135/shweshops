@@ -33,10 +33,10 @@
         var tmprm = [];
 
         if (
-            localStorage.getItem("favorite_rm") !== undefined &&
-            localStorage.getItem("favorite_rm") !== null
+            localStorage.getItem("favourite_rm") !== undefined &&
+            localStorage.getItem("favourite_rm") !== null
         ) {
-            var tmprm = JSON.parse(localStorage.getItem("favorite_rm"));
+            var tmprm = JSON.parse(localStorage.getItem("favourite_rm"));
         }
         let checkexit = tmprm.findIndex((d) => {
             return parseInt(d.fav_id) == itemid;
@@ -47,31 +47,31 @@
             });
         }
 
-        localStorage.setItem("favorite_rm", JSON.stringify(tmprm));
+        localStorage.setItem("favourite_rm", JSON.stringify(tmprm));
     };
     const fav_rm_rm_local_storage = (itemid) => {
         if (
-            localStorage.getItem("favorite_rm") !== undefined &&
-            localStorage.getItem("favorite_rm") !== null
+            localStorage.getItem("favourite_rm") !== undefined &&
+            localStorage.getItem("favourite_rm") !== null
         ) {
-            let remove_tmparray = JSON.parse(localStorage.getItem("favorite_rm"));
+            let remove_tmparray = JSON.parse(localStorage.getItem("favourite_rm"));
             let rmindex = remove_tmparray.findIndex((d) => {
                 return parseInt(d.fav_id) == parseInt(itemid);
             });
             if (rmindex > -1) {
                 remove_tmparray.splice(rmindex, 1);
             }
-            localStorage.setItem("favorite_rm", JSON.stringify(remove_tmparray));
+            localStorage.setItem("favourite_rm", JSON.stringify(remove_tmparray));
         }
     };
 
     const fav_action_to_local_storage = (itemid, action) => {
         if (action == "add") {
             if (
-                localStorage.getItem("favorite") !== undefined &&
-                localStorage.getItem("favorite") !== null
+                localStorage.getItem("favourite") !== undefined &&
+                localStorage.getItem("favourite") !== null
             ) {
-                var tmparray = JSON.parse(localStorage.getItem("favorite"));
+                var tmparray = JSON.parse(localStorage.getItem("favourite"));
             } else {
                 var tmparray = [];
             }
@@ -79,15 +79,15 @@
                 fav_id: itemid,
             });
             fav_rm_rm_local_storage(itemid);
-            localStorage.setItem("favorite", JSON.stringify(tmparray));
+            localStorage.setItem("favourite", JSON.stringify(tmparray));
             console.log("add ls", tmparray);
         }
         if (action == "remove") {
             if (
-                localStorage.getItem("favorite") !== undefined &&
-                localStorage.getItem("favorite") !== null
+                localStorage.getItem("favourite") !== undefined &&
+                localStorage.getItem("favourite") !== null
             ) {
-                let remove_tmparray = JSON.parse(localStorage.getItem("favorite"));
+                let remove_tmparray = JSON.parse(localStorage.getItem("favourite"));
                 let index = remove_tmparray.findIndex((d) => {
                     return parseInt(d.fav_id) == itemid;
                 });
@@ -95,7 +95,7 @@
                     remove_tmparray.splice(index, 1);
                 }
                 fav_rm_add_local_storage(itemid);
-                localStorage.setItem("favorite", JSON.stringify(remove_tmparray));
+                localStorage.setItem("favourite", JSON.stringify(remove_tmparray));
                 console.log("DEL ls", remove_tmparray);
             }
         }
@@ -116,7 +116,7 @@
                     }
                 });
         } else {
-            let remove_tmparray = JSON.parse(localStorage.getItem("favorite"));
+            let remove_tmparray = JSON.parse(localStorage.getItem("favourite"));
 
             let index = remove_tmparray.findIndex((d) => {
                 return parseInt(d.fav_id) == itemid;
@@ -147,7 +147,7 @@
                             $("#ficon").removeClass("fa-regular");
                             $("#ficon").addClass("fa-solid");
                             localStorage.setItem(
-                                "favorite",
+                                "favourite",
                                 JSON.stringify(response.data.data)
                             );
                             fav_rm_rm_local_storage(itemid);

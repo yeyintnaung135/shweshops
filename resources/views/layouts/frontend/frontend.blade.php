@@ -3909,8 +3909,6 @@ header('X-Content-Type-Options: nosniff');
 
 
         };
-
-
     </script>
 
 
@@ -4010,20 +4008,20 @@ header('X-Content-Type-Options: nosniff');
     @if (\Illuminate\Support\Facades\Session::has('logined'))
         <script>
             const upload_fav_localstorage_to_server_after_logined = () => {
-                if (localStorage.getItem('favorite') !== undefined && localStorage.getItem('favorite') !== null) {
-                    var tmp_rm='[]';
-                    if (localStorage.getItem('favorite_rm') !== undefined && localStorage.getItem('favorite_rm') !== null) {
-                        var tmp_rm=localStorage.getItem('favorite_rm');
+                if (localStorage.getItem('favourite') !== undefined && localStorage.getItem('favourite') !== null) {
+                    var tmp_rm = '[]';
+                    if (localStorage.getItem('favourite_rm') !== undefined && localStorage.getItem('favourite_rm') !== null) {
+                        var tmp_rm = localStorage.getItem('favourite_rm');
 
                     }
                     return new Promise((resolve, reject) => {
                         axios.post("{{ url('/myfav/upload_after_logined') }}", {
-                            fav_ids: localStorage.getItem('favorite'),
-                            fav_rm_ids:tmp_rm,
+                            fav_ids: localStorage.getItem('favourite'),
+                            fav_rm_ids: tmp_rm,
                         }).then(response => {
-                            if(response.data.success){
-                                localStorage.setItem('favorite',JSON.stringify(response.data.data));
-                                localStorage.setItem('favorite_rm','[]');
+                            if (response.data.success) {
+                                localStorage.setItem('favourite', JSON.stringify(response.data.data));
+                                localStorage.setItem('favourite_rm', '[]');
 
                             }
                         });
@@ -4036,14 +4034,14 @@ header('X-Content-Type-Options: nosniff');
                 var foratclstmp = localStorage.getItem("foraddtocartitems");
                 var dtlstmp = localStorage.getItem("datenow");
                 var myItem = localStorage.getItem('guest_id');
-                var favorite = localStorage.getItem('favorite');
-                var favorite_rm = localStorage.getItem('favorite_rm');
+                var favorite = localStorage.getItem('favourite');
+                var favorite_rm = localStorage.getItem('favourite_rm');
 
                 localStorage.clear();
                 localStorage.setItem("datenow", dtlstmp);
                 localStorage.setItem("foraddtocartitems", foratclstmp);
-                localStorage.setItem("favorite", favorite);
-                localStorage.setItem("favorite_rm", favorite_rm);
+                localStorage.setItem("favourite", favorite);
+                localStorage.setItem("favourite_rm", favorite_rm);
 
 
 
@@ -4072,7 +4070,7 @@ header('X-Content-Type-Options: nosniff');
         let _token = $('meta[name="csrf-token"]').attr('content');
     </script>
     @stack('custom-scripts')
-@stack('favorite')
+    @stack('favourite')
 
 
     <script type="text/javascript">

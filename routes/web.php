@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Auth\UserLoginandRegisterController;
 use App\Http\Controllers\Auth\YkforgotpasswordController;
-use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\forfacebook\FacebookController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\FrontForCatController;
@@ -220,12 +220,13 @@ Route::group(
         Route::post('/addtocart/update', [FrontController::class, 'addtocart_update']);
         Route::post('/myfav/update', [FrontController::class, 'fav_update']);
         Route::get('/contact-us', [FrontController::class, 'contact_us']);
-        Route::get('/myfav/see_all', [FavoriteController::class, 'see_all']);
-        Route::post('/myfav/see_all', [FavoriteController::class, 'see_all_post']);
+        Route::get('/myfav/see_all', [FavouriteController::class, 'see_all']);
+        Route::post('/myfav/get_fav_items_data', [FavouriteController::class, 'get_fav_items_data']);
+        Route::post('/myfav/get_fav_items_data_authuser', [FavouriteController::class, 'get_fav_items_data_authuser']);
 
-        Route::post('/myfav/action', [FavoriteController::class, 'action_favorite']);
-        Route::post('/myfav/check', [FavoriteController::class, 'check']);
-        Route::post('/myfav/upload_after_logined', [FavoriteController::class, 'upload_after_logined']);
+        Route::post('/myfav/action', [FavouriteController::class, 'action_favourite']);
+        Route::post('/myfav/check', [FavouriteController::class, 'check']);
+        Route::post('/myfav/upload_after_logined', [FavouriteController::class, 'upload_after_logined']);
 
 
 // News and Events
