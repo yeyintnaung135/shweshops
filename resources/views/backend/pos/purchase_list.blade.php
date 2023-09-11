@@ -72,7 +72,7 @@
                                 {{-- <input type="checkbox" class="mt-1 ml-2" name='chkflag' id="chkflag" onclick="stockcheck(1)"> --}}
                                 <select name="f_counter" id="f_counter">
                                     <option disabled>ဆိုင်ခွဲများ</option>
-                                    <option value="all_shop" selected>အားလုံး</option>
+                                    <option value="all_shops" selected>အားလုံး</option>
                                     @foreach ($counters as $counter)
                                         <option value="{{ $counter->shop_name }}">{{ $counter->shop_name }}</option>
                                     @endforeach

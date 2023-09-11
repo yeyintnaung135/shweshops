@@ -58,13 +58,14 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         Route::get('/detail_platinum_purchase/{id}', [PosController::class, 'detail_ptm_purchase'])->name('pos.detail_ptm_purchase');
 
         //whitegold
-        Route::get('/wgpurchase_list', [PosController::class, 'get_wg_purchase_list'])->name('pos.wg_purchase_list');
+        Route::get('/white_gold_purchase_list', [PosController::class, 'wg_purchase_list'])->name('pos.wg_purchase_list');
+        Route::get('/get_white_gold_purchase_list', [PosController::class, 'get_wg_purchase_list'])->name('pos.get_wg_purchase_list');
         Route::post('/whitegold_type_filter', [PosController::class, 'wg_type_filter'])->name('pos.wg_type_filter');
         Route::post('/whitegold_advance_filter', [PosController::class, 'whitegold_advance_filter'])->name('pos.whitegold_advance_filter');
         Route::get('/create_whitegold_purchase', [PosController::class, 'create_wg_purchase'])->name('pos.create_wg_purchase');
         Route::post('/quality_wg_price', [PosController::class, 'get_wg_quality_price'])->name('pos.quality_wg_price');
         Route::post('/store_whitegold_purchase', [PosController::class, 'store_wg_purchase'])->name('pos.store_wg_purchase');
-        Route::post('/delete_wg_purchase', [PosController::class, 'delete_wg_purchase'])->name('pos.delete_wg_purchase');
+        Route::delete('/delete_wg_purchase/{purchase}', [PosController::class, 'delete_wg_purchase'])->name('pos.delete_wg_purchase');
         Route::get('/edit_whitegold_purchase/{id}', [PosController::class, 'edit_wg_purchase'])->name('pos.edit_wg_purchase');
         Route::post('/update_whitegold_purchase/{id}', [PosController::class, 'update_wg_purchase'])->name('pos.update_wg_purchase');
         Route::get('/detail_whitegold_purchase/{id}', [PosController::class, 'detail_wg_purchase'])->name('pos.detail_wg_purchase');

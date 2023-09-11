@@ -62,7 +62,7 @@
                                 {{-- <input type="checkbox" class="mt-1 ml-2" name='chkflag' id="chkflag" onclick="stockcheck(3)"> --}}
                                 <select name="f_counter" id="f_counter">
                                     <option disabled>ဆိုင်ခွဲများ</option>
-                                    <option value="all_shop" selected>အားလုံး</option>
+                                    <option value="all_shops" selected>အားလုံး</option>
                                     @foreach ($counters as $counter)
                                         <option value="{{ $counter->shop_name }}">{{ $counter->shop_name }}</option>
                                     @endforeach
@@ -99,7 +99,7 @@
                                     </select>
                                     <input type="hidden" id="print_cat" value="All">
                                     <select name="" id="cat" class="mt-2 form-control">
-                                        <option value="">ရှာရန်</option>
+                                        <option selected disabled value="">ရှာရန်</option>
                                         @foreach ($cats as $cat)
                                             <option value="{{ $cat->id }}">{{ $cat->mm_name }}</option>
                                         @endforeach
@@ -330,8 +330,8 @@
                     deleteForm.method = 'POST';
                     deleteForm.style.display = 'none';
                     deleteForm.innerHTML = `
-        @csrf
-        @method('DELETE')`;
+                    @csrf
+                    @method('DELETE')`;
                     document.body.appendChild(deleteForm);
                     deleteForm.submit();
                 }

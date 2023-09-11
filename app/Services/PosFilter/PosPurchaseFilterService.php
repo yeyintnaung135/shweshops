@@ -6,6 +6,7 @@ use App\Http\Controllers\Trait\UserRole;
 use App\Models\POS\PosKyoutPurchase;
 use App\Models\POS\PosPlatinumPurchase;
 use App\Models\POS\PosPurchase;
+use App\Models\POS\PosWhiteGoldPurchase;
 
 //NOTE PosPurchaseFilterService is responsible for handling filtering datatable objects
 
@@ -13,7 +14,7 @@ class PosPurchaseFilterService
 {
     use UserRole;
 
-    public function filterPurchases($request)
+    public function filter_purchases($request)
     {
         $shopId = $this->get_shopid();
         $fCounter = $request->input('f_counter');
@@ -29,7 +30,7 @@ class PosPurchaseFilterService
         );
 
         $query->when($fCounter !== null, function ($query) use ($shopId, $fCounter) {
-            if ($fCounter === 'all_shop') {
+            if ($fCounter === 'all_shops') {
                 $query->where('shop_owner_id', $shopId);
             } else {
                 $query->where('counter_shop', $fCounter)->where('shop_owner_id', $shopId);
@@ -60,7 +61,7 @@ class PosPurchaseFilterService
         return $query;
     }
 
-    public function filterKyoutPurchases($request)
+    public function filter_kyout_purchases($request)
     {
         $shopId = $this->get_shopid();
         $fCounter = $request->input('f_counter');
@@ -76,7 +77,7 @@ class PosPurchaseFilterService
         );
 
         $query->when($fCounter !== null, function ($query) use ($shopId, $fCounter) {
-            if ($fCounter === 'all_shop') {
+            if ($fCounter === 'all_shops') {
                 $query->where('shop_owner_id', $shopId);
             } else {
                 $query->where('counter_shop', $fCounter)->where('shop_owner_id', $shopId);
@@ -107,7 +108,7 @@ class PosPurchaseFilterService
         return $query;
     }
 
-    public function filterPlatinumPurchases($request)
+    public function filter_platinum_purchases($request)
     {
         $shopId = $this->get_shopid();
         $fCounter = $request->input('f_counter');
@@ -123,7 +124,7 @@ class PosPurchaseFilterService
         );
 
         $query->when($fCounter !== null, function ($query) use ($shopId, $fCounter) {
-            if ($fCounter === 'all_shop') {
+            if ($fCounter === 'all_shops') {
                 $query->where('shop_owner_id', $shopId);
             } else {
                 $query->where('counter_shop', $fCounter)->where('shop_owner_id', $shopId);
@@ -146,6 +147,49 @@ class PosPurchaseFilterService
         if ($catId) {
             $query->where('category_id', $catId);
         }
+
+        return $query;
+    }
+
+    public function filter_white_gold_purchases($request)
+    {
+        $shopId = $this->get_shopid();
+        $fCounter = $request->input('f_counter');
+        $fromDate = $request->input('fromDate');
+        $toDate = $request->input('toDate');
+
+        $quality = $request->input('qual');
+        $catId = $request->input('cat');
+
+        $query = PosWhiteGoldPurchase::select(
+            'id', 'whitegold_name', 'quality', 'whitegold_type', 'code_number', 'sell_flag',
+            'product_gram', 'stock_qty', 'capital', 'date'
+        );
+
+        $query->when($fCounter !== null, function ($query) use ($shopId, $fCounter) {
+            if ($fCounter === 'all_shops') {
+                $query->where('shop_owner_id', $shopId);
+            } else {
+                $query->where('counter_shop', $fCounter)->where('shop_owner_id', $shopId);
+            }
+        });
+
+        if ($fromDate) {
+            $query->whereDate('date', '>=', $fromDate);
+        }
+
+        if ($toDate) {
+            $query->whereDate('date', '<=', $toDate);
+        }
+
+        // Additional filters
+        $query->when($quality !== 'all', function ($query) use ($quality) {
+            $query->where('quality', $quality);
+        });
+
+        $query->when($catId !== 'all', function ($query) use ($catId) {
+            $query->where('category_id', $catId);
+        });
 
         return $query;
     }

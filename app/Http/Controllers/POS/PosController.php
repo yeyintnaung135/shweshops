@@ -433,7 +433,7 @@ class PosController extends Controller
 
     public function get_purchase_list(Request $request): JsonResponse
     {
-        $purchases = $this->posFilterService->filterPurchases($request);
+        $purchases = $this->posFilterService->filter_purchases($request);
 
         return DataTables::of($purchases)
             ->addColumn('product_gram_kyat_pe_yway_in_gram', function ($purchase) {
@@ -796,7 +796,7 @@ class PosController extends Controller
 
     public function get_kyout_purchase_list(Request $request): JsonResponse
     {
-        $purchases = $this->posFilterService->filterKyoutPurchases($request);
+        $purchases = $this->posFilterService->filter_kyout_purchases($request);
 
         return DataTables::of($purchases)
             ->addColumn('supplier', function ($purchase) {
@@ -1192,7 +1192,7 @@ class PosController extends Controller
 
     public function get_ptm_purchase_list(Request $request): JsonResponse
     {
-        $purchases = $this->posFilterService->filterPlatinumPurchases($request);
+        $purchases = $this->posFilterService->filter_platinum_purchases($request);
 
         return DataTables::of($purchases)
             ->addColumn('actions', function ($purchase) {
@@ -1354,6 +1354,7 @@ class PosController extends Controller
 
         return view('backend.pos.edit_platinum_purchase', ['shopowner' => $shopowner, 'counters' => $counters, 'categories' => $categories, 'gradeA' => $gradeA, 'gradeB' => $gradeB, 'purchase' => $purchase, 'staffs' => $staffs]);
     }
+
     public function delete_ptm_purchase(PosPlatinumPurchase $purchase): RedirectResponse
     {
         $purchase->delete();
@@ -1450,24 +1451,42 @@ class PosController extends Controller
     }
 
     //WhiteGold
-    public function get_wg_purchase_list(): View
+    public function wg_purchase_list(): View
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosWhiteGoldPurchase::where('shop_owner_id', $this->get_shopid())->get();
-        $cats = Category::all();
-        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
-        $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
-        if ($assign_gold_price) {
-            return view('backend.pos.whitegold_purchase_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'cats' => $cats]);
+        $purchases = PosWhiteGoldPurchase::where('shop_owner_id', $this->get_shopid())
+            ->select('product_gram')
+            ->get();
+        $cats = Category::select('id', 'mm_name')->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
+        if (PosAssignGoldPrice::where('shop_owner_id', $this->get_shopid())->exists()) {
+            return view('backend.pos.whitegold_purchase_list', ['counters' => $counters, 'purchases' => $purchases, 'cats' => $cats]);
         } else {
             Session::flash('message', 'ရွှေဖြူ​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
-            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
             $assign_gold_price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
-            return view('backend.pos.assign_whitegold_price', ['shopowner' => $shopowner, 'assign_gold_price' => $assign_gold_price]);
+            return view('backend.pos.assign_whitegold_price', ['assign_gold_price' => $assign_gold_price]);
         }
 
     }
+
+    public function get_wg_purchase_list(Request $request): JsonResponse
+    {
+        $purchases = $this->posFilterService->filter_white_gold_purchases($request);
+
+        return DataTables::of($purchases)
+            ->addColumn('actions', function ($purchase) {
+                $urls = [
+                    'edit_url' => route('backside.shop_owner.pos.edit_wg_purchase', $purchase->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_wg_purchase', $purchase->id),
+                    'detail_url' => route('backside.shop_owner.pos.detail_wg_purchase', $purchase->id),
+                ];
+
+                return $urls;
+            })
+            ->toJson();
+
+    }
+
     public function create_wg_purchase(): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
