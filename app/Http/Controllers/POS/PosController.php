@@ -456,49 +456,20 @@ class PosController extends Controller
             ->toJson();
     }
 
-    public function gold_type_filter(Request $request): JsonResponse
-    {
-        // dd($request->all());
-        if ($request->type == 1) {
-            $type = explode('/', $request->text);
-            $types = [];
-            foreach ($type as $t) {
-                $sup = PosPurchase::where('type', 'like', '%' . $t . '%')->where('shop_owner_id', $this->get_shopid())->with('supplier')->get();
-                array_push($types, $sup);
-            }
-            foreach ($types as $tp) {
-                $data = collect($tp)->unique('id')->all();
-            }
-        }
-        if ($request->type == 2) {
-            $data = PosPurchase::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->with('supplier')->get();
-        }
-
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-
-    public function gold_advance_filter(Request $request): JsonResponse
+    public function gold_advance_filter(Request $request)
     {
         $data = $request->all();
-        $query = PosPurchase::query();
-        if (!empty($data['supid'])) {
-            $result = $query->where('supplier_id', $data['supid']);
-        }
 
-        if (!empty($data['qualid'])) {
-            $result = $query->where('quality_id', $data['qualid']);
-        }
+        $results = PosPurchase::query()
+            ->when(!empty($data['supid']), fn($query) => $query->where('supplier_id', $data['supid']))
+            ->when(!empty($data['qualid']), fn($query) => $query->where('quality_id', $data['qualid']))
+            ->when(!empty($data['catid']), fn($query) => $query->where('category_id', $data['catid']))
+            ->where('shop_owner_id', $this->get_shopid())
+            ->with('supplier')
+            ->get();
 
-        if (!empty($data['catid'])) {
-            $result = $query->where('category_id', $data['catid']);
-        }
-        $results = $query->where('shop_owner_id', $this->get_shopid())->with('supplier')->get();
+        return $results;
 
-        return response()->json([
-            'data' => $results,
-        ]);
     }
 
     public function create_purchase(): View
