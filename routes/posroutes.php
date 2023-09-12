@@ -70,6 +70,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         //Sale
         //gold
         Route::get('/gold_sale_list', [PosController::class, 'sale_gold_list'])->name('pos.gold_sale_list');
+        Route::get('/get_gold_sale_list', [PosController::class, 'get_sale_gold_list'])->name('pos.get_gold_sale_list');
         Route::post('/goldsale_type_filter', [PosController::class, 'gold_sale_type_filter'])->name('pos.goldsale_type_filter');
         Route::post('/goldsale_advance_filter', [PosController::class, 'gold_sale_advance_filter'])->name('pos.goldsale_advance_filter');
         Route::get('/edit_goldsale/{id}', [PosController::class, 'edit_gold_sale'])->name('pos.edit_goldsale');

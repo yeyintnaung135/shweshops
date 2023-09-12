@@ -31,6 +31,7 @@ use App\Models\POS\PosWhiteGoldSale;
 use App\Models\Shops;
 use App\Models\State;
 use App\Services\PosFilter\PosPurchaseFilterService;
+use App\Services\PosFilter\PosSaleFilterService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -49,12 +50,13 @@ class PosController extends Controller
 
     public $err_data = [];
 
-    protected $posFilterService;
+    protected $posFilterService,$saleFilterService;
 
-    public function __construct(PosPurchaseFilterService $posFilterService)
+    public function __construct(PosPurchaseFilterService $posFilterService,PosSaleFilterService $saleFilterService)
     {
         $this->middleware('auth:shop_owners_and_staffs');
         $this->posFilterService = $posFilterService;
+        $this->saleFilterService = $saleFilterService;
     }
 
     public function get_dashboard(): View
@@ -1823,6 +1825,31 @@ class PosController extends Controller
         $cats = Category::all();
 
         return view('backend.pos.sale_gold_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
+    }
+
+    public function get_sale_gold_list(Request $request): JsonResponse
+    {
+        $purchases = $this->saleFilterService->filterGoldSales($request);
+
+        return DataTables::of($purchases)
+            ->addColumn('gold_name', function ($purchase) {
+                return $purchase->purchase->gold_name;
+            })
+            ->addColumn('code_number', function ($purchase) {
+                return $purchase->purchase->code_number;
+            })
+            ->addColumn('product_gram_kyat_pe_yway', function ($purchase) {
+                return $purchase->purchase->product_gram_kyat_pe_yway;
+            })
+            ->addColumn('actions', function ($purchase) {
+                $urls = [
+                    'edit_url' => route('backside.shop_owner.pos.edit_goldsale', $purchase->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_goldsale', $purchase->id),
+                    'detail_url' => route('backside.shop_owner.pos.detail_goldsale', $purchase->id),
+                ];
+                return $urls;
+            })
+            ->toJson();
     }
     public function gold_sale_type_filter(Request $request): JsonResponse
     {
