@@ -1482,11 +1482,9 @@ class PosController extends Controller
                     'delete_url' => route('backside.shop_owner.pos.delete_wg_purchase', $purchase->id),
                     'detail_url' => route('backside.shop_owner.pos.detail_wg_purchase', $purchase->id),
                 ];
-
                 return $urls;
             })
             ->toJson();
-
     }
 
     public function create_wg_purchase(): View
@@ -1789,16 +1787,9 @@ class PosController extends Controller
     public function get_sale_gold_list(Request $request): JsonResponse
     {
         $purchases = $this->saleFilterService->filterGoldSales($request);
-
-        return DataTables::of($purchases)
-            ->addColumn('gold_name', function ($purchase) {
-                return $purchase->purchase->gold_name;
-            })
-            ->addColumn('code_number', function ($purchase) {
-                return $purchase->purchase->code_number;
-            })
-            ->addColumn('product_gram_kyat_pe_yway', function ($purchase) {
-                return $purchase->purchase->product_gram_kyat_pe_yway;
+        $dataTable =  DataTables::of($purchases)
+            ->addColumn('stock_qty', function ($purchase) {
+                return 1;
             })
             ->addColumn('actions', function ($purchase) {
                 $urls = [
@@ -1809,7 +1800,9 @@ class PosController extends Controller
                 return $urls;
             })
             ->toJson();
+        return $dataTable;
     }
+
     public function gold_sale_type_filter(Request $request): JsonResponse
     {
         if ($request->type == 2) {
@@ -2048,7 +2041,7 @@ class PosController extends Controller
                 $exit->save();
             }
 
-            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::where('id', $this->get_shopid())->first();
             Session::flash('message', 'Gold Sale was successfully Created!');
             $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
             $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
@@ -2069,6 +2062,25 @@ class PosController extends Controller
         $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
         $cats = Category::all();
         return view('backend.pos.kyout_sale_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'dias' => $dias, 'cats' => $cats]);
+    }
+
+    public function get_sale_kyout_list(Request $request): JsonResponse
+    {
+        $purchases = $this->saleFilterService->filterKyoutSales($request);
+        $dataTable =  DataTables::of($purchases)
+            ->addColumn('stock_qty', function ($purchase) {
+                return 1;
+            })
+            ->addColumn('actions', function ($purchase) {
+                $urls = [
+                    'edit_url' => route('backside.shop_owner.pos.edit_kyoutsale', $purchase->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_kyoutsale', $purchase->id),
+                    'detail_url' => route('backside.shop_owner.pos.detail_kyoutsale', $purchase->id),
+                ];
+                return $urls;
+            })
+            ->toJson();
+        return $dataTable;
     }
     public function kyoutsaletypeFilter(Request $request): JsonResponse
     {
@@ -2329,6 +2341,25 @@ class PosController extends Controller
         $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
         $cats = Category::all();
         return view('backend.pos.sale_platinum_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
+    }
+
+    public function get_sale_ptm_list(Request $request): JsonResponse
+    {
+        $purchases = $this->saleFilterService->filterPlatinumSales($request);
+        $dataTable =  DataTables::of($purchases)
+            ->addColumn('stock_qty', function ($purchase) {
+                return 1;
+            })
+            ->addColumn('actions', function ($purchase) {
+                $urls = [
+                    'edit_url' => route('backside.shop_owner.pos.edit_kyoutsale', $purchase->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_kyoutsale', $purchase->id),
+                    'detail_url' => route('backside.shop_owner.pos.detail_kyoutsale', $purchase->id),
+                ];
+                return $urls;
+            })
+            ->toJson();
+        return $dataTable;
     }
     public function delete_ptm_sale(Request $request): JsonResponse
     {

@@ -167,6 +167,7 @@
                         <div class=" table-responsive text-black">
                             <table class="table table-striped" id="example23">
                                 <thead>
+                                    <tr>
                                     <th>နံပါတ်</th>
                                     <th>​ရွှေထည်အမည်</th>
                                     <th>ကုဒ်နံပါတ်</th>
@@ -175,6 +176,7 @@
                                     <th>Product အ​လေးချိန်<br>(in MM units)</th>
                                     <th>Date</th>
                                     <th></th>
+                                    </tr>
                                 </thead>
                             </table>
                         </div>
@@ -256,7 +258,7 @@ var saleTable = $('#example23').DataTable({
     },
     {
         data: 'stock_qty',
-        name: 1
+        name: 'stock_qty'
     },
     {
         data: 'amount',
@@ -271,7 +273,6 @@ var saleTable = $('#example23').DataTable({
     name: 'actions',
     render: function(data, type, full, meta) {
         var actions = '';
-        if (full.sell_flag == 0) {
             actions += `
                 <a class="btn btn-sm btn-danger" onclick="Delete('${full.actions.delete_url}')"
                 title="Delete">
@@ -282,7 +283,6 @@ var saleTable = $('#example23').DataTable({
                 @csrf
                 @method('DELETE')
             </form>`;
-        }
             actions +=
                 `<a href="${full.actions.edit_url}" class="ml-2 text-warning"><i class="fa fa-edit"></i></a>`;
             actions +=

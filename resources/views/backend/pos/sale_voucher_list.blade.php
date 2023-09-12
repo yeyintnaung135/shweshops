@@ -18,8 +18,8 @@
             <!-- Content Header (Page header) -->
             <section class="content-header sn-content-header">
                 <div class="container-fluid">
-                    @foreach ($shopowner as $shopowner)
-                    @endforeach
+                    {{-- @foreach ($shopowner as $shopowner)
+                    @endforeach --}}
 
 
                 </div><!-- /.container-fluid -->
@@ -30,19 +30,7 @@
                     <div class="row justify-content-center">
                     <div class="card card-body printableArea" style="max-width: 750px;">
                         {{-- <div style="display:flex;justify-content:space-around"> --}}
-                            @php
-                            use App\Shopowner;
-                            use App\Manager;
-
-                            if(isset(Auth::guard('shop_owner')->user()->id)){
-                                $current_shop=Shopowner::where('id',Auth::guard('shop_owner')->user()->id)->first();
-                            }else{
-                                $manager= Manager::where('id', Auth::guard('shop_role')->user()->id)->pluck('shop_id');
-                                $current_shop=Shopowner::where('id',$manager)->first();
-
-                            }
-
-                            @endphp
+                            
                             <div class="row d-flex">
                                 <div style="border:1px solid #780116;border-radius:10px;" width='130'>
                                     <h6 class="text-color px-3 py-1">SHWESHOP</h6>
@@ -53,10 +41,10 @@
                             </div>
                             <div class="row d-flex mt-4">
                                 <div class="image">
-                                    <img src="{{url('/images/logo/'.$current_shop->shop_logo)}}" class="img-circle elevation-2" alt="User Image" width="100" height="100">
+                                    <img src="{{url('/images/logo/'.$shopowner->shop_logo)}}" class="img-circle elevation-2" alt="User Image" width="100" height="100">
                                 </div>
                                 <div class="info text-capitalize text-color ml-3 mt-4" style="font-size:20px;">
-                                    {{\Illuminate\Support\Str::limit($current_shop->shop_name, 100, '...')}}
+                                    {{\Illuminate\Support\Str::limit($shopowner->shop_name, 100, '...')}}
                                 </div>
                             </div>
                             <div class="row mt-3">

@@ -47,22 +47,29 @@
                         </ul>
                     </div> --}}
                 </div>
-                <div class="row mt-3">
-                    <input type="hidden" id="print_date" value="All">
-                    <label for="">From:<input type="date" id="start_date"></label>
-                    <label for="" class="ml-3">To:<input type="date" id="end_date"></label>
-                    <label for="" style="margin-left: 20px;margin-top:30px;">
-                        <a href="#" class="btn btn-color btn-m" onclick="ptmtypefilter(2)">Search</a>
-                    </label>
+                <div class="d-flex justify-content-start align-items-center mt-3">
+                    <div class="form-group">
+                        <label for="fromDate" class="form-label">Choose Date</label>
+                        <input type="text" id="fromDate" class="form-control" placeholder="From Date"
+                            autocomplete="off">
+                    </div>
+                    <div class="form-group mx-3">
+                        <label for="toDate" class="form-label">Choose Date</label>
+                        <input type="text" id="toDate" class="form-control" placeholder="To Date"
+                            autocomplete="off">
+                    </div>
+                    <div>
+                        <button id="searchButton" class="btn btn-color btn-m mt-3">Filter</button>
+                    </div>
                 </div>
                 <h6 class="mt-3 text-color mb-1">ဆိုင်ခွဲဖြင့်ကြည့်ရှုရန်
                     {{-- <input type="checkbox" class="mt-1 ml-2" name='chkflag' id="chkflag" onclick="stockcheck(1)"> --}}
-                    <select name="" id="f_counter" onchange="stockcheck(3,this.value)">
+                    <select name="f_counter"  id="f_counter">
                         <option value="">ဆိုင်ခွဲများ</option>
+                        <option value="all_shop" selected>အားလုံး</option>
                         @foreach ($counters as $counter)
-                        <option value="{{$counter->shop_name}}">{{$counter->shop_name}}</option>
+                            <option value="{{ $counter->shop_name }}">{{ $counter->shop_name }}</option>
                         @endforeach
-                        <option value="အားလုံး">အားလုံး</option>
                     </select>
                     <input type="hidden" id="print_counter" value="All">
                 </h6>
