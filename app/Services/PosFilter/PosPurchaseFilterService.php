@@ -26,7 +26,7 @@ class PosPurchaseFilterService
 
         $query = PosPurchase::select(
             'id', 'gold_name', 'supplier_id', 'code_number', 'sell_flag',
-            'product_gram_kyat_pe_yway', 'stock_qty', 'gold_fee', 'date'
+            'product_gram_kyat_pe_yway', 'decrease_pe_yway', 'stock_qty', 'gold_fee', 'date'
         );
 
         $query->when($fCounter !== null, function ($query) use ($shopId, $fCounter) {
