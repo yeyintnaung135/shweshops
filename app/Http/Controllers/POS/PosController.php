@@ -50,12 +50,12 @@ class PosController extends Controller
 
     public $err_data = [];
 
-    protected $posFilterService,$saleFilterService;
+    protected $purchaseFilterService, $saleFilterService;
 
-    public function __construct(PosPurchaseFilterService $posFilterService,PosSaleFilterService $saleFilterService)
+    public function __construct(PosPurchaseFilterService $purchaseFilterService, PosSaleFilterService $saleFilterService)
     {
         $this->middleware('auth:shop_owners_and_staffs');
-        $this->posFilterService = $posFilterService;
+        $this->purchaseFilterService = $purchaseFilterService;
         $this->saleFilterService = $saleFilterService;
     }
 
@@ -435,7 +435,7 @@ class PosController extends Controller
 
     public function get_purchase_list(Request $request): JsonResponse
     {
-        $purchases = $this->posFilterService->filter_purchases($request);
+        $purchases = $this->purchaseFilterService->filter_purchases($request);
 
         return DataTables::of($purchases)
             ->addColumn('product_gram_kyat_pe_yway_in_gram', function ($purchase) {
@@ -798,7 +798,7 @@ class PosController extends Controller
 
     public function get_kyout_purchase_list(Request $request): JsonResponse
     {
-        $purchases = $this->posFilterService->filter_kyout_purchases($request);
+        $purchases = $this->purchaseFilterService->filter_kyout_purchases($request);
 
         return DataTables::of($purchases)
             ->addColumn('supplier', function ($purchase) {
@@ -1194,7 +1194,7 @@ class PosController extends Controller
 
     public function get_ptm_purchase_list(Request $request): JsonResponse
     {
-        $purchases = $this->posFilterService->filter_platinum_purchases($request);
+        $purchases = $this->purchaseFilterService->filter_platinum_purchases($request);
 
         return DataTables::of($purchases)
             ->addColumn('actions', function ($purchase) {
@@ -1473,7 +1473,7 @@ class PosController extends Controller
 
     public function get_wg_purchase_list(Request $request): JsonResponse
     {
-        $purchases = $this->posFilterService->filter_white_gold_purchases($request);
+        $purchases = $this->purchaseFilterService->filter_white_gold_purchases($request);
 
         return DataTables::of($purchases)
             ->addColumn('actions', function ($purchase) {
@@ -1787,7 +1787,7 @@ class PosController extends Controller
     public function get_sale_gold_list(Request $request): JsonResponse
     {
         $purchases = $this->saleFilterService->filterGoldSales($request);
-        $dataTable =  DataTables::of($purchases)
+        $dataTable = DataTables::of($purchases)
             ->addColumn('stock_qty', function ($purchase) {
                 return 1;
             })
@@ -2067,7 +2067,7 @@ class PosController extends Controller
     public function get_sale_kyout_list(Request $request): JsonResponse
     {
         $purchases = $this->saleFilterService->filterKyoutSales($request);
-        $dataTable =  DataTables::of($purchases)
+        $dataTable = DataTables::of($purchases)
             ->addColumn('stock_qty', function ($purchase) {
                 return 1;
             })
@@ -2346,7 +2346,7 @@ class PosController extends Controller
     public function get_sale_ptm_list(Request $request): JsonResponse
     {
         $purchases = $this->saleFilterService->filterPlatinumSales($request);
-        $dataTable =  DataTables::of($purchases)
+        $dataTable = DataTables::of($purchases)
             ->addColumn('stock_qty', function ($purchase) {
                 return 1;
             })
