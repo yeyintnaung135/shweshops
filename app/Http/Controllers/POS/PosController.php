@@ -1717,45 +1717,7 @@ class PosController extends Controller
             return redirect()->back();
         }
     }
-    public function wg_type_filter(Request $request): JsonResponse
-    {
-        if ($request->type == 1) {
-            $type = explode('/', $request->text);
-            $types = [];
-            foreach ($type as $t) {
-                $sup = PosWhiteGoldPurchase::where('type', 'like', '%' . $t . '%')->where('shop_owner_id', $this->get_shopid())->get();
-                array_push($types, $sup);
-            }
-            foreach ($types as $tp) {
-                $data = collect($tp)->unique('id')->all();
-            }
-        }
-        if ($request->type == 2) {
-            $data = PosWhiteGoldPurchase::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->get();
-        }
-
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    public function whitegold_advance_filter(Request $request): JsonResponse
-    {
-        $data = $request->all();
-        $query = PosWhiteGoldPurchase::query();
-
-        if (!empty($data['qualid'])) {
-            $result = $query->where('quality', $data['qualid']);
-        }
-
-        if (!empty($data['catid'])) {
-            $result = $query->where('category_id', $data['catid']);
-        }
-        $results = $query->where('shop_owner_id', $this->get_shopid())->get();
-
-        return response()->json([
-            'data' => $results,
-        ]);
-    }
+    
     public function detail_wg_purchase($id): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -1803,67 +1765,7 @@ class PosController extends Controller
         return $dataTable;
     }
 
-    public function gold_sale_type_filter(Request $request): JsonResponse
-    {
-        if ($request->type == 2) {
-            $data = PosGoldSale::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->with('purchase')->get();
-        }
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    public function gold_sale_advance_filter(Request $request): JsonResponse
-    {
-        $data1 = PosGoldSale::where('shop_owner_id', $this->get_shopid())->get();
-        $arr = [];
-        if ($request->supid && $request->qualid && $request->catid) {
-            foreach ($data1 as $dt) {
-                if ($dt->purchase->supplier_id == $request->supid && $dt->purchase->quality_id == $request->qualid && $dt->purchase->category_id == $request->catid) {
-                    array_push($arr, $dt);
-                }
-            }
-        } else if ($request->supid && $request->qualid) {
-            foreach ($data1 as $dt) {
-                if ($dt->purchase->supplier_id == $request->supid && $dt->purchase->quality_id == $request->qualid) {
-                    array_push($arr, $dt);
-                }
-            }
-        } else if ($request->supid && $request->catid) {
-            foreach ($data1 as $dt) {
-                if ($dt->purchase->supplier_id == $request->supid && $dt->purchase->category_id == $request->catid) {
-                    array_push($arr, $dt);
-                }
-            }
-        } else if ($request->qualid && $request->catid) {
-            foreach ($data1 as $dt) {
-                if ($dt->purchase->quality_id == $request->qualid && $dt->purchase->category_id == $request->catid) {
-                    array_push($arr, $dt);
-                }
-            }
-        } else if ($request->supid) {
-            foreach ($data1 as $dt) {
-                if ($dt->purchase->supplier_id == $request->supid) {
-                    array_push($arr, $dt);
-                }
-            }
-        } else if ($request->qualid) {
-            foreach ($data1 as $dt) {
-                if ($dt->purchase->quality_id == $request->qualid) {
-                    array_push($arr, $dt);
-                }
-            }
-        } else if ($request->catid) {
-            foreach ($data1 as $dt) {
-                if ($dt->purchase->category_id == $request->catid) {
-                    array_push($arr, $dt);
-                }
-            }
-        }
-
-        return response()->json([
-            'data' => $arr,
-        ]);
-    }
+    
     public function edit_gold_sale($id): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -1913,14 +1815,12 @@ class PosController extends Controller
         }
     }
 
-    public function delete_gold_sale(Request $request): JsonResponse
+    public function delete_gold_sale($id): RedirectResponse
     {
-        $diamond = PosGoldSale::find($request->pid);
+        $diamond = PosGoldSale::find($id);
         $diamond->delete();
         Session::flash('message', 'Gold Sale was successfully Deleted!');
-        return response()->json([
-            'data' => 'success',
-        ], 200);
+        return redirect()->route('backside.shop_owner.pos.gold_sale_list');
     }
     public function detail_gold_sale($id): View
     {
@@ -2041,7 +1941,7 @@ class PosController extends Controller
                 $exit->save();
             }
 
-            $shopowner = Shops::where('id', $this->get_shopid())->first();
+            $shopowner = Shops::find($this->get_shopid());
             Session::flash('message', 'Gold Sale was successfully Created!');
             $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
             $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
@@ -2091,60 +1991,7 @@ class PosController extends Controller
             'data' => $data,
         ]);
     }
-    public function kyout_sale_type_filter(Request $request): JsonResponse
-    {
-        $data1 = PosKyoutSale::where('shop_owner_id', $this->get_shopid())->get();
-        $data2 = PosKyoutPurchase::where('diamonds', 'like', '%' . $request->qualid . '%')->where('sell_flag', 1)->where('shop_owner_id', $this->get_shopid())->get();
-        $arr = [];
-        if ($request->supid && $request->qualid && $request->catid) {
-            foreach ($data2 as $dt) {
-                if ($dt->supplier_id == $request->supid && $dt->category_id == $request->catid) {
-                    $res = PosKyoutSale::where('purchase_id', $dt->id)->first();
-                    array_push($arr, $res);
-                }
-            }
-        } else if ($request->supid && $request->qualid) {
-            foreach ($data2 as $dt) {
-                if ($dt->supplier_id == $request->supid) {
-                    $res = PosKyoutSale::where('purchase_id', $dt->id)->first();
-                    array_push($arr, $res);
-                }
-            }
-        } else if ($request->supid && $request->catid) {
-            foreach ($data1 as $dt) {
-                if ($dt->supplier_id == $request->supid && $dt->category_id == $request->catid) {
-                    array_push($arr, $dt);
-                }
-            }
-        } else if ($request->qualid && $request->catid) {
-            foreach ($data2 as $dt) {
-                if ($dt->category_id == $request->catid) {
-                    $res = PosKyoutSale::where('purchase_id', $dt->id)->first();
-                    array_push($arr, $res);
-                }
-            }
-        } else if ($request->supid) {
-            foreach ($data1 as $dt) {
-                if ($dt->purchase->supplier_id == $request->supid) {
-                    array_push($arr, $dt);
-                }
-            }
-        } else if ($request->qualid) {
-            foreach ($data2 as $dt) {
-                $res = PosKyoutSale::where('purchase_id', $dt->id)->first();
-                array_push($arr, $res);
-            }
-        } else if ($request->catid) {
-            foreach ($data1 as $dt) {
-                if ($dt->purchase->category_id == $request->catid) {
-                    array_push($arr, $dt);
-                }
-            }
-        }
-        return response()->json([
-            'data' => $arr,
-        ]);
-    }
+    
     public function edit_kyout_sale($id): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -2194,14 +2041,12 @@ class PosController extends Controller
         }
     }
 
-    public function delete_kyout_sale(Request $request): JsonResponse
+    public function delete_kyout_sale($id): RedirectResponse
     {
-        $diamond = PosKyoutSale::find($request->pid);
+        $diamond = PosKyoutSale::find($id);
         $diamond->delete();
         Session::flash('message', 'Kyout Sale was successfully Deleted!');
-        return response()->json([
-            'data' => 'success',
-        ], 200);
+        return redirect()->route('backside.shop_owner.pos.sale_kyout_list');
     }
     public function sale_kyout_purchase(): View
     {
@@ -2319,9 +2164,9 @@ class PosController extends Controller
                 $exit->save();
             }
 
-            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::find($this->get_shopid());
             Session::flash('message', 'Kyout Sale was successfully Created!');
-            $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
+            $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->first();
             $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             $shop_price = explode('/', $price->shop_price)[0];
             $price15 = explode('/', $price->inprice_15)[0];
@@ -2352,60 +2197,21 @@ class PosController extends Controller
             })
             ->addColumn('actions', function ($purchase) {
                 $urls = [
-                    'edit_url' => route('backside.shop_owner.pos.edit_kyoutsale', $purchase->id),
-                    'delete_url' => route('backside.shop_owner.pos.delete_kyoutsale', $purchase->id),
-                    'detail_url' => route('backside.shop_owner.pos.detail_kyoutsale', $purchase->id),
+                    'edit_url' => route('backside.shop_owner.pos.edit_ptmsale', $purchase->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_ptm_sale', $purchase->id),
+                    'detail_url' => route('backside.shop_owner.pos.detail_ptmsale', $purchase->id),
                 ];
                 return $urls;
             })
             ->toJson();
         return $dataTable;
     }
-    public function delete_ptm_sale(Request $request): JsonResponse
+    public function delete_ptm_sale($id): RedirectResponse
     {
-        $purchase = PosPlatinumSale::find($request->pid);
+        $purchase = PosPlatinumSale::find($id);
         $purchase->delete();
         Session::flash('message', 'Platinum Sale was successfully Deleted!');
-        return response()->json([
-            'data' => 'success',
-        ], 200);
-    }
-    public function ptmsale_type_filter(Request $request): JsonResponse
-    {
-        if ($request->type == 2) {
-            $data = PosPlatinumSale::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->get();
-        }
-
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
-    public function platinum_sale_advance_filter(Request $request): JsonResponse
-    {
-        $data1 = PosPlatinumSale::where('shop_owner_id', $this->get_shopid())->get();
-        $arr = [];
-        if ($request->qualid && $request->catid) {
-            foreach ($data1 as $dt) {
-                if ($dt->purchase->quality == $request->qualid && $dt->purchase->category_id == $request->catid) {
-                    array_push($arr, $dt);
-                }
-            }
-        } else if ($request->qualid) {
-            foreach ($data1 as $dt) {
-                if ($dt->purchase->quality == $request->qualid) {
-                    array_push($arr, $dt);
-                }
-            }
-        } else if ($request->catid) {
-            foreach ($data1 as $dt) {
-                if ($dt->purchase->category_id == $request->catid) {
-                    array_push($arr, $dt);
-                }
-            }
-        }
-        return response()->json([
-            'data' => $arr,
-        ]);
+        return redirect()->route('backend.shop_owner.pos.ptm_sale_list');
     }
     public function edit_ptm_sale($id): View
     {
@@ -2501,7 +2307,7 @@ class PosController extends Controller
                 $exit->save();
             }
 
-            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::find($this->get_shopid());
             Session::flash('message', 'Gold Sale was successfully Created!');
             $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
             $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
@@ -2564,25 +2370,32 @@ class PosController extends Controller
         $cats = Category::all();
         return view('backend.pos.sale_whitegold_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
     }
-    public function delete_wg_sale(Request $request): JsonResponse
+    public function get_sale_wg_list(Request $request): JsonResponse
     {
-        $purchase = PosWhiteGoldSale::find($request->pid);
+        $purchases = $this->saleFilterService->filterWhiteGoldSales($request);
+        $dataTable =  DataTables::of($purchases)
+            ->addColumn('stock_qty', function ($purchase) {
+                return 1;
+            })
+            ->addColumn('actions', function ($purchase) {
+                $urls = [
+                    'edit_url' => route('backside.shop_owner.pos.edit_wgsale', $purchase->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_wg_sale', $purchase->id),
+                    'detail_url' => route('backside.shop_owner.pos.detail_wg_sale', $purchase->id),
+                ];
+                return $urls;
+            })
+            ->toJson();
+        return $dataTable;
+    }
+    public function delete_wg_sale($id): RedirectResponse
+    {
+        $purchase = PosWhiteGoldSale::find($id);
         $purchase->delete();
         Session::flash('message', 'White Gold Sale was successfully Deleted!');
-        return response()->json([
-            'data' => 'success',
-        ], 200);
+        return redirect()->route('backend.shop_owner.pos.wg_sale_list');
     }
-    public function wgsale_type_filter(Request $request): JsonResponse
-    {
-        if ($request->type == 2) {
-            $data = PosWhiteGoldSale::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->get();
-        }
-
-        return response()->json([
-            'data' => $data,
-        ]);
-    }
+   
     public function detail_whitegold_sale($id): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -2595,33 +2408,6 @@ class PosController extends Controller
         $gradeB = $price->gradeB;
 
         return view('backend.pos.detail_whitegold_sale', ['shopowner' => $shopowner, 'categories' => $categories, 'gradeA' => $gradeA, 'gradeB' => $gradeB, 'purchase' => $purchase, 'staffs' => $staffs]);
-    }
-    public function whitegold_sale_advance_filter(Request $request): JsonResponse
-    {
-        $data1 = PosWhiteGoldSale::where('shop_owner_id', $this->get_shopid())->get();
-        $arr = [];
-        if ($request->qualid && $request->catid) {
-            foreach ($data1 as $dt) {
-                if ($dt->purchase->quality == $request->qualid && $dt->purchase->category_id == $request->catid) {
-                    array_push($arr, $dt);
-                }
-            }
-        } else if ($request->qualid) {
-            foreach ($data1 as $dt) {
-                if ($dt->purchase->quality == $request->qualid) {
-                    array_push($arr, $dt);
-                }
-            }
-        } else if ($request->catid) {
-            foreach ($data1 as $dt) {
-                if ($dt->purchase->category_id == $request->catid) {
-                    array_push($arr, $dt);
-                }
-            }
-        }
-        return response()->json([
-            'data' => $arr,
-        ]);
     }
     public function edit_wg_sale($id): View
     {
@@ -2716,7 +2502,8 @@ class PosController extends Controller
                 $exit->save();
             }
 
-            $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
+            $shopowner = Shops::find($this->get_shopid());
+            // dd($shopowner);
             Session::flash('message', 'Gold Sale was successfully Created!');
             $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
             $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();

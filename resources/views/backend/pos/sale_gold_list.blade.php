@@ -19,10 +19,6 @@
         <!-- Content Header (Page header) -->
         <section class="content-header sn-content-header">
             <div class="container-fluid">
-                @foreach($shopowner as $shopowner )
-                @endforeach
-
-
             </div><!-- /.container-fluid -->
         </section>
 
@@ -165,18 +161,17 @@
                             </div>
                         </div>
                         <div class=" table-responsive text-black">
-                            <table class="table table-striped" id="example23">
+                            <table class="table table-striped" id="saleGoldTable">
                                 <thead>
-                                    <tr>
                                     <th>နံပါတ်</th>
                                     <th>​ရွှေထည်အမည်</th>
+                                    <th></th>
                                     <th>ကုဒ်နံပါတ်</th>
                                     <th>စုစု​ပေါင်းအ​ရေ​အတွက်</th>
                                     <th>ရောင်းစျေး</th>
                                     <th>Product အ​လေးချိန်<br>(in MM units)</th>
                                     <th>Date</th>
                                     <th></th>
-                                    </tr>
                                 </thead>
                             </table>
                         </div>
@@ -208,7 +203,10 @@ $('#fromDate, #toDate').datepicker({
     changeYear: true
 });
 
-var saleTable = $('#example23').DataTable({
+var tot_g = 0;var tot_y=0;var tot_p=0;var tot_k=0;
+var tot_dy=0;var tot_dp=0;var tot_dk=0;var tot_sale=0;var count=0;
+
+var saleGoldTable = $('#saleGoldTable').DataTable({
     processing: true,
     serverSide: true,
     ajax: {
@@ -229,6 +227,13 @@ var saleTable = $('#example23').DataTable({
     {
         data: 'gold_name',
         name: 'gold_name'
+    },
+    {
+        data: 'purchase',
+        name: 'purchase',
+        render: function(data, type, row) {
+            return data ? data : '-';
+        },
     },
     {
         data: 'code_number',
@@ -274,9 +279,9 @@ var saleTable = $('#example23').DataTable({
     render: function(data, type, full, meta) {
         var actions = '';
             actions += `
-                <a class="btn btn-sm btn-danger" onclick="Delete('${full.actions.delete_url}')"
+                <a class="btn btn-sm " onclick="Delete('${full.id}')"
                 title="Delete">
-                <span class="fa fa-trash"></span>
+                <span class="fa fa-trash text-danger"></span>
             </a>
             <form id="delete_form_${full.id}" action="${full.actions.delete_url}" method="POST"
                 style="display: none;">
@@ -296,75 +301,75 @@ var saleTable = $('#example23').DataTable({
     "responsive": true,
     "autoWidth": false,
     buttons: [
-        'copy', 'csv', 'excel', 'pdf',
-        {
+    'copy', 'csv', 'excel', 'pdf',
+    {
         extend: 'print',
         customize: function(win) {
-          var tot_qty = $('#tot_qty').text();
-          var tot_g = $('#tot_g').text();
-          var tot_kpy = $('#tot_kpy').text();
-          var tot_dkpy = $('#tot_dkpy').text();
-          var tot_sale = $('#tot_sale').text();
-          var date = $('#print_date').val();
-          var counter = $('#print_counter').val();
-          var gtype = $('#print_gtype').val();
-          var cat = $('#print_cat').val();
-          var existingData = $(win.document.body).html();
-          var extraText1 = `<div class="row">
-              <div class="col-3 card" style="max-height: 70px;"><h6 class="text-color mt-2" >စုစု​ပေါင်းအ​ရေအတွက် &nbsp;&nbsp;&nbsp;<span>${tot_qty}</span></h6></div>
-              <div class="col-3 card" style="max-height: 70px;"><h6 class="text-color mt-2" >စုစု​ပေါင်းအ​လေးချိန် &nbsp;&nbsp;&nbsp;<span>${tot_g}</span>  g<br>(Gram)</h6></div>
-              <div class="col-3 card row" style="max-height: 70px;">
-                  <h6 class="col-7 text-color mt-2" >စုစု​ပေါင်းအ​လေးချိန် (ကျပ်၊ ပဲ၊ ​ရွေး)</h6>
-                  <h6 class="col-5 text-color mt-2">${tot_kpy}</h6>
-              </div>
-              <div class="col-3 card row" style="max-height: 70px;">
-                  <h6 class="col-8 text-color mt-2">စုစု​ပေါင်းအ​လျော့တွက် (ကျပ်၊ ပဲ၊ ​ရွေး)</h6>
-                  <h6 class="col-4 text-color mt-2">${tot_dkpy}</h6>
-              </div>
-              <div class="col-5 card row" style="max-height: 70px;">
-                  <h6 class="col-5 text-color mt-2" >ရောင်းရ​ငွေစုစု​ပေါင်း</h6>
-                  <h6 class="col-7 text-color mt-2" id="tot_sale">${tot_sale}</h6>
-              </div>
-          </div>`;
+            var tot_qty = $('#tot_qty').text();
+            var tot_g = $('#tot_g').text();
+            var tot_kpy = $('#tot_kpy').text();
+            var tot_dkpy = $('#tot_dkpy').text();
+            var tot_sale = $('#tot_sale').text();
+            var date = $('#print_date').val();
+            var counter = $('#print_counter').val();
+            var gtype = $('#print_gtype').val();
+            var ptype = $('#print_ptype').val();
+            var existingData = $(win.document.body).html();
+            var extraText1 = `<div class="row">
+                <div class="col-3 card" style="max-height: 70px;"><h6 class="text-color mt-2" >စုစု​ပေါင်းအ​ရေအတွက် &nbsp;&nbsp;&nbsp;<span>${tot_qty}</span></h6></div>
+                <div class="col-3 card" style="max-height: 70px;"><h6 class="text-color mt-2" >စုစု​ပေါင်းအ​လေးချိန် &nbsp;&nbsp;&nbsp;<span>${tot_g}</span>  g<br>(Gram)</h6></div>
+                <div class="col-3 card row" style="max-height: 70px;">
+                    <h6 class="col-7 text-color mt-2" >စုစု​ပေါင်းအ​လေးချိန် (ကျပ်၊ ပဲ၊ ​ရွေး)</h6>
+                    <h6 class="col-5 text-color mt-2">${tot_kpy}</h6>
+                </div>
+                <div class="col-3 card row" style="max-height: 70px;">
+                    <h6 class="col-8 text-color mt-2">စုစု​ပေါင်းအ​လျော့တွက် (ကျပ်၊ ပဲ၊ ​ရွေး)</h6>
+                    <h6 class="col-4 text-color mt-2">${tot_dkpy}</h6>
+                </div>
+                <div class="col-5 card row" style="max-height: 70px;">
+                    <h6 class="col-5 text-color mt-2" >ရောင်းရ​ငွေစုစု​ပေါင်း</h6>
+                    <h6 class="col-7 text-color mt-2" id="tot_sale">${tot_sale}</h6>
+                </div>
+            </div>`;
             var extraText2 = `
                 <h6 class='text-color'>​ကောင်တာ : ${counter}</h6>
                 <h6 class='text-color'>​​ရွှေရည် : ${gtype}</h6>
-                <h6 class='text-color'>​အမျိုးအစား : ${cat}</h6>
+                <h6 class='text-color'>​အမျိုးအစား : ${ptype}</h6>
                 <h6 class='text-color'>​Date : ${date}</h6>
             `;
             $(win.document.body).html(extraText1+existingData+extraText2);
-                }
-            }
-        ],
-        order: [
-            [8, 'desc']
-        ],
-        });
+        }
+    }
+    ],
+    order: [
+        [8, 'desc']
+    ],
+    });
 
         //Date Filter
         $('#searchButton').click(function() {
-            saleTable.draw();
+            saleGoldTable.draw();
         });
 
         $('#f_counter').change(function() {
-            saleTable.draw();
+            saleGoldTable.draw();
         });
 
         $('#sup').change(function() {
-            saleTable.draw();
+            saleGoldTable.draw();
         });
 
         $('#qual').change(function() {
-            saleTable.draw();
+            saleGoldTable.draw();
         });
 
         $('#cat').change(function() {
-            saleTable.draw();
+            saleGoldTable.draw();
         });
 
     });
 
-    function Delete(deleteUrl) {
+    function Delete(id) {
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: 'btn btn-danger ml-2',
@@ -388,15 +393,7 @@ var saleTable = $('#example23').DataTable({
         }).then((result) => {
             if (result.isConfirmed) {
                 // Check if "Confirm" button was clicked
-                const deleteForm = document.createElement('form');
-                deleteForm.action = deleteUrl;
-                deleteForm.method = 'POST';
-                deleteForm.style.display = 'none';
-                deleteForm.innerHTML = `
-                @csrf
-                @method('DELETE')`;
-                document.body.appendChild(deleteForm);
-                deleteForm.submit();
+                $('#delete_form_'+id).submit();
             }
         });
     }

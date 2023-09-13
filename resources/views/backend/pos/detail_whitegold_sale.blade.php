@@ -157,24 +157,15 @@
                     </div>
                     <div class="col-1">
                         <a href="{{route('backside.shop_owner.pos.edit_wg_purchase',$purchase->purchase->id)}}" class="ml-2 mt-4 btn btn-sm btn-warning text-white"><i class="fa fa-pencil" ></i></a><br>
-                        <a href="#myModal{{$purchase->purchase->id}}" class="btn btn-sm btn-danger text-white mt-3 ml-2" data-toggle="modal"><i class="fa fa-trash"></i></a>
-                        <div id="myModal{{$purchase->purchase->id}}" class="modal">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Delete List</h5>
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p class="text-center">Are you Sure to Delete this List?</p>
-                                    </div>
-                                    <div class="modal-footer text-center">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCLE</button>
-                                        <button type="button" class="btn btn-color" onclick="suredelete({{$purchase->id}})">DELETE</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <a class="ml-2 mt-4 btn btn-sm btn-danger" onclick="Delete({{$purchase->id}})"
+                            title="Delete">
+                            <span class="fa fa-trash"></span>
+                            </a>
+                        <form id="delete_form_{{$purchase->id}}" action="{{route('backside.shop_owner.pos.delete_wg_sale',$purchase->id)}}" method="POST"
+                            style="display: none;">
+                            @csrf
+                            @method('DELETE')
+                        </form>
                     </div>
                 </div>
 
@@ -206,27 +197,34 @@
 
         });
 
-        function suredelete(id){
-            // alert(id);
-                $.ajax({
+        function Delete(id) {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-danger ml-2',
+                cancelButton: 'btn btn-info'
+            },
+            buttonsStyling: false
+        });
 
-                    type:'POST',
-
-                    url: '{{route("backside.shop_owner.pos.delete_wg_sale")}}',
-
-                    data:{
-                    "_token":"{{csrf_token()}}",
-                    "pid" : id,
-                    },
-
-                    success:function(data){
-                        // window.open('https://test.shweshops.com/backside/shop_owner/wg_sale_list');
-                        window.location.href = "{{ route('backside.shop_owner.pos.wg_sale_list')}}";
-                    }
-                })
-
-
-        }
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Check if "Confirm" button was clicked
+                $('#delete_form_'+id).submit();
+            }
+        });
+    }
 
         function back(){
         history.go(-1);

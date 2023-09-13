@@ -71,11 +71,9 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         //gold
         Route::get('/gold_sale_list', [PosController::class, 'sale_gold_list'])->name('pos.gold_sale_list');
         Route::get('/get_gold_sale_list', [PosController::class, 'get_sale_gold_list'])->name('pos.get_gold_sale_list');
-        Route::post('/goldsale_type_filter', [PosController::class, 'gold_sale_type_filter'])->name('pos.goldsale_type_filter');
-        Route::post('/goldsale_advance_filter', [PosController::class, 'gold_sale_advance_filter'])->name('pos.goldsale_advance_filter');
         Route::get('/edit_goldsale/{id}', [PosController::class, 'edit_gold_sale'])->name('pos.edit_goldsale');
         Route::post('/update_sale_gold/{id}', [PosController::class, 'update_gold_sale'])->name('pos.update_sale_gold');
-        Route::post('/delete_goldsale', [PosController::class, 'delete_gold_sale'])->name('pos.delete_goldsale');
+        Route::delete('/delete_goldsale/{id}', [PosController::class, 'delete_gold_sale'])->name('pos.delete_goldsale');
         Route::get('/sale_purchase', [PosController::class, 'sale_purchase'])->name('pos.sale_purchase');
         Route::post('/get_sale_values', [PosController::class, 'get_sale_values'])->name('pos.getSaleValues');
         Route::post('/sale_gold', [PosController::class, 'store_gold_sale'])->name('pos.store_sale_gold');
@@ -84,11 +82,9 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         //kyout
         Route::get('/sale_kyout_list', [PosController::class, 'sale_kyout_list'])->name('pos.sale_kyout_list');
         Route::get('/get_sale_kyout_list', [PosController::class, 'get_sale_kyout_list'])->name('pos.get_sale_kyout_list');
-        Route::post('/kyoutsale_type_filter', [PosController::class, 'kyout_sale_type_filter'])->name('pos.kyoutsale_type_filter');
-        Route::post('/kyoutsale_advance_filter', [PosController::class, 'kyout_sale_advance_filter'])->name('pos.kyoutsale_advance_filter');
         Route::get('/edit_kyoutsale/{id}', [PosController::class, 'edit_kyout_sale'])->name('pos.edit_kyoutsale');
         Route::post('/update_sale_kyout/{id}', [PosController::class, 'update_kyout_sale'])->name('pos.update_sale_kyout');
-        Route::post('/delete_kyoutsale', [PosController::class, 'delete_kyout_sale'])->name('pos.delete_kyoutsale');
+        Route::delete('/delete_kyoutsale/{id}', [PosController::class, 'delete_kyout_sale'])->name('pos.delete_kyoutsale');
         Route::get('/sale_kyout_purchase', [PosController::class, 'sale_kyout_purchase'])->name('pos.sale_kyout_purchase');
         Route::post('/get_sale_kvalues', [PosController::class, 'get_sale_kyout_values'])->name('pos.getSaleKValues');
         Route::post('/sale_kyout', [PosController::class, 'store_kyout_sale'])->name('pos.store_sale_kyout');
@@ -97,11 +93,9 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         //platinum
         Route::get('/ptm_sale_list', [PosController::class, 'sale_ptm_list'])->name('pos.ptm_sale_list');
         Route::get('/get_ptm_sale_list', [PosController::class, 'get_sale_ptm_list'])->name('pos.get_ptm_sale_list');
-        Route::post('/delete_ptm_sale', [PosController::class, 'delete_ptm_sale'])->name('pos.delete_ptm_sale');
+        Route::delete('/delete_ptm_sale/{id}', [PosController::class, 'delete_ptm_sale'])->name('pos.delete_ptm_sale');
         Route::post('/update_sale_platinum/{id}', [PosController::class, 'update_platinum_sale'])->name('pos.update_sale_platinum');
         Route::get('/edit_ptmsale/{id}', [PosController::class, 'edit_ptm_sale'])->name('pos.edit_ptmsale');
-        Route::post('/platinumsale_advance_filter', [PosController::class, 'platinum_sale_advance_filter'])->name('pos.platinumsale_advance_filter');
-        Route::post('/platinumsale_type_filter', [PosController::class, 'ptmsale_type_filter'])->name('pos.ptmsale_type_filter');
         Route::get('/sale_platinum_purchase', [PosController::class, 'sale_ptm_purchase'])->name('pos.sale_ptm_purchase');
         Route::post('/get_sale_pvalues', [PosController::class, 'get_sale_ptm_values'])->name('pos.getSalePtmValues');
         Route::post('/sale_platinum', [PosController::class, 'store_platinum_sale'])->name('pos.store_sale_platinum');
@@ -110,11 +104,9 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         //whitegold
         Route::get('/wg_sale_list', [PosController::class, 'sale_wg_list'])->name('pos.wg_sale_list');
         Route::get('/get_wg_sale_list', [PosController::class, 'get_sale_wg_list'])->name('pos.get_wg_sale_list');
-        Route::post('/delete_wg_sale', [PosController::class, 'delete_wg_sale'])->name('pos.delete_wg_sale');
+        Route::delete('/delete_wg_sale/{id}', [PosController::class, 'delete_wg_sale'])->name('pos.delete_wg_sale');
         Route::post('/update_sale_whitegold/{id}', [PosController::class, 'update_whitegold_sale'])->name('pos.update_sale_whitegold');
         Route::get('/edit_wgsale/{id}', [PosController::class, 'edit_wg_sale'])->name('pos.edit_wgsale');
-        Route::post('/whitegoldsale_advance_filter', [PosController::class, 'whitegold_sale_advance_filter'])->name('pos.whitegoldsale_advance_filter');
-        Route::post('/whitegoldsale_type_filter', [PosController::class, 'wgsale_type_filter'])->name('pos.wgsale_type_filter');
         Route::get('/sale_whitegold_purchase', [PosController::class, 'sale_wg_purchase'])->name('pos.sale_wg_purchase');
         Route::post('/get_sale_wgvalues', [PosController::class, 'get_sale_wg_values'])->name('pos.getSaleWgValues');
         Route::post('/sale_whitegold', [PosController::class, 'store_whitegold_sale'])->name('pos.store_sale_whitegold');
