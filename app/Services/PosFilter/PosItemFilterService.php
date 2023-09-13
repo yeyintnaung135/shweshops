@@ -5,37 +5,23 @@ namespace App\Services\PosFilter;
 use App\Http\Controllers\Trait\UserRole;
 use App\Models\POS\PosKyoutPurchase;
 use App\Models\POS\PosPlatinumPurchase;
-use App\Models\POS\PosPurchase;
+use App\Models\POS\PosReturnList;
 use App\Models\POS\PosWhiteGoldPurchase;
 
-//NOTE PosPurchaseFilterService is responsible for filtering purchase lists' datatables
+//NOTE PosItemFilterService is responsible for filtering item lists' datatables
 
-class PosPurchaseFilterService
+class PosItemFilterService
 {
     use UserRole;
 
-    public function filter_purchases($request)
+    public function filter_returns($request)
     {
         $shopId = $this->get_shopid();
-        $fCounter = $request->input('f_counter');
         $fromDate = $request->input('fromDate');
         $toDate = $request->input('toDate');
-        $supId = $request->input('sup');
-        $qualId = $request->input('qual');
-        $catId = $request->input('cat');
 
-        $query = PosPurchase::select(
-            'id', 'gold_name', 'supplier_id', 'code_number', 'sell_flag',
-            'product_gram_kyat_pe_yway', 'decrease_pe_yway', 'stock_qty', 'gold_fee', 'date'
-        );
-
-        $query->when($fCounter !== null, function ($query) use ($shopId, $fCounter) {
-            if ($fCounter === 'all_shops') {
-                $query->where('shop_owner_id', $shopId);
-            } else {
-                $query->where('counter_shop', $fCounter)->where('shop_owner_id', $shopId);
-            }
-        });
+        $query = PosReturnList::select('id', 'customer_name', 'phone', 'address', 'gold_fee', 'date', 'category_id')
+            ->where('shop_owner_id', $shopId);
 
         if ($fromDate) {
             $query->whereDate('date', '>=', $fromDate);
@@ -43,19 +29,6 @@ class PosPurchaseFilterService
 
         if ($toDate) {
             $query->whereDate('date', '<=', $toDate);
-        }
-
-        // Additional filters
-        if ($supId) {
-            $query->where('supplier_id', $supId);
-        }
-
-        if ($qualId) {
-            $query->where('quality_id', $qualId);
-        }
-
-        if ($catId) {
-            $query->where('category_id', $catId);
         }
 
         return $query;
