@@ -116,13 +116,14 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         Route::get('/detail_wgsale/{id}', [PosController::class, 'detail_whitegold_sale'])->name('pos.detail_wg_sale');
 
         //Diamond List
-        Route::get('/diamond_list', [PosController::class, 'get_diamond_list'])->name('pos.diamond_list');
+        Route::get('/diamond_list', [PosController::class, 'diamond_list'])->name('pos.diamond_list');
+        Route::get('/get_diamond_list', [PosController::class, 'get_diamond_list'])->name('pos.get_diamond_list');
         Route::get('/create_diamond', [PosController::class, 'get_create_diamond'])->name('pos.create_diamond');
         Route::post('/diamond_type_filter', [PosController::class, 'diamond_type_filter'])->name('pos.diamond_type_filter');
         Route::post('/store_diamond', [PosController::class, 'store_diamond'])->name('pos.store_diamond');
         Route::get('/edit_diamond/{id}', [PosController::class, 'edit_diamond'])->name('pos.edit_diamond');
         Route::post('/update_diamond/{id}', [PosController::class, 'update_diamond'])->name('pos.update_diamond');
-        Route::post('/delete_diamond', [PosController::class, 'delete_diamond'])->name('pos.delete_diamond');
+        Route::delete('/delete_diamond/{diamond}', [PosController::class, 'delete_diamond'])->name('pos.delete_diamond');
 
         //Counter Shop List
         Route::get('/countershop_list', [PosController::class, 'get_counter_list'])->name('pos.counter_list');

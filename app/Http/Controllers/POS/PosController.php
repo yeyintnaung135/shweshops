@@ -30,6 +30,7 @@ use App\Models\POS\PosWhiteGoldPurchase;
 use App\Models\POS\PosWhiteGoldSale;
 use App\Models\Shops;
 use App\Models\State;
+use App\Services\PosFilter\PosItemFilterService;
 use App\Services\PosFilter\PosPurchaseFilterService;
 use App\Services\PosFilter\PosSaleFilterService;
 use Illuminate\Http\JsonResponse;
@@ -50,13 +51,14 @@ class PosController extends Controller
 
     public $err_data = [];
 
-    protected $purchaseFilterService, $saleFilterService;
+    protected $purchaseFilterService, $saleFilterService, $itemsFilterService;
 
-    public function __construct(PosPurchaseFilterService $purchaseFilterService, PosSaleFilterService $saleFilterService)
-    {
+    public function __construct(PosPurchaseFilterService $purchaseFilterService, PosSaleFilterService $saleFilterService,
+        PosItemFilterService $itemsFilterService) {
         $this->middleware('auth:shop_owners_and_staffs');
         $this->purchaseFilterService = $purchaseFilterService;
         $this->saleFilterService = $saleFilterService;
+        $this->itemsFilterService = $itemsFilterService;
     }
 
     public function get_dashboard(): View
@@ -1717,7 +1719,7 @@ class PosController extends Controller
             return redirect()->back();
         }
     }
-    
+
     public function detail_wg_purchase($id): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -1765,7 +1767,6 @@ class PosController extends Controller
         return $dataTable;
     }
 
-    
     public function edit_gold_sale($id): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -1991,7 +1992,7 @@ class PosController extends Controller
             'data' => $data,
         ]);
     }
-    
+
     public function edit_kyout_sale($id): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -2373,7 +2374,7 @@ class PosController extends Controller
     public function get_sale_wg_list(Request $request): JsonResponse
     {
         $purchases = $this->saleFilterService->filterWhiteGoldSales($request);
-        $dataTable =  DataTables::of($purchases)
+        $dataTable = DataTables::of($purchases)
             ->addColumn('stock_qty', function ($purchase) {
                 return 1;
             })
@@ -2395,7 +2396,7 @@ class PosController extends Controller
         Session::flash('message', 'White Gold Sale was successfully Deleted!');
         return redirect()->route('backend.shop_owner.pos.wg_sale_list');
     }
-   
+
     public function detail_whitegold_sale($id): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -2545,11 +2546,25 @@ class PosController extends Controller
     }
 
     //Diamond
-    public function get_diamond_list(): View
+    public function diamond_list(): View
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $diamonds = PosDiamond::where('shop_owner_id', $this->get_shopid())->get();
-        return view('backend.pos.diamond_list', ['shopowner' => $shopowner, 'diamonds' => $diamonds]);
+        return view('backend.pos.diamond_list');
+    }
+
+    public function get_diamond_list(Request $request): JsonResponse
+    {
+        $diamonds = $this->itemsFilterService->filter_diamonds($request);
+
+        return DataTables::of($diamonds)
+            ->addColumn('actions', function ($diamond) {
+                $urls = [
+                    'edit_url' => route('backside.shop_owner.pos.edit_diamond', $diamond->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_diamond', $diamond->id),
+                ];
+
+                return $urls;
+            })
+            ->toJson();
     }
 
     public function get_create_diamond(): View
@@ -2613,14 +2628,11 @@ class PosController extends Controller
         }
     }
 
-    public function delete_diamond(Request $request): JsonResponse
+    public function delete_diamond(PosDiamond $diamond): RedirectResponse
     {
-        $diamond = PosDiamond::find($request->sid);
         $diamond->delete();
         Session::flash('message', 'Diamond was successfully Deleted!');
-        return response()->json([
-            'data' => 'success',
-        ], 200);
+        return redirect()->route('backside.shop_owner.pos.diamond_list');
     }
 
     //Counter List
