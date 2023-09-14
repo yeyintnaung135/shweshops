@@ -254,6 +254,25 @@
             },
         },
     ],
+    drawCallback: function(settings) {
+        var api = this.api();
+        var purchasesData = api.rows().data(); // Access the data in the current view
+
+        // Reset the totals to 0 before recalculating
+        var tot_g = 0;var count = 0;var tot_sale = 0;
+
+        // Calculate totals based on the data in the current view
+        for (var i = 0; i < purchasesData.length; i++) {
+            var pg = purchasesData[i];
+            tot_sale += pg.amount;
+            tot_g += parseFloat(pg.product_gram);
+        }
+
+        // Update the HTML elements with the recalculated totals
+        $('#tot_qty').text(purchasesData.length);
+        $('#tot_g').text(tot_g);
+        $('#tot_sale').text(tot_sale);
+    },
     dom: 'lBfrtip',
     "responsive": true,
     "autoWidth": false,

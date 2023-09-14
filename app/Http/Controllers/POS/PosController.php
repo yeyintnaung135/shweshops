@@ -58,7 +58,6 @@ class PosController extends Controller
         $this->purchaseFilterService = $purchaseFilterService;
         $this->saleFilterService = $saleFilterService;
     }
-
     public function get_dashboard(): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
