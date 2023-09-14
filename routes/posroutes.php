@@ -126,13 +126,14 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         Route::delete('/delete_diamond/{diamond}', [PosController::class, 'delete_diamond'])->name('pos.delete_diamond');
 
         //Counter Shop List
-        Route::get('/countershop_list', [PosController::class, 'get_counter_list'])->name('pos.counter_list');
+        Route::get('/countershop_list', [PosController::class, 'counter_list'])->name('pos.counter_list');
+        Route::get('/get_countershop_list', [PosController::class, 'get_counter_list'])->name('pos.get_counter_list');
         Route::get('/create_counter', [PosController::class, 'create_counter'])->name('pos.create_counter');
         Route::post('/counter_type_filter', [PosController::class, 'counter_type_filter'])->name('pos.counter_type_filter');
         Route::post('/store_counter', [PosController::class, 'store_counter'])->name('pos.store_counter');
         Route::get('/edit_counter/{id}', [PosController::class, 'edit_counter'])->name('pos.edit_counter');
         Route::post('/update_counter/{id}', [PosController::class, 'update_counter'])->name('pos.update_counter');
-        Route::post('/delete_counter', [PosController::class, 'delete_counter'])->name('pos.delete_counter');
+        Route::delete('/delete_counter/{counterShop}', [PosController::class, 'delete_counter'])->name('pos.delete_counter');
 
         //Assign Gold Price
         Route::get('/assign_gold', [PosController::class, 'get_assign_gold'])->name('pos.assign_gold_list');
@@ -152,17 +153,19 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         Route::post('/update_assign_whitegold_price/{id}', [PosController::class, 'update_assign_whitegold_price'])->name('pos.update_assign_whitegold_price');
 
         //Staff List
-        Route::get('/staff_list', [PosSecondPhaseController::class, 'get_staff_list'])->name('pos.staff_list');
+        Route::get('/staff_list', [PosSecondPhaseController::class, 'staff_list'])->name('pos.staff_list');
+        Route::get('/get_staff_list', [PosSecondPhaseController::class, 'get_staff_list'])->name('pos.get_staff_list');
         Route::get('/create_staff', [PosSecondPhaseController::class, 'get_create_staff'])->name('pos.create_staff');
         Route::post('/staff_type_filter', [PosSecondPhaseController::class, 'staff_type_filter'])->name('pos.staff_type_filter');
         Route::post('/store_staff', [PosSecondPhaseController::class, 'store_staff'])->name('pos.store_staff');
         Route::get('/edit_staff/{id}', [PosSecondPhaseController::class, 'edit_staff'])->name('pos.edit_staff');
         Route::post('/update_staff/{id}', [PosSecondPhaseController::class, 'update_staff'])->name('pos.update_staff');
-        Route::post('/delete_staff', [PosSecondPhaseController::class, 'delete_staff'])->name('pos.delete_staff');
+        Route::delete('/delete_staff/{staff}', [PosSecondPhaseController::class, 'delete_staff'])->name('pos.delete_staff');
         Route::post('/check_staff_code', [PosSecondPhaseController::class, 'check_staff_code'])->name('pos.check_staff_code');
 
         //Supplier
-        Route::get('/supplier_list', [PosSecondPhaseController::class, 'get_supplier_list'])->name('pos.supplier_list');
+        Route::get('/supplier_list', [PosSecondPhaseController::class, 'supplier_list'])->name('pos.supplier_list');
+        Route::get('/get_supplier_list', [PosSecondPhaseController::class, 'get_supplier_list'])->name('pos.get_supplier_list');
         Route::get('/create_supplier', [PosSecondPhaseController::class, 'get_create_supplier'])->name('pos.create_supplier');
         Route::post('/change_state', [PosSecondPhaseController::class, 'change_state'])->name('pos.change_state');
         Route::post('/type_filter', [PosSecondPhaseController::class, 'type_filter'])->name('pos.type_filter');

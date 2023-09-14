@@ -271,7 +271,7 @@
             color: #780116;
         }
 
-        .body {
+        body {
             background: #F0F7FA;
             font-family: 'Myanmar3', Sans-Serif !important;
         }

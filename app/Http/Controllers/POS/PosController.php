@@ -33,6 +33,7 @@ use App\Models\State;
 use App\Services\PosFilter\PosItemFilterService;
 use App\Services\PosFilter\PosPurchaseFilterService;
 use App\Services\PosFilter\PosSaleFilterService;
+use App\Services\PosFilter\PosShopFilterService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -51,14 +52,15 @@ class PosController extends Controller
 
     public $err_data = [];
 
-    protected $purchaseFilterService, $saleFilterService, $itemsFilterService;
+    protected $purchaseFilterService, $saleFilterService, $itemFilterService, $shopFilterService;
 
     public function __construct(PosPurchaseFilterService $purchaseFilterService, PosSaleFilterService $saleFilterService,
-        PosItemFilterService $itemsFilterService) {
+        PosItemFilterService $itemFilterService, PosShopFilterService $shopFilterService) {
         $this->middleware('auth:shop_owners_and_staffs');
         $this->purchaseFilterService = $purchaseFilterService;
         $this->saleFilterService = $saleFilterService;
-        $this->itemsFilterService = $itemsFilterService;
+        $this->itemFilterService = $itemFilterService;
+        $this->shopFilterService = $shopFilterService;
     }
 
     public function get_dashboard(): View
@@ -2553,7 +2555,7 @@ class PosController extends Controller
 
     public function get_diamond_list(Request $request): JsonResponse
     {
-        $diamonds = $this->itemsFilterService->filter_diamonds($request);
+        $diamonds = $this->itemFilterService->filter_diamonds($request);
 
         return DataTables::of($diamonds)
             ->addColumn('actions', function ($diamond) {
@@ -2636,12 +2638,27 @@ class PosController extends Controller
     }
 
     //Counter List
-    public function get_counter_list(): View
+    public function counter_list(): View
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
-        return view('backend.pos.counter_list', ['shopowner' => $shopowner, 'counters' => $counters]);
+        return view('backend.pos.counter_list');
     }
+
+    public function get_counter_list(Request $request): JsonResponse
+    {
+        $counters = $this->shopFilterService->filter_counter_shops($request);
+
+        return DataTables::of($counters)
+            ->addColumn('actions', function ($counter) {
+                $urls = [
+                    'edit_url' => route('backside.shop_owner.pos.edit_counter', $counter->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_counter', $counter->id),
+                ];
+
+                return $urls;
+            })
+            ->toJson();
+    }
+
     public function create_counter(): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -2703,13 +2720,12 @@ class PosController extends Controller
             return redirect()->back();
         }
     }
-    public function delete_counter(Request $request): JsonResponse
+
+    public function delete_counter(PosCounterShop $counterShop): RedirectResponse
     {
-        $staff = DB::table('pos_counter_shops')->where('id', $request->id)->delete();
-        Session::flash('message', 'Staff was successfully Deleted!');
-        return response()->json([
-            'data' => 'success',
-        ], 200);
+        $counterShop->delete();
+        Session::flash('message', 'Counter Shop was successfully Deleted!');
+        return redirect()->route('backside.shop_owner.pos.counter_list');
     }
 
     //Assign Gold
