@@ -3909,8 +3909,6 @@ header('X-Content-Type-Options: nosniff');
 
 
         };
-
-
     </script>
 
 
@@ -4009,41 +4007,51 @@ header('X-Content-Type-Options: nosniff');
     {{-- add to home screen --}}
     @if (\Illuminate\Support\Facades\Session::has('logined'))
         <script>
-            const upload_fav_localstorage_to_server_after_logined = () => {
-                if (localStorage.getItem('favorite') !== undefined && localStorage.getItem('favorite') !== null) {
-                    var tmp_rm='[]';
-                    if (localStorage.getItem('favorite_rm') !== undefined && localStorage.getItem('favorite_rm') !== null) {
-                        var tmp_rm=localStorage.getItem('favorite_rm');
+            const upload_fav_localstorage_to_server_after_logined = function (data) {
+                if (typeof  localStorage.getItem(data) !== 'undefined' && localStorage.getItem(data) !== null) {
+                    var tmp_rm = '[]';
+                    if (typeof  localStorage.getItem(data + "_rm") !== 'undefined' && localStorage.getItem(data + "_rm") !== null) {
+                        var tmp_rm = localStorage.getItem(data + "_rm");
 
                     }
                     return new Promise((resolve, reject) => {
-                        axios.post("{{ url('/myfav/upload_after_logined') }}", {
-                            fav_ids: localStorage.getItem('favorite'),
-                            fav_rm_ids:tmp_rm,
+                        let uri = "{{ url('/myfav/upload_after_logined') }}";
+                        if (data == 'cart') {
+                            uri = "{{ url('/mycart/upload_after_logined') }}";
+                        }
+                        axios.post(uri, {
+                            ids: localStorage.getItem(data),
+                            rm_ids: tmp_rm,
                         }).then(response => {
-                            if(response.data.success){
-                                localStorage.setItem('favorite',JSON.stringify(response.data.data));
-                                localStorage.setItem('favorite_rm','[]');
+                            if (response.data.success) {
+                                localStorage.setItem(data, JSON.stringify(response.data.data));
+                                localStorage.setItem(data + '_rm', '[]');
 
                             }
+                            resolve(response);
                         });
                     })
 
 
                 }
             }
-            const clearls = async () => {
+            const clearls = async function () {
                 var foratclstmp = localStorage.getItem("foraddtocartitems");
                 var dtlstmp = localStorage.getItem("datenow");
                 var myItem = localStorage.getItem('guest_id');
-                var favorite = localStorage.getItem('favorite');
-                var favorite_rm = localStorage.getItem('favorite_rm');
+                var favorite = localStorage.getItem('favourite');
+                var favorite_rm = localStorage.getItem('favourite_rm');
+                var cart = localStorage.getItem('cart');
+                var cart_rm = localStorage.getItem('cart_rm');
 
                 localStorage.clear();
                 localStorage.setItem("datenow", dtlstmp);
                 localStorage.setItem("foraddtocartitems", foratclstmp);
-                localStorage.setItem("favorite", favorite);
-                localStorage.setItem("favorite_rm", favorite_rm);
+                localStorage.setItem("favourite", favorite);
+                localStorage.setItem("cart", cart);
+                localStorage.setItem("cart_rm", cart_rm);
+
+                localStorage.setItem("favourite_rm", favorite_rm);
 
 
 
@@ -4051,7 +4059,8 @@ header('X-Content-Type-Options: nosniff');
 
 
                 window.userid = {{ \Illuminate\Support\Facades\Auth::user('guard')->id }};
-                await upload_fav_localstorage_to_server_after_logined();
+               const tempfu= await upload_fav_localstorage_to_server_after_logined('favourite');
+               const tempcu=await upload_fav_localstorage_to_server_after_logined('cart');
 
             }
             clearls();
@@ -4072,7 +4081,7 @@ header('X-Content-Type-Options: nosniff');
         let _token = $('meta[name="csrf-token"]').attr('content');
     </script>
     @stack('custom-scripts')
-@stack('favorite')
+    @stack('favourite')
 
 
     <script type="text/javascript">

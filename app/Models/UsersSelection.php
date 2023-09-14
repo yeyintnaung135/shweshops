@@ -8,5 +8,5 @@ class UsersSelection extends Model
 {
     //
     protected $fillable = ['user_id', 'selection_id'];
-    public $table = 'users_selection';
+    public $table = 'cart';
 }

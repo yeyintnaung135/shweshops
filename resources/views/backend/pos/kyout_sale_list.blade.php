@@ -206,10 +206,6 @@ $(document).ready(function() {
         changeYear: true
     });
     
-    var tot_g = 0;var tot_y=0;var tot_p=0;
-    var tot_k=0;var tot_dy=0;var tot_dp=0;
-    var tot_dk=0;var tot_sale=0;var count=0;
-    
     var saleTable = $('#saleTable').DataTable({
     processing: true,
     serverSide: true,
@@ -301,6 +297,54 @@ $(document).ready(function() {
             },
         },
     ],
+    drawCallback: function(settings) {
+        var api = this.api();
+        var purchasesData = api.rows().data(); // Access the data in the current view
+
+        // Reset the totals to 0 before recalculating
+        var tot_g = 0;var tot_y=0;var tot_p=0;
+        var tot_k=0;var tot_dy=0;var tot_dp=0;
+        var tot_dk=0;var tot_sale=0;var count=0;
+
+        // Calculate totals based on the data in the current view
+        for (var i = 0; i < purchasesData.length; i++) {
+            var pg = purchasesData[i];
+            tot_sale += pg.amount;
+            var product = pg.gold_gram_kyat_pe_yway.split('/');
+            var decrease = pg.decrease_pe_yway.split('/');
+
+            tot_g += parseFloat(product[0]);
+            tot_y += product[3] ? parseFloat(product[3]) : 0;
+            tot_p += product[2] ? parseFloat(product[2]) : 0;
+            tot_k += product[1] ? parseFloat(product[1]) : 0;
+            tot_dy += decrease[1] ? parseFloat(decrease[1]) : 0;
+            tot_dp += decrease[0] ? parseFloat(decrease[0]) : 0;
+
+            if (tot_y >= 8) {
+                tot_p += 1;
+                tot_y = tot_y - 8;
+            }
+            if (tot_p >= 16) {
+                tot_k += 1;
+                tot_p = tot_p - 16;
+            }
+            if (tot_dy >= 8) {
+                tot_dp += 1;
+                tot_dy = tot_dy - 8;
+            }
+            if (tot_dp >= 16) {
+                tot_dk += 1;
+                tot_dp = tot_dp - 16;
+            }
+        }
+
+        // Update the HTML elements with the recalculated totals
+        $('#tot_qty').text(purchasesData.length);
+        $('#tot_g').text(tot_g);
+        $('#tot_sale').text(tot_sale);
+        $('#tot_kpy').text(tot_k + 'ကျပ် ' + tot_p + 'ပဲ ' + tot_y + '​ရွေး');
+        $('#tot_dkpy').text(tot_dk + 'ကျပ် ' + tot_dp + 'ပဲ ' + tot_dy + '​ရွေး');
+    },
     dom: 'lBfrtip',
     "responsive": true,
     "autoWidth": false,

@@ -941,7 +941,7 @@
                                     @endif
 
                                     <div class="col-5 px-1">
-                                        <div onclick="addToCart('{{ $item->id }}')" id="selection-div"
+                                        <div onclick="cartclick('{{ $item->id }}','{{ Auth::check() }}')" id="selection-div"
                                             class="btn btn-primary sn-buynow-button py-3">
                                             <i id="selection-icon" class="fa-solid d-none fa-check"></i>
                                             <span id="selection" class="sop-font buy-font">ရွေးထားမယ်</span>
@@ -1243,7 +1243,9 @@
 
 @push('custom-scripts')
     <script src="{{ url('test/js/fancybox.js') }}"></script>
-    @include('JsScripts.Front.favorite')
+    @include('JsScripts.Front.favourite')
+    @include('JsScripts.Front.cart')
+
     <script>
         $(document).ready(function() {
 

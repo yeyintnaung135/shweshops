@@ -5,27 +5,75 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Validator;
 
 use App\Http\Controllers\Controller;
-use App\Models\FavoriteItems;
+use App\Models\FavouriteItem;
+use App\Models\Item;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
-class FavoriteController extends Controller
+class FavouriteController extends Controller
 {
     //
     public function __construct()
     {
-        $this->middleware('auth')->except(['see_all']);
+        $this->middleware('auth')->except(['see_all','get_fav_items_data']);
     }
  
 
     public function see_all(){
-        return view('front.AllFavorite');
+        return view('front.AllFavourite');
+    }
+    public function get_fav_items_data_authuser(Request $request):JsonResponse
+    {
+        $useridandtypearry = $this->get_usertype_and_id();
+        $type=$useridandtypearry['type'];
+        $id=$useridandtypearry['id'];
+        $getfavdata = FavouriteItem::select('fav_id')->where('user_id', $id)->where('type',$type)->get();
+
+        if (!empty($getfavdata) ) {
+            $lettmpfav_ids=[];
+            foreach ($getfavdata as $je) {
+             array_push($lettmpfav_ids,$je->fav_id);    
+                
+            }
+            $get_item_data=Item::whereIn('id',$lettmpfav_ids)->get();
+            return response()->json(['success' => true, 'data' => $get_item_data]);
+        }else{
+            return response()->json(['success' => true, 'data' => []]);
+
+        }
+      
+
+    }
+
+    public function get_fav_items_data(Request $request):JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'fav_ids' => ['required', 'array']
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'data' => $validator->errors()]);
+        }  
+
+        if ($request->fav_ids != "null" and !empty($request->fav_ids) ) {
+            $lettmpfav_ids=[];
+            foreach ($request->fav_ids as $je) {
+             array_push($lettmpfav_ids,$je['fav_id']);    
+                
+            }
+            $get_item_data=Item::whereIn('id',$lettmpfav_ids)->get();
+            return response()->json(['success' => true, 'data' => $get_item_data]);
+        }else{
+            return response()->json(['success' => true, 'data' => []]);
+
+        }
+      
+
     }
 
 
-    public function action_favorite(Request $request)
+    public function action_favourite(Request $request)
     {
         $input = $request->except(['action']);
         $validator = Validator::make($request->all(), [
@@ -43,7 +91,7 @@ class FavoriteController extends Controller
         }
         $useridandtypearry = $this->get_usertype_and_id();
 
-        $getfavdata = FavoriteItems::select('fav_id')->where('user_id', $useridandtypearry['id'])->where('type',$useridandtypearry['type'])->get();
+        $getfavdata = FavouriteItem::select('fav_id')->where('user_id', $useridandtypearry['id'])->where('type',$useridandtypearry['type'])->get();
 
         return response()->json(['success' => true, 'data' => $getfavdata]);
     }
@@ -53,7 +101,9 @@ class FavoriteController extends Controller
     public function upload_after_logined(Request $request):JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'fav_ids' => ['required', 'string', 'max:2000']
+            'ids' => ['required', 'string', 'max:2000'],
+            'rm_ids' => ['string', 'max:2000']
+
         ]);
 
         if ($validator->fails()) {
@@ -63,7 +113,7 @@ class FavoriteController extends Controller
         $type=$useridandtypearry['type'];
         $id=$useridandtypearry['id'];
 
-        if ($request->fav_ids != 'null' or !empty($request->fav_ids)) {
+        if ($request->ids != "null" and !empty($request->fav_ids) ) {
             $json_encoded = json_decode($request->fav_ids, true);
             foreach ($json_encoded as $je) {
                
@@ -71,7 +121,7 @@ class FavoriteController extends Controller
                 $this->store_fav_item_to_db($je);
             }
         }
-        if ($request->fav_rm_ids != 'null' or !empty($request->fav_rm_ids)) {
+        if ($request->rm_ids != "null" and !empty($request->fav_rm_ids)) {
             $json_encoded_rm = json_decode($request->fav_rm_ids, true);
             foreach ($json_encoded_rm as $jerm) {
              
@@ -81,7 +131,7 @@ class FavoriteController extends Controller
         }
        
        
-        $getfavdata = FavoriteItems::select('fav_id')->where('user_id', $id)->where('type',$type)->get();
+        $getfavdata = FavouriteItem::select('fav_id')->where('user_id', $id)->where('type',$type)->get();
 
 
         return response()->json(['success' => true, 'data' => $getfavdata]);
@@ -95,7 +145,7 @@ class FavoriteController extends Controller
         $data['type'] = $useridandtypearry['type'];
 
 
-        $deletefav = FavoriteItems::where([['user_id', '=', $data['user_id']], ['type', '=', $data['type']], ['fav_id', '=', $data['fav_id']]])->delete();
+        $deletefav = FavouriteItem::where([['user_id', '=', $data['user_id']], ['type', '=', $data['type']], ['fav_id', '=', $data['fav_id']]])->delete();
 
         return 'done';
     }
@@ -118,7 +168,7 @@ class FavoriteController extends Controller
 
 
 
-        $updateorcreate = FavoriteItems::updateOrCreate($data);
+        $updateorcreate = FavouriteItem::updateOrCreate($data);
         return 'done';
    
     }
@@ -135,7 +185,7 @@ class FavoriteController extends Controller
             $data['user_id'] = Auth::guard('web')->user()->id;
         }
 
-        $check = FavoriteItems::where([['user_id', '=', $data['user_id']], ['type', '=', $data['type']], ['fav_id', '=', $data['fav_id']]])->first();
+        $check = FavouriteItem::where([['user_id', '=', $data['user_id']], ['type', '=', $data['type']], ['fav_id', '=', $data['fav_id']]])->first();
         if (!empty($check)) {
             return response()->json(['success' => true, 'data' => true]);
         } else {

@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class FavoriteItems extends Model
+class FavouriteItem extends Model
 {
     //
-    protected $table = 'favorite';
+    protected $table = 'favourite';
     protected $fillable = ['user_id', 'fav_id','type'];
 
 }

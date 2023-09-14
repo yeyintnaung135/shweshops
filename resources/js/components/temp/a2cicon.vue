@@ -30,7 +30,7 @@ export default {
     methods: {
         getDataFromLocal: function () {
             const data = JSON.parse(
-                window.localStorage.getItem("selection") || "{}"
+                window.localStorage.getItem("cart") || "{}"
             );
             this.localData = Object.keys(data).length;
             console.log("length", this.localData);

@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\message;
 
-use App\Events\Activeusers;
-use App\Events\Shopownermessage;
-use App\Events\Usermessage;
+use App\Models\Events\Activeusers;
+use App\Models\Events\Shopownermessage;
+use App\Models\Events\Usermessage;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 
-use App\Http\Controllers\traid\firebase;
-use App\Messages;
-use App\Shopowner;
-use App\Item;
-use App\User;
-use App\Usersorshopsonlinestatus;
+use App\Models\Http\Controllers\traid\firebase;
+use App\Models\Messages;
+use App\Models\Shopowner;
+use App\Models\Item;
+use App\Models\User;
+use App\Models\Usersorshopsonlinestatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
