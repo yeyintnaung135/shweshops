@@ -434,23 +434,3 @@
     </style>
 
 @endpush
-@push('custom-scripts')
-    <Script>
-        //  function ifChosenSelectionLengthM() {
-        //     var selection = JSON.parse(window.localStorage.getItem("selection"));
-        //     var selectionlength = 0;
-        //     if (selection != null) {
-        //         selectionlength = Object.keys(selection).length;
-
-        //     }
-        //     return document.getElementById('nav-a2c-count').innerHTML = selectionlength;
-
-        // }
-        // $( document ).ready(function() {
-        //     if($("#nav-a2c-count").length){
-        //         ifChosenSelectionLengthM();
-        //     }
-        // });
-
-    </Script>
-@endpush

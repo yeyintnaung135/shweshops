@@ -80,6 +80,4 @@
 <!-- zh pop up -->
 @include('layouts.frontend.allpart.popup')
 <!-- end zh pop up -->
-@push('custom-scripts')
-   
-@endpush
+

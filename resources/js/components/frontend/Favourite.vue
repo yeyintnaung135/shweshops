@@ -146,25 +146,6 @@
                                 <div
                                     class="h-100 col-5 d-flex flex-row justify-content-end"
                                 >
-                                    <!-- <a
-                                    v-if="
-                                        item.ShopName.ConnectedwithFacebook ==
-                                        'yes'
-                                    "
-                                    :href="
-                                        item.ShopName.Ykmessengerlink +
-                                        '?ref=' +
-                                        item.id
-                                    "
-                                    class="btn sop-buynow-button"
-                                    >ဝယ်မယ်</a
-                                >
-                                <a
-                                    v-else
-                                    :href="item.ShopName.Ykmessengerlink"
-                                    class="btn sop-buynow-button"
-                                    >ဝယ်မယ်</a
-                                > -->
                                     <a
                                         class="btn btn-primary atc-buynow-button sop-font reg"
                                         @click="buynowbuttonclick(item.id)"
@@ -200,12 +181,12 @@
 <script>
 import VueLazyload from "vue-lazyload";
 import Vue from "vue";
-import { allservicesfromfavandaddtocard } from "./services/fav_and_addtocard";
+import { allservicesfromfavourite } from "./services/favorite";
 Vue.use(VueLazyload);
 
 export default {
-    props: ["localkey", "headertext", "checkauth", "fordate","checkloginnow"],
-    name: "FavAnd-AddtoCard",
+    props: ["localkey", "headertext", "checkauth", "fordate", "checkloginnow"],
+    name: "my-favourite",
 
     data: function () {
         return {
@@ -217,6 +198,7 @@ export default {
             SyncID: "",
             id: "",
             imgurl: "",
+            uri: "",
             busy: false,
         };
     },
@@ -224,17 +206,18 @@ export default {
         this.getDataFromLocal();
         this.busy = true;
         this.host = this.$hostname;
-        this.userid != null ? (this.id = this.userid.id) : (this.id = "");
         this.header = this.headertext;
         if (process.env.MIX_USE_DO == "true") {
             this.imgurl = process.env.MIX_DO_URL;
         } else {
             this.imgurl = this.$hostname + "/images";
         }
-        if(this.checkloginnow){
-            await this.upload_fav_localstorage_to_server_after_logined();
-             this.busy=false;
+        if (this.checkloginnow) {
+            const tmpupfav =
+                await this.upload_fav_localstorage_to_server_after_logined();
+            this.busy = false;
         }
+
         this.getfav_or_addtocarddata();
     },
     filters: {
@@ -261,7 +244,7 @@ export default {
 
         deletefav: function (itemid) {
             console.log("delete");
-            allservicesfromfavandaddtocard.start_process(itemid, this);
+            allservicesfromfavourite.start_process(itemid, this);
         },
         buynowbuttonclick: async function (itemid) {
             //get itemdat by id
@@ -297,32 +280,33 @@ export default {
                 this.fordate
             );
         },
-        upload_fav_localstorage_to_server_after_logined: function(){
+        upload_fav_localstorage_to_server_after_logined: function () {
             if (
-                localStorage.getItem(this.localkey) !== undefined &&
-                localStorage.getItem(this.localkey) !== null
+                typeof localStorage.getItem("favourite") !== "undefined" &&
+                localStorage.getItem("favourite") !== "null"
             ) {
                 var tmp_rm = "[]";
                 if (
-                    localStorage.getItem("favorite_rm") !== undefined &&
-                    localStorage.getItem("favorite_rm") !== null
+                    localStorage.getItem("favourite_rm") !== "undefined" &&
+                    localStorage.getItem("favourite_rm") !== "null"
                 ) {
-                    var tmp_rm = localStorage.getItem("favorite_rm");
+                    var tmp_rm = localStorage.getItem("favourite_rm");
                 }
                 return new Promise((resolve, reject) => {
                     axios
                         .post(this.host + "/myfav/upload_after_logined", {
-                            fav_ids: localStorage.getItem(this.localkey),
+                            fav_ids: localStorage.getItem("favourite"),
                             fav_rm_ids: tmp_rm,
                         })
                         .then((response) => {
                             if (response.data.success) {
                                 localStorage.setItem(
-                                    this.localkey,
+                                    "favourite",
                                     JSON.stringify(response.data.data)
                                 );
-                                localStorage.setItem(this.localkey+'_rm', "[]");
+                                localStorage.setItem("favourite" + "_rm", "[]");
                             }
+                            resolve(response);
                         });
                 });
             }
@@ -372,7 +356,7 @@ export default {
         },
         getDataFromLocal: function () {
             const data = JSON.parse(
-                window.localStorage.getItem(this.localkey) || "{}"
+                window.localStorage.getItem("favourite") || "{}"
             );
             return data;
         },

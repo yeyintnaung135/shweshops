@@ -41,7 +41,7 @@
                             <div class="cart-total">
 
                                 <i id="windowFavNav" class="fa-regular fa-heart fa-xl"
-                                    style="color:#6f6a6a !important"></i>
+                                    style="color:rgb(167 6 6) !important"></i>
                                 {{-- <span id="favw-a2c-count" class="sop-cart-count">0</span> --}}
                             </div>
                         </a>
@@ -267,13 +267,13 @@
                                                     <i class=""></i>
                                                     <div class="ftc-tini-cart">
                                                         <div class="cart-item">
-                                                            <a href="{{ url('addtocart') }}">
+                                                            <a href="{{ url('mycart/see_all') }}">
                                                                 <div class="cart-total">
 
                                                                     <i id="windowA2cNav"
                                                                         class="fa-solid fa-shopping-bag fa-xl"
                                                                         style="color:#1B1A17"></i>
-                                                                    <span id="navw-a2c-count"
+                                                                    <span id="cart_count"
                                                                         class="sop-cart-count">0</span>
                                                                 </div>
                                                             </a>
@@ -290,57 +290,17 @@
                                         <div class="elementor-element elementor-element-46ef4145 elementor-widget elementor-widget-ftc_shooping_cart"
                                             data-id="46ef4145" data-element_type="widget"
                                             data-widget_type="ftc_shooping_cart.default">
-                                            {{-- <div class="elementor-widget-container">
-                                                @if (isset(Auth::guard('web')->user()->id))
-                                                <form type="hidden" id="fav-2server"  method="POST" style="display: none;">
-                                                    @csrf
-                                                </form>
-                                                <form type="hidden" id="selection-2server"  method="POST" style="display: none;">
-                                                    @csrf
-                                                </form>
-                                                <div class="mobile-account">
-                                                    <a href="" title="Logout" data-toggle="modal" data-target="#confirm_logout">
-                                                        <i class="zh-icon fa-solid fa-arrow-right-from-bracket" style="color:#780116 !important;"></i>
 
-                                                    </a>
-                                                </div>
-
-
-                                                @elseif(isset(Auth::guard('shop_owner')->user()->id))
-                                                <div class="mobile-account">
-                                                    <a href="{{url('backside/shop_owner/detail')}}">
-                                                        <i class="zh-icon fa-solid fa-user-gear" style="color:#780116 !important;"></i>
-
-                                                    </a>
-                                                </div>
-
-                                                @elseif(isset(Auth::guard('shop_role')->user()->id))
-                                                <div class="mobile-account">
-                                                    <a href="{{url('backside/shop_owner/detail')}}" title="Logout">
-                                                        <i class="zh-icon fa-solid fa-user-gear" style="color:#780116 !important;"></i>
-
-                                                    </a>
-                                                </div>
-                                                @else
-                                                <div class="mobile-account">
-
-                                                    <a href="" title="Login" data-toggle="modal" data-target="#orangeModalSubscription">
-                                                        <i class="zh-icon fa fa-user" style="color:#780116 !important;"></i>
-                                                    </a>
-
-                                                </div>
-                                                @endif
-                                            </div> --}}
                                             <div class="elementor-widget-container">
                                                 <div class="ftc-cart-element">
                                                     <i class=""></i>
                                                     <div class="ftc-tini-cart">
                                                         <div class="cart-item">
-                                                            <a href="{{ url('myfav') }}">
+                                                            <a href="{{ url('myfav/see_all') }}">
                                                                 <div class="cart-total">
 
-                                                                    <i id="windowFavNav"
-                                                                        class="fa-regular fa-heart fa-xl"
+                                                                    <i 
+                                                                        class="fa-regular fa-heart fa-xl windowFavNav"
                                                                         style="color:#780116!important"></i>
                                                                     {{-- <span id="favw-a2c-count" class="sop-cart-count">0</span> --}}
                                                                 </div>
@@ -387,14 +347,37 @@
 
 @push('custom-scripts')
     <script>
-       
-
         $(document).ready(function() {
-            // if(window.localStorage.getItem('searchtext') != undefined){
-            //     $('#searchText').val(window.localStorage.getItem('searchtext'));
-            // }else{
-            //     $('#searchText').val('');
-            // }
+            if (typeof localStorage.getItem('cart') !== 'undefined' && localStorage.getItem('cart') !== null) {
+
+                let tmpcartcount = JSON.parse(localStorage.getItem('cart')).length;
+                if (tmpcartcount > 10) {
+                    $('#cart_count').html("10+");
+
+                } else {
+                    $('#cart_count').html(JSON.parse(localStorage.getItem('cart')).length);
+
+                }
+            }
+            if (typeof localStorage.getItem('favourite') !== 'undefined' && localStorage.getItem('favourite') !==
+                null) {
+                let tmpfavcount = JSON.parse(localStorage.getItem('favourite')).length;
+                if (tmpfavcount > 0) {
+                    $('.windowFavNav').removeClass("fa-regular");
+                    $('.windowFavNav').addClass("fa-solid");
+                } else {
+                    $('.windowFavNav').removeClass("fa-solid");
+                    $('.windowFavNav').addClass("fa-regular");
+                }
+
+
+
+            } else {
+                $('.windowFavNav').removeClass("fa-solid");
+                $('.windowFavNav').addClass("fa-regular");
+            }
+
+
             if (window.localStorage.getItem('searchtext') != undefined) {
                 $('#productSearchText').val(window.localStorage.getItem('searchtext'));
             } else {
@@ -429,7 +412,8 @@
             for (i = 0; i < anchors.length; i++) {
                 var anchor = anchors[i]
                 if (anchor.href == pageUrl) {
-                    parent[i].classList.add('current-menu-ancestor', 'current_page_ancestor', 'current-menu-item',
+                    parent[i].classList.add('current-menu-ancestor', 'current_page_ancestor',
+                        'current-menu-item',
                         'current_page_item');
                 }
             }

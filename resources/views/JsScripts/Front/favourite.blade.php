@@ -26,17 +26,27 @@
                     $("#ficon").addClass("fa-regular");
                 }
             }
+            if (typeof localStorage.getItem('favourite') !== 'undefined' && localStorage.getItem('favourite') !==
+                null) {
+
+                let tmpfavcount = JSON.parse(localStorage.getItem('favourite')).length;
+                if (tmpfavcount > 0) {
+                    $('.windowFavNav').removeClass("fa-regular");
+                    $('.windowFavNav').addClass("fa-solid");
+                } else {
+                    $('.windowFavNav').removeClass("fa-solid");
+                    $('.windowFavNav').addClass("fa-regular");
+                }
+
+
+            }
             FAVBUSY = false;
         }
     };
     const fav_rm_add_local_storage = (itemid) => {
-        var tmprm = [];
-
-        if (
-            localStorage.getItem("favourite_rm") !== undefined &&
-            localStorage.getItem("favourite_rm") !== null
-        ) {
-            var tmprm = JSON.parse(localStorage.getItem("favourite_rm"));
+        var tmprm = JSON.parse(localStorage.getItem("favourite_rm"));
+        if (tmprm === null) {
+            tmprm = [];
         }
         let checkexit = tmprm.findIndex((d) => {
             return parseInt(d.fav_id) == itemid;
@@ -50,10 +60,8 @@
         localStorage.setItem("favourite_rm", JSON.stringify(tmprm));
     };
     const fav_rm_rm_local_storage = (itemid) => {
-        if (
-            localStorage.getItem("favourite_rm") !== undefined &&
-            localStorage.getItem("favourite_rm") !== null
-        ) {
+        var tmparray = JSON.parse(localStorage.getItem("favourite_rm"));
+        if (tmparray !== null) {
             let remove_tmparray = JSON.parse(localStorage.getItem("favourite_rm"));
             let rmindex = remove_tmparray.findIndex((d) => {
                 return parseInt(d.fav_id) == parseInt(itemid);
@@ -67,13 +75,9 @@
 
     const fav_action_to_local_storage = (itemid, action) => {
         if (action == "add") {
-            if (
-                localStorage.getItem("favourite") !== undefined &&
-                localStorage.getItem("favourite") !== null
-            ) {
-                var tmparray = JSON.parse(localStorage.getItem("favourite"));
-            } else {
-                var tmparray = [];
+            var tmparray = JSON.parse(localStorage.getItem("favourite"));
+            if (tmparray === null) {
+                tmparray = [];
             }
             tmparray.push({
                 fav_id: itemid,
@@ -84,7 +88,7 @@
         }
         if (action == "remove") {
             if (
-                localStorage.getItem("favourite") !== undefined &&
+                typeof localStorage.getItem("favourite") !== 'undefined' &&
                 localStorage.getItem("favourite") !== null
             ) {
                 let remove_tmparray = JSON.parse(localStorage.getItem("favourite"));
@@ -116,17 +120,22 @@
                     }
                 });
         } else {
-            let remove_tmparray = JSON.parse(localStorage.getItem("favourite"));
+            if (
+                typeof localStorage.getItem("favourite") !== 'undefined' &&
+                localStorage.getItem("favourite") !== null
+            ) {
+                let remove_tmparray = JSON.parse(localStorage.getItem("favourite"));
 
-            let index = remove_tmparray.findIndex((d) => {
-                return parseInt(d.fav_id) == itemid;
-            });
-            if (index > -1) {
-                $("#ficon").removeClass("fa-regular");
-                $("#ficon").addClass("fa-solid");
-            } else {
-                $("#ficon").removeClass("fa-solid");
-                $("#ficon").addClass("fa-regular");
+                let index = remove_tmparray.findIndex((d) => {
+                    return parseInt(d.fav_id) == itemid;
+                });
+                if (index > -1) {
+                    $("#ficon").removeClass("fa-regular");
+                    $("#ficon").addClass("fa-solid");
+                } else {
+                    $("#ficon").removeClass("fa-solid");
+                    $("#ficon").addClass("fa-regular");
+                }
             }
         }
         console.log("ini check", itemid);

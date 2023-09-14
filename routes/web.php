@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\UserLoginandRegisterController;
 use App\Http\Controllers\Auth\YkforgotpasswordController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\forfacebook\FacebookController;
 use App\Http\Controllers\FrontController;
@@ -146,28 +147,9 @@ Route::group(
 
         Route::get('/temp/see_all_cato', [TempController::class, 'see_all_cato'])->name('temp');
 
-        Route::get('/addtocart', function () {
-
-            // for account
-            if (isset(Auth::guard('shop_owner')->user()->id)) {
-                $shopowner_acc = Shops::where('id', Auth::guard('shop_owner')->user()->id)->orderBy('created_at', 'desc')->get();
-            } else if (isset(Auth::guard('shop_role')->user()->id)) {
-                $manager = Manager::where('id', Auth::guard('shop_role')->user()->id)->pluck('shop_id');
-                $shopowner_acc = Shops::where('id', $manager)->orderBy('created_at', 'desc')->get();
-            }
-
-            if (isset(Auth::guard('shop_owner')->user()->id)) {
-                return view('front.temp.addtocart', ['shopowner_acc' => $shopowner_acc]);
-            } elseif (isset(Auth::guard('shop_role')->user()->id)) {
-                return view('front.temp.addtocart', ['shopowner_acc' => $shopowner_acc]);
-            } else {
-                return view('front.temp.addtocart');
-            }
-        });
-        Route::get('/myfav/all', [FrontController::class, 'all']);
+     
 
         Route::put('/addtocart', [FrontController::class, 'addtocart_search']);
-        Route::put('/myfav', [FrontController::class, 'fav_search']);
 
         Route::get('/addtocart/update', function () {
 
@@ -187,23 +169,7 @@ Route::group(
                 return view('front.temp.addtocart');
             }
         });
-        Route::get('/myfav/update', function () {
-            // for account
-            if (isset(Auth::guard('shop_owner')->user()->id)) {
-                $shopowner_acc = Shops::where('id', Auth::guard('shop_owner')->user()->id)->orderBy('created_at', 'desc')->get();
-            } else if (isset(Auth::guard('shop_role')->user()->id)) {
-                $manager = Manager::where('id', Auth::guard('shop_role')->user()->id)->pluck('shop_id');
-                $shopowner_acc = Shops::where('id', $manager)->orderBy('created_at', 'desc')->get();
-            }
-
-            if (isset(Auth::guard('shop_owner')->user()->id)) {
-                return view('front.temp.fav', ['shopowner_acc' => $shopowner_acc]);
-            } elseif (isset(Auth::guard('shop_role')->user()->id)) {
-                return view('front.temp.fav', ['shopowner_acc' => $shopowner_acc]);
-            } else {
-                return view('front.temp.fav');
-            }
-        });
+    
 
         Route::get('baydin_detail/{id}', function (Request $request, $id) {
             $baydin = Sign::findOrFail($id);
@@ -217,8 +183,6 @@ Route::group(
             }
         })->name('baydin_detail');
 
-        Route::post('/addtocart/update', [FrontController::class, 'addtocart_update']);
-        Route::post('/myfav/update', [FrontController::class, 'fav_update']);
         Route::get('/contact-us', [FrontController::class, 'contact_us']);
         Route::get('/myfav/see_all', [FavouriteController::class, 'see_all']);
         Route::post('/myfav/get_fav_items_data', [FavouriteController::class, 'get_fav_items_data']);
@@ -227,6 +191,15 @@ Route::group(
         Route::post('/myfav/action', [FavouriteController::class, 'action_favourite']);
         Route::post('/myfav/check', [FavouriteController::class, 'check']);
         Route::post('/myfav/upload_after_logined', [FavouriteController::class, 'upload_after_logined']);
+
+
+        Route::get('/mycart/see_all', [CartController::class, 'see_all']);
+        Route::post('/mycart/get_cart_items_data', [CartController::class, 'get_cart_items_data']);
+        Route::post('/mycart/get_cart_items_data_authuser', [CartController::class, 'get_cart_items_data_authuser']);
+
+        Route::post('/mycart/action', [CartController::class, 'action_cart']);
+        Route::post('/mycart/check', [CartController::class, 'check']);
+        Route::post('/mycart/upload_after_logined', [CartController::class, 'upload_after_logined']);
 
 
 // News and Events

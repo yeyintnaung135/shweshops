@@ -119,7 +119,9 @@ Vue.component(
     require("./components/backend/ShopsCreateValidate.vue").default
 );
 
-Vue.component("favand-addtocard", require("./components/frontend/FavAndAddtocard.vue").default);
+Vue.component("my-favourite", require("./components/frontend/Favourite.vue").default);
+Vue.component("my-cart", require("./components/frontend/Cart.vue").default);
+
 Vue.component("a2cicon-com", require("./components/temp/a2cicon.vue").default);
 Vue.component(
     "tags-com",

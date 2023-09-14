@@ -27,10 +27,8 @@
                 $logined = 'false';
                 $checkloginnow = 'false'; ?>
             @endif
-
-            <my-favourite :checkloginnow="{{ $checkloginnow }}" :localkey="'favourite'" :userid="{{ $userdata }}"
-                :headertext="'My Favourite Items'" :checkauth="{{ $logined }}"
-                :fordate="'{{ \Carbon\Carbon::now() }}'"></my-favourite>
+            <my-cart :userid="{{ $userdata }}" :checkloginnow="{{ $checkloginnow }}" :localkey="'cart'" :headertext="'My Cart Items'"
+                :checkauth="{{ $logined }}" :fordate="'{{ \Carbon\Carbon::now() }}'"></my-cart>
 
         </div>
 
