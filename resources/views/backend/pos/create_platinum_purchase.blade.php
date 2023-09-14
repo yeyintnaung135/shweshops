@@ -122,7 +122,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="col-3" hidden>
                                 <input type="text" name='ptm_price' id='ptm_price' value="{{$gradeA}}">
                             </div>
@@ -182,7 +182,7 @@
                                 </select>
                             </div>
                             <div class='col-9'>
-                                
+
                             </div>
                             <div class="image-upload-wrap col-6 py-3">
                                 <input class="file-upload-input" type='file' id="image"  accept="image/*" name="photo"/>
@@ -223,7 +223,7 @@
                                     <label class="form-check-label" for="inlineCheckbox">က​လေးဝတ်</label>
                                   </div>
                             </div>
-                            @if (Auth::guard('shop_owner')->user()->pos_only == 'no')
+                            @if ($shopowner->pos_only == 'no')
                             <!-- ShweShop Item -->
                             <div class="col-12 mt-3" >
                                 <label for="shwe_item">Shwe Shop Item သွင်းမည်</label>

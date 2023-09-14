@@ -28,20 +28,14 @@
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="row justify-content-center">
-                    <div class="card card-body printableArea" style="max-width: 750px;">
-                        {{-- <div style="display:flex;justify-content:space-around"> --}}
+                        <div class="card card-body printableArea" style="max-width: 750px;">
+                            {{-- <div style="display:flex;justify-content:space-around"> --}}
                             @php
-                            use App\Shopowner;
-                            use App\Manager;
+                                use App\Models\Shops;
 
-                            if(isset(Auth::guard('shop_owner')->user()->id)){
-                                $current_shop=Shopowner::where('id',Auth::guard('shop_owner')->user()->id)->first();
-                            }else{
-                                $manager= Manager::where('id', Auth::guard('shop_role')->user()->id)->pluck('shop_id');
-                                $current_shop=Shopowner::where('id',$manager)->first();
-
-                            }
-
+                                if (isset(Auth::guard('shop_owners_and_staffs')->user()->shop_id)) {
+                                    $current_shop = Shops::where('id', Auth::guard('shop_owners_and_staffs')->user()->shop_id)->first();
+                                }
                             @endphp
                             <div class="row d-flex">
                                 <div style="border:1px solid #780116;border-radius:10px;" width='130'>
@@ -53,29 +47,33 @@
                             </div>
                             <div class="row d-flex mt-4">
                                 <div class="image">
-                                    <img src="{{url('/images/logo/'.$current_shop->shop_logo)}}" class="img-circle elevation-2" alt="User Image" width="100" height="100">
+                                    <img src="{{ url('/images/logo/' . $current_shop->shop_logo) }}"
+                                        class="img-circle elevation-2" alt="User Image" width="100" height="100">
                                 </div>
                                 <div class="info text-capitalize text-color ml-3 mt-4" style="font-size:20px;">
-                                    {{\Illuminate\Support\Str::limit($current_shop->shop_name, 100, '...')}}
+                                    {{ \Illuminate\Support\Str::limit($current_shop->shop_name, 100, '...') }}
                                 </div>
                             </div>
                             <div class="row mt-3">
                                 @foreach ($counters as $counter)
-                                <div class="col-12">
-                                    <div class="row">
-                                        <div class="col-3">
-                                            <h6 class="text-color"><i class="fa fa-home" aria-hidden="true"></i>&nbsp;&nbsp;{{$counter->shop_name}}</h6>
+                                    <div class="col-12">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <h6 class="text-color"><i class="fa fa-home"
+                                                        aria-hidden="true"></i>&nbsp;&nbsp;{{ $counter->shop_name }}</h6>
+                                            </div>
+                                            <div class="col-5">
+                                                <h6 class="text-color"> |&nbsp;&nbsp;<i class="fa fa-map-marker"
+                                                        aria-hidden="true"></i>&nbsp;&nbsp;{{ $counter->address }}</h6>
+                                            </div>
+                                            <div class="col-4">
+                                                <h6 class="text-color"><i class="fa fa-phone"
+                                                        aria-hidden="true"></i>&nbsp;&nbsp;{{ $counter->phno }},{{ $counter->otherno }}
+                                                </h6>
+                                            </div>
                                         </div>
-                                        <div class="col-5">
-                                            <h6 class="text-color"> |&nbsp;&nbsp;<i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp;&nbsp;{{$counter->address}}</h6>
-                                        </div>
-                                        <div class="col-4">
-                                            <h6 class="text-color"><i class="fa fa-phone" aria-hidden="true"></i>&nbsp;&nbsp;{{$counter->phno}},{{$counter->otherno}}</h6>
-                                        </div>
+
                                     </div>
-
-                                </div>
-
                                 @endforeach
                             </div>
                             <div class="mt-3" style="border:2px solid #780116">
@@ -95,7 +93,7 @@
                                             <h6 class="text-color mt-3">​ရွှေချိန်</h6>
                                             <h6 class="text-color mt-3">သင့်​ငွေ</h6>
                                             @if ($return->remark)
-                                            <h6 class="text-color mt-3">မှတ်ချက်</h6>
+                                                <h6 class="text-color mt-3">မှတ်ချက်</h6>
                                             @endif
                                         </div>
                                         <div class="col-1">
@@ -108,23 +106,25 @@
                                             <h6 class="text-color mt-3">-</h6>
                                             <h6 class="text-color mt-3">-</h6>
                                             @if ($return->remark)
-                                            <h6 class="text-color mt-3">-</h6>
+                                                <h6 class="text-color mt-3">-</h6>
                                             @endif
                                         </div>
                                         <?php
-                                            $product = explode('/',$return->product_gram_kyat_pe_yway);
-                                            ?>
+                                        $product = explode('/', $return->product_gram_kyat_pe_yway);
+                                        ?>
                                         <div class="col-6">
-                                            <h6 class="text-color">{{$return->date}}</h6>
-                                            <h6 class="text-color mt-3"><?php echo explode(' ',$return->created_at)[1] ?></h6>
-                                            <h6 class="text-color mt-3">{{$return->customer_name}}</h6>
-                                            <h6 class="text-color mt-3">{{$code}}</h6>
-                                            <h6 class="text-color mt-3">{{$return->product_type}}</h6>
-                                            <h6 class="text-color mt-3">{{$return->gold_fee}}</h6>
-                                            <h6 class="text-color mt-3">{{$product[1] ? $product[1].'ကျပ်' : ''}} {{$product[2] ? $product[2].'ပဲ' : ''}} {{$product[3] ? $product[3].'ရွေး' : ''}}</h6>
-                                            <h6 class="text-color mt-3">{{$return->gold_fee}}</h6>
+                                            <h6 class="text-color">{{ $return->date }}</h6>
+                                            <h6 class="text-color mt-3"><?php echo explode(' ', $return->created_at)[1]; ?></h6>
+                                            <h6 class="text-color mt-3">{{ $return->customer_name }}</h6>
+                                            <h6 class="text-color mt-3">{{ $code }}</h6>
+                                            <h6 class="text-color mt-3">{{ $return->product_type }}</h6>
+                                            <h6 class="text-color mt-3">{{ $return->gold_fee }}</h6>
+                                            <h6 class="text-color mt-3">{{ $product[1] ? $product[1] . 'ကျပ်' : '' }}
+                                                {{ $product[2] ? $product[2] . 'ပဲ' : '' }}
+                                                {{ $product[3] ? $product[3] . 'ရွေး' : '' }}</h6>
+                                            <h6 class="text-color mt-3">{{ $return->gold_fee }}</h6>
                                             @if ($return->remark)
-                                            <h6 class="text-color mt-3">{{$return->remark}}</h6>
+                                                <h6 class="text-color mt-3">{{ $return->remark }}</h6>
                                             @endif
                                         </div>
                                     </div>
@@ -132,13 +132,15 @@
                             </div>
 
 
-                        {{-- </div> --}}
-                    </div>
+                            {{-- </div> --}}
+                        </div>
 
                     </div>
                     <div class="row justify-content-center d-flex">
-                        <button id="print" class="btn btn-color" type="button" onclick="print()"> <span><i class="fa fa-print"></i> Print</span> </button>
-                        <button  class="btn btn-secondary ml-3" type="button" onclick="cancel()"> <span> Cancel</span> </button>
+                        <button id="print" class="btn btn-color" type="button" onclick="print()"> <span><i
+                                    class="fa fa-print"></i> Print</span> </button>
+                        <button class="btn btn-secondary ml-3" type="button" onclick="cancel()"> <span> Cancel</span>
+                        </button>
                     </div>
                 </div>
             </section>
@@ -156,22 +158,22 @@
     </div>
 @endsection
 @push('scripts')
-<script src="{{asset('js/jquery.PrintArea.js')}}" type="text/JavaScript"></script>
-<script type="text/javascript">
+    <script src="{{ asset('js/jquery.PrintArea.js') }}" type="text/JavaScript"></script>
+    <script type="text/javascript">
+        function print() {
+            var mode = 'iframe'; //popup
+            var close = mode == "popup";
+            var options = {
+                mode: mode,
+                popClose: close
+            };
+            $(".printableArea").printArea(options);
+        }
 
-    function print(){
-        var mode = 'iframe'; //popup
-        var close = mode == "popup";
-        var options = {
-            mode: mode,
-            popClose: close
-        };
-        $(".printableArea").printArea(options);
-    }
-    function cancel(){
-        // window.open('https://test.shweshops.com/backside/shop_owner/return_list');
-        window.location.href = "{{ route('backside.shop_owner.pos.return_list')}}";
-    }
+        function cancel() {
+            // window.open('https://test.shweshops.com/backside/shop_owner/return_list');
+            window.location.href = "{{ route('backside.shop_owner.pos.return_list') }}";
+        }
     </script>
 @endpush
 @push('css')
