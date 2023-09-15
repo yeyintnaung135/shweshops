@@ -192,7 +192,7 @@
                                         <p class="text-center">Are you Sure to Delete this List?</p>
                                     </div>
                                     <div class="modal-footer text-center">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCLE</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
                                         <button type="button" class="btn btn-color" onclick="suredelete({{$purchase->id}})">DELETE</button>
                                     </div>
                                 </div>

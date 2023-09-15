@@ -417,16 +417,13 @@ class PosController extends Controller
     //gold
     public function purchase_list(): View
     {
-        $purchases = PosPurchase::where('shop_owner_id', $this->get_shopid())
-            ->select('product_gram_kyat_pe_yway', 'decrease_pe_yway')
-            ->get();
         $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->select('id', 'name')->get();
         $quals = PosQuality::all();
         $cats = Category::select('id', 'mm_name')->get();
         $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
 
         if (PosAssignGoldPrice::where('shop_owner_id', $this->get_shopid())->exists()) {
-            return view('backend.pos.purchase_list', ['counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
+            return view('backend.pos.purchase_list', ['counters' => $counters, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
         } else {
             Session::flash('message', '​ရွှေ​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
@@ -782,15 +779,12 @@ class PosController extends Controller
     public function kyout_purchase_list(): View
     {
         $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
-        $purchases = PosKyoutPurchase::where('shop_owner_id', $this->get_shopid())
-            ->select('gold_gram_kyat_pe_yway', 'decrease_pe_yway')
-            ->get();
         $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->select('id', 'name')->get();
         $dias = PosDiamond::where('shop_owner_id', $this->get_shopid())->select('diamond_name')->get();
         $cats = Category::select('id', 'mm_name')->get();
         $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
         if (PosAssignGoldPrice::where('shop_owner_id', $this->get_shopid())->exists()) {
-            return view('backend.pos.kyout_purchase_list', ['counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'dias' => $dias, 'cats' => $cats]);
+            return view('backend.pos.kyout_purchase_list', ['counters' => $counters, 'sups' => $suppliers, 'dias' => $dias, 'cats' => $cats]);
         } else {
             Session::flash('message', '​ရွှေ​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 

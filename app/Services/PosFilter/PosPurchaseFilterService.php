@@ -46,17 +46,17 @@ class PosPurchaseFilterService
         }
 
         // Additional filters
-        if ($supId) {
+        $query->when($supId !== 'all', function ($query) use ($supId) {
             $query->where('supplier_id', $supId);
-        }
+        });
 
-        if ($qualId) {
+        $query->when($qualId !== 'all', function ($query) use ($qualId) {
             $query->where('quality_id', $qualId);
-        }
+        });
 
-        if ($catId) {
+        $query->when($catId !== 'all', function ($query) use ($catId) {
             $query->where('category_id', $catId);
-        }
+        });
 
         return $query;
     }
@@ -73,7 +73,7 @@ class PosPurchaseFilterService
 
         $query = PosKyoutPurchase::select(
             'id', 'gold_name', 'supplier_id', 'quality_id', 'code_number', 'sell_flag',
-            'gold_gram_kyat_pe_yway', 'stock_qty', 'capital', 'date', 'diamonds'
+            'gold_gram_kyat_pe_yway', 'decrease_pe_yway', 'stock_qty', 'capital', 'date', 'diamonds'
         );
 
         $query->when($fCounter !== null, function ($query) use ($shopId, $fCounter) {
@@ -93,17 +93,17 @@ class PosPurchaseFilterService
         }
 
         // Additional filters
-        if ($supId) {
+        $query->when($supId !== 'all', function ($query) use ($supId) {
             $query->where('supplier_id', $supId);
-        }
+        });
 
-        if ($diamond) {
+        $query->when($diamond !== 'all', function ($query) use ($diamond) {
             $query->where('diamonds', $diamond);
-        }
+        });
 
-        if ($catId) {
+        $query->when($catId !== 'all', function ($query) use ($catId) {
             $query->where('category_id', $catId);
-        }
+        });
 
         return $query;
     }
@@ -140,13 +140,13 @@ class PosPurchaseFilterService
         }
 
         // Additional filters
-        if ($quality) {
+        $query->when($quality !== 'all', function ($query) use ($quality) {
             $query->where('quality', $quality);
-        }
+        });
 
-        if ($catId) {
+        $query->when($catId !== 'all', function ($query) use ($catId) {
             $query->where('category_id', $catId);
-        }
+        });
 
         return $query;
     }

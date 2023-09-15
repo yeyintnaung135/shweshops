@@ -275,13 +275,13 @@
                                             <!--</select>-->
                                         </div>
                                     </div>
-                                    
+
                                     <?php  $diamonds =explode(',',$purchase->diamonds);
                                         $carrats = explode(',',$purchase->carrats);
                                         $counts = explode(',',$purchase->counts);
                                         $yaties = explode(',',$purchase->yaties);
                                         $bes = explode(',',$purchase->bes); ?>
-                    
+
                                     <div class="row" >
                                         <div class="col-6" id="add_diamond">
                                             @for ($i = 0; $i < count($diamonds)-1; $i++)
@@ -312,8 +312,8 @@
                                     </div>
                                 </div>
 
-                           
-                            
+
+
                                 <div class="offset-1 col-3">
                                     <label for="stock_qty">အ​ရေအတွက်</label>
                                     <input type="text" name="stock_qty" class="form-control" value="{{$purchase->stock_qty}}">
@@ -382,7 +382,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (Auth::guard('shop_owner')->user()->pos_only == 'no')
+                            @if ($shopowner->pos_only == 'no')
                             <!-- ShweShop Item -->
                             <div class="col-12 mt-3" >
                                 <label for="shwe_item">Shwe Shop Item တွင်​ပြောင်းမည်</label>

@@ -89,43 +89,33 @@
                             <option value="{{$sup->id}}">{{$sup->name}}</option>
                             @endforeach
                         </select> --}}
-                                    <input type="hidden" id="print_gtype" value="All">
                                     <select name="" id="qual" class="mt-2 form-control">
-                                        <option selected disabled value="">ရှာရန်</option>
+                                        <option selected value="all">အားလုံး</option>
                                         <option value="Grade A">Grade A</option>
                                         <option value="Grade B">Grade B</option>
                                         <option value="Grade C">Grade C</option>
                                         <option value="Grade D">Grade D</option>
                                     </select>
-                                    <input type="hidden" id="print_cat" value="All">
                                     <select name="" id="cat" class="mt-2 form-control">
-                                        <option selected disabled value="">ရှာရန်</option>
+                                        <option selected value="all">အားလုံး</option>
                                         @foreach ($cats as $cat)
                                             <option value="{{ $cat->id }}">{{ $cat->mm_name }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" id="supid">
-                                    <input type="hidden" id="qualid">
-                                    <input type="hidden" id="catid">
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="card mt-2">
-                        <?php $tot_g = 0;
-                        foreach ($purchases as $pg) {
-                            $tot_g += $pg->product_gram;
-                        }
-                        ?>
                         <div class="card-body">
                             <div class="row">
-                                <div class="offset-6 col-3 card" style="max-height: 70px;">
+                                <div class="col-3 card" style="max-height: 70px;">
                                     <h6 class="text-color mt-2">စုစု​ပေါင်းအ​ရေအတွက် &nbsp;&nbsp;&nbsp;<span
-                                            id="tot_qty">{{ count($purchases) }}</span></h6>
+                                            id="tot_qty">0</span></h6>
                                 </div>
                                 <div class="col-3 card" style="max-height: 70px;">
                                     <h6 class="text-color mt-2">စုစု​ပေါင်းအ​လေးချိန် &nbsp;&nbsp;&nbsp;<span
-                                            id="tot_g">{{ $tot_g }}</span> g<br>(Gram)</h6>
+                                            id="tot_g">0</span> g<br>(Gram)</h6>
                                 </div>
                             </div>
                             <div class=" table-responsive text-black">
@@ -169,6 +159,8 @@
                 "dateFormat": "yy-mm-dd",
                 changeYear: true
             });
+
+            var tot_g = 0;
 
             var platinumPurchaseTable = $('#platinumPurchaseTable').DataTable({
                 processing: true,
@@ -248,6 +240,26 @@
                         },
                     },
                 ],
+
+                drawCallback: function(settings) {
+                    var api = this.api();
+                    var purchasesData = api.rows().data(); // Access the data in the current view
+
+                    // Reset the totals to 0 before recalculating
+                    tot_g = 0;
+
+                    // Calculate totals based on the data in the current view
+                    for (var i = 0; i < purchasesData.length; i++) {
+                        var pg = purchasesData[i];
+
+                        tot_g += parseFloat(pg.product_gram);
+                    }
+
+                    // Update the HTML elements with the recalculated totals
+                    $('#tot_qty').text(purchasesData.length);
+                    $('#tot_g').text(tot_g);
+                },
+
                 dom: 'lBfrtip',
                 "responsive": true,
                 "autoWidth": false,
@@ -258,21 +270,21 @@
                         customize: function(win) {
                             var tot_qty = $('#tot_qty').text();
                             var tot_g = $('#tot_g').text();
-                            var date = $('#print_date').val();
-                            var counter = $('#print_counter').val();
-                            var gtype = $('#print_gtype').val();
-                            var ptype = $('#print_ptype').val();
+                            var date = $('#fromDate').val() + ' - ' + $('#toDate').val();
+                            var counter = $('#f_counter option:selected').text();
+                            var gtype = $('#qual option:selected').text();
+                            var cat = $('#cat option:selected').text();
                             var existingData = $(win.document.body).html();
                             var extraText1 = `<div class="row">
-                            <div class="col-3 card" style="max-height: 70px;"><h6 class="text-color mt-2" >စုစု​ပေါင်းအ​ရေအတွက် &nbsp;&nbsp;&nbsp;<span>${tot_qty}</span></h6></div>
-                            <div class="col-3 card" style="max-height: 70px;"><h6 class="text-color mt-2" >စုစု​ပေါင်းအ​လေးချိန် &nbsp;&nbsp;&nbsp;<span>${tot_g}</span>  g<br>(Gram)</h6></div>
-                        </div>`;
+                <div class="col-3 card" style="max-height: 70px;"><h6 class="text-color mt-2" >စုစု​ပေါင်းအ​ရေအတွက် &nbsp;&nbsp;&nbsp;<span>${tot_qty}</span></h6></div>
+                <div class="col-3 card" style="max-height: 70px;"><h6 class="text-color mt-2" >စုစု​ပေါင်းအ​လေးချိန် &nbsp;&nbsp;&nbsp;<span>${tot_g}</span>  g<br>(Gram)</h6></div>
+            </div>`;
                             var extraText2 = `
-                            <h6 class='text-color'>​ကောင်တာ : ${counter}</h6>
-                            <h6 class='text-color'>​​ရွှေရည် : ${gtype}</h6>
-                            <h6 class='text-color'>​အမျိုးအစား : ${ptype}</h6>
-                            <h6 class='text-color'>​Date : ${date}</h6>
-                        `;
+                <h6 class='text-color'>​ကောင်တာ : ${counter}</h6>
+                <h6 class='text-color'>​​ရွှေရည် : ${gtype}</h6>
+                <h6 class='text-color'>​အမျိုးအစား : ${cat}</h6>
+                <h6 class='text-color'>​Date : ${date}</h6>
+            `;
                             $(win.document.body).html(extraText1 + existingData + extraText2);
                         }
                     }
