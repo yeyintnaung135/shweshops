@@ -941,8 +941,8 @@
                                     @endif
 
                                     <div class="col-5 px-1">
-                                        <div onclick="cartclick('{{ $item->id }}','{{ Auth::check() }}')" id="selection-div"
-                                            class="btn btn-primary sn-buynow-button py-3">
+                                        <div onclick="cartclick('{{ $item->id }}','{{ Auth::check() }}')"
+                                            id="selection-div" class="btn btn-primary sn-buynow-button py-3">
                                             <i id="selection-icon" class="fa-solid d-none fa-check"></i>
                                             <span id="selection" class="sop-font buy-font">ရွေးထားမယ်</span>
                                         </div>
@@ -1248,7 +1248,6 @@
 
     <script>
         $(document).ready(function() {
-
             $('#similar_slide').owlCarousel({
                 loop: false,
                 margin: 2,
@@ -1321,12 +1320,8 @@
                     document.getElementById('fbbutton').click();
                 }
             }
-
-
         });
         var busy = false;
-
-
         // zh buynow log
         function buyNow(id) {
             if (`{{ Auth::guard('web')->check() }}`) {
@@ -1399,63 +1394,12 @@
             },
         });
 
-
-
-        function ifChosenSelection() {
-
-            var selection = JSON.parse(window.localStorage.getItem("selection"));
-            console.log("selectionCheck", selection)
-
-            if (selection != null && selection[{!! json_encode($item->id) !!}] != null) {
-                $("#selection-icon").removeClass("d-none");
-                $("#selection").text("ရွေးပြီးပြီ");
-                $("#selection-icon2").removeClass("d-none");
-                $("#selection2").text("ရွေးပြီးပြီ");
-                return
-            }
-        }
-
-
-
-
-        function authAndSelectionCount() {
-            let selected = JSON.parse(window.localStorage.getItem("selection"));
-            let selectedLocalCount = 0;
-            if (selected != null) {
-                selectedLocalCount = Object.keys(selected).length;
-            }
-
-            if (selectedLocalCount >= 3) {
-                $("#selectionNoAuth").html(`<a href="" title="Login" data-toggle="modal" data-target="#orangeModalSubscription">
-                    <div id="selection-div" class="btn btn-primary zh-addtocart-button" >
-                                                    <i id="selection-icon2" class="fa-solid d-none fa-check"></i>
-                                                    <span id="selection2" class="sop-font">ရွေးထားမယ်</span>
-                                                </div>
-                                                    </a>`)
-            }
-            return
-        }
-
-        $(document).ready(function() {
-
-            authAndSelectionCount();
-
-            ifChosenSelection();
-            ifChosenSelectionLength();
-            // ifChosenSelectionLengthM();
-
-        });
-
         jQuery(function($) {
 
             // Chat With Us
             $('#chatWithUs').click(function() {
                 $("#chatWithUsContainer").toggleClass('d-none');
             });
-
-
-
-
 
             $('#button_slide_collection').owlCarousel({
                 loop: false,

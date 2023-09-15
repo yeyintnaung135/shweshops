@@ -27,9 +27,7 @@
                     </div>
 
 
-                    {{--                    new item--}}
-                    {{-- <see_all_forcat :title_prop="'ALL POPULAR ITEMS'"></see_all_forcat> --}}
-                    {{--                    new item--}}
+                 
                     <products_filter
                       :initialitems="{{$pop_items}}"
                       :discount="'no'"

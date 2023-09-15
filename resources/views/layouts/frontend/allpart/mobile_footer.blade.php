@@ -75,9 +75,9 @@
 @include('layouts.frontend.allpart.noti')
 {{-- noti --}}
 {{-- confirm logout --}}
-@include('layouts.frontend.allpart.confirm_logout')
+@include('front.auth.confirm_logout')
 {{-- confirm logout --}}
 <!-- zh pop up -->
-@include('layouts.frontend.allpart.popup')
+@include('front.auth.popup')
 <!-- end zh pop up -->
 

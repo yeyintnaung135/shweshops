@@ -43,26 +43,14 @@ Vue.use("jquery.cookie");
 Vue.use("jquery.sticky");
 Vue.use(BootstrapVue);
 
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
 
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component(
     "main-items-component",
     require("./components/frontend/MainItemsComponent.vue").default
 );
 
-// Vue.component(
-//     "example-component",
-//     require("./components/ExampleComponent.vue").default
-// );
+
 Vue.component(
     "shops-component",
     require("./components/frontend/shops/ShopsComponent.vue").default
@@ -158,17 +146,7 @@ Vue.component(
     "checkout",
     require("./components/frontend/checkout.vue").default
 );
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
 
-//for host name global var
-
-// Vue.prototype.$hostname = "https://" + window.location.hostname;
-
-// Vue.prototype.$hostname = "http://" + window.location.hostname;
 
 Vue.prototype.$hostname ="http://" + window.location.hostname + "/shweshops/public";
 
@@ -534,17 +512,9 @@ const app = new Vue({
         startregisterfirebase: function () {
             console.log("firebase register");
 
-            // Your web app's Firebase configuration
-            // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+          
             const firebaseConfig = {
-                // apiKey: "AIzaSyDBV05S5tzHy_O6Q4nTi_ffvnEz0NY_he0",
-                // authDomain: "shweshops-d289a.firebaseapp.com",
-                // projectId: "shweshops-d289a",
-                // storageBucket: "shweshops-d289a.appspot.com",
-                // messagingSenderId: "583933213745",
-                // appId: "1:583933213745:web:2892f64591132059922910",
-                // measurementId: "G-H4L7Q3SRWM",
-                // Added by Swe
+                
                 apiKey: "AIzaSyD1e63wA6bVB2PVPvA5o-mq7aEtEo8DVdk",
                 authDomain: "shweshops-82763.firebaseapp.com",
                 projectId: "shweshops-82763",

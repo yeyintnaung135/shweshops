@@ -3895,8 +3895,10 @@ header('X-Content-Type-Options: nosniff');
             localStorage.removeItem('from');
             localStorage.removeItem('to');
             localStorage.removeItem('product_quality');
-            document.getElementById("radio-id-9").checked = false;
+            if (document.getElementById("radio-id-9") !== null) {
+                document.getElementById("radio-id-9").checked = false;
 
+            }
         }
 
         window.fbAsyncInit = function() {
@@ -4007,10 +4009,11 @@ header('X-Content-Type-Options: nosniff');
     {{-- add to home screen --}}
     @if (\Illuminate\Support\Facades\Session::has('logined'))
         <script>
-            const upload_fav_localstorage_to_server_after_logined = function (data) {
-                if (typeof  localStorage.getItem(data) !== 'undefined' && localStorage.getItem(data) !== null) {
+            const upload_fav_localstorage_to_server_after_logined = function(data) {
+                if (typeof localStorage.getItem(data) !== 'undefined' && localStorage.getItem(data) !== null) {
                     var tmp_rm = '[]';
-                    if (typeof  localStorage.getItem(data + "_rm") !== 'undefined' && localStorage.getItem(data + "_rm") !== null) {
+                    if (typeof localStorage.getItem(data + "_rm") !== 'undefined' && localStorage.getItem(data + "_rm") !==
+                        null) {
                         var tmp_rm = localStorage.getItem(data + "_rm");
 
                     }
@@ -4035,7 +4038,7 @@ header('X-Content-Type-Options: nosniff');
 
                 }
             }
-            const clearls = async function () {
+            const clearls = async function() {
                 var foratclstmp = localStorage.getItem("foraddtocartitems");
                 var dtlstmp = localStorage.getItem("datenow");
                 var myItem = localStorage.getItem('guest_id');
@@ -4059,8 +4062,8 @@ header('X-Content-Type-Options: nosniff');
 
 
                 window.userid = {{ \Illuminate\Support\Facades\Auth::user('guard')->id }};
-               const tempfu= await upload_fav_localstorage_to_server_after_logined('favourite');
-               const tempcu=await upload_fav_localstorage_to_server_after_logined('cart');
+                const tempfu = await upload_fav_localstorage_to_server_after_logined('favourite');
+                const tempcu = await upload_fav_localstorage_to_server_after_logined('cart');
 
             }
             clearls();
@@ -4386,11 +4389,7 @@ header('X-Content-Type-Options: nosniff');
         // Re-calculate on device orientation change
         window.addEventListener('orientationchange', calculateVh);
     </script>
-    @if (!str_contains(url()->current(), 'product_detail'))
-        <script>
-            localStorage.setItem('removecatcache');
-        </script>
-    @endif
+ 
     <div id="to-top" class="scroll-button">
         <a class="" onclick="scrollToTop()" title="Back to Top">Back to Top</a>
     </div>

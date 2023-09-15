@@ -20,13 +20,7 @@
                 </div>
             </div>
 
-            {{-- <div class="px-md-5 px-3">
-                <img class="d-block w-100 banner" src="{{ asset('images/banner/63da4e19e086d.jpg') }}">
-            </div> --}}
-
-            {{-- End Banner --}}
-
-            {{-- Product Type Links (Desktop) --}}
+         
             <div class="choose-product-type">
                 <div class="row gx-3 px-md-5 px-3 m-0 ">
                     <div class="col-lg-3 col-6">
@@ -112,60 +106,7 @@
 
             
 
-            {{-- Product Type Links (Mobile) --}}
-            {{-- <div class="choose-product-type d-lg-none d-block pt-2">
-                <div class="row gx-3 px-md-5 px-3 m-0">
-                    <div class="col-lg-3 col-6 g-3 mt-0">
-                        <a href="{{ url('see_by_categories') }}/Gold ( ရွှေ )">
-                            <div class="choose-product-type-btn" style="padding:0px !important">
-                                <div class="d-flex justify-content-center">
-                                    <img src="{{ asset('test/forcategory/Gold.png')}}" alt="" srcset="" class="product-icon" style="margin:10px 20px !important; width:90px; height:90px;" >
-                                </div>
-                                <div class="product-text-area text-center">
-                                    <p class="product-text-mmr-mobile">ရွှေထည်</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-6 g-3 mt-0">
-                        <a href="{{ url('see_by_categories') }}/Diamond ( စိန် )">
-                            <div class="choose-product-type-btn" style="padding:0px !important">
-                                <div class="d-flex justify-content-center">
-                                    <img src="{{ asset('test/forcategory/Diamond.png')}}" alt="" srcset="" class="product-icon" style="margin:10px 20px !important; width:90px; height:90px;" >
-                                </div>
-                                <div class="product-text-area text-center">
-                                    <p class="product-text-mmr-mobile">စိန်ထည်</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-6 g-3 mt-0">
-                        <a href="{{ url('see_by_categories') }}/Platinum ( ပလက်တီနမ် )">
-                            <div class="choose-product-type-btn" style="padding:0px !important">
-                                <div class="d-flex justify-content-center">
-                                    <img src="{{ asset('test/forcategory/Platinum.png')}}" alt="" srcset="" class="product-icon" style="margin:10px 20px !important; width:90px; height:90px;" >
-                                </div>
-                                <div class="product-text-area text-center">
-                                    <p class="product-text-mmr-mobile">ပလက်တီနမ်</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-6 g-3 mt-0">
-                        <a href="{{ url('see_by_categories') }}/White Gold ( ရွှေဖြူ )">
-                            <div class="choose-product-type-btn" style="padding:0px !important">
-                                <div class="d-flex justify-content-center">
-                                    <img src="{{ asset('test/forcategory/WhiteGold.png')}}" alt="" srcset="" class="product-icon" style="margin:10px 20px !important; width:90px; height:90px;" >
-                                </div>
-                                <div class="product-text-area text-center">
-                                    <p class="product-text-mmr-mobile">ရွှေဖြူ</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div> --}}
-            {{-- End Product Type Links (Mobile) --}}
+         
             
             {{-- Popular Shops --}}
             <div class="px-md-3 px-0">@include('front.popularShops')</div>
@@ -176,7 +117,7 @@
             {{-- For You Products --}}
             <div class="px-md-3 px-0">@include('front.recommendedForYou')</div>
             {{-- End For You Products --}}
-@endif
+             @endif
             
 
             {{-- Highlight Features --}}
