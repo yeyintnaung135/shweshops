@@ -2,206 +2,219 @@
 @section('content')
     <div class="wrapper">
         <!-- Navbar -->
-    @include('layouts.backend.pos_nav')
-    <!-- /.navbar -->
+        @include('layouts.backend.pos_nav')
+        <!-- /.navbar -->
 
         <!-- Main Sidebar Container -->
-    @include('layouts.backend.pos_sidebar')
+        @include('layouts.backend.pos_sidebar')
 
-    <!-- Content Wrapper. Contains page content -->
+        <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper sn-background-light-blue">
-            @if(Session::has('message'))
-
+            @if (Session::has('message'))
                 <x-alert>
 
                 </x-alert>
-        @endif
-        <!-- Content Header (Page header) -->
-        <section class="content-header sn-content-header">
-            <div class="container-fluid">
-                @foreach($shopowner as $shopowner )
-                @endforeach
+            @endif
+            <!-- Content Header (Page header) -->
+            <section class="content-header sn-content-header">
+                <div class="container-fluid">
+                </div><!-- /.container-fluid -->
+            </section>
 
-
-            </div><!-- /.container-fluid -->
-        </section>
-
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-7">
-                <div class="row d-flex">
-                    <h4 class="text-color">ဆိုင်ခွဲစာရင်းများ</h4>
-                    <a class="btn btn-m btn-color ml-3" href="{{route('backside.shop_owner.pos.create_counter')}}">
-                    <i class="fa fa-plus mr-2"></i>Create</a>
-                </div>
-                <div class="row mt-3">
-                    <label for="">From:<input type="date" id="start_date"></label>
-                    <label for="" class="ml-3">To:<input type="date" id="end_date"></label>
-                    <label for="" style="margin-left: 20px;margin-top:30px;">
-                        <a href="#" class="btn btn-color btn-m" onclick="typefilter(2)">Search</a>
-                    </label>
-                </div>
-            </div>
-
-        </div>
-                <div class="card mt-2">
-                    <div class="card-body">
-                        <div class=" table-responsive text-black">
-                        <table class="table table-striped" id="example23">
-                            <thead>
-                                <th>နံပါတ်</th>
-                                <th>​ဆိုင်ခွဲအမည်</th>
-                                <th>​​ကောင်တာအမည်</th>
-                                <th>​ဝန်ထမ်းစုစု​ပေါင်းအ​ရေ​အတွက်</th>
-                                <th>လိပ်စာ</th>
-                                <th>​နေ့စွဲ</th>
-                                <th></th>
-                            </thead>
-                            <tbody class="text-center" id="filter">
-                                <?php $i = 1;?>
-                                @foreach ($counters as $counter)
-                                <tr>
-                                 <td>{{$i++}}</td>
-                                 <td>{{$counter->shop_name}}</td>
-                                 <td>{{$counter->counter_name}}</td>
-                                 <td>{{$counter->staff_no}}</td>
-                                 <td>{{$counter->address}}</td>
-                                 <td> ​
-                                    {{$counter->date}}
-                                 </td>
-                                 <td>
-                                    <a href="#myModal{{$counter->id}}" class="text-danger" data-toggle="modal"><i class="fa fa-trash"></i></a>
-                                    <a href="{{route('backside.shop_owner.pos.edit_counter',$counter->id)}}" class="ml-2 text-warning"><i class="fa fa-edit" ></i></a>
-                                 </td>
-
-                                 <div id="myModal{{$counter->id}}" class="modal">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Delete List</h5>
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p class="text-center">Are you Sure to Delete this List?</p>
-                                            </div>
-                                            <div class="modal-footer text-center">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCLE</button>
-                                                <button type="button" class="btn btn-color" onclick="suredelete({{$counter->id}})">DELETE</button>
-                                            </div>
-                                        </div>
-                                    </div>
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-7">
+                            <div class="row d-flex">
+                                <h4 class="text-color">ဆိုင်ခွဲစာရင်းများ</h4>
+                                <a class="btn btn-m btn-color ml-3"
+                                    href="{{ route('backside.shop_owner.pos.create_counter') }}">
+                                    <i class="fa fa-plus mr-2"></i>Create</a>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-start align-items-center mt-3">
+                            <div class="form-group">
+                                <label for="fromDate" class="form-label">Choose Date</label>
+                                <input type="text" id="fromDate" class="form-control" placeholder="From Date"
+                                    autocomplete="off">
+                            </div>
+                            <div class="form-group mx-3">
+                                <label for="toDate" class="form-label">Choose Date</label>
+                                <input type="text" id="toDate" class="form-control" placeholder="To Date"
+                                    autocomplete="off">
+                            </div>
+                            <div>
+                                <button id="searchButton" class="btn btn-color btn-m mt-3">Filter</button>
+                            </div>
+                        </div>
+                        <div class="card mt-2">
+                            <div class="card-body">
+                                <div class=" table-responsive text-black">
+                                    <table class="table table-striped" id="counterShopTable">
+                                        <thead>
+                                            <th>နံပါတ်</th>
+                                            <th>​ဆိုင်ခွဲအမည်</th>
+                                            <th>​​ကောင်တာအမည်</th>
+                                            <th>​ဝန်ထမ်းစုစု​ပေါင်းအ​ရေ​အတွက်</th>
+                                            <th>လိပ်စာ</th>
+                                            <th>​နေ့စွဲ</th>
+                                            <th></th>
+                                        </thead>
+                                    </table>
                                 </div>
-
-                                </tr>
-                                @endforeach
-
-                            </tbody>
-                        </table>
-                    </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
-    <!-- /.content -->
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        {{-- @include('layouts.backend.footer') --}}
+
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
     </div>
-    <!-- /.content-wrapper -->
-    {{-- @include('layouts.backend.footer') --}}
-
-
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- /.control-sidebar -->
-    </div>
-
 @endsection
 @push('scripts')
     <script>
-        $(document).ready(function(){
-            function alignModal(){
-        var modalDialog = $(this).find(".modal-dialog");
+        $(document).ready(function() {
 
-        // Applying the top margin on modal to align it vertically center
-        modalDialog.css("margin-top", Math.max(0, ($(window).height() - modalDialog.height()) / 2));
-        }
-        // Align modal when it is displayed
-        $(".modal").on("shown.bs.modal", alignModal);
-
-        // Align modal when user resize the window
-        $(window).on("resize", function(){
-            $(".modal:visible").each(alignModal);
-        });
-            $('#example23').DataTable({
-
-                dom: 'Blfrtip',
-                    buttons: [
-                        'copy', 'csv', 'excel', 'pdf', 'print'
-                    ],
-                    processing: true,
-                    "ordering": true,
-                    "info": true,
-                    "paging": true,
-
+            $('#fromDate, #toDate').datepicker({
+                "dateFormat": "yy-mm-dd",
+                changeYear: true
             });
-            $('#example-getting-started').multiselect();
-        });
-        function suredelete(id){
-                // alert('ok');
-                $.ajax({
 
-                    type:'POST',
-
-                    url: '{{route("backside.shop_owner.pos.delete_counter")}}',
-
-                    data:{
-                    "_token":"{{csrf_token()}}",
-                    "id" : id,
-                    },
-
-                    success:function(data){
-                        location.reload();
-                        // console.log('success');
+            var counterShopTable = $('#counterShopTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    "url": "{{ route('backside.shop_owner.pos.get_counter_list') }}",
+                    "data": function(d) {
+                        d.fromDate = $('#fromDate').val();
+                        d.toDate = $('#toDate').val();
                     }
-                })
-        }
+                },
+                columns: [{
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'shop_name',
+                        name: 'shop_name'
+                    },
+                    {
+                        data: 'counter_name',
+                        name: 'counter_name',
+                    },
+                    {
+                        data: 'staff_no',
+                        name: 'staff_no'
+                    },
+                    {
+                        data: 'address',
+                        name: 'address'
+                    },
+                    {
+                        data: 'date',
+                        name: 'date'
+                    },
+                    {
+                        data: 'actions',
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, full, meta) {
+                            return `
+                <a class="btn btn-sm btn-primary" href="${full.actions.edit_url}" title="Edit">
+                    <span class="fa fa-edit"></span>
+                </a>
+                <a class="btn btn-sm btn-danger" onclick="Delete('${full.actions.delete_url}')"
+                    title="Delete">
+                    <span class="fa fa-trash"></span>
+                </a>
+                <form id="delete_form_${full.id}" action="${full.actions.delete_url}" method="POST"
+                    style="display: none;">
+                    @csrf
+                    @method('DELETE')
+                </form>
 
-        function typefilter(val){
-            var dataTable = $('#example23').DataTable();
-            var html = '';
-            var start_date = $('#start_date').val();
-            var end_date = $('#end_date').val();
+            </div>`;
+                        }
+                    },
+                ],
+                dom: 'lBfrtip',
+                "responsive": true,
+                "autoWidth": false,
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                order: [
+                    [5, 'desc']
+                ],
+            });
 
-            $.ajax({
+            //Date Filter
+            $('#searchButton').click(function() {
+                counterShopTable.draw();
+            });
+        });
 
-            type:'POST',
+        function Delete(deleteUrl) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-danger ml-2',
+                    cancelButton: 'btn btn-info'
+                },
+                buttonsStyling: false
+            });
 
-            url: '{{route("backside.shop_owner.pos.counter_type_filter")}}',
-
-            data:{
-            "_token":"{{csrf_token()}}",
-            "start_date" : start_date,
-            "end_date" : end_date,
-            "type" : val,
-            },
-
-            success:function(data){
-                dataTable.clear().draw();
-                $.each(data, function(i, v) {
-                    var url1 = '{{ route('backside.shop_owner.pos.edit_counter', ':counter_id') }}';
-
-                    url1 = url1.replace(':counter_id', v.id);
-                    var html1 = `<div class="d-flex">
-                            <a href="#myModal${v.id}" class="text-danger" data-toggle="modal"><i class="fa fa-trash"></i></a>
-                            <a href="${url1}" class="ml-4 text-warning"><i class="fa fa-edit" ></i></a>
-                        </div>`;
-                    dataTable.row.add([++i,v.shop_name,v.counter_name,v.staff_no,v.address,v.date,html1]).draw();
-                })
+            swalWithBootstrapButtons.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
                 }
-            })
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Check if "Confirm" button was clicked
+                    const deleteForm = document.createElement('form');
+                    deleteForm.action = deleteUrl;
+                    deleteForm.method = 'POST';
+                    deleteForm.style.display = 'none';
+                    deleteForm.innerHTML = `
+        @csrf
+        @method('DELETE')`;
+                    document.body.appendChild(deleteForm);
+                    deleteForm.submit();
+                }
+            });
         }
 
+        $(document).ready(function() {
+            function alignModal() {
+                var modalDialog = $(this).find(".modal-dialog");
+
+                // Applying the top margin on modal to align it vertically center
+                modalDialog.css("margin-top", Math.max(0, ($(window).height() - modalDialog.height()) / 2));
+            }
+            // Align modal when it is displayed
+            $(".modal").on("shown.bs.modal", alignModal);
+
+            // Align modal when user resize the window
+            $(window).on("resize", function() {
+                $(".modal:visible").each(alignModal);
+            });
+        });
     </script>
 @endpush
 @push('css')
@@ -210,17 +223,18 @@
             background: #F0F7FA;
             font-family: 'Myanmar3', Sans-Serif !important;
         }
-        .btn-color{
-        background-color: #780116;
-        color: white;
-    }
-    .btn-color:hover{
+
+        .btn-color {
+            background-color: #780116;
             color: white;
         }
-    .text-color{
-        color: #780116;
-    }
 
+        .btn-color:hover {
+            color: white;
+        }
+
+        .text-color {
+            color: #780116;
+        }
     </style>
 @endpush
-

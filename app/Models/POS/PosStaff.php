@@ -2,6 +2,11 @@
 
 namespace App\Models\POS;
 
+use App\Models\ManagerFav;
+use App\Models\ManagerSelection;
+use App\Models\Role;
+use App\Models\Shops;
+use App\Models\UserNoti;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -21,22 +26,22 @@ class PosStaff extends Model
 
     public function getShopownerAttribute()
     {
-        $shopowner_name = Shopowner::where('id', $this->shopowner_id)->first();
+        $shopowner_name = Shops::where('id', $this->shopowner_id)->first();
         return $shopowner_name;
     }
     public function getFavIdsAttribute()
     {
-        $fav_ids = Manager_fav::where('user_id', $this->id)->get();
+        $fav_ids = ManagerFav::where('user_id', $this->id)->get();
         return $fav_ids;
     }
     public function getSelectionIdsAttribute()
     {
-        $selection_ids = Manager_selection::where('user_id', $this->id)->get();
+        $selection_ids = ManagerSelection::where('user_id', $this->id)->get();
         return $selection_ids;
     }
     public function getNotificationAttribute()
     {
-        $noti = Usernoti::where('receiver_user_id', $this->id)->where('user_type', 'manager')->where('read_by_receiver', 0)->get();
+        $noti = UserNoti::where('receiver_user_id', $this->id)->where('user_type', 'manager')->where('read_by_receiver', 0)->get();
         return $noti;
     }
 }

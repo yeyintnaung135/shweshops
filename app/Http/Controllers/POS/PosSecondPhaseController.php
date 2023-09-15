@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\POS;
 
-use App\Facade\TzGate;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\Logs\BackRoleLogActivityTrait;
 use App\Http\Controllers\Trait\MultipleItem;
@@ -34,6 +33,7 @@ use App\Models\State;
 use App\Models\Township;
 use App\Rules\MatchOldPassword;
 use App\Services\PosFilter\PosItemFilterService;
+use App\Services\PosFilter\PosShopFilterService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -54,21 +54,37 @@ class PosSecondPhaseController extends Controller
 
     public $err_data = [];
 
-    protected $itemsFilterService;
+    protected $itemsFilterService, $shopFilterService;
 
-    public function __construct(PosItemFilterService $itemsFilterService)
+    public function __construct(PosItemFilterService $itemsFilterService, PosShopFilterService $shopFilterService)
     {
         $this->middleware('auth:shop_owners_and_staffs');
         $this->itemsFilterService = $itemsFilterService;
+        $this->shopFilterService = $shopFilterService;
     }
 
 //Staff
-    public function get_staff_list(): View
+    public function staff_list(): View
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $staffs = PosStaff::where('shop_id', $this->get_shopid())->get();
-        return view('backend.pos.staff_list', ['shopowner' => $shopowner, 'staffs' => $staffs]);
+        return view('backend.pos.staff_list');
     }
+
+    public function get_staff_list(Request $request): JsonResponse
+    {
+        $staffs = $this->shopFilterService->filter_staffs($request);
+
+        return DataTables::of($staffs)
+            ->addColumn('actions', function ($staff) {
+                $urls = [
+                    'edit_url' => route('backside.shop_owner.pos.edit_staff', $staff->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_staff', $staff->id),
+                ];
+
+                return $urls;
+            })
+            ->toJson();
+    }
+
     public function get_create_staff(): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
@@ -77,18 +93,12 @@ class PosSecondPhaseController extends Controller
         return view('backend.pos.create_staff', ['shopowner' => $shopowner, 'counters' => $counters, 'role' => $role]);
     }
 
-    public function staff_type_filter(Request $request): JsonResponse
-    {
-        $data = PosStaff::whereBetween('date', [$request->start_date, $request->end_date])->where('shop_id', $this->get_shopid())->get();
-        return response()->json($data);
-    }
-
     public function store_staff(Request $request)
     {
         // dd($request->all());
         //manager
 
-        if ($this->isstaff()) {
+        if ($this->is_staff()) {
             return $this->unauthorize();
         }
         $input = $request->except('_token');
@@ -98,19 +108,13 @@ class PosSecondPhaseController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string', 'max:255'],
             //rules
-            'phone' => 'unique:manager|unique:shop_owners,main_phone',
+            'phone' => 'unique:shop_owners_and_staffs|unique:shops,main_phone',
 
         ];
-        if (isset(Auth::guard('shop_role')->user()->id)) {
-            $this->role('shop_role');
 
-            $input['shop_id'] = $this->role_shop_id;
-            $shop_id = $this->role_shop_id;
-        } else {
-            $input['shop_id'] = Auth::guard('shop_owner')->user()->id;
-            $shop_id = Auth::guard('shop_owner')->user()->id;
-        }
-        $this->BackroleCreateLog($input, $shop_id);
+        $input['shop_id'] = $this->get_shopid();
+
+        $this->BackroleCreateLog($input, $this->get_shopid());
 
         $input['password'] = Hash::make($input['password']);
         $validate = Validator::make($input, $rules);
@@ -373,33 +377,13 @@ class PosSecondPhaseController extends Controller
 
     }
 
-    public function delete_staff(Request $request): JsonResponse
+    public function delete_staff(PosStaff $staff): RedirectResponse
     {
-        $manager = PosStaff::where('id', $request->sid);
-
-        $manager_log = PosStaff::where('id', $request->sid)->first();
-        // dd($manager_log);
-
-        if (Auth::guard('shop_role')->check()) {
-            $this->role('shop_role');
-            if (TzGate::allows($manager_log->shop_id == $this->role_shop_id, $manager_log->role_id)) {
-                $manager->delete();
-            }
-            $shop_id = $this->role_shop_id;
-        } else {
-            $this->role('shop_owner');
-            if (TzGate::allows($this->role == $manager_log->shop_id)) {
-                $manager->delete();
-            }
-            $shop_id = "yahoo";
-        }
-
-        $this->BackroleDeleteLog($manager_log, $shop_id);
+        $staff->delete();
+        $this->BackroleDeleteLog($staff, $this->get_shopid());
 
         Session::flash('message', 'Staff was successfully Deleted!');
-        return response()->json([
-            'data' => 'success',
-        ], 200);
+        return redirect()->route('backside.shop_owner.pos.staff_list');
     }
 
     public function check_staff_code(Request $request): JsonResponse
@@ -419,12 +403,24 @@ class PosSecondPhaseController extends Controller
 
     //Supplier
 
-    public function get_supplier_list(): View
+    public function supplier_list(): View
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->get();
+        return view('backend.pos.supplier_list');
+    }
 
-        return view('backend.pos.supplier_list', ['shopowner' => $shopowner, 'suppliers' => $suppliers]);
+    public function get_supplier_list(Request $request): JsonResponse
+    {
+        $suppliers = $this->shopFilterService->filter_suppliers($request);
+
+        return DataTables::of($suppliers)
+            ->addColumn('actions', function ($supplier) {
+                $urls = [
+                    'edit_url' => route('backside.shop_owner.pos.edit_supplier', $supplier->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_supplier', $supplier->id),
+                ];
+                return $urls;
+            })
+            ->toJson();
     }
 
     public function get_create_supplier(): View
@@ -1275,7 +1271,7 @@ class PosSecondPhaseController extends Controller
     }
     public function get_shop_edit()
     {
-        if ($this->isstaff()) {
+        if ($this->is_staff()) {
             return $this->unauthorize();
         }
         $shopowner = Shops::where('id', $this->get_shopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
@@ -1284,7 +1280,7 @@ class PosSecondPhaseController extends Controller
 
     public function shop_update(Request $request, $id)
     {
-        if ($this->isstaff()) {
+        if ($this->is_staff()) {
             return $this->unauthorize();
         }
         //remove token and method from request

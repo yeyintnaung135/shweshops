@@ -2,6 +2,8 @@
 
 namespace App\Models\POS;
 
+use App\Models\State;
+use App\Models\Township;
 use Illuminate\Database\Eloquent\Model;
 use MongoDB\Laravel\Eloquent\SoftDeletes;
 
