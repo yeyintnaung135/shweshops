@@ -208,6 +208,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
 
         // Stock List
         Route::get('/stock_lists', [PosSecondPhaseController::class, 'get_stock_lists'])->name('pos.stock_lists');
+        Route::get('/get_stock_lists', [PosSecondPhaseController::class, 'stock_lists'])->name('pos.get_stock_lists');
         Route::post('/tab_stocklists', [PosSecondPhaseController::class, 'tab_stock_lists'])->name('pos.tab_stocklists');
 
         // Shop Profile

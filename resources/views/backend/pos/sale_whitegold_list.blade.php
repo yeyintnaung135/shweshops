@@ -144,7 +144,6 @@
                             <thead>
                                 <th>နံပါတ်</th>
                                 <th>ရွှေဖြူအမည်</th>
-                                <th></th>
                                 <th>ကုဒ်နံပါတ်</th>
                                 <th>စုစု​ပေါင်းအ​ရေ​အတွက်</th>
                                 <th>ရောင်းစျေး</th>
@@ -201,13 +200,6 @@
         {
             data: 'whitegold_name',
             name: 'whitegold_name'
-        },
-        {
-        data: 'purchase',
-        name: 'purchase',
-        render: function(data, type, row) {
-            return data ? data : '-';
-        },
         },
         {
             data: 'code_number',
@@ -307,9 +299,7 @@
                 }
             }
         ],
-        order: [
-            [8, 'desc']
-        ],
+       
     });
 
     //Date Filter

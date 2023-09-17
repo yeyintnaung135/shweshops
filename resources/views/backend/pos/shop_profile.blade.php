@@ -52,8 +52,8 @@
                                         </div>
                                     @else
                                         <?php
-                                        if (\App\ShopBanner::where('shop_owner_id', $shopowner->id)->first()) {
-                                            $getbanner = \App\ShopBanner::where('shop_owner_id', $shopowner->id)->first()->location;
+                                        if (\App\Models\ShopBanner::where('shop_owner_id', $shopowner->id)->first()) {
+                                            $getbanner = \App\Models\ShopBanner::where('shop_owner_id', $shopowner->id)->first()->location;
                                         } else {
                                             $getbanner = "default.jpg";
                                         }
@@ -110,7 +110,7 @@
                                             <p><span
                                                     class="mm-font">အထည်ပျက်စီး ချို့ယွင်း : </span>{{$shopowner->damaged_product}}
                                                 <span style="font-size: 0.85rem">%</span></p>
-                                            @if(\App\sitesettings::where('id',1)->first()->action === 'on' && $shopowner->pos_only == 'no')
+                                            @if(\App\Models\sitesettings::where('id',1)->first()->action === 'on' && $shopowner->pos_only == 'no')
 
                                                 <p v-if="fbdata.showdv=='yes'">
                                                     <a href="javascript:void(0)" @click="fblogin"
@@ -132,11 +132,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mb-4 px-4 px-md-5">
+                                <div class="row mb-4 px-4 px-md-5 ">
                                     <div class="col-12 col-md-8 col-lg-8  col-xl-6 row">
-                                        @isset(Auth::guard('shop_role')->user()->id)
+                                        @isset(Auth::guard('shop_owners_and_staffs')->user()->id)
                                             <div class="col-6">
-                                                @if(Auth::guard('shop_role')->user()->role_id == 1 || Auth::guard('shop_role')->user()->role_id == 2)
+                                                @if(Auth::guard('shop_owners_and_staffs')->user()->role_id == 1 || Auth::guard('shop_owners_and_staffs')->user()->role_id == 2)
 
                                                     <a href="{{route('backside.shop_owner.pos.shop_edit')}}"
                                                        class="btn btn-primary btn-block"><b>
@@ -146,7 +146,7 @@
                                             </div>
                                         @endisset
 
-                                        @isset(Auth::guard('shop_owner')->user()->id)
+                                        @isset(Auth::guard('shop_owners_and_staffs')->user()->id)
                                             <div class="col-6">
                                                 <a href="{{route('backside.shop_owner.pos.shop_edit')}}"
                                                    class="btn btn-color btn-block"><b><span
@@ -154,7 +154,7 @@
                                                             style="font-family: sans-serif!important">Edit Shop</span></b></a>
                                             </div>
                                         @endisset
-                                        @isset(Auth::guard('shop_owner')->user()->id)
+                                        @isset(Auth::guard('shop_owners_and_staffs')->user()->id)
                                             <div class="col-6">
                                                 <a href="{{route('backside.shop_owner.pos.change.password')}}"
                                                    class="btn btn-color btn-block sop-btn-primary"><b><span

@@ -266,29 +266,6 @@
                                              
                                              <td>{{$purchase->purchase->stock_qty}}</td>  
                                             
-                                             {{-- <td>
-                                                 <a href="#myModal8{{$purchase->id}}" class="text-danger" data-toggle="modal"><i class="fa fa-trash"></i></a> 
-                                                <a href="{{route('backside.shop_owner.pos.edit_wgsale',$purchase->id)}}" class="ml-2 text-warning"><i class="fa fa-edit" ></i></a>
-                                                <a href="{{route('backside.shop_owner.pos.detail_wg_sale',$purchase->id)}}" class="ml-2 text-success"><i class="fa fa-eye" aria-hidden="true"></i></a>
-                                             </td> --}}
-            
-                                             <div id="myModal8{{$purchase->id}}" class="modal">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Delete List</h5>
-                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p class="text-center">Are you Sure to Delete this List?</p>
-                                                        </div>
-                                                        <div class="modal-footer text-center">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCLE</button>
-                                                            <button type="button" class="btn btn-color" onclick="suredelete({{$purchase->id}},4)">DELETE</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
                                             </tr>
                                             @endif
                                             @endforeach
@@ -324,29 +301,7 @@
                                                </td>
                                                 <td>{{$q->qty}}</td>
                                                 <td>{{$purchase->purchase->stock_qty}}</td>  
-                                             {{-- <td>
-                                                 <a href="#myModal1{{$purchase->id}}" class="text-danger" data-toggle="modal"><i class="fa fa-trash"></i></a> 
-                                                <a href="{{route('backside.shop_owner.pos.edit_goldsale',$purchase->id)}}" class="ml-2 text-warning"><i class="fa fa-edit" ></i></a>
-                                                <a href="{{route('backside.shop_owner.pos.detail_goldsale',$purchase->id)}}" class="ml-2 text-success"><i class="fa fa-eye" aria-hidden="true"></i></a>
-                                             </td> --}}
-            
-                                             <div id="myModal1{{$purchase->id}}" class="modal">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Delete List</h5>
-                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p class="text-center">Are you Sure to Delete this List?</p>
-                                                        </div>
-                                                        <div class="modal-footer text-center">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCLE</button>
-                                                            <button type="button" class="btn btn-color" onclick="suredelete({{$purchase->id}},1)">DELETE</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                             
                                             </tr>
                                             @endif
                                             @endforeach
@@ -384,29 +339,7 @@
                                                 <td>{{$q->qty}}</td>
                                                 
                                                 <td>{{$purchase->purchase->stock_qty}}</td>
-                                             {{-- <td>
-                                                <a href="#myModal2{{$purchase->id}}" class="text-danger" data-toggle="modal"><i class="fa fa-trash"></i></a>
-                                                <a href="{{route('backside.shop_owner.pos.edit_kyoutsale',$purchase->id)}}" class="ml-2 text-warning"><i class="fa fa-edit" ></i></a>
-                                                <a href="{{route('backside.shop_owner.pos.detail_kyoutsale',$purchase->id)}}" class="ml-2 text-success"><i class="fa fa-eye" aria-hidden="true"></i></a>
-                                             </td> --}}
-            
-                                             <div id="myModal2{{$purchase->id}}" class="modal">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Delete List</h5>
-                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p class="text-center">Are you Sure to Delete this List?</p>
-                                                        </div>
-                                                        <div class="modal-footer text-center">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCLE</button>
-                                                            <button type="button" class="btn btn-color" onclick="suredelete({{$purchase->id}},2)">DELETE</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            
                                             </tr>
                                             @endif
                                             @endforeach
@@ -440,29 +373,7 @@
                                                 <td>{{$q->qty}}</td>
                                                 
                                                 <td>{{$purchase->purchase->stock_qty}}</td> 
-                                             {{-- <td>
-                                                 <a href="#myModal3{{$purchase->id}}" class="text-danger" data-toggle="modal"><i class="fa fa-trash"></i></a> 
-                                                <a href="{{route('backside.shop_owner.pos.edit_ptmsale',$purchase->id)}}" class="ml-2 text-warning"><i class="fa fa-edit" ></i></a>
-                                                <a href="{{route('backside.shop_owner.pos.detail_ptmsale',$purchase->id)}}" class="ml-2 text-success"><i class="fa fa-eye" aria-hidden="true"></i></a>
-                                             </td> --}}
-            
-                                             <div id="myModal3{{$purchase->id}}" class="modal">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Delete List</h5>
-                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p class="text-center">Are you Sure to Delete this List?</p>
-                                                        </div>
-                                                        <div class="modal-footer text-center">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCLE</button>
-                                                            <button type="button" class="btn btn-color" onclick="suredelete({{$purchase->id}},3)">DELETE</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                             
                                             </tr>
                                             @endif
                                             @endforeach
@@ -496,29 +407,7 @@
                                                 <td>{{$q->qty}}</td>
                                                 
                                                 <td>{{$purchase->purchase->stock_qty}}</td> 
-                                             {{-- <td>
-                                                 <a href="#myModal4{{$purchase->id}}" class="text-danger" data-toggle="modal"><i class="fa fa-trash"></i></a> 
-                                                <a href="{{route('backside.shop_owner.pos.edit_wgsale',$purchase->id)}}" class="ml-2 text-warning"><i class="fa fa-edit" ></i></a>
-                                                <a href="{{route('backside.shop_owner.pos.detail_wg_sale',$purchase->id)}}" class="ml-2 text-success"><i class="fa fa-eye" aria-hidden="true"></i></a>
-                                             </td> --}}
-            
-                                             <div id="myModal4{{$purchase->id}}" class="modal">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Delete List</h5>
-                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p class="text-center">Are you Sure to Delete this List?</p>
-                                                        </div>
-                                                        <div class="modal-footer text-center">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCLE</button>
-                                                            <button type="button" class="btn btn-color" onclick="suredelete({{$purchase->id}},4)">DELETE</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            
                                             </tr>
                                             @endif
                                             @endforeach
@@ -636,7 +525,7 @@
                             </div>
                             <div id="navpills-8" class="tab-pane">
                                 <div class=" table-responsive text-black mt-3">
-                                                                       <table class="table table-striped example23">
+                                         <table class="table table-striped example23">
                                         <thead>
                                              <th style="max-width: 40px;">နံပါတ်</th>
                                             <th>အမျိုးအမည်</th>
@@ -689,7 +578,7 @@
                             </div>
                             <div id="navpills-9" class="tab-pane">
                                 <div class=" table-responsive text-black mt-3">
-                                                                       <table class="table table-striped example23">
+                                        <table class="table table-striped example23">
                                         <thead>
                                              <th style="max-width: 40px;">နံပါတ်</th>
                                             <th>အမျိုးအမည်</th>
@@ -742,7 +631,7 @@
                             </div>
                             <div id="navpills-10" class="tab-pane">
                                 <div class=" table-responsive text-black mt-3">
-                                                                       <table class="table table-striped example23">
+                                        <table class="table table-striped example23">
                                         <thead>
                                              <th style="max-width: 40px;">နံပါတ်</th>
                                             <th>အမျိုးအမည်</th>
@@ -978,16 +867,16 @@
  
             function suredelete(id,type){
                 if(type == 1){
-                    url = '{{route("backside.shop_owner.pos.delete_goldsale")}}';
+                    url = route('backside.shop_owner.pos.delete_goldsale',id);
                 }
                 if(type == 2){
-                    url = '{{route("backside.shop_owner.pos.delete_kyoutsale")}}';
+                    url = route("backside.shop_owner.pos.delete_kyoutsale",id);
                 }
                 if(type == 3){
-                    url = '{{route("backside.shop_owner.pos.delete_ptm_sale")}}';
+                    url = route("backside.shop_owner.pos.delete_ptm_sale",id);
                 }
                 if(type == 4){
-                    url = '{{route("backside.shop_owner.pos.delete_wg_sale")}}';
+                    url = route("backside.shop_owner.pos.delete_wg_sale",id);
                 }
                 // alert(id);
                     $.ajax({

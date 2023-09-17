@@ -441,16 +441,16 @@
  
             function suredelete(id,type){
                 if(type == 1){
-                    url = '{{route("backside.shop_owner.pos.delete_goldsale")}}';
+                    url = route("backside.shop_owner.pos.delete_goldsale",id);
                 }
                 if(type == 2){
-                    url = '{{route("backside.shop_owner.pos.delete_kyoutsale")}}';
+                    url = route("backside.shop_owner.pos.delete_kyoutsale",id);
                 }
                 if(type == 3){
-                    url = '{{route("backside.shop_owner.pos.delete_ptm_sale")}}';
+                    url = route("backside.shop_owner.pos.delete_ptm_sale",id);
                 }
                 if(type == 4){
-                    url = '{{route("backside.shop_owner.pos.delete_wg_sale")}}';
+                    url = route("backside.shop_owner.pos.delete_wg_sale",id);
                 }
                 // alert(id);
                     $.ajax({

@@ -165,7 +165,6 @@
                                 <thead>
                                     <th>နံပါတ်</th>
                                     <th>​ရွှေထည်အမည်</th>
-                                    <th></th>
                                     <th>ကုဒ်နံပါတ်</th>
                                     <th>စုစု​ပေါင်းအ​ရေ​အတွက်</th>
                                     <th>ရောင်းစျေး</th>
@@ -225,13 +224,7 @@ var saleGoldTable = $('#saleGoldTable').DataTable({
         data: 'gold_name',
         name: 'gold_name'
     },
-    {
-        data: 'purchase',
-        name: 'purchase',
-        render: function(data, type, row) {
-            return data ? data : '-';
-        },
-    },
+    
     {
         data: 'code_number',
         name: 'code_number'
@@ -385,9 +378,7 @@ var saleGoldTable = $('#saleGoldTable').DataTable({
         }
     }
     ],
-    order: [
-        [8, 'desc']
-    ],
+    
     });
 
         //Date Filter
