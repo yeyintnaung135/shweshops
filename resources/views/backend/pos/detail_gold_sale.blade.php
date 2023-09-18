@@ -169,7 +169,7 @@
                             </div>
                         </div>
                         <br>
-                      
+
 
                     </div>
                     <div class="col-1">
@@ -183,7 +183,7 @@
                             @csrf
                             @method('DELETE')
                         </form>
-                        
+
                     </div>
                 </div>
 

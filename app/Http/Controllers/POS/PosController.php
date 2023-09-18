@@ -1632,14 +1632,11 @@ class PosController extends Controller
 
         return view('backend.pos.edit_whitegold_purchase', ['shopowner' => $shopowner, 'counters' => $counters, 'categories' => $categories, 'gradeA' => $gradeA, 'gradeB' => $gradeB, 'purchase' => $purchase, 'staffs' => $staffs]);
     }
-    public function delete_wg_purchase(Request $request): JsonResponse
+    public function delete_wg_purchase(PosWhiteGoldPurchase $purchase): RedirectResponse
     {
-        $purchase = PosWhiteGoldPurchase::find($request->pid);
         $purchase->delete();
         Session::flash('message', 'Purchase was successfully Deleted!');
-        return response()->json([
-            'data' => 'success',
-        ], 200);
+        return redirect()->route('backside.shop_owner.pos.wg_purchase_list');
     }
     public function update_wg_purchase(Request $request, $id): RedirectResponse
     {
