@@ -1181,11 +1181,11 @@ class PosSecondPhaseController extends Controller
         return view('backend.pos.stock_lists', ['shopowner' => $shopowner, 'purchases' => $purchases, 'kyoutpurchases' => $kyoutpurchases, 'platinumpurchases' => $platinumpurchases, 'whitegoldpurchases' => $whitegoldpurchases, 'tot_qty' => $qty]);
     }
 
-    public function stock_lists(Request $request):JsonResponse
+    public function stock_lists(Request $request): JsonResponse
     {
         $purchases = $this->itemsFilterService->filter_stocks($request);
         $dataTable = DataTables::of($purchases)
-                   ->toJson();
+            ->toJson();
         return $dataTable;
     }
     public function tab_stock_lists(Request $request): JsonResponse
