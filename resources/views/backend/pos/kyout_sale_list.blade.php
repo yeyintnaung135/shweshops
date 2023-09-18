@@ -117,7 +117,7 @@
                 <div class="card mt-2">
                     <?php $tot_g = 0;$tot_y=0;$tot_p=0;$tot_k=0;$tot_dy=0;$tot_dp=0;$tot_dk=0;$tot_sale=0;
                     foreach ($purchases as $pg) {
-                        $product = explode ("/",$pg->purchase->gold_gram_kyat_pe_yway);
+                        $product = explode ("/",$pg->purchase->product_weight);
                         $decrease = explode ("/",$pg->purchase->decrease_pe_yway);
                         $tot_sale += $pg->amount;
                         $tot_g += $product [0];
@@ -224,8 +224,8 @@ $(document).ready(function() {
         name: 'id'
     },
     {
-        data: 'gold_name',
-        name: 'gold_name'
+        data: 'name',
+        name: 'name'
     },
    
     {
@@ -233,8 +233,8 @@ $(document).ready(function() {
         name: 'code_number'
     },
     {
-    data: 'gold_gram_kyat_pe_yway',
-    name: 'gold_gram_kyat_pe_yway',
+    data: 'product_weight',
+    name: 'product_weight',
     "render": function(data, type, full, meta) {
         // Split the data using '/'
         var arr = data.split('/');
@@ -303,7 +303,7 @@ $(document).ready(function() {
         for (var i = 0; i < purchasesData.length; i++) {
             var pg = purchasesData[i];
             tot_sale += pg.amount;
-            var product = pg.gold_gram_kyat_pe_yway.split('/');
+            var product = pg.product_weight.split('/');
             var decrease = pg.decrease_pe_yway.split('/');
 
             tot_g += parseFloat(product[0]);

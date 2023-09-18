@@ -103,13 +103,13 @@
                                 </tr>
                                 @if ($cancel == 2)
                                 <?php
-                                $product = explode('/',$sale->purchase->gold_gram_kyat_pe_yway);
+                                $product = explode('/',$sale->purchase->product_weight);
                                 $diamond = explode('/',$sale->purchase->diamond_gram_kyat_pe_yway);
                                 $decrease = explode('/',$sale->purchase->decrease_pe_yway);
                                 ?>
                                 @else
                                 <?php
-                                $product = explode('/',$sale->purchase->product_gram_kyat_pe_yway);
+                                $product = explode('/',$sale->purchase->product_weight);
                                 $decrease = explode('/',$sale->purchase->decrease_pe_yway);
                                 $diamond = 'no';
                                 ?>

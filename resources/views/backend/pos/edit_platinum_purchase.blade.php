@@ -67,7 +67,7 @@
                          <div class="row mt-5">
                             <div class="col-3 form-group">
                                 <label for="ptm_name">​ပလက်တီနမ်အမည်</label>
-                                <input type="text" name="ptm_name" class="form-control" value="{{$purchase->platinum_name}}" required>
+                                <input type="text" name="ptm_name" class="form-control" value="{{$purchase->name}}" required>
                             </div>
                             <div class="col-3 form-group">
                                 <label for="quality">​ပလက်တီနမ်အရည်အ​သွေး</label>

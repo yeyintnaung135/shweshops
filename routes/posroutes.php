@@ -201,8 +201,10 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         // Sales
         Route::get('/sale_lists', [PosSecondPhaseController::class, 'get_sale_lists'])->name('pos.sale_lists');
         Route::get('/famous_sale_lists', [PosSecondPhaseController::class, 'get_famous_sale_lists'])->name('pos.famous_sale_lists');
+        Route::get('/get_famous_sale_lists', [PosSecondPhaseController::class, 'famous_sale_lists'])->name('pos.get_famous_sale_lists');
         Route::post('/date_famous', [PosSecondPhaseController::class, 'filter_famous_sale_lists'])->name('pos.date_famous'); // Filter Famous Sale Lists missing in Controller
         Route::get('/income_lists', [PosSecondPhaseController::class, 'get_income_lists'])->name('pos.income_lists');
+        Route::get('/get_income_lists', [PosSecondPhaseController::class, 'income_lists'])->name('pos.get_income_lists');
         Route::post('/tab_salelists', [PosSecondPhaseController::class, 'tab_sale_lists'])->name('pos.tab_salelists');
         Route::post('/tab_incomelists', [PosSecondPhaseController::class, 'tab_income_lists'])->name('pos.tab_incomelists');
 

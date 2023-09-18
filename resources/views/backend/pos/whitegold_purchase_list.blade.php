@@ -179,8 +179,8 @@
                         name: 'id'
                     },
                     {
-                        data: 'whitegold_name',
-                        name: 'whitegold_name'
+                        data: 'name',
+                        name: 'name'
                     },
                     {
                         data: 'quality',

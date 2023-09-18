@@ -116,7 +116,7 @@
 
                                             </div>
                                             <?php
-                                            $product = explode('/',$purchase->purchase->gold_gram_kyat_pe_yway);
+                                            $product = explode('/',$purchase->purchase->product_weight);
                                             $diamond = explode('/',$purchase->purchase->diamond_gram_kyat_pe_yway);
                                             $decrease = explode('/',$purchase->purchase->decrease_pe_yway);
                                             $profit = explode('/',$purchase->purchase->profit);
@@ -143,7 +143,7 @@
                                               <h6 class="text-color mt-4">{{$purchase->address}}</h6>
 
                                               <h6 class="text-color mt-4">{{$purchase->purchase->code_number}}</h6>
-                                              <h6 class="text-color mt-4">{{$purchase->purchase->gold_name}}</h6>
+                                              <h6 class="text-color mt-4">{{$purchase->purchase->name}}</h6>
                                               <h6 class="text-color mt-4">1</h6>
                                               <h6 class="text-color mt-4">{{$purchase->purchase->supplier->name}}</h6>
                                               <h6 class="text-color mt-4">{{$purchase->purchase->quality->name}}</h6>

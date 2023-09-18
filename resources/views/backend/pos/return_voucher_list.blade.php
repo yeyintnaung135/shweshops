@@ -110,7 +110,7 @@
                                             @endif
                                         </div>
                                         <?php
-                                        $product = explode('/', $return->product_gram_kyat_pe_yway);
+                                        $product = explode('/', $return->product_weight);
                                         ?>
                                         <div class="col-6">
                                             <h6 class="text-color">{{ $return->date }}</h6>

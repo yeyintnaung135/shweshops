@@ -9,9 +9,9 @@ class PosWhiteGoldPurchase extends Model
 {
     //
     protected $fillable = [
-        'date', 'shop_owner_id', 'supplier_id', 'quality', 'staff_id', 'whitegold_name', 'whitegold_type',
+        'date', 'shop_owner_id', 'supplier_id', 'quality', 'staff_id', 'name', 'whitegold_type',
         'purchase_price', 'category_id', 'code_number', 'counter_shop', 'qty',
-        'product_gram', 'profit', 'whitegold_price', 'stock_qty',
+        'product_weight', 'profit', 'whitegold_price', 'stock_qty',
         'capital', 'selling_price', 'color', 'sell_flag',
         'remark', 'photo', 'barcode_text', 'type', 'barcode',
     ];

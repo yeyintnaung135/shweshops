@@ -71,13 +71,13 @@
                                     <div class="col-5">
                                         <div class="row">
                                             <div class="col-6 form-group">
-                                                <label for="gold_name">​​ရွှေဖြူအမည်</label>
+                                                <label for="name">​​ရွှေဖြူအမည်</label>
                                                 <select name="purchase_id" id="" onchange="fillValues(this.value)"
                                                     class="form-control select2" required>
                                                     <option value="">​ရွှေဖြူအမည်များ</option>
                                                     @foreach ($purchases as $purchase)
                                                     @if ($purchase->stock_qty > 0)
-                                                        <option value="{{ $purchase->id }}">{{$purchase->code_number}}-{{ $purchase->whitegold_name }}
+                                                        <option value="{{ $purchase->id }}">{{$purchase->code_number}}-{{ $purchase->name }}
                                                         </option>
                                                     @endif
                                                     @endforeach

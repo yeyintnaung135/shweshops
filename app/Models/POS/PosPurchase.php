@@ -10,11 +10,11 @@ class PosPurchase extends Model
     //
 
     protected $fillable = [
-        'date', 'shop_owner_id', 'supplier_id', 'quality_id', 'staff_id', 'gold_name',
+        'date', 'shop_owner_id', 'supplier_id', 'quality_id', 'staff_id', 'name',
         'purchase_price', 'category_id', 'code_number', 'color', 'counter_shop',
-        'product_gram_kyat_pe_yway', 'service_pe_yway', 'gold_price', 'qty',
+        'product_weight', 'service_pe_yway', 'gold_price', 'qty','gold_fee',
         'decrease_pe_yway', 'profit_pe_yway', 'decrease_price', 'stock_qty',
-        'gold_fee', 'profit', 'service_fee', 'selling_price', 'sell_flag',
+        'capital', 'profit', 'service_fee', 'selling_price', 'sell_flag',
         'gold_type', 'remark', 'photo', 'barcode_text', 'type', 'barcode',
     ];
     protected $table = 'pos_purchases';

@@ -206,8 +206,8 @@
                         name: 'id'
                     },
                     {
-                        data: 'gold_name',
-                        name: 'gold_name'
+                        data: 'name',
+                        name: 'name'
                     },
                     {
                         data: 'supplier',
@@ -221,12 +221,12 @@
                         name: 'code_number'
                     },
                     {
-                        data: 'product_gram_kyat_pe_yway_in_gram',
-                        name: 'product_gram_kyat_pe_yway_in_gram'
+                        data: 'product_weight_in_gram',
+                        name: 'product_weight_in_gram'
                     },
                     {
-                        data: 'product_gram_kyat_pe_yway',
-                        name: 'product_gram_kyat_pe_yway',
+                        data: 'product_weight',
+                        name: 'product_weight',
                         "render": function(data, type, full, meta) {
                             // Split the data using '/'
                             var arr = data.split('/');
@@ -301,7 +301,7 @@
                     // Calculate totals based on the data in the current view
                     for (var i = 0; i < purchasesData.length; i++) {
                         var pg = purchasesData[i];
-                        var product = pg.product_gram_kyat_pe_yway.split('/');
+                        var product = pg.product_weight.split('/');
                         var decrease = pg.decrease_pe_yway.split('/');
 
                         tot_g += parseFloat(product[0]);

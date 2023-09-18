@@ -97,7 +97,7 @@
                                                     <h6 class="mt-4">-</h6>
                                                 </div>
                                                 <?php
-                                                $product = explode('/', $purchase->gold_gram_kyat_pe_yway);
+                                                $product = explode('/', $purchase->product_weight);
                                                 $diamond = explode('/', $purchase->diamond_gram_kyat_pe_yway);
                                                 $decrease = explode('/', $purchase->decrease_pe_yway);
                                                 $profit = explode('/', $purchase->profit);
@@ -120,7 +120,7 @@
                                                         {{ $diamond[2] ? $diamond[2] . 'ပဲ' : '' }}
                                                         {{ $diamond[3] ? $diamond[3] . 'ရွေး' : '' }}</h6>
                                                     <h6 class="text-color mt-4">{{ $purchase->code_number }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->gold_name }}</h6>
+                                                    <h6 class="text-color mt-4">{{ $purchase->name }}</h6>
                                                     <h6 class="text-color mt-4">{{ $purchase->supplier->name }}</h6>
                                                     <h6 class="text-color mt-4">{{ $purchase->quality->name }}</h6>
                                                     <h6 class="text-color mt-4">{{ $purchase->gold_type }}</h6>

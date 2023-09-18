@@ -641,7 +641,7 @@ class PosSecondPhaseController extends Controller
                 'shop_owner_id' => $this->get_shopid(),
                 'quality_id' => $request->quality,
                 'category_id' => $request->category_id,
-                'product_gram_kyat_pe_yway' => $request->product_gram . '/' . $request->product_kyat . '/' . $request->product_pe . '/' . $request->product_yway,
+                'product_weight' => $request->product_gram . '/' . $request->product_kyat . '/' . $request->product_pe . '/' . $request->product_yway,
                 //  'gold_price' => $request->gold_price,
                 'gold_fee' => $request->gold_fee,
                 'remark' => $request->remark,
@@ -712,7 +712,7 @@ class PosSecondPhaseController extends Controller
             $purchase->date = $request->date;
             $purchase->quality_id = $request->quality;
             $purchase->category_id = $request->category_id;
-            $purchase->product_gram_kyat_pe_yway = $request->product_gram . '/' . $request->product_kyat . '/' . $request->product_pe . '/' . $request->product_yway;
+            $purchase->product_weight = $request->product_gram . '/' . $request->product_kyat . '/' . $request->product_pe . '/' . $request->product_yway;
             //  'gold_price = $request->gold_price;
             $purchase->gold_fee = $request->gold_fee;
             $purchase->remark = $request->remark;
@@ -762,7 +762,7 @@ class PosSecondPhaseController extends Controller
                 'quality_id' => $return->quality_id,
                 'purchase_price' => $return->gold_fee,
                 'category_id' => $return->category_id,
-                'product_gram_kyat_pe_yway' => $return->product_gram_kyat_pe_yway,
+                'product_weight' => $return->product_weight,
                 'gold_price' => $return->gold_price,
                 'gold_fee' => $return->gold_fee,
                 'remark' => $return->remark,
@@ -964,38 +964,28 @@ class PosSecondPhaseController extends Controller
         return view('backend.pos.famous_lists', ['shopowner' => $shopowner, 'categories' => $categories, 'arr' => $subtotal, 'tot_qty' => $tot_qty, 'qty' => $qty, 'purchases' => $purchases, 'kyoutpurchases' => $kyoutpurchases, 'platinumpurchases' => $platinumpurchases, 'whitegoldpurchases' => $whitegoldpurchases, 'type' => 2]);
     }
 
+    public function famous_sale_lists(Request $request):JsonResponse
+    {
+        $purchases = $this->itemsFilterService->filter_incomes($request);
+        // dd($purchases);
+        $dataTable = DataTables::of($purchases)
+                ->toJson();
+        return $dataTable;
+    }
+
     public function get_income_lists(): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosGoldSale::where('shop_owner_id', $this->get_shopid())->get();
-        $kyoutpurchases = PosKyoutSale::where('shop_owner_id', $this->get_shopid())->get();
-        $platinumpurchases = PosPlatinumSale::where('shop_owner_id', $this->get_shopid())->get();
-        $whitegoldpurchases = PosWhiteGoldSale::where('shop_owner_id', $this->get_shopid())->get();
-        $qty = PosPurchaseSale::where('shop_owner_id', $this->get_shopid())->get();
-        $tot_qty = 0;
-        foreach ($qty as $q) {
-            $tot_qty += $q->qty;
-        }
-        $gtoday_income = PosGoldSale::where('shop_owner_id', $this->get_shopid())->get();
-        $ktoday_income = PosKyoutSale::where('shop_owner_id', $this->get_shopid())->get();
-        $ptoday_income = PosPlatinumSale::where('shop_owner_id', $this->get_shopid())->get();
-        $wtoday_income = PosWhiteGoldSale::where('shop_owner_id', $this->get_shopid())->get();
 
-        $subtotal = 0;
-        foreach ($gtoday_income as $g) {
-            $subtotal += explode('/', $g->purchase->profit)[0];
-        }
-        foreach ($ktoday_income as $k) {
-            $subtotal += explode('/', $k->purchase->profit)[0];
-        }
-        foreach ($ptoday_income as $p) {
-            $subtotal += explode('/', $p->purchase->profit)[0];
-        }
-        foreach ($wtoday_income as $w) {
-            $subtotal += explode('/', $w->purchase->profit)[0];
-        }
-
-        return view('backend.pos.sale_lists', ['shopowner' => $shopowner, 'arr' => $subtotal, 'tot_qty' => $tot_qty, 'qty' => $qty, 'purchases' => $purchases, 'kyoutpurchases' => $kyoutpurchases, 'platinumpurchases' => $platinumpurchases, 'whitegoldpurchases' => $whitegoldpurchases, 'type' => 3]);
+        return view('backend.pos.sale_lists', ['shopowner' => $shopowner]);
+    }
+    public function income_lists(Request $request):JsonResponse
+    {
+        $purchases = $this->itemsFilterService->filter_incomes($request);
+        // dd($purchases);
+        $dataTable = DataTables::of($purchases)
+                ->toJson();
+        return $dataTable;
     }
 
     public function tab_sale_lists(Request $request): JsonResponse
@@ -1047,7 +1037,7 @@ class PosSecondPhaseController extends Controller
                 $subtotal += explode('/', $g->purchase->profit)[0];
                 $qty++;
                 $wei1 = '';
-                $weight1 = explode('/', $g->purchase->product_gram_kyat_pe_yway);
+                $weight1 = explode('/', $g->purchase->product_weight);
                 if ($weight1[1] != 0 || $weight1[1] != '') {
                     $wei1 .= $weight1[1] . 'ကျပ်';
                 }
@@ -1057,7 +1047,7 @@ class PosSecondPhaseController extends Controller
                 if ($weight1[3] != 0 || $weight1[3] != '') {
                     $wei1 .= $weight1[3] . 'ရွေး';
                 }
-                $obj1 = ['name' => $g->purchase->gold_name, 'code_number' => $g->purchase->code_number, 'qty' => 1, 'fee' => explode('/', $g->purchase->profit)[0], 'weight' => $wei1];
+                $obj1 = ['name' => $g->purchase->name, 'code_number' => $g->purchase->code_number, 'qty' => 1, 'fee' => explode('/', $g->purchase->profit)[0], 'weight' => $wei1];
                 // dd($obj1);
                 if (!empty($purchase)) {
                     foreach ($purchase as $k => $v) {
@@ -1081,7 +1071,7 @@ class PosSecondPhaseController extends Controller
                 $subtotal += explode('/', $k->purchase->profit)[0];
                 $qty++;
                 $wei2 = '';
-                $weight2 = explode('/', $k->purchase->gold_gram_kyat_pe_yway);
+                $weight2 = explode('/', $k->purchase->product_weight);
                 if ($weight2[1] != 0 || $weight2[1] != '') {
                     $wei2 .= $weight2[1] . 'ကျပ်';
                 }
@@ -1091,7 +1081,7 @@ class PosSecondPhaseController extends Controller
                 if ($weight2[3] != 0 || $weight2[3] != '') {
                     $wei2 .= $weight2[3] . 'ရွေး';
                 }
-                $obj2 = ['name' => $k->purchase->gold_name, 'code_number' => $k->purchase->code_number, 'qty' => 1, 'fee' => explode('/', $k->purchase->profit)[0], 'weight' => $wei2];
+                $obj2 = ['name' => $k->purchase->name, 'code_number' => $k->purchase->code_number, 'qty' => 1, 'fee' => explode('/', $k->purchase->profit)[0], 'weight' => $wei2];
                 // dd($obj2);
                 if (!empty($purchase)) {
                     foreach ($purchase as $ky => $v) {
@@ -1115,7 +1105,7 @@ class PosSecondPhaseController extends Controller
                 $subtotal += explode('/', $p->purchase->profit)[0];
                 $qty++;
                 $wei3 = $p->purchase->product_gram . 'g';
-                $obj3 = ['name' => $p->purchase->platinum_name, 'code_number' => $p->purchase->code_number, 'qty' => 1, 'fee' => explode('/', $p->purchase->profit)[0], 'weight' => $wei3];
+                $obj3 = ['name' => $p->purchase->name, 'code_number' => $p->purchase->code_number, 'qty' => 1, 'fee' => explode('/', $p->purchase->profit)[0], 'weight' => $wei3];
                 // dd($obj1);
                 if (!empty($purchase)) {
                     foreach ($purchase as $k => $v) {
@@ -1139,7 +1129,7 @@ class PosSecondPhaseController extends Controller
                 $subtotal += explode('/', $w->purchase->profit)[0];
                 $qty++;
                 $wei4 = $w->purchase->product_gram . 'g';
-                $obj4 = ['name' => $w->purchase->whitegold_name, 'code_number' => $w->purchase->code_number, 'qty' => 1, 'fee' => explode('/', $w->purchase->profit)[0], 'weight' => $wei4];
+                $obj4 = ['name' => $w->purchase->name, 'code_number' => $w->purchase->code_number, 'qty' => 1, 'fee' => explode('/', $w->purchase->profit)[0], 'weight' => $wei4];
                 // dd($obj1);
                 if (!empty($purchase)) {
                     foreach ($purchase as $k => $v) {
@@ -1161,31 +1151,15 @@ class PosSecondPhaseController extends Controller
     public function get_stock_lists(): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosPurchase::where('shop_owner_id', $this->get_shopid())->get();
-        $kyoutpurchases = PosKyoutPurchase::where('shop_owner_id', $this->get_shopid())->get();
-        $platinumpurchases = PosPlatinumPurchase::where('shop_owner_id', $this->get_shopid())->get();
-        $whitegoldpurchases = PosWhiteGoldPurchase::where('shop_owner_id', $this->get_shopid())->get();
-        $qty = 0;
-        foreach ($purchases as $g) {
-            $qty += $g->stock_qty;
-        }
-        foreach ($kyoutpurchases as $k) {
-            $qty += $k->stock_qty;
-        }
-        foreach ($platinumpurchases as $p) {
-            $qty += $p->stock_qty;
-        }
-        foreach ($whitegoldpurchases as $w) {
-            $qty += $w->stock_qty;
-        }
-        return view('backend.pos.stock_lists', ['shopowner' => $shopowner, 'purchases' => $purchases, 'kyoutpurchases' => $kyoutpurchases, 'platinumpurchases' => $platinumpurchases, 'whitegoldpurchases' => $whitegoldpurchases, 'tot_qty' => $qty]);
+        return view('backend.pos.stock_lists', ['shopowner' => $shopowner]);
     }
 
     public function stock_lists(Request $request):JsonResponse
     {
         $purchases = $this->itemsFilterService->filter_stocks($request);
+        // dd($purchases);
         $dataTable = DataTables::of($purchases)
-                   ->toJson();
+                ->toJson();
         return $dataTable;
     }
     public function tab_stock_lists(Request $request): JsonResponse
@@ -1201,7 +1175,7 @@ class PosSecondPhaseController extends Controller
             foreach ($purchases1 as $g) {
                 $qty += $g->stock_qty;
                 $wei1 = '';
-                $weight1 = explode('/', $g->product_gram_kyat_pe_yway);
+                $weight1 = explode('/', $g->product_weight);
                 if ($weight1[1] != 0 || $weight1[1] != '') {
                     $wei1 .= $weight1[1] . 'ကျပ်';
                 }
@@ -1211,7 +1185,7 @@ class PosSecondPhaseController extends Controller
                 if ($weight1[3] != 0 || $weight1[3] != '') {
                     $wei1 .= $weight1[3] . 'ရွေး';
                 }
-                $obj1 = ['name' => $g->gold_name, 'code_number' => $g->code_number, 'qty' => $g->stock_qty, 'fee' => $g->gold_fee, 'weight' => $wei1, 'date' => $g->date];
+                $obj1 = ['name' => $g->name, 'code_number' => $g->code_number, 'qty' => $g->stock_qty, 'fee' => $g->gold_fee, 'weight' => $wei1, 'date' => $g->date];
                 array_push($purchase, $obj1);
             }
         }
@@ -1224,7 +1198,7 @@ class PosSecondPhaseController extends Controller
             foreach ($purchases2 as $k) {
                 $qty += $k->stock_qty;
                 $wei2 = '';
-                $weight2 = explode('/', $k->gold_gram_kyat_pe_yway);
+                $weight2 = explode('/', $k->product_weight);
                 if ($weight2[1] != 0 || $weight2[1] != '') {
                     $wei2 .= $weight2[1] . 'ကျပ်';
                 }
@@ -1234,7 +1208,7 @@ class PosSecondPhaseController extends Controller
                 if ($weight2[3] != 0 || $weight2[3] != '') {
                     $wei2 .= $weight2[3] . 'ရွေး';
                 }
-                $obj2 = ['name' => $k->gold_name, 'code_number' => $k->code_number, 'qty' => $k->stock_qty, 'fee' => $k->gold_fee, 'weight' => $wei2, 'date' => $k->date];
+                $obj2 = ['name' => $k->name, 'code_number' => $k->code_number, 'qty' => $k->stock_qty, 'fee' => $k->gold_fee, 'weight' => $wei2, 'date' => $k->date];
                 array_push($purchase, $obj2);
             }
         }
@@ -1247,7 +1221,7 @@ class PosSecondPhaseController extends Controller
             foreach ($purchases3 as $p) {
                 $qty += $p->stock_qty;
                 $wei3 = $p->product_gram . 'g';
-                $obj3 = ['name' => $p->platinum_name, 'code_number' => $p->code_number, 'qty' => $p->stock_qty, 'fee' => $p->gold_fee, 'weight' => $wei3, 'date' => $p->date];
+                $obj3 = ['name' => $p->name, 'code_number' => $p->code_number, 'qty' => $p->stock_qty, 'fee' => $p->gold_fee, 'weight' => $wei3, 'date' => $p->date];
                 array_push($purchase, $obj3);
             }
         }
@@ -1260,7 +1234,7 @@ class PosSecondPhaseController extends Controller
             foreach ($purchases4 as $w) {
                 $qty += $w->stock_qty;
                 $wei4 = $p->product_gram . 'g';
-                $obj4 = ['name' => $p->whitegold_name, 'code_number' => $p->code_number, 'qty' => $p->stock_qty, 'fee' => $p->gold_fee, 'weight' => $wei4, 'date' => $p->date];
+                $obj4 = ['name' => $p->name, 'code_number' => $p->code_number, 'qty' => $p->stock_qty, 'fee' => $p->gold_fee, 'weight' => $wei4, 'date' => $p->date];
                 array_push($purchase, $obj4);
             }
         }

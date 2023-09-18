@@ -25,8 +25,8 @@ class PosPurchaseFilterService
         $catId = $request->input('cat');
 
         $query = PosPurchase::select(
-            'id', 'gold_name', 'supplier_id', 'code_number', 'sell_flag',
-            'product_gram_kyat_pe_yway', 'decrease_pe_yway', 'stock_qty', 'gold_fee', 'date'
+            'id', 'name', 'supplier_id', 'code_number', 'sell_flag',
+            'product_weight', 'decrease_pe_yway', 'stock_qty', 'gold_fee', 'date'
         );
 
         $query->when($fCounter !== null, function ($query) use ($shopId, $fCounter) {
@@ -72,8 +72,8 @@ class PosPurchaseFilterService
         $catId = $request->input('cat');
 
         $query = PosKyoutPurchase::select(
-            'id', 'gold_name', 'supplier_id', 'quality_id', 'code_number', 'sell_flag',
-            'gold_gram_kyat_pe_yway', 'decrease_pe_yway', 'stock_qty', 'capital', 'date', 'diamonds'
+            'id', 'name', 'supplier_id', 'quality_id', 'code_number', 'sell_flag',
+            'product_weight', 'decrease_pe_yway', 'stock_qty', 'capital', 'date', 'diamonds'
         );
 
         $query->when($fCounter !== null, function ($query) use ($shopId, $fCounter) {
@@ -119,7 +119,7 @@ class PosPurchaseFilterService
         $catId = $request->input('cat');
 
         $query = PosPlatinumPurchase::select(
-            'id', 'platinum_name', 'quality', 'platinum_type', 'code_number', 'sell_flag',
+            'id', 'name', 'quality', 'platinum_type', 'code_number', 'sell_flag',
             'product_gram', 'stock_qty', 'capital', 'date'
         );
 
@@ -162,7 +162,7 @@ class PosPurchaseFilterService
         $catId = $request->input('cat');
 
         $query = PosWhiteGoldPurchase::select(
-            'id', 'whitegold_name', 'quality', 'whitegold_type', 'code_number', 'sell_flag',
+            'id', 'name', 'quality', 'whitegold_type', 'code_number', 'sell_flag',
             'product_gram', 'stock_qty', 'capital', 'date'
         );
 

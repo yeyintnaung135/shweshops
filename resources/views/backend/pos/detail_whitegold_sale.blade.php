@@ -107,7 +107,7 @@
                                               <h6 class="text-color mt-4">1</h6>
                                               <h6 class="text-color mt-4">{{$purchase->purchase->code_number}}</h6>
 
-                                              <h6 class="text-color mt-4">{{$purchase->purchase->whitegold_name}}</h6>
+                                              <h6 class="text-color mt-4">{{$purchase->purchase->name}}</h6>
                                               <h6 class="text-color mt-4">{{$purchase->purchase->quality}}</h6>
                                               <h6 class="text-color mt-4">{{$purchase->purchase->whitegold_type}}</h6>
                                               <h6 class="text-color mt-4">{{$purchase->purchase->category->mm_name}}</h6>

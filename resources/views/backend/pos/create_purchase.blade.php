@@ -65,8 +65,8 @@
                            </div>
                          <div class="row mt-5">
                             <div class="col-3 form-group">
-                                <label for="gold_name">​ရွှေထည်အမည်</label>
-                                <input type="text" name="gold_name" class="form-control" required>
+                                <label for="name">​ရွှေထည်အမည်</label>
+                                <input type="text" name="name" class="form-control" required>
                             </div>
                             <div class="col-3 form-group">
                                 <label for="supplier_id">ပန်းထိမ်ဆိုင်</label>

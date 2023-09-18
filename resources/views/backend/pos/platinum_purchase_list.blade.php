@@ -180,8 +180,8 @@
                         name: 'id'
                     },
                     {
-                        data: 'platinum_name',
-                        name: 'platinum_name'
+                        data: 'name',
+                        name: 'name'
                     },
                     {
                         data: 'quality',

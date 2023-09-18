@@ -9,9 +9,9 @@ class PosPlatinumPurchase extends Model
 {
     //
     protected $fillable = [
-        'date', 'shop_owner_id', 'supplier_id', 'quality', 'staff_id', 'platinum_name', 'platinum_type',
+        'date', 'shop_owner_id', 'supplier_id', 'quality', 'staff_id', 'name', 'platinum_type',
         'purchase_price', 'category_id', 'code_number', 'counter_shop', 'qty',
-        'product_gram', 'profit', 'platinum_price', 'stock_qty',
+        'product_weight', 'profit', 'platinum_price', 'stock_qty',
         'capital', 'selling_price', 'color', 'sell_flag',
         'remark', 'photo', 'barcode_text', 'type', 'barcode',
     ];

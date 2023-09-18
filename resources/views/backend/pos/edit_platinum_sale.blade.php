@@ -68,11 +68,11 @@
                             <div class="col-5">
                                 <div class="row">
                                     <div class="col-6 form-group">
-                                        <label for="gold_name">​ပလက်တီနမ်အမည်</label>
+                                        <label for="name">​ပလက်တီနမ်အမည်</label>
                                         <select name="purchase_id" id="" onchange="fillValues(this.value)"  class="form-control select2" required>
-                                            <option value="{{$sale->purchase_id}}">{{$sale->purchase->code_number}}-{{$sale->purchase->platinum_name}}</option>
+                                            <option value="{{$sale->purchase_id}}">{{$sale->purchase->code_number}}-{{$sale->purchase->name}}</option>
                                             @foreach ($purchases as $purchase)
-                                            <option value="{{$purchase->id}}">{{$purchase->purchase->code_number}}-{{$purchase->purchase->platinum_name}}</option>
+                                            <option value="{{$purchase->id}}">{{$purchase->purchase->code_number}}-{{$purchase->purchase->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>

@@ -67,7 +67,7 @@
                          <div class="row mt-5">
                             <div class="col-3 form-group">
                                 <label for="wg_name">​ရွှေဖြူအမည်</label>
-                                <input type="text" name="wg_name" class="form-control" value="{{$purchase->whitegold_name}}" required>
+                                <input type="text" name="wg_name" class="form-control" value="{{$purchase->name}}" required>
                             </div>
                             <div class="col-3 form-group">
                                 <label for="quality">​ရွှေဖြူအရည်အ​သွေး</label>

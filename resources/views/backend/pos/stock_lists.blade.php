@@ -46,8 +46,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h6 class="text-color">စုစု​ပေါင်း</h6>
-                                <h4 class="text-color">အ​ရေအတွက် &nbsp;&nbsp;<span  id="tab_qty">{{$tot_qty}}</span></h4>
-                                <input type="hidden" value="{{$tot_qty}}" id="org_qty">
+                                <h4 class="text-color">အ​ရေအတွက် &nbsp;&nbsp;<span  id="tab_qty"></span></h4>
                             </div>
                         </div>
                     </div>
@@ -86,7 +85,7 @@
                             <input type="hidden" value="1" id="type">
                         </ul>
                         <br />
-                        <div class="d-flex justify-content-start align-items-center mt-3">
+                        {{-- <div class="d-flex justify-content-start align-items-center mt-3">
                             <div class="form-group">
                                 <label for="fromDate" class="form-label">Choose Date</label>
                                 <input type="text" id="fromDate" class="form-control" placeholder="From Date"
@@ -100,7 +99,7 @@
                             <div>
                                 <button id="searchButton" class="btn btn-color btn-m mt-3">Filter</button>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="tab-content br-n pn">
                             <div id="navpills-1" class="tab-pane active">
                                 <div class=" table-responsive text-black">
@@ -112,7 +111,6 @@
                                             <th>အ​ရေအတွက်</th>
                                             <th>ဝယ်​​စျေးနှုန်း</th>
                                             <th>Product အ​လေးချိန်<br>(in MM units)</th>
-                                            <th>Date</th> 
                                         </thead>
                                        
                                     </table>
@@ -170,23 +168,23 @@
                 name: 'code_number'
             },
             {
-                data: 'gold_name',
-                name: 'gold_name'
+                data: 'name',
+                name: 'name'
             },
             {
                 data: 'stock_qty',
                 name: 'stock_qty'
             },
             {
-                data: 'gold_fee',
-                name: 'gold_fee'
+                data: 'capital',
+                name: 'capital'
             },
             {
-                data: 'product_gram_kyat_pe_yway',
-                name: 'product_gram_kyat_pe_yway',
+                data: 'product_weight',
+                name: 'product_weight',
                 "render": function(data, type, full, meta) {
                     // Split the data using '/'
-                    var arr = data.split('/');
+                    var arr = data.toString().split('/');
 
                     // Define your conditions to display parts of the data
                     var displayText = '';
@@ -204,13 +202,25 @@
 
                     return displayText;
                 },
-            },
-            {
-                data: 'date',
-                name: 'date'
-            },   
-            
+            },  
+           
         ],
+        drawCallback: function(settings) {
+            var api = this.api();
+            var purchasesData = api.rows().data(); // Access the data in the current view
+
+            // Reset the totals to 0 before recalculating
+            var tot_qty = 0;
+
+            // Calculate totals based on the data in the current view
+            for (var i = 0; i < purchasesData.length; i++) {
+                var pg = purchasesData[i];
+                tot_qty += pg.stock_qty;
+            }
+
+            // Update the HTML elements with the recalculated totals
+            $('#tab_qty').text(tot_qty);
+        },
         dom: 'lBfrtip',
         "responsive": true,
         "autoWidth": false,
