@@ -6,7 +6,6 @@ use App\Http\Controllers\Auth\YkforgotpasswordController;
 use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\message\MessageController;
 use App\Http\Controllers\message\UsermessageController;
-use App\Http\Controllers\ShopOwner\AppDownloadController;
 use App\Http\Controllers\ShopOwner\CollectionController;
 use App\Http\Controllers\ShopOwner\DiscountController;
 use App\Http\Controllers\ShopOwner\EventController;
@@ -212,8 +211,9 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         Route::post('logout', [ShopownerLoginController::class, 'logout'])->name('logout');
 
         // App File Download
-        Route::get('/app-files/android', [AppDownloadController::class, 'android'])->name('app-files.android');
-        Route::get('/app-files/download/{appFile}', [AppDownloadController::class, 'download'])->name('app-files.download');
+        //INFO currently disabled because the application is not available yet
+        // Route::get('/app-files/android', [AppDownloadController::class, 'android'])->name('app-files.android');
+        // Route::get('/app-files/download/{appFile}', [AppDownloadController::class, 'download'])->name('app-files.download');
 
         // User Messages
         Route::post('/sendmessage', [UsermessageController::class, 'sendmessagetoshopowner']);
