@@ -100,7 +100,7 @@
                                               <h6 class="text-color mt-4">{{$purchase->amount}} ကျပ်</h6>
                                               <h6 class="text-color mt-4">{{$purchase->amount}} ကျပ်</h6>
 
-                                              <h6 class="text-color mt-4">{{$purchase->purchase->product_gram}} gram</h6>
+                                              <h6 class="text-color mt-4">{{$purchase->purchase->product_weight}} gram</h6>
                                               <h6 class="text-color mt-4">{{$purchase->customer_name}}</h6>
                                               <h6 class="text-color mt-4">{{$purchase->phone}}</h6>
                                               <h6 class="text-color mt-4">{{$purchase->address}}</h6>

@@ -87,7 +87,7 @@
                                     </div>
                                     <div class="col-6 form-group">
                                         <label for="product_weight">Product အလေးချိန်</label>
-                                        <input type="number" step="0.01" name="product_gram" placeholder="Gram" id="product_gram" class="form-control" value="{{$purchase->product_gram}}" required>
+                                        <input type="number" step="0.01" name="product_weight" placeholder="Gram" id="product_weight" class="form-control" value="{{$purchase->product_weight}}" required>
                                     </div>
                                 </div>
                             </div>
@@ -346,7 +346,7 @@
         function check_barcode(){
             if($('#print_barcode').is(':checked')){
                 var code = $('#code_number').val();
-                var gram = $('#product_gram').val();
+                var gram = $('#product_weight').val();
                 var barcode_text = $('#barcode_text').val();
                 if(code == '' || gram == ''){
                     swal({
@@ -415,7 +415,7 @@
         }
 
         function calculate_price(){
-            var gram = parseFloat($('#product_gram').val());
+            var gram = parseFloat($('#product_weight').val());
             var ptm_price = parseInt($('#ptm_price').val());
             if(gram){ gram = gram;}else{ gram = 0;}
 

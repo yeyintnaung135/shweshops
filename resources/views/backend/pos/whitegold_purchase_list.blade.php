@@ -198,8 +198,8 @@
                         name: 'code_number'
                     },
                     {
-                        data: 'product_gram',
-                        name: 'product_gram'
+                        data: 'product_weight',
+                        name: 'product_weight'
                     },
                     {
                         data: 'stock_qty',
@@ -251,7 +251,7 @@
                     for (var i = 0; i < purchasesData.length; i++) {
                         var pg = purchasesData[i];
 
-                        tot_g += parseFloat(pg.product_gram);
+                        tot_g += parseFloat(pg.product_weight);
                     }
 
                     // Update the HTML elements with the recalculated totals

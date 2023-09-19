@@ -226,7 +226,7 @@
         function check_barcode(){
             if($('#print_barcode').is(':checked')){
                 var code = $('#code_number').val();
-                var gram = $('#product_gram').val();
+                var gram = $('#product_weight').val();
 
                 var barcode_text = $('#barcode_text').val();
                 if(code == '' || gram == ''){

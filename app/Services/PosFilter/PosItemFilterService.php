@@ -132,40 +132,45 @@ class PosItemFilterService
             $query =  $query4;
         }
         else if($type == 6){
-            $query6 = $query1->where('quality_id',1)->where('pos_purchases.shop_owner_id', $shopId);
-            $query7 = $query2->where('quality_id',1)->where('pos_kyout_purchases.shop_owner_id', $shopId);
+            $query6 = $query1->where('pos_purchases.quality_id',1)->where('pos_purchases.shop_owner_id', $shopId);
+            $query7 = $query2->where('pos_kyout_purchases.quality_id',1)->where('pos_kyout_purchases.shop_owner_id', $shopId);
             $query = $query6->union($query7);
         }
         else if($type == 7){
-            $query6 = $query1->where('quality_id',2)->orwhere('quality_id',3)->where('pos_purchases.shop_owner_id', $shopId);
-            $query7 = $query2->where('quality_id',2)->orwhere('quality_id',3)->where('pos_kyout_purchases.shop_owner_id', $shopId);
+            $query6 = $query1->where('pos_purchases.quality_id',2)->orwhere('quality_id',3)->where('pos_purchases.shop_owner_id', $shopId);
+            $query7 = $query2->where('pos_kyout_purchases.quality_id',2)->orwhere('quality_id',3)->where('pos_kyout_purchases.shop_owner_id', $shopId);
             $query = $query6->union($query7);
         }
         else if($type == 8){
-            $query6 = $query1->where('quality_id',6)->orwhere('quality_id',7)->where('pos_purchases.shop_owner_id', $shopId);
-            $query7 = $query2->where('quality_id',6)->orwhere('quality_id',7)->where('pos_kyout_purchases.shop_owner_id', $shopId);
+            $query6 = $query1->where('pos_purchases.quality_id',6)->orwhere('quality_id',7)->where('pos_purchases.shop_owner_id', $shopId);
+            $query7 = $query2->where('pos_kyout_purchases.quality_id',6)->orwhere('quality_id',7)->where('pos_kyout_purchases.shop_owner_id', $shopId);
             $query = $query6->union($query7);
         }
         else if($type == 9){
-            $query6 = $query1->where('quality_id',4)->orwhere('quality_id',5)->where('pos_purchases.shop_owner_id', $shopId);
-            $query7 = $query2->where('quality_id',4)->orwhere('quality_id',5)->where('pos_kyout_purchases.shop_owner_id', $shopId);
+            $query6 = $query1->where('pos_purchases.quality_id',4)->orwhere('quality_id',5)->where('pos_purchases.shop_owner_id', $shopId);
+            $query7 = $query2->where('pos_kyout_purchases.quality_id',4)->orwhere('quality_id',5)->where('pos_kyout_purchases.shop_owner_id', $shopId);
             $query = $query6->union($query7);
         }
         else if($type == 10){
-            $query6 = $query1->where('quality_id',8)->orwhere('quality_id',9)->where('pos_purchases.shop_owner_id', $shopId);
-            $query7 = $query2->where('quality_id',8)->orwhere('quality_id',9)->where('pos_kyout_purchases.shop_owner_id', $shopId);
+            $query6 = $query1->where('pos_purchases.quality_id',8)->orwhere('quality_id',9)->where('pos_purchases.shop_owner_id', $shopId);
+            $query7 = $query2->where('pos_kyout_purchases.quality_id',8)->orwhere('quality_id',9)->where('pos_kyout_purchases.shop_owner_id', $shopId);
             $query = $query6->union($query7);
         }
         else if($type == 11){
-            $query6 = $query1->where('quality_id',10)->orwhere('quality_id',11)->where('pos_purchases.shop_owner_id', $shopId);
-            $query7 = $query2->where('quality_id',10)->orwhere('quality_id',11)->where('pos_kyout_purchases.shop_owner_id', $shopId);
+            $query6 = $query1->where('pos_purchases.quality_id',10)->orwhere('quality_id',11)->where('pos_purchases.shop_owner_id', $shopId);
+            $query7 = $query2->where('pos_kyout_purchases.quality_id',10)->orwhere('quality_id',11)->where('pos_kyout_purchases.shop_owner_id', $shopId);
             $query = $query6->union($query7);
         }
         else if($type == 1){
             $query = $query1->unionAll($query2)->unionAll($query3)->unionAll($query4);
         }
         else{
-            
+            $cat = explode("12", $type);
+            $query8 = $query1->where('pos_purchases.category_id',$cat[1])->where('pos_purchases.shop_owner_id', $shopId);
+            $query9 = $query2->where('pos_kyout_purchases.category_id',$cat[1])->where('pos_kyout_purchases.shop_owner_id', $shopId);
+            $query10 = $query3->where('pos_platinum_purchases.category_id',$cat[1])->where('pos_platinum_purchases.shop_owner_id', $shopId);
+            $query11 = $query4->where('pos_white_gold_purchases.category_id',$cat[1])->where('pos_white_gold_purchases.shop_owner_id', $shopId);
+            $query = $query8->unionAll($query9)->unionAll($query10)->unionAll($query11);
         }
         
         return $query;

@@ -124,7 +124,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-3 form-group">
-                                                <input type="number" step="0.01" name="product_gram" placeholder="Gram" id="product_gram" class="form-control" required>
+                                                <input type="number" step="0.01" name="product_weight" placeholder="Gram" id="product_weight" class="form-control" required>
 
                                             </div>
                                             <div class="col-3 form-group">
@@ -449,7 +449,7 @@
                     $('#quality').val(data.purchase.quality.name);
                     $('#gold_type').val(data.purchase.gold_type);
                     $('#category').val(data.purchase.category.mm_name);
-                    $('#product_gram').val(data.product[0]);
+                    $('#product_weight').val(data.product[0]);
                     $('#product_kyat').val(data.product[1]);
                     $('#product_pe').val(data.product[2]);
                     $('#product_yway').val(data.product[3]);
