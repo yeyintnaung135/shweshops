@@ -120,7 +120,7 @@ class PosPurchaseFilterService
 
         $query = PosPlatinumPurchase::select(
             'id', 'name', 'quality', 'platinum_type', 'code_number', 'sell_flag',
-            'product_gram', 'stock_qty', 'capital', 'date'
+            'product_weight', 'stock_qty', 'capital', 'date'
         );
 
         $query->when($fCounter !== null, function ($query) use ($shopId, $fCounter) {
@@ -163,7 +163,7 @@ class PosPurchaseFilterService
 
         $query = PosWhiteGoldPurchase::select(
             'id', 'name', 'quality', 'whitegold_type', 'code_number', 'sell_flag',
-            'product_gram', 'stock_qty', 'capital', 'date'
+            'product_weight', 'stock_qty', 'capital', 'date'
         );
 
         $query->when($fCounter !== null, function ($query) use ($shopId, $fCounter) {

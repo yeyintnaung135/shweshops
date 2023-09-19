@@ -378,7 +378,9 @@ var saleGoldTable = $('#saleGoldTable').DataTable({
         }
     }
     ],
-    
+    order: [
+        [6, 'desc']
+    ],
     });
 
         //Date Filter

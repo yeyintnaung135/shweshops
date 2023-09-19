@@ -118,7 +118,7 @@
                 <div class="card mt-2">
                     <?php $tot_g = 0;$tot_sale=0;
                     foreach ($purchases as $pg) {
-                        $product = explode ("/",$pg->purchase->product_gram);
+                        $product = explode ("/",$pg->purchase->product_weight);
                         $tot_sale += $pg->amount;
                         $tot_g += $product [0];
                     }
@@ -206,16 +206,16 @@
             name: 'code_number'
         },
         {
-            data: 'product_gram',
-            name: 'product_gram'
-        },
-        {
             data: 'stock_qty',
             name: 'stock_qty'
         },
         {
             data: 'amount',
             name: 'amount'
+        },
+        {
+            data: 'product_weight',
+            name: 'product_weight'
         },
         {
             data: 'date',
@@ -256,7 +256,7 @@
         for (var i = 0; i < purchasesData.length; i++) {
             var pg = purchasesData[i];
             tot_sale += pg.amount;
-            tot_g += parseFloat(pg.product_gram);
+            tot_g += parseFloat(pg.product_weight);
         }
 
         // Update the HTML elements with the recalculated totals
@@ -299,7 +299,9 @@
                 }
             }
         ],
-       
+        order: [
+            [6, 'desc']
+        ],
     });
 
     //Date Filter

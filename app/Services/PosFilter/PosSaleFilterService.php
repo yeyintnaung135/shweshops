@@ -116,7 +116,7 @@ class PosSaleFilterService
         $catId = $request->input('cat');
 
         $query = PosPlatinumSale::join('pos_platinum_purchases', 'pos_platinum_sales.purchase_id', '=', 'pos_platinum_purchases.id')
-            ->select('pos_platinum_sales.id', 'pos_platinum_sales.amount', 'pos_platinum_sales.date', 'pos_platinum_purchases.name', 'pos_platinum_purchases.code_number', 'pos_platinum_purchases.product_gram');
+            ->select('pos_platinum_sales.id', 'pos_platinum_sales.amount', 'pos_platinum_sales.date', 'pos_platinum_purchases.name', 'pos_platinum_purchases.code_number', 'pos_platinum_purchases.product_weight');
 
         $query->when($fCounter !== null, function ($query) use ($shopId, $fCounter) {
             if ($fCounter === 'all_shop') {
@@ -157,7 +157,7 @@ class PosSaleFilterService
         $catId = $request->input('cat');
 
         $query = PosWhiteGoldSale::join('pos_white_gold_purchases', 'pos_white_gold_sales.purchase_id', '=', 'pos_white_gold_purchases.id')
-            ->select('pos_white_gold_sales.id', 'pos_white_gold_sales.amount', 'pos_white_gold_sales.date', 'pos_white_gold_purchases.name', 'pos_white_gold_purchases.code_number', 'pos_white_gold_purchases.product_gram');
+            ->select('pos_white_gold_sales.id', 'pos_white_gold_sales.amount', 'pos_white_gold_sales.date', 'pos_white_gold_purchases.name', 'pos_white_gold_purchases.code_number', 'pos_white_gold_purchases.product_weight');
 
         $query->when($fCounter !== null, function ($query) use ($shopId, $fCounter) {
             if ($fCounter === 'all_shop') {

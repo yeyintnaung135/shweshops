@@ -107,7 +107,7 @@
                             <input type="hidden" value="1" id="type">
                             @foreach ($categories as $cate)
                             <li class=" nav-item">
-                                <a href="#navpill-{{$cate->id}}" class="nav-link" data-toggle="tab" aria-expanded="false" onClick="changeTab(12{{$cate->id}})">
+                                <a href="#navpill-{{$cate->id}}" class="nav-link" data-toggle="tab" aria-expanded="false" onClick="changeTab(12_{{$cate->id}})">
                                     {{$cate->mm_name}}
                                 </a>
                             </li>
@@ -184,7 +184,6 @@
             name: 'stock_qty'
         },
         ],
-    
         dom: 'lBfrtip',
         "responsive": true,
         "autoWidth": false,

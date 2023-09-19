@@ -186,7 +186,7 @@
                                              <td>{{$purchase->code_number}}</td>
                                              <td>{{$purchase->stock_qty}}</td>
                                              <td>{{$purchase->capital}}</td>
-                                             <td>{{$purchase->product_gram}} g</td>
+                                             <td>{{$purchase->product_weight}} g</td>
                                              <td> ​
                                                 {{$purchase->date}}
                                              </td>
@@ -224,7 +224,7 @@
                                              <td>{{$purchase->code_number}}</td>
                                              <td>{{$purchase->stock_qty}}</td>
                                              <td>{{$purchase->capital}}</td>
-                                             <td>{{$purchase->product_gram}} g</td>
+                                             <td>{{$purchase->product_weight}} g</td>
                                              <td> ​
                                                 {{$purchase->date}}
                                              </td>
@@ -424,7 +424,7 @@
                                              <td>{{$purchase->platinum_type}}</td>
                                              <td>{{$purchase->code_number}}</td>
                                              <td>{{$purchase->stock_qty}}</td>
-                                             <td>{{$purchase->product_gram}}</td>
+                                             <td>{{$purchase->product_weight}}</td>
                                              <td>{{$purchase->capital}}</td>
                                              <td> ​
                                                 {{$purchase->date}}
@@ -486,7 +486,7 @@
                                              <td>{{$purchase->whitegold_type}}</td>
                                              <td>{{$purchase->code_number}}</td>
                                              <td>{{$purchase->stock_qty}}</td>
-                                             <td>{{$purchase->product_gram}}</td>
+                                             <td>{{$purchase->product_weight}}</td>
                                               <td>{{$purchase->capital}}</td>
                                              <td> ​
                                                 {{$purchase->date}}

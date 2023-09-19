@@ -90,7 +90,7 @@
                                                     <h6 class="text-color mt-4">{{ $purchase->selling_price }} ကျပ်</h6>
                                                     <h6 class="text-color mt-4">{{ $purchase->capital }} ကျပ်</h6>
                                                     <h6 class="text-color mt-4">{{ $profit[0] }} {{ $profit[1] }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->product_gram }} gram</h6>
+                                                    <h6 class="text-color mt-4">{{ $purchase->product_weight }} gram</h6>
                                                     <h6 class="text-color mt-4">{{ $purchase->code_number }}</h6>
                                                     <h6 class="text-color mt-4">{{ $purchase->name }}</h6>
                                                     <h6 class="text-color mt-4">{{ $purchase->quality }}</h6>

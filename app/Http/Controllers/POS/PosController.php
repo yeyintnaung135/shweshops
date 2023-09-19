@@ -513,7 +513,7 @@ class PosController extends Controller
                 'purchase_price' => $request->purchase_price,
                 'category_id' => $request->category_id,
                 'code_number' => $request->code_number,
-                'product_weight' => $request->product_gram . '/' . $request->product_kyat . '/' . $request->product_pe . '/' . $request->product_yway,
+                'product_weight' => $request->product_weight . '/' . $request->product_kyat . '/' . $request->product_pe . '/' . $request->product_yway,
                 'decrease_pe_yway' => $request->decrease_pe . '/' . $request->decrease_yway,
                 'profit_pe_yway' => $request->profit_pe . '/' . $request->profit_yway,
                 'service_pe_yway' => $request->service_pe . '/' . $request->service_yway,
@@ -531,7 +531,7 @@ class PosController extends Controller
                 'remark' => $request->remark,
                 'photo' => $filename,
                 'barcode_text' => $request->barcode_text,
-                'barcode' => $request->code_number . '-' . $request->product_gram,
+                'barcode' => $request->code_number . '-' . $request->product_weight,
                 'type' => $request->inlineCheckbox,
             ]);
 
@@ -705,7 +705,7 @@ class PosController extends Controller
             $purchase->purchase_price = $request->purchase_price;
             $purchase->category_id = $request->category_id;
             $purchase->code_number = $request->code_number;
-            $purchase->product_weight = $request->product_gram . '/' . $request->product_kyat . '/' . $request->product_pe . '/' . $request->product_yway;
+            $purchase->product_weight = $request->product_weight . '/' . $request->product_kyat . '/' . $request->product_pe . '/' . $request->product_yway;
             $purchase->decrease_pe_yway = $request->decrease_pe . '/' . $request->decrease_yway;
             $purchase->profit_pe_yway = $request->profit_pe . '/' . $request->profit_yway;
             $purchase->service_pe_yway = $request->service_pe . '/' . $request->service_yway;
@@ -721,7 +721,7 @@ class PosController extends Controller
             $purchase->stock_qty = $request->stock_qty;
             $purchase->remark = $request->remark;
             $purchase->photo = $filename;
-            $purchase->barcode = $request->code_number . '-' . $request->product_gram;
+            $purchase->barcode = $request->code_number . '-' . $request->product_weight;
             $purchase->barcode_text = $request->barcode_text;
             $purchase->type = $request->inlineCheckbox;
             $purchase->save();
@@ -1176,7 +1176,7 @@ class PosController extends Controller
     public function ptm_purchase_list(): View
     {
         $purchases = PosPlatinumPurchase::where('shop_owner_id', $this->get_shopid())
-            ->select('product_gram')
+            ->select('product_weight')
             ->get();
         $cats = Category::select('id', 'mm_name')->get();
         $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
@@ -1279,7 +1279,7 @@ class PosController extends Controller
                 'purchase_price' => $request->purchase_price,
                 'category_id' => $request->category_id,
                 'code_number' => $request->code_number,
-                'product_gram' => $request->product_gram,
+                'product_weight' => $request->product_weight,
                 'platinum_price' => $request->ptm_price,
                 'profit' => $request->profit . '/' . $request->currency1,
                 'platinum_type' => $request->ptm_type,
@@ -1291,7 +1291,7 @@ class PosController extends Controller
                 'photo' => $filename,
                 'capital' => $request->capital,
                 'barcode_text' => $request->barcode_text,
-                'barcode' => $request->code_number . '-' . $request->product_gram,
+                'barcode' => $request->code_number . '-' . $request->product_weight,
                 'type' => $request->inlineCheckbox,
             ]);
 
@@ -1387,7 +1387,7 @@ class PosController extends Controller
             $purchase->purchase_price = $request->purchase_price;
             $purchase->category_id = $request->category_id;
             $purchase->code_number = $request->code_number;
-            $purchase->product_gram = $request->product_gram;
+            $purchase->product_weight = $request->product_weight;
             $purchase->platinum_price = $request->ptm_price;
             $purchase->profit = $request->profit . '/' . $request->currency1;
             $purchase->platinum_type = $request->ptm_type;
@@ -1398,7 +1398,7 @@ class PosController extends Controller
             $purchase->photo = $filename;
             $purchase->capital = $request->capital;
             $purchase->barcode_text = $request->barcode_text;
-            $purchase->barcode = $request->code_number . '-' . $request->product_gram;
+            $purchase->barcode = $request->code_number . '-' . $request->product_weight;
             $purchase->type = $request->inlineCheckbox;
             $purchase->save();
             if ($request->shwe_item == 1) {
@@ -1455,7 +1455,7 @@ class PosController extends Controller
     public function wg_purchase_list(): View
     {
         $purchases = PosWhiteGoldPurchase::where('shop_owner_id', $this->get_shopid())
-            ->select('product_gram')
+            ->select('product_weight')
             ->get();
         $cats = Category::select('id', 'mm_name')->get();
         $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
@@ -1557,7 +1557,7 @@ class PosController extends Controller
                 'purchase_price' => $request->purchase_price,
                 'category_id' => $request->category_id,
                 'code_number' => $request->code_number,
-                'product_gram' => $request->product_gram,
+                'product_weight' => $request->product_weight,
                 'whitegold_price' => $request->wg_price,
                 'profit' => $request->profit . '/' . $request->currency1,
                 'whitegold_type' => $request->wg_type,
@@ -1569,7 +1569,7 @@ class PosController extends Controller
                 'photo' => $filename,
                 'capital' => $request->capital,
                 'barcode_text' => $request->barcode_text,
-                'barcode' => $request->code_number . '-' . $request->product_gram,
+                'barcode' => $request->code_number . '-' . $request->product_weight,
                 'type' => $request->inlineCheckbox,
             ]);
 
@@ -1664,7 +1664,7 @@ class PosController extends Controller
             $purchase->purchase_price = $request->purchase_price;
             $purchase->category_id = $request->category_id;
             $purchase->code_number = $request->code_number;
-            $purchase->product_gram = $request->product_gram;
+            $purchase->product_weight = $request->product_weight;
             $purchase->whitegold_price = $request->wg_price;
             $purchase->profit = $request->profit . '/' . $request->currency1;
             $purchase->whitegold_type = $request->wg_type;
@@ -1675,7 +1675,7 @@ class PosController extends Controller
             $purchase->photo = $filename;
             $purchase->capital = $request->capital;
             $purchase->barcode_text = $request->barcode_text;
-            $purchase->barcode = $request->code_number . '-' . $request->product_gram;
+            $purchase->barcode = $request->code_number . '-' . $request->product_weight;
             $purchase->type = $request->inlineCheckbox;
             $purchase->save();
             if ($request->shwe_item == 1) {

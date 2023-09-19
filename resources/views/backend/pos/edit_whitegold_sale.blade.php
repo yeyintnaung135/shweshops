@@ -118,7 +118,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-3 form-group">
-                                                <input type="number" step="0.01" name="product_gram" placeholder="Gram" id="product_gram" class="form-control" value="{{$sale->purchase->product_gram}}" required>
+                                                <input type="number" step="0.01" name="product_weight" placeholder="Gram" id="product_weight" class="form-control" value="{{$sale->purchase->product_weight}}" required>
 
                                             </div>
                                         </div>
@@ -262,7 +262,7 @@
                     $('#quality').val(data.purchase.quality);
                     $('#whitegold_type').val(data.purchase.whitegold_type);
                     $('#category').val(data.purchase.category.mm_name);
-                    $('#product_gram').val(data.purchase.product_gram);
+                    $('#product_weight').val(data.purchase.product_weight);
                     calculate_quality_price(data.purchase.quality);
                 }
                 })
@@ -287,7 +287,7 @@
         }
 
         function calculate_price(){
-            var gram = parseFloat($('#product_gram').val());
+            var gram = parseFloat($('#product_weight').val());
             var wg_price = parseInt($('#wg_price').val());
             if(gram){ gram = gram;}else{ gram = 0;}
 

@@ -382,6 +382,9 @@ $(document).ready(function() {
             }
             }
         ],
+        order: [
+            [6, 'desc']
+        ],
         });
 
         //Date Filter
