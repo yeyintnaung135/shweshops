@@ -66,7 +66,7 @@ class Shops extends Authenticatable
     public function getFavIdsAttribute()
     {
         if (isset(Auth::guard('shop_owners_and_staffs')->user()->id)) {
-            $fav_ids = ShopOwnersFav::where('user_id', $this->id)->get();
+            $fav_ids = FavouriteItem::where('user_id', $this->id)->get();
             return $fav_ids;
         }
         return ('');

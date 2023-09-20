@@ -67,7 +67,7 @@ Route::group(
         require "superadminroutes.php";
 
         // //for super admin
-        
+
         // //for pos
         require "posroutes.php";
         // //for pos
@@ -84,6 +84,9 @@ Route::group(
         // //for user
         require "userroutes.php";
         // require "payment.php";
+        // User Messages
+        Route::post('/sendmessage', [UsermessageController::class, 'sendmessagetoshopowner']);
+        Route::post('/sendimagemessage', [UsermessageController::class, 'sendimagemessagetoshopowner']);
 
         //for frontend
         Route::post('checkvalidate', [UserLoginandRegisterController::class, 'checkvalidate']);
@@ -147,7 +150,7 @@ Route::group(
 
         Route::get('/temp/see_all_cato', [TempController::class, 'see_all_cato'])->name('temp');
 
-     
+
 
         Route::put('/addtocart', [FrontController::class, 'addtocart_search']);
 
@@ -169,7 +172,7 @@ Route::group(
                 return view('front.temp.addtocart');
             }
         });
-    
+
 
         Route::get('baydin_detail/{id}', function (Request $request, $id) {
             $baydin = Sign::findOrFail($id);
@@ -202,7 +205,7 @@ Route::group(
         Route::post('/mycart/upload_after_logined', [CartController::class, 'upload_after_logined']);
 
 
-// News and Events
+        // News and Events
         Route::get('news&events', [NewsFrontController::class, 'index']);
         Route::get('news_and_events/{id}', [NewsFrontController::class, 'show']);
         Route::get('news', [NewsFrontController::class, 'allNews']);

@@ -1,14 +1,14 @@
 import axios from "axios";
 
 import { reject } from "lodash";
-let hostname = "https://" + window.location.hostname;
+// let hostname = "https://" + window.location.hostname;
 // let hostname = "http://" + window.location.hostname;
-// let hostname = "http://" + window.location.hostname+'/moe/public';
+let hostname = "http://" + window.location.hostname+'/shweshops/public';
 
 const sendmessage = (data) => {
     return new Promise((resolve, reject) => {
         axios
-            .post(hostname + "/backside/shop_owner/sendmessage", { data: data })
+            .post(hostname + "/sendmessage", { data: data })
             .then((response) => {
                 console.log(response);
                 resolve(response);

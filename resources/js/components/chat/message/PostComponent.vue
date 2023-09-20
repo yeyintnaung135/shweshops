@@ -26,7 +26,7 @@
           <div style="margin-bottom: 15px; font-size: 15px">
             {{ this.itemdata.product_code }}
           </div>
-          <div v-if="this.itemdata.YkgetDiscount == 0">
+          <div v-if="this.itemdata.YkgetDiscount === 0">
             <div v-if="this.itemdata.price == 0">
               <div class="price" style="font-size: 17px">Price 0</div>
               <div style="margin-bottom: 15px; font-size: 15px">
@@ -42,7 +42,8 @@
             </div>
           </div>
           <div v-else>
-            <div v-if="this.itemdata.YkgetDiscount.discount_price == 0">
+          <div v-if="this.itemdata.YkgetDiscount !== undefined">
+            <div v-if="this.itemdata.YkgetDiscount.discount_price === undefined">
               <div class="price" style="font-size: 17px">Price 2</div>
               <div style="margin-bottom: 15px; font-size: 15px">
                 {{ this.itemdata.YkgetDiscount.discount_min | pricewithcomma() }} မှ
@@ -55,7 +56,7 @@
                 {{ this.itemdata.YkgetDiscount.discount_price | pricewithcomma() }}
               </div>
             </div>
-          </div>
+          </div></div>
         </div>
       </a>
     </div>
@@ -79,6 +80,7 @@ export default {
       host: "",
       itemdata: "",
       default_photo: "",
+      imgurl:"",
     };
   },
   created() {},

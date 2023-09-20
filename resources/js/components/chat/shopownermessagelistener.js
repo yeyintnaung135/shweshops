@@ -10,20 +10,20 @@ window.Echo = new Echo({
     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
     wsHost: window.location.host,
 
-    wssPort: 6002,
-    wsPort: 6002,
-    forceTLS: true,
+    // wssPort: 6002,
+    wsPort: 6001,
+    // forceTLS: true,
     disableStats: false,
     enabledTransports: ["ws", "wss"],
 
-    authEndpoint: "/broadcasting/auth",
-    // authEndpoint: '/moe/public/broadcasting/auth'
+    // authEndpoint: "/broadcasting/auth",
+    authEndpoint: '/shweshops/public/broadcasting/auth'
 });
 window.onbeforeunload = function (event) {
     allfrommessagefunction.sendwhatshopisoffline(window.userid);
 };
 
-window.Echo.join("yankee.shopowner.channel." + window.userid)
+window.Echo.join("yankee.shopowner.channel.43" )
     .here(() => {
         allfrommessagefunction.sendwhatshopisactive(window.userid);
     })

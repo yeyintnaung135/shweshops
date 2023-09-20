@@ -302,51 +302,14 @@ class DiscountController extends Controller
         }
 
         //for noti
-        $checkShopOwnerFav = DB::table('shop_owners_fav')->where('fav_id', $request->item_id)->pluck('user_id');
-        $checkManagerFav = DB::table('manager_fav')->where('fav_id', $request->item_id)->pluck('user_id');
-        $checkUserFav = DB::table('users_fav')->where('fav_id', $request->item_id)->pluck('user_id');
+       $checkUserFav = DB::table('favourite')->where('fav_id', $request->item_id)->pluck('user_id');
 
         $message = "Item " . $request->item_id . " is on discount!";
         $read_by_receiver = 0;
         $item_id = intval($request->item_id);
-        if (isset(Auth::guard('shop_role')->user()->id)) {
-            $sender_id = Auth::guard('shop_role')->user()->shop_id;
-        } else {
-            $sender_id = Auth::guard('shop_owner')->user()->id;
-        };
-        if (count($checkShopOwnerFav) != 0) {
-            $shop_owners = 'shop_owners';
-            for ($i = 0; $i < count($checkShopOwnerFav); $i++) {
-                $receiver_user_id = $checkShopOwnerFav[$i];
-                $UserNoti = UserNoti::where('sender_shop_id', $sender_id)
-                    ->where('receiver_user_id', $receiver_user_id)
-                    ->where('user_type', $shop_owners);
-                $query = $UserNoti->updateOrInsert([
-                    'sender_shop_id' => $sender_id,
-                    'receiver_user_id' => $receiver_user_id,
-                    'user_type' => $shop_owners,
-                    'item_id' => $item_id,
-                    'message' => $message,
-                    'read_by_receiver' => $read_by_receiver,
-                ]);
-            }
-        }
-        if (count($checkManagerFav) != 0) {
-            $manager = 'manager';
-            for ($i = 0; $i < count($checkManagerFav); $i++) {
-                $receiver_user_id = $checkManagerFav[$i];
-                $UserNoti = UserNoti::where('sender_shop_id', $sender_id)
-                    ->where('receiver_user_id', $receiver_user_id);
-                $query = $UserNoti->updateOrInsert([
-                    'sender_shop_id' => $sender_id,
-                    'receiver_user_id' => $receiver_user_id,
-                    'user_type' => $manager,
-                    'item_id' => $item_id,
-                    'message' => $message,
-                    'read_by_receiver' => $read_by_receiver,
-                ]);
-            }
-        }
+        $sender_id = $this->get_shopid();
+
+     
         if (count($checkUserFav) != 0) {
             $users = 'users';
             for ($i = 0; $i < count($checkUserFav); $i++) {
@@ -368,24 +331,7 @@ class DiscountController extends Controller
         $takecheckphoto = Item::where('id', $item_id)->first();
         $link = url($takecheckphoto->withoutspace_shopname . '/product_detail/' . $item_id);
         $test = Firebase::send($request->item_id, 'Discount Product', $message, $link, 'logo', url($takecheckphoto->check_photo));
-        if (isset(Auth::guard('shop_role')->user()->id)) {
-            $input = $request->except('_token');
 
-            $input['shop_id'] = Auth::guard('shop_role')->user()->shop_id;
-            if ($input['base'] == 'price') {
-                $input['percent'] = $input['percentbyprice'];
-                $input['dec_price'] = $input['price'];
-            }
-            $item = discount::create($input);
-            $discount = Item::where('id', $request->item_id)->first();
-            if ($item) {
-                $discount->tag('Discount');
-            }
-
-            Session::flash('message', 'Your Discount Item was successfully Set');
-
-            return redirect('backside/shop_owner/items/' . $request->item_id);
-        }
 
         $input = $request->except('_token');
 
@@ -394,7 +340,7 @@ class DiscountController extends Controller
             $input['dec_price'] = $input['price'];
         }
 
-        $input['shop_id'] = Auth::guard('shop_owner')->user()->id;
+        $input['shop_id'] = $sender_id;
         $item = discount::create($input);
 
         $discount = Item::where('id', $request->item_id)->first();

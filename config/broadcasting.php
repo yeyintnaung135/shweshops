@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('BROADCAST_DRIVER', 'null'),
+    'default' => env('BROADCAST_DRIVER', 'pusher'),
 
     /*
     |--------------------------------------------------------------------------
@@ -37,16 +37,18 @@ return [
             'app_id' => env('PUSHER_APP_ID'),
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
-//                'host' => '150.95.83.139',
-               'host' => 'localhost',
-                'useTLS'=>true,
-                'port' => 6002,
-                'scheme' => 'https',
-//              'scheme' => 'http',
-                'curl_options' => [
-                    CURLOPT_SSL_VERIFYHOST => 0,
-                    CURLOPT_SSL_VERIFYPEER => 0,
-                ]
+                //                'host' => '150.95.83.139',
+                'host' => 'localhost',
+                'useTLS' => false,
+                'port' => 6001,
+                // 'scheme' => 'https',
+                'scheme' => 'http',
+                // 'curl_options' => [
+                //     CURLOPT_SSL_VERIFYHOST => 0,
+                //     CURLOPT_SSL_VERIFYPEER => 0,
+                // ]
+                'encrypted' => true
+
             ],
         ],
 
