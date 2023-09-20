@@ -1732,14 +1732,12 @@ class PosController extends Controller
     //Gold
     public function sale_gold_list(): View
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosGoldSale::where('shop_owner_id', $this->get_shopid())->get();
-        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->get();
+        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->select('id', 'name')->get();
         $quals = PosQuality::all();
-        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
-        $cats = Category::all();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
+        $cats = Category::select('id', 'mm_name')->get();
 
-        return view('backend.pos.sale_gold_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
+        return view('backend.pos.sale_gold_list', ['counters' => $counters, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
     }
 
     public function get_sale_gold_list(Request $request): JsonResponse
@@ -1950,13 +1948,11 @@ class PosController extends Controller
     //Kyout
     public function sale_kyout_list(): View
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosKyoutSale::where('shop_owner_id', $this->get_shopid())->get();
-        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->get();
+        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->select('id', 'name')->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
+        $cats = Category::select('id', 'mm_name')->get();
         $dias = PosDiamond::where('shop_owner_id', $this->get_shopid())->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
-        $cats = Category::all();
-        return view('backend.pos.kyout_sale_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'dias' => $dias, 'cats' => $cats]);
+        return view('backend.pos.kyout_sale_list', ['counters' => $counters, 'sups' => $suppliers, 'dias' => $dias, 'cats' => $cats]);
     }
 
     public function get_sale_kyout_list(Request $request): JsonResponse
@@ -2161,7 +2157,7 @@ class PosController extends Controller
 
             $shopowner = Shops::find($this->get_shopid());
             Session::flash('message', 'Kyout Sale was successfully Created!');
-            $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->first();
+            $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
             $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             $shop_price = explode('/', $price->shop_price)[0];
             $price15 = explode('/', $price->inprice_15)[0];
@@ -2174,13 +2170,12 @@ class PosController extends Controller
     //Platinum
     public function sale_ptm_list(): View
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosPlatinumSale::where('shop_owner_id', $this->get_shopid())->get();
-        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->get();
+        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->select('id', 'name')->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
+        $cats = Category::select('id', 'mm_name')->get();
         $quals = PosQuality::all();
         $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
-        $cats = Category::all();
-        return view('backend.pos.sale_platinum_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
+        return view('backend.pos.sale_platinum_list', ['counters' => $counters, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
     }
 
     public function get_sale_ptm_list(Request $request): JsonResponse

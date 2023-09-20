@@ -930,60 +930,60 @@ class PosSecondPhaseController extends Controller
 
     public function get_famous_sale_lists(): View
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosGoldSale::where('shop_owner_id', $this->get_shopid())->get();
-        $kyoutpurchases = PosKyoutSale::where('shop_owner_id', $this->get_shopid())->get();
-        $platinumpurchases = PosPlatinumSale::where('shop_owner_id', $this->get_shopid())->get();
-        $whitegoldpurchases = PosWhiteGoldSale::where('shop_owner_id', $this->get_shopid())->get();
-        $qty = PosPurchaseSale::orderBy('qty', 'desc')->where('shop_owner_id', $this->get_shopid())->get();
-        $tot_qty = 0;
-        foreach ($qty as $q) {
-            $tot_qty += $q->qty;
-        }
-        $gtoday_income = PosGoldSale::where('shop_owner_id', $this->get_shopid())->get();
-        $ktoday_income = PosKyoutSale::where('shop_owner_id', $this->get_shopid())->get();
-        $ptoday_income = PosPlatinumSale::where('shop_owner_id', $this->get_shopid())->get();
-        $wtoday_income = PosWhiteGoldSale::where('shop_owner_id', $this->get_shopid())->get();
-
         $categories = Category::all();
 
-        $subtotal = 0;
-        foreach ($gtoday_income as $g) {
-            $subtotal += $g->amount;
-        }
-        foreach ($ktoday_income as $k) {
-            $subtotal += $k->amount;
-        }
-        foreach ($ptoday_income as $p) {
-            $subtotal += $p->amount;
-        }
-        foreach ($wtoday_income as $w) {
-            $subtotal += $w->amount;
-        }
+        //INFO data below are not necessary since datatable now use AJAX instead
 
-        return view('backend.pos.famous_lists', ['shopowner' => $shopowner, 'categories' => $categories, 'arr' => $subtotal, 'tot_qty' => $tot_qty, 'qty' => $qty, 'purchases' => $purchases, 'kyoutpurchases' => $kyoutpurchases, 'platinumpurchases' => $platinumpurchases, 'whitegoldpurchases' => $whitegoldpurchases, 'type' => 2]);
+        // $purchases = PosGoldSale::where('shop_owner_id', $this->get_shopid())->get();
+        // $kyoutpurchases = PosKyoutSale::where('shop_owner_id', $this->get_shopid())->get();
+        // $platinumpurchases = PosPlatinumSale::where('shop_owner_id', $this->get_shopid())->get();
+        // $whitegoldpurchases = PosWhiteGoldSale::where('shop_owner_id', $this->get_shopid())->get();
+        // $qty = PosPurchaseSale::orderBy('qty', 'desc')->where('shop_owner_id', $this->get_shopid())->get();
+
+        // $tot_qty = 0;
+        // foreach ($qty as $q) {
+        //     $tot_qty += $q->qty;
+        // }
+        // $gtoday_income = PosGoldSale::where('shop_owner_id', $this->get_shopid())->get();
+        // $ktoday_income = PosKyoutSale::where('shop_owner_id', $this->get_shopid())->get();
+        // $ptoday_income = PosPlatinumSale::where('shop_owner_id', $this->get_shopid())->get();
+        // $wtoday_income = PosWhiteGoldSale::where('shop_owner_id', $this->get_shopid())->get();
+
+        // $subtotal = 0;
+        // foreach ($gtoday_income as $g) {
+        //     $subtotal += $g->amount;
+        // }
+        // foreach ($ktoday_income as $k) {
+        //     $subtotal += $k->amount;
+        // }
+        // foreach ($ptoday_income as $p) {
+        //     $subtotal += $p->amount;
+        // }
+        // foreach ($wtoday_income as $w) {
+        //     $subtotal += $w->amount;
+        // }
+
+        return view('backend.pos.famous_lists', ['categories' => $categories]);
     }
 
-    public function famous_sale_lists(Request $request):JsonResponse
+    public function famous_sale_lists(Request $request): JsonResponse
     {
         $purchases = $this->itemsFilterService->filter_incomes($request);
         $dataTable = DataTables::of($purchases)
-                ->toJson();
+            ->toJson();
         return $dataTable;
     }
 
     public function get_income_lists(): View
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-
-        return view('backend.pos.sale_lists', ['shopowner' => $shopowner]);
+        return view('backend.pos.sale_lists');
     }
-    public function income_lists(Request $request):JsonResponse
+    public function income_lists(Request $request): JsonResponse
     {
         $purchases = $this->itemsFilterService->filter_incomes($request);
         // dd($purchases);
         $dataTable = DataTables::of($purchases)
-                ->toJson();
+            ->toJson();
         return $dataTable;
     }
 
@@ -1149,8 +1149,7 @@ class PosSecondPhaseController extends Controller
     //Stock List
     public function get_stock_lists(): View
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        return view('backend.pos.stock_lists', ['shopowner' => $shopowner]);
+        return view('backend.pos.stock_lists');
     }
 
     public function stock_lists(Request $request): JsonResponse
@@ -1158,7 +1157,7 @@ class PosSecondPhaseController extends Controller
         $purchases = $this->itemsFilterService->filter_stocks($request);
         // dd($purchases);
         $dataTable = DataTables::of($purchases)
-                ->toJson();
+            ->toJson();
 
         return $dataTable;
     }

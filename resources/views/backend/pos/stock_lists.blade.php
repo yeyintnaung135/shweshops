@@ -19,10 +19,6 @@
         <!-- Content Header (Page header) -->
         <section class="content-header sn-content-header">
             <div class="container-fluid">
-                @foreach($shopowner as $shopowner )
-                @endforeach
-
-
             </div><!-- /.container-fluid -->
         </section>
 
@@ -40,7 +36,7 @@
                                 <a href="#" class="btn btn-color btn-m" onclick="goldtypefilter(2)">Search</a>
                             </label>
                         </div> --}}
-                        
+
                     </div>
                     <div class="col-4">
                         <div class="card">
@@ -50,7 +46,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
 
                 <div class="card mt-4">
@@ -112,13 +108,13 @@
                                             <th>ဝယ်​​စျေးနှုန်း</th>
                                             <th>Product အ​လေးချိန်<br>(in MM units)</th>
                                         </thead>
-                                       
+
                                     </table>
                                 </div>
                             </div>
-                            
-                        </div>    
-                        
+
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -140,7 +136,7 @@
 @push('scripts')
 
     <script type="text/javascript">
-   
+
    $(document).ready(function() {
 
     $('#fromDate, #toDate').datepicker({
@@ -202,8 +198,8 @@
 
                     return displayText;
                 },
-            },  
-           
+            },
+
         ],
         drawCallback: function(settings) {
             var api = this.api();
@@ -227,7 +223,7 @@
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'
         ],
-       
+
     });
 
     //Date Filter
@@ -240,11 +236,11 @@
     });
 
     });
- 
+
     function changeTab(val){
         $('#type').val(val);
     }
-    
+
 
     </script>
 @endpush
@@ -264,7 +260,7 @@
     .text-color{
         color: #780116;
     }
-    
+
 
     .nav-pills .nav-item .nav-link.active {
         background-color: #780116;

@@ -30,7 +30,7 @@
                     <div class="row justify-content-center">
                     <div class="card card-body printableArea" style="max-width: 750px;">
                         {{-- <div style="display:flex;justify-content:space-around"> --}}
-                            
+
                             <div class="row d-flex">
                                 <div style="border:1px solid #780116;border-radius:10px;" width='130'>
                                     <h6 class="text-color px-3 py-1">SHWESHOP</h6>
@@ -122,12 +122,12 @@
                                      @if (!$sale->purchase->product_weight)
                                     <td>{{$product[1] ? $product[1].'ကျပ်' : ''}} {{$product[2] ? $product[2].'ပဲ' : ''}} {{$product[3] ? $product[3].'ရွေး' : ''}}</td>
                                     <td>{{$product[0]}} g</td>
-                                     
+
                                     @else
                                      <td>-</td>
                                     <td>{{$sale->purchase->product_weight}} g</td>
                                     @endif
-                                   
+
                                 </tr>
                                 <tr class="text-color">
                                     <td></td>
@@ -136,7 +136,7 @@
                                     @if ($diamond != 'no')
                                     <td>{{$diamond[1] ? $diamond[1].'ကျပ်' : ''}} {{$diamond[2] ? $diamond[2].'ပဲ' : ''}} {{$diamond[3] ? $diamond[3].'ရွေး' : ''}}</td>
                                     <td>{{$diamond[0]}} g</td>
-                                     
+
                                     @else
                                      <td>-</td>
                                     <td>-</td>
@@ -145,7 +145,7 @@
                                     <td>-</td>
                                     <td>-</td>
                                     @endif
-                                   
+
                                 </tr>
                                 <tr class="text-color">
                                     <td></td>

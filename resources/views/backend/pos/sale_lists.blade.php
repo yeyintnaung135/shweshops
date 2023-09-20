@@ -19,10 +19,6 @@
         <!-- Content Header (Page header) -->
         <section class="content-header sn-content-header">
             <div class="container-fluid">
-                @foreach($shopowner as $shopowner )
-                @endforeach
-
-
             </div><!-- /.container-fluid -->
         </section>
 
@@ -43,7 +39,7 @@
                     </div>
                     <div class="col-4">
                         <div class="card">
-                            <div class="card-body">  
+                            <div class="card-body">
                                 <h6 class="text-color">စုစု​ပေါင်း</h6>
                                 <h4 class="text-color">အမြတ်ငွေ &nbsp;&nbsp;<span  id="tab_inc"></span></h4>
                                 <input type="hidden" value="" id="org_inc">
@@ -119,15 +115,15 @@
                                             <th>အမြတ်</th>
                                             <th>Product အ​လေးချိန်<br>(in MM units)</th>
                                             {{-- <th>Date</th> --}}
-                                            
+
                                         </thead>
-                                      
+
                                     </table>
                                 </div>
                             </div>
-                          
+
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
@@ -194,7 +190,7 @@
 
                 return displayText;
             },
-        }, 
+        },
         {
                 data: 'product_weight',
                 name: 'product_weight',
@@ -218,8 +214,8 @@
 
                     return displayText1;
                 },
-            },  
-       
+            },
+
     ],
     drawCallback: function(settings) {
             var api = this.api();
@@ -245,7 +241,7 @@
     buttons: [
         'copy', 'csv', 'excel', 'pdf', 'print'
     ],
-   
+
     });
 
     //Date Filter

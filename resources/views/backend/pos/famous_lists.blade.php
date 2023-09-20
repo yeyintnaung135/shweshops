@@ -19,10 +19,6 @@
         <!-- Content Header (Page header) -->
         <section class="content-header sn-content-header">
             <div class="container-fluid">
-                @foreach($shopowner as $shopowner )
-                @endforeach
-
-
             </div><!-- /.container-fluid -->
         </section>
 
@@ -31,7 +27,7 @@
                 <div class="row">
                     <div class="col-4">
                         <div class="row d-flex">
-                            <h4 class="text-color">​​ရောင်းအားအ​​ကောင်းဆုံးပစ္စည်းများ</h4>              
+                            <h4 class="text-color">​​ရောင်းအားအ​​ကောင်းဆုံးပစ္စည်းများ</h4>
                         </div>
                         {{-- <div class="row mt-3">
                             <label for="">From:<input type="date" id="start_date"></label>
@@ -41,14 +37,14 @@
                             </label>
                         </div> --}}
                     </div>
-                    
+
                 </div>
 
                 <div class="card mt-4">
                     <div class="card-body">
-                       
+
                         <ul class="nav nav-pills m-t-30 m-b-30">
-                            
+
                             <li class="nav-item">
                                 <a href="#navpills-1" class="nav-link active" data-toggle="tab" aria-expanded="false" onClick="changeTab(1)">
                                     အထည်အားလုံး
@@ -126,9 +122,9 @@
                                         </thead>
                                     </table>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
@@ -207,7 +203,6 @@
         });
 
         function changeTab(val){
-            alert(val);
             $('#type').val(val);
         }
     </script>
