@@ -65,8 +65,8 @@
                            </div>
                          <div class="row mt-5">
                             <div class="col-3 form-group">
-                                <label for="gold_name">​ရွှေထည်အမည်</label>
-                                <input type="text" name="gold_name" class="form-control" required>
+                                <label for="name">​ရွှေထည်အမည်</label>
+                                <input type="text" name="name" class="form-control" required>
                             </div>
                             <div class="col-3 form-group">
                                 <label for="supplier_id">ပန်းထိမ်ဆိုင်</label>
@@ -83,7 +83,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-3 form-group">
-                                        <input type="number" step="0.01" name="product_gram" placeholder="Gram" id="product_gram" class="form-control" required>
+                                        <input type="number" step="0.01" name="product_weight" placeholder="Gram" id="product_weight" class="form-control" required>
 
                                     </div>
                                     <div class="col-3 form-group">
@@ -420,7 +420,7 @@
         function check_barcode(){
             if($('#print_barcode').is(':checked')){
                 var code = $('#code_number').val();
-                var gram = $('#product_gram').val();
+                var gram = $('#product_weight').val();
                 var kyat = $('#product_kyat').val();
                 var pe = $('#product_pe').val();
                 var yway = $('#product_yway').val();

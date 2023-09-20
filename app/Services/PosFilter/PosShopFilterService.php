@@ -71,13 +71,14 @@ class PosShopFilterService
             $query->whereDate('date', '<=', $toDate);
         }
 
-        // Split the $text parameter into an array if it's not empty
         if ($text) {
             $types = explode('/', $text);
-            // Apply the filter only if there are values in $types
-            if (!empty($types)) {
-                $query->orWhereIn('type', $types);
-            }
+
+            $query->where(function ($query) use ($types) {
+                foreach ($types as $t) {
+                    $query->orWhere('type', 'like', '%' . $t . '%');
+                }
+            });
         }
 
         return $query;

@@ -19,10 +19,6 @@
         <!-- Content Header (Page header) -->
         <section class="content-header sn-content-header">
             <div class="container-fluid">
-                @foreach($shopowner as $shopowner )
-                @endforeach
-
-
             </div><!-- /.container-fluid -->
         </section>
 
@@ -31,14 +27,7 @@
                 <div class="row">
                     <div class="col-4">
                         <div class="row d-flex">
-                            @if ($type == 1)
-                            <h4 class="text-color">​အ​ရောင်းစာရင်းများ</h4>
-                            @elseif ($type == 2)
-                            <h4 class="text-color">​​ရောင်းအားအ​​ကောင်းဆုံးပစ္စည်းများ</h4>
-                            @else
                             <h4 class="text-color">​ဝင်​ငွေစာရင်းများ</h4>
-                            @endif
-                            
                         </div>
                         {{-- <div class="row mt-3">
                             <label for="">From:<input type="date" id="start_date"></label>
@@ -51,15 +40,9 @@
                     <div class="col-4">
                         <div class="card">
                             <div class="card-body">
-                                @if ($type == 3)
                                 <h6 class="text-color">စုစု​ပေါင်း</h6>
-                                <h4 class="text-color">အမြတ်ငွေ &nbsp;&nbsp;<span  id="tab_inc">{{$arr}}</span></h4>
-                                <input type="hidden" value="{{$arr}}" id="org_inc">
-                                @else
-                                <h6 class="text-color">စုစု​ပေါင်း</h6>
-                                <h4 class="text-color" >ငွေပမာဏ &nbsp;&nbsp;<span id="tab_amt">{{$arr}}</span></h4>
-                                <input type="hidden" value="{{$arr}}" id="org_amt">
-                                @endif
+                                <h4 class="text-color">အမြတ်ငွေ &nbsp;&nbsp;<span  id="tab_inc"></span></h4>
+                                <input type="hidden" value="" id="org_inc">
                             </div>
                         </div>
                     </div>
@@ -67,8 +50,8 @@
                         <div class="card">
                             <div class="card-body">
                                 <h6 class="text-color">စုစု​ပေါင်း</h6>
-                                <h4 class="text-color" >အ​ရေအတွက် &nbsp;&nbsp;<span id="tab_qty">{{$tot_qty}}</span></h4>
-                                <input type="hidden" value="{{$tot_qty}}" id="org_qty">
+                                <h4 class="text-color" >အ​ရေအတွက် &nbsp;&nbsp;<span id="tab_qty"></span></h4>
+                                <input type="hidden" value="" id="org_qty">
                             </div>
                         </div>
                     </div>
@@ -78,44 +61,52 @@
                     <div class="card-body">
                         <ul class="nav nav-pills m-t-30 m-b-30">
                             <li class="nav-item">
-                                <a href="#navpills-1" class="nav-link active" data-toggle="tab" aria-expanded="false" onclick="allTab1()">
+                                <a href="#navpills-1" class="nav-link active" data-toggle="tab" aria-expanded="false" onClick="changeTab(1)">
                                     အထည်အားလုံး
                                 </a>
                             </li>
                             <li class=" nav-item">
-                                <a href="#navpills-2" class="nav-link" data-toggle="tab" aria-expanded="false" onclick="chkTab1(2)">
+                                <a href="#navpills-2" class="nav-link" data-toggle="tab" aria-expanded="false" onClick="changeTab(2)">
                                     ​ရွှေထည်
                                 </a>
                             </li>
                             <li class=" nav-item">
-                                <a href="#navpills-3" class="nav-link" data-toggle="tab" aria-expanded="false" onclick="chkTab1(3)">
+                                <a href="#navpills-3" class="nav-link" data-toggle="tab" aria-expanded="false" onClick="changeTab(3)">
                                     ​ကျောက်ထည်
                                 </a>
                             </li>
                             <li class=" nav-item">
-                                <a href="#navpills-4" class="nav-link" data-toggle="tab" aria-expanded="false" onclick="chkTab1(4)">
+                                <a href="#navpills-4" class="nav-link" data-toggle="tab" aria-expanded="false" onClick="changeTab(4)">
                                     ပလက်တီနမ်
                                 </a>
                             </li>
                             <li class=" nav-item">
-                                <a href="#navpills-5" class="nav-link" data-toggle="tab" aria-expanded="false" onclick="chkTab1(5)">
+                                <a href="#navpills-5" class="nav-link" data-toggle="tab" aria-expanded="false" onClick="changeTab(5)">
                                     ​ရွှေဖြူ
                                 </a>
                             </li>
+                            <input type="hidden" value="1" id="type">
                         </ul>
                         <br>
-                        <div class="row">
-                            <input type="hidden" id="tab_type" value="1">
-                            <label for="">From:<input type="date" id="start_date"></label>
-                            <label for="" class="ml-3">To:<input type="date" id="end_date"></label>
-                            <label for="" style="margin-left: 20px;margin-top:30px;">
-                                <a href="#" class="btn btn-color btn-m" onclick="dateFilter()">Search</a>
-                            </label>
-                        </div>
+                       {{-- <div class="d-flex justify-content-start align-items-center mt-3">
+                            <div class="form-group">
+                                <label for="fromDate" class="form-label">Choose Date</label>
+                                <input type="text" id="fromDate" class="form-control" placeholder="From Date"
+                                    autocomplete="off">
+                            </div>
+                            <div class="form-group mx-3">
+                                <label for="toDate" class="form-label">Choose Date</label>
+                                <input type="text" id="toDate" class="form-control" placeholder="To Date"
+                                    autocomplete="off">
+                            </div>
+                            <div>
+                                <button id="searchButton" class="btn btn-color btn-m mt-3">Filter</button>
+                            </div>
+                        </div> --}}
                         <div class="tab-content br-n pn">
                             <div id="navpills-1" class="tab-pane active">
                                 <div class=" table-responsive text-black mt-3">
-                                    <table class="table table-striped example23" id="example1">
+                                    <table class="table table-striped example23" id="purchaseTable">
                                         <thead>
                                             <th>နံပါတ်</th>
                                             <th>အထည်အမည်</th>
@@ -124,287 +115,15 @@
                                             <th>အမြတ်</th>
                                             <th>Product အ​လေးချိန်<br>(in MM units)</th>
                                             {{-- <th>Date</th> --}}
-                                            
+
                                         </thead>
-                                        <tbody class="text-center" id="filter1">
-                                            <?php $i = 1;?>
-                                            @foreach ($qty as $q)
-                                            @foreach ($purchases as $purchase)
-                                            @if ($q->sale_id == $purchase->id && $q->type == 1)
-                                            <?php  $arr = explode ("/",$purchase->purchase->product_gram_kyat_pe_yway); ?>
-                                            <tr>
-                                             <td>{{$i++}}</td>
-                                             <td>{{$purchase->purchase->gold_name}}</td>
-                                             <td>{{$purchase->purchase->code_number}}</td>
-                                             <td>{{$q->qty}}</td>
-                                             <td>{{explode('/',$purchase->purchase->profit)[0]}}</td>
-                                             
-                                             <td>
-                                                {{$arr[1] !=0 ? $arr[1].'ကျပ်' : ''}}
-                                                {{$arr[2] !=0 ? $arr[2].'ပဲ' : ''}}
-                                                {{$arr[3] !=0 ? $arr[3].'ရွေး' : ''}}
-                                             </td>
-                                             {{-- <td> ​
-                                                {{$purchase->date}}
-                                             </td> --}}
-                                             
-                                            </tr>
-                                            @endif
-                                            @endforeach
-                                            @endforeach
-                                            
-                                            @foreach ($qty as $q)
-                                            @foreach ($kyoutpurchases as $purchase)
-                                            @if ($q->sale_id == $purchase->id && $q->type == 2)
-                                            <?php  $arr = explode ("/",$purchase->purchase->gold_gram_kyat_pe_yway); ?>
-                                            <tr>
-                                             <td>{{$i++}}</td>
-                                             <td>{{$purchase->purchase->gold_name}}</td>
-                                             <td>{{$purchase->purchase->code_number}}</td>
-                                             <td>{{$q->qty}}</td>
-                                            
-                                             <td>{{explode('/',$purchase->purchase->profit)[0]}}</td>
-                                             <td>
-                                                {{$arr[1] !=0 ? $arr[1].'ကျပ်' : ''}}
-                                                {{$arr[2] !=0 ? $arr[2].'ပဲ' : ''}}
-                                                {{$arr[3] !=0 ? $arr[3].'ရွေး' : ''}}
-                                             </td>
-                                             {{-- <td> ​
-                                                {{$purchase->date}}
-                                             </td> --}}
-                                            </tr>
-                                            @endif
-                                            @endforeach
-                                            @endforeach
 
-                                            @foreach ($qty as $q)
-                                            @foreach ($platinumpurchases as $purchase)
-                                            @if ($q->sale_id == $purchase->id && $q->type == 3)
-                                            <tr>
-                                             <td>{{$i++}}</td>
-                                             <td>{{$purchase->purchase->platinum_name}}</td>
-                                             <td>{{$purchase->purchase->code_number}}</td>
-                                             <td>{{$q->qty}}</td>
-                                            
-                                             <td>{{explode('/',$purchase->purchase->profit)[0]}}</td>
-                                            
-                                             <td>{{$purchase->purchase->product_gram}} g</td>
-            
-                                             {{-- <td> ​
-                                                {{$purchase->date}}
-                                             </td> --}}
-                                            </tr>
-                                            @endif
-                                            @endforeach
-                                            @endforeach
-
-                                            @foreach ($qty as $q)
-                                            @foreach ($whitegoldpurchases as $purchase)
-                                            @if ($q->sale_id == $purchase->id && $q->type == 4)
-                                            <tr>
-                                             <td>{{$i++}}</td>
-                                             <td>{{$purchase->purchase->whitegold_name}}</td>
-                                             <td>{{$purchase->purchase->code_number}}</td>
-                                             <td>{{$q->qty}}</td>
-                                             
-                                             <td>{{explode('/',$purchase->purchase->profit)[0]}}</td>
-                        
-                                             <td>{{$purchase->purchase->product_gram}} g</td>
-            
-                                             {{-- <td> ​
-                                                {{$purchase->date}}
-                                             </td> --}}
-                                            </tr>
-                                            @endif
-                                            @endforeach
-                                            @endforeach
-            
-                                        </tbody>
                                     </table>
                                 </div>
                             </div>
-                            <div id="navpills-2" class="tab-pane">
-                                <div class=" table-responsive text-black mt-3">
-                                    <table class="table table-striped example23" id="example2">
-                                        <thead>
-                                            <th>နံပါတ်</th>
-                                            <th>​ရွှေထည်အမည်</th>
-                                            <th>ကုဒ်နံပါတ်</th>
-                                            <th>စုစု​ပေါင်းအ​ရေ​အတွက်</th>
-                                           
-                                            <th>အမြတ်</th>
-                                           
-                                            <th>Product အ​လေးချိန်<br>(in MM units)</th>
-                                            {{-- <th>Date</th> --}}
-                                            
-                                        </thead>
-                                        <tbody class="text-center" id="filter2">
-                                            <?php $i = 1;?>
-                                            @foreach ($qty as $q)
-                                            @foreach ($purchases as $purchase)
-                                            @if ($q->sale_id == $purchase->id && $q->type == 1)
-                                            <?php  $arr = explode ("/",$purchase->purchase->product_gram_kyat_pe_yway); ?>
-                                            <tr>
-                                             <td>{{$i++}}</td>
-                                             <td>{{$purchase->purchase->gold_name}}</td>
-                                             <td>{{$purchase->purchase->code_number}}</td>
-                                             <td>{{$q->qty}}</td>
-                                             
-                                             <td>{{explode('/',$purchase->purchase->profit)[0]}}</td>
-                                           
-                                             <td>
-                                                {{$arr[1] !=0 ? $arr[1].'ကျပ်' : ''}}
-                                                {{$arr[2] !=0 ? $arr[2].'ပဲ' : ''}}
-                                                {{$arr[3] !=0 ? $arr[3].'ရွေး' : ''}}
-                                             </td>
-                                             {{-- <td> ​
-                                                {{$purchase->date}}
-                                             </td> --}}
-                                             
-                                            </tr>
-                                            @endif
-                                            @endforeach
-                                            @endforeach
-                                           
-            
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div id="navpills-3" class="tab-pane">
-                                <div class=" table-responsive text-black mt-3">
-                                    <table class="table table-striped example23" id="example3">
-                                        <thead>
-                                            <th>နံပါတ်</th>
-                                            <th>​​ကျောက်ထည်အမည်</th>
-                                            <th>ကုဒ်နံပါတ်</th>
-                                            <th>စုစု​ပေါင်းအ​ရေ​အတွက်</th>
-                                            
-                                            <th>အမြတ်</th>
-                                            
-                                            <th>Product အ​လေးချိန်<br>(in MM units)</th>
-                                            {{-- <th>Date</th> --}}
-                                            
-                                        </thead>
-                                        <tbody class="text-center" id="filter3">
-                                            <?php $i = 1;?>
-                                            @foreach ($qty as $q)
-                                            @foreach ($kyoutpurchases as $purchase)
-                                            @if ($q->sale_id == $purchase->id && $q->type == 2)
-                                            <?php  $arr = explode ("/",$purchase->purchase->gold_gram_kyat_pe_yway); ?>
-                                            <tr>
-                                             <td>{{$i++}}</td>
-                                             <td>{{$purchase->purchase->gold_name}}</td>
-                                             <td>{{$purchase->purchase->code_number}}</td>
-                                             <td>{{$q->qty}}</td>
-                                              
-                                             <td>{{explode('/',$purchase->purchase->profit)[0]}}</td>
-                                
-                                             <td>
-                                                {{$arr[1] !=0 ? $arr[1].'ကျပ်' : ''}}
-                                                {{$arr[2] !=0 ? $arr[2].'ပဲ' : ''}}
-                                                {{$arr[3] !=0 ? $arr[3].'ရွေး' : ''}}
-                                             </td>
-                                             {{-- <td> ​
-                                                {{$purchase->date}}
-                                             </td> --}}
-                                             
-                                            </tr>
-                                            @endif
-                                            @endforeach
-                                            @endforeach
-            
-                                        </tbody>
-                                    </table>
-                                    </div>
-                            </div>
-                            <div id="navpills-4" class="tab-pane">
-                                <div class=" table-responsive text-black mt-3">
-                                    <table class="table table-striped example23" id="example4">
-                                        <thead>
-                                            <th>နံပါတ်</th>
-                                            <th>​ပလက်တီနမ်အမည်</th>
-                                            <th>ကုဒ်နံပါတ်</th>
-                                            <th>စုစု​ပေါင်းအ​ရေ​အတွက်</th>
-                                          
-                                            <th>အမြတ်</th>
-                                           
-                                            <th>Product အ​လေးချိန်<br>(in gram)</th>
-                                            {{-- <th>Date</th> --}}
-                                            
-                                        </thead>
-                                        <tbody class="text-center" id="filter4">
-                                            <?php $i = 1;?>
-                                            @foreach ($qty as $q)
-                                            @foreach ($platinumpurchases as $purchase)
-                                            @if ($q->sale_id == $purchase->id && $q->type == 3)
-                                            <tr>
-                                             <td>{{$i++}}</td>
-                                             <td>{{$purchase->purchase->platinum_name}}</td>
-                                             <td>{{$purchase->purchase->code_number}}</td>
-                                             <td>{{$q->qty}}</td>
-                                            
-                                             <td>{{explode('/',$purchase->purchase->profit)[0]}}</td>
-                                            
-                                             <td>{{$purchase->purchase->product_gram}} g</td>
-            
-                                             {{-- <td> ​
-                                                {{$purchase->date}}
-                                             </td> --}}
-                                            </tr>
-                                            @endif
-                                            @endforeach
-                                            @endforeach
-            
-                                        </tbody>
-                                    </table>
-                                    </div>
-                            </div>
-                            <div id="navpills-5" class="tab-pane">
-                                <div class=" table-responsive text-black mt-3">
-                                    <table class="table table-striped example23" id="example5">
-                                        <thead>
-                                            <th>နံပါတ်</th>
-                                            <th>ရွှေဖြူအမည်</th>
-                                            <th>ကုဒ်နံပါတ်</th>
-                                            <th>စုစု​ပေါင်းအ​ရေ​အတွက်</th>
-                                           
-                                            <th>အမြတ်</th>
-                                           
-                                            <th>Product အ​လေးချိန်<br>(in gram)</th>
-                                            {{-- <th>Date</th> --}}
-                                            
-                                        </thead>
-                                        <tbody class="text-center" id="filter5">
-                                            <?php $i = 1;?>
-                                            @foreach ($qty as $q)
-                                            @foreach ($whitegoldpurchases as $purchase)
-                                            @if ($q->sale_id == $purchase->id && $q->type == 4)
-                                            <tr>
-                                             <td>{{$i++}}</td>
-                                             <td>{{$purchase->purchase->whitegold_name}}</td>
-                                             <td>{{$purchase->purchase->code_number}}</td>
-                                             <td>{{$q->qty}}</td>
-                                             
-                                             <td>{{explode('/',$purchase->purchase->profit)[0]}}</td>
-                                             
-                                             <td>{{$purchase->purchase->product_gram}} g</td>
-            
-                                             {{-- <td> ​
-                                                {{$purchase->date}}
-                                             </td> --}}
-                                            
-                                            </tr>
-                                            @endif
-                                            @endforeach
-                                            @endforeach
-            
-                                        </tbody>
-                                    </table>
-                                    </div>
-                            </div>
+
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
@@ -424,110 +143,120 @@
 
 @endsection
 @push('scripts')
-    <script>
+    <script type="text/javascript">
          $(document).ready(function() {
-                $('.example23').DataTable({
-                    dom: 'Blfrtip',
-                    buttons: [
-                        'copy', 'csv', 'excel', 'pdf', 'print'
-                    ],
-                    processing: true,
-                    "ordering": true,
-                    "info": true,
-                    "paging": true,
-                });
-        
-            });
- 
-            function suredelete(id,type){
-                if(type == 1){
-                    url = '{{route("backside.shop_owner.pos.delete_goldsale")}}';
-                }
-                if(type == 2){
-                    url = '{{route("backside.shop_owner.pos.delete_kyoutsale")}}';
-                }
-                if(type == 3){
-                    url = '{{route("backside.shop_owner.pos.delete_ptm_sale")}}';
-                }
-                if(type == 4){
-                    url = '{{route("backside.shop_owner.pos.delete_wg_sale")}}';
-                }
-                // alert(id);
-                    $.ajax({
 
-                        type:'POST',
+    $('#fromDate, #toDate').datepicker({
+        "dateFormat": "yy-mm-dd",
+        changeYear: true
+    });
 
-                        url: url,
-
-                        data:{
-                        "_token":"{{csrf_token()}}",
-                        "pid" : id,
-                        },
-
-                        success:function(data){
-                            location.reload();
-                            // console.log('success');
-                        }
-                    })
-
-
-        }
-
-    function allTab1(){
-        $('#tab_type').val(1);
-        $('#tab_inc').html($('#org_inc').val());
-        $('#tab_qty').html($('#org_qty').val());
-    }
-
-    function chkTab1(type){
-        $.ajax({
-
-        type:'POST',
-
-        url: '{{route("backside.shop_owner.pos.tab_incomelists")}}',
-
-        data:{
-        "_token":"{{csrf_token()}}",
-        "type" : type,
+    var purchaseTable = $('#purchaseTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            "url": "{{ route('backside.shop_owner.pos.get_income_lists') }}",
+            "data": function(d) {
+                d.fromDate = $('#fromDate').val();
+                d.toDate = $('#toDate').val();
+                d.type = $('#type').val();
+            }
         },
-
-        success:function(data){
-            $('#tab_type').val(type);
-           $('#tab_inc').html(data.total);
-           $('#tab_qty').html(data.qty);
-        }
-        })
-    }
-
-    function dateFilter(){
-        var start =  $('#start_date').val();
-        var end = $('#end_date').val();
-        var type = $('#tab_type').val();
-        var dataTable = $('#example'+type).DataTable();
-        $.ajax({
-
-        type:'POST',
-
-        url: '{{route("backside.shop_owner.pos.tab_incomelists")}}',
-
-        data:{
-        "_token":"{{csrf_token()}}",
-        "type" : type,
-        "start" : start,
-        "end" : end
+    columns: [{
+            data: 'id',
+            name: 'id'
         },
+        {
+            data: 'name',
+            name: 'name'
+        },
+        {
+            data: 'code_number',
+            name: 'code_number'
+        },
+        {
+            data: 'qty',
+            name: 'qty'
+        },
+        {
+            data: 'profit',
+            name: 'profit',
+            "render": function(data, type, full, meta) {
+                // Split the data using '/'
+                var arr = data.split('/');
 
-        success:function(data){
-            dataTable.clear().draw();
-            $('#tab_inc').html(data.total);
-            $('#tab_qty').html(data.qty);
-            // alert(type);
-            var html1='';
-            $.each(data.purchases, function(i, v) {
-                dataTable.row.add([++i,v.name,v.code_number,v.qty,v.fee,v.weight]).draw();
-            })
-        }
-        })
+                // Define your conditions to display parts of the data
+                var displayText = arr[0];
+
+                return displayText;
+            },
+        },
+        {
+                data: 'product_weight',
+                name: 'product_weight',
+                "render": function(data, type, full, meta) {
+                    // Split the data using '/'
+                    var arr1 = data.toString().split('/');
+
+                    // Define your conditions to display parts of the data
+                    var displayText1 = '';
+                    if (arr1[1]) {
+                        displayText1 += arr1[1] + 'ကျပ်';
+                    }else{
+                        displayText1 += arr1[0] + 'g'
+                    }
+                    if (arr1[2]) {
+                        displayText1 += arr1[2] + 'ပဲ';
+                    }
+                    if (arr1[3]) {
+                        displayText1 += arr1[3] + 'ရွေး';
+                    }
+
+                    return displayText1;
+                },
+            },
+
+    ],
+    drawCallback: function(settings) {
+            var api = this.api();
+            var purchasesData = api.rows().data(); // Access the data in the current view
+
+            // Reset the totals to 0 before recalculating
+            var tot_qty = 0;var tot_profit = 0;
+
+            // Calculate totals based on the data in the current view
+            for (var i = 0; i < purchasesData.length; i++) {
+                var pg = purchasesData[i];
+                tot_qty += pg.qty;
+                tot_profit += pg.qty * pg.profit.split('/')[0];
+            }
+
+            // Update the HTML elements with the recalculated totals
+            $('#tab_qty').text(tot_qty);
+            $('#tab_inc').text(tot_profit);
+        },
+    dom: 'lBfrtip',
+    "responsive": true,
+    "autoWidth": false,
+    buttons: [
+        'copy', 'csv', 'excel', 'pdf', 'print'
+    ],
+
+    });
+
+    //Date Filter
+    $('#searchButton').click(function() {
+        purchaseTable.draw();
+    });
+
+    $('.nav-link').click(function() {
+        purchaseTable.draw();
+    });
+
+    });
+
+    function changeTab(val){
+        $('#type').val(val);
     }
 
     </script>

@@ -68,12 +68,12 @@
                             <div class="col-5">
                                 <div class="row">
                                     <div class="col-6 form-group">
-                                        <label for="gold_name">​ပလက်တီနမ်အမည်</label>
+                                        <label for="name">​ပလက်တီနမ်အမည်</label>
                                         <select name="purchase_id" id="" onchange="fillValues(this.value)"  class="form-control select2" required>
                                             <option value="">ပလက်တီနမ်အမည်များ</option>
                                             @foreach ($purchases as $purchase)
                                             @if ($purchase->stock_qty > 0)
-                                            <option value="{{$purchase->id}}">{{$purchase->code_number}}-{{$purchase->platinum_name}}</option>
+                                            <option value="{{$purchase->id}}">{{$purchase->code_number}}-{{$purchase->name}}</option>
                                             @endif
                                             @endforeach
                                         </select>
@@ -124,7 +124,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-3 form-group">
-                                                <input type="number" step="0.01" name="product_gram" placeholder="Gram" id="product_gram" class="form-control" required>
+                                                <input type="number" step="0.01" name="product_weight" placeholder="Gram" id="product_weight" class="form-control" required>
 
                                             </div>
                                         </div>
@@ -329,7 +329,7 @@
                     $('#quality').val(data.purchase.quality);
                     $('#platinum_type').val(data.purchase.platinum_type);
                     $('#category').val(data.purchase.category.mm_name);
-                    $('#product_gram').val(data.purchase.product_gram);
+                    $('#product_weight').val(data.purchase.product_weight);
                     $('#color').val(data.purchase.color);
                     $('#amount').val(data.purchase.selling_price);
                      $('#fill_shop').val(data.purchase.counter_shop);
@@ -358,7 +358,7 @@
         }
 
         function calculate_price(){
-            var gram = parseFloat($('#product_gram').val());
+            var gram = parseFloat($('#product_weight').val());
             var ptm_price = parseInt($('#ptm_price').val());
             if(gram){ gram = gram;}else{ gram = 0;}
 

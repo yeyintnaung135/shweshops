@@ -93,10 +93,10 @@
                                         <tbody class="text-center" id="filter">
                                             <?php $i = 1;?>
                                             @foreach ($purchases as $purchase)
-                                            <?php  $arr = explode ("/",$purchase->product_gram_kyat_pe_yway); ?>
+                                            <?php  $arr = explode ("/",$purchase->product_weight); ?>
                                             <tr>
                                              <td>{{$i++}}</td>
-                                             <td>{{$purchase->gold_name}}</td>
+                                             <td>{{$purchase->name}}</td>
                                              <td>{{$purchase->code_number}}</td>
                                              <td>{{$purchase->stock_qty}}</td>
                                              <td>{{$purchase->gold_fee}}</td>
@@ -136,10 +136,10 @@
                                             </tr>
                                             @endforeach
                                             @foreach ($kyoutpurchases as $purchase)
-                                            <?php  $arr = explode ("/",$purchase->gold_gram_kyat_pe_yway); ?>
+                                            <?php  $arr = explode ("/",$purchase->product_weight); ?>
                                             <tr>
                                              <td>{{$i++}}</td>
-                                             <td>{{$purchase->gold_name}}</td>
+                                             <td>{{$purchase->name}}</td>
                                              <td>{{$purchase->code_number}}</td>
                                              <td>{{$purchase->stock_qty}}</td>
                                              <td>{{$purchase->capital}}</td>
@@ -182,11 +182,11 @@
                                             @foreach ($platinumpurchases as $purchase)
                                             <tr>
                                              <td>{{$i++}}</td>
-                                             <td>{{$purchase->platinum_name}}</td>
+                                             <td>{{$purchase->name}}</td>
                                              <td>{{$purchase->code_number}}</td>
                                              <td>{{$purchase->stock_qty}}</td>
                                              <td>{{$purchase->capital}}</td>
-                                             <td>{{$purchase->product_gram}} g</td>
+                                             <td>{{$purchase->product_weight}} g</td>
                                              <td> ​
                                                 {{$purchase->date}}
                                              </td>
@@ -220,11 +220,11 @@
                                             @foreach ($whitegoldpurchases as $purchase)
                                             <tr>
                                              <td>{{$i++}}</td>
-                                             <td>{{$purchase->whitegold_name}}</td>
+                                             <td>{{$purchase->name}}</td>
                                              <td>{{$purchase->code_number}}</td>
                                              <td>{{$purchase->stock_qty}}</td>
                                              <td>{{$purchase->capital}}</td>
-                                             <td>{{$purchase->product_gram}} g</td>
+                                             <td>{{$purchase->product_weight}} g</td>
                                              <td> ​
                                                 {{$purchase->date}}
                                              </td>
@@ -277,10 +277,10 @@
                                         <tbody class="text-center" id="filter">
                                             <?php $i = 1;?>
                                             @foreach ($purchases as $purchase)
-                                            <?php  $arr = explode ("/",$purchase->product_gram_kyat_pe_yway); ?>
+                                            <?php  $arr = explode ("/",$purchase->product_weight); ?>
                                             <tr>
                                              <td>{{$i++}}</td>
-                                             <td>{{$purchase->gold_name}}</td>
+                                             <td>{{$purchase->name}}</td>
                                              @if ($purchase->supplier_id)
                                              <td>{{$purchase->supplier->name}}</td>
                                              @else
@@ -349,10 +349,10 @@
                                         <tbody class="text-center" id="filter">
                                             <?php $i = 1;?>
                                             @foreach ($kyoutpurchases as $purchase)
-                                            <?php  $arr = explode ("/",$purchase->gold_gram_kyat_pe_yway); ?>
+                                            <?php  $arr = explode ("/",$purchase->product_weight); ?>
                                             <tr>
                                              <td>{{$i++}}</td>
-                                             <td>{{$purchase->gold_name}}</td>
+                                             <td>{{$purchase->name}}</td>
                                              <td>{{$purchase->code_number}}</td>
                                              <td>{{$purchase->stock_qty}}</td>
                                              <td>{{$purchase->supplier->name}}</td>
@@ -419,12 +419,12 @@
                                             @foreach ($platinumpurchases as $purchase)
                                             <tr>
                                              <td>{{$i++}}</td>
-                                             <td>{{$purchase->platinum_name}}</td>
+                                             <td>{{$purchase->name}}</td>
                                              <td>{{$purchase->quality}}</td>
                                              <td>{{$purchase->platinum_type}}</td>
                                              <td>{{$purchase->code_number}}</td>
                                              <td>{{$purchase->stock_qty}}</td>
-                                             <td>{{$purchase->product_gram}}</td>
+                                             <td>{{$purchase->product_weight}}</td>
                                              <td>{{$purchase->capital}}</td>
                                              <td> ​
                                                 {{$purchase->date}}
@@ -481,12 +481,12 @@
                                             @foreach ($whitegoldpurchases as $purchase)
                                             <tr>
                                              <td>{{$i++}}</td>
-                                             <td>{{$purchase->whitegold_name}}</td>
+                                             <td>{{$purchase->name}}</td>
                                              <td>{{$purchase->quality}}</td>
                                              <td>{{$purchase->whitegold_type}}</td>
                                              <td>{{$purchase->code_number}}</td>
                                              <td>{{$purchase->stock_qty}}</td>
-                                             <td>{{$purchase->product_gram}}</td>
+                                             <td>{{$purchase->product_weight}}</td>
                                               <td>{{$purchase->capital}}</td>
                                              <td> ​
                                                 {{$purchase->date}}

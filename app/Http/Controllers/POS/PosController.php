@@ -417,16 +417,13 @@ class PosController extends Controller
     //gold
     public function purchase_list(): View
     {
-        $purchases = PosPurchase::where('shop_owner_id', $this->get_shopid())
-            ->select('product_gram_kyat_pe_yway', 'decrease_pe_yway')
-            ->get();
         $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->select('id', 'name')->get();
         $quals = PosQuality::all();
         $cats = Category::select('id', 'mm_name')->get();
         $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
 
         if (PosAssignGoldPrice::where('shop_owner_id', $this->get_shopid())->exists()) {
-            return view('backend.pos.purchase_list', ['counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
+            return view('backend.pos.purchase_list', ['counters' => $counters, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
         } else {
             Session::flash('message', '​ရွှေ​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
@@ -441,9 +438,9 @@ class PosController extends Controller
         $purchases = $this->purchaseFilterService->filter_purchases($request);
 
         return DataTables::of($purchases)
-            ->addColumn('product_gram_kyat_pe_yway_in_gram', function ($purchase) {
-                // Split the 'product_gram_kyat_pe_yway' by "/" and return the first part which is gram
-                $parts = explode("/", $purchase->product_gram_kyat_pe_yway);
+            ->addColumn('product_weight_in_gram', function ($purchase) {
+                // Split the 'product_weight' by "/" and return the first part which is gram
+                $parts = explode("/", $purchase->product_weight);
                 return isset($parts[0]) ? $parts[0] : '';
             })
             ->addColumn('supplier', function ($purchase) {
@@ -516,7 +513,7 @@ class PosController extends Controller
                 'purchase_price' => $request->purchase_price,
                 'category_id' => $request->category_id,
                 'code_number' => $request->code_number,
-                'product_gram_kyat_pe_yway' => $request->product_gram . '/' . $request->product_kyat . '/' . $request->product_pe . '/' . $request->product_yway,
+                'product_weight' => $request->product_weight . '/' . $request->product_kyat . '/' . $request->product_pe . '/' . $request->product_yway,
                 'decrease_pe_yway' => $request->decrease_pe . '/' . $request->decrease_yway,
                 'profit_pe_yway' => $request->profit_pe . '/' . $request->profit_yway,
                 'service_pe_yway' => $request->service_pe . '/' . $request->service_yway,
@@ -525,15 +522,16 @@ class PosController extends Controller
                 'profit' => $request->profit . '/' . $request->currency1,
                 'service_fee' => $request->service_fee . '/' . $request->currency2,
                 'gold_fee' => $request->gold_fee,
+                'capital' => $request->gold_fee,
                 'gold_type' => $request->gold_type,
-                'gold_name' => $request->gold_name,
+                'name' => $request->name,
                 'selling_price' => $request->selling_price,
                 'stock_qty' => $request->stock_qty,
                 'qty' => $request->stock_qty,
                 'remark' => $request->remark,
                 'photo' => $filename,
                 'barcode_text' => $request->barcode_text,
-                'barcode' => $request->code_number . '-' . $request->product_gram,
+                'barcode' => $request->code_number . '-' . $request->product_weight,
                 'type' => $request->inlineCheckbox,
             ]);
 
@@ -569,7 +567,7 @@ class PosController extends Controller
                     'weight_unit' => 0,
                     'd_gram' => $request->decrease_pe . '/' . $request->decrease_yway,
                     'charge' => $request->service_fee,
-                    'name' => $request->gold_name,
+                    'name' => $request->name,
                     'price' => $request->selling_price,
                     'description' => $request->remark,
                     'default_photo' => $filename,
@@ -707,7 +705,7 @@ class PosController extends Controller
             $purchase->purchase_price = $request->purchase_price;
             $purchase->category_id = $request->category_id;
             $purchase->code_number = $request->code_number;
-            $purchase->product_gram_kyat_pe_yway = $request->product_gram . '/' . $request->product_kyat . '/' . $request->product_pe . '/' . $request->product_yway;
+            $purchase->product_weight = $request->product_weight . '/' . $request->product_kyat . '/' . $request->product_pe . '/' . $request->product_yway;
             $purchase->decrease_pe_yway = $request->decrease_pe . '/' . $request->decrease_yway;
             $purchase->profit_pe_yway = $request->profit_pe . '/' . $request->profit_yway;
             $purchase->service_pe_yway = $request->service_pe . '/' . $request->service_yway;
@@ -716,13 +714,14 @@ class PosController extends Controller
             $purchase->profit = $request->profit . '/' . $request->currency1;
             $purchase->service_fee = $request->service_fee . '/' . $request->currency2;
             $purchase->gold_fee = $request->gold_fee;
+            $purchase->capital = $request->gold_fee;
             $purchase->gold_type = $request->gold_type;
-            $purchase->gold_name = $request->gold_name;
+            $purchase->name = $request->name;
             $purchase->selling_price = $request->selling_price;
             $purchase->stock_qty = $request->stock_qty;
             $purchase->remark = $request->remark;
             $purchase->photo = $filename;
-            $purchase->barcode = $request->code_number . '-' . $request->product_gram;
+            $purchase->barcode = $request->code_number . '-' . $request->product_weight;
             $purchase->barcode_text = $request->barcode_text;
             $purchase->type = $request->inlineCheckbox;
             $purchase->save();
@@ -749,7 +748,7 @@ class PosController extends Controller
                 $item->product_code = $request->code_number;
                 $item->d_gram = $request->decrease_pe . '/' . $request->decrease_yway;
                 $item->charge = $request->service_fee;
-                $item->name = $request->gold_name;
+                $item->name = $request->name;
                 $item->price = $request->selling_price;
                 $item->description = $request->remark;
                 $item->default_photo = $filename;
@@ -782,15 +781,12 @@ class PosController extends Controller
     public function kyout_purchase_list(): View
     {
         $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
-        $purchases = PosKyoutPurchase::where('shop_owner_id', $this->get_shopid())
-            ->select('gold_gram_kyat_pe_yway', 'decrease_pe_yway')
-            ->get();
         $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->select('id', 'name')->get();
         $dias = PosDiamond::where('shop_owner_id', $this->get_shopid())->select('diamond_name')->get();
         $cats = Category::select('id', 'mm_name')->get();
         $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
         if (PosAssignGoldPrice::where('shop_owner_id', $this->get_shopid())->exists()) {
-            return view('backend.pos.kyout_purchase_list', ['counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'dias' => $dias, 'cats' => $cats]);
+            return view('backend.pos.kyout_purchase_list', ['counters' => $counters, 'sups' => $suppliers, 'dias' => $dias, 'cats' => $cats]);
         } else {
             Session::flash('message', '​ရွှေ​စျေးများကို ဦးစွာသတ်မှတ်ရန်လိုအပ်ပါသည်!');
 
@@ -886,7 +882,7 @@ class PosController extends Controller
                 'purchase_price' => $request->purchase_price,
                 'category_id' => $request->category_id,
                 'code_number' => $request->code_number,
-                'gold_gram_kyat_pe_yway' => $request->gold_gram . '/' . $request->gold_kyat . '/' . $request->gold_pe . '/' . $request->gold_yway,
+                'product_weight' => $request->gold_gram . '/' . $request->gold_kyat . '/' . $request->gold_pe . '/' . $request->gold_yway,
                 'diamond_gram_kyat_pe_yway' => $request->diamond_gram . '/' . $request->diamond_kyat . '/' . $request->diamond_pe . '/' . $request->diamond_yway,
                 'decrease_pe_yway' => $request->decrease_pe . '/' . $request->decrease_yway,
                 'profit_pe_yway' => $request->profit_pe . '/' . $request->profit_yway,
@@ -897,7 +893,7 @@ class PosController extends Controller
                 'service_fee' => $request->service_fee . '/' . $request->currency2,
                 'gold_fee' => $request->gold_fee,
                 'gold_type' => $request->gold_type,
-                'gold_name' => $request->gold_name,
+                'name' => $request->name,
                 'selling_price' => $request->selling_price,
                 'diamond_selling_price' => $request->diamond_selling_price,
                 'capital' => $request->capital,
@@ -982,7 +978,7 @@ class PosController extends Controller
                     'weight_unit' => 0,
                     'd_gram' => $request->decrease_pe . '/' . $request->decrease_yway,
                     'charge' => $request->service_fee,
-                    'name' => $request->gold_name,
+                    'name' => $request->name,
                     'price' => $request->selling_price,
                     'description' => $request->remark,
                     'gender' => $gender,
@@ -1051,7 +1047,7 @@ class PosController extends Controller
             $purchase->purchase_price = $request->purchase_price;
             $purchase->category_id = $request->category_id;
             $purchase->code_number = $request->code_number;
-            $purchase->gold_gram_kyat_pe_yway = $request->gold_gram . '/' . $request->gold_kyat . '/' . $request->gold_pe . '/' . $request->gold_yway;
+            $purchase->product_weight = $request->gold_gram . '/' . $request->gold_kyat . '/' . $request->gold_pe . '/' . $request->gold_yway;
             $purchase->diamond_gram_kyat_pe_yway = $request->diamond_gram . '/' . $request->diamond_kyat . '/' . $request->diamond_pe . '/' . $request->diamond_yway;
             $purchase->decrease_pe_yway = $request->decrease_pe . '/' . $request->decrease_yway;
             $purchase->profit_pe_yway = $request->profit_pe . '/' . $request->profit_yway;
@@ -1062,7 +1058,7 @@ class PosController extends Controller
             $purchase->service_fee = $request->service_fee . '/' . $request->currency2;
             $purchase->gold_fee = $request->gold_fee;
             $purchase->gold_type = $request->gold_type;
-            $purchase->gold_name = $request->gold_name;
+            $purchase->name = $request->name;
             $purchase->selling_price = $request->selling_price;
             $purchase->diamond_selling_price = $request->diamond_selling_price;
             $purchase->capital = $request->capital;
@@ -1136,7 +1132,7 @@ class PosController extends Controller
                 $item->product_code = $request->code_number;
                 $item->d_gram = $request->decrease_pe . '/' . $request->decrease_yway;
                 $item->charge = $request->service_fee;
-                $item->name = $request->gold_name;
+                $item->name = $request->name;
                 $item->price = $request->selling_price;
                 $item->description = $request->remark;
                 $item->gender = $gender;
@@ -1180,7 +1176,7 @@ class PosController extends Controller
     public function ptm_purchase_list(): View
     {
         $purchases = PosPlatinumPurchase::where('shop_owner_id', $this->get_shopid())
-            ->select('product_gram')
+            ->select('product_weight')
             ->get();
         $cats = Category::select('id', 'mm_name')->get();
         $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
@@ -1283,11 +1279,11 @@ class PosController extends Controller
                 'purchase_price' => $request->purchase_price,
                 'category_id' => $request->category_id,
                 'code_number' => $request->code_number,
-                'product_gram' => $request->product_gram,
+                'product_weight' => $request->product_weight,
                 'platinum_price' => $request->ptm_price,
                 'profit' => $request->profit . '/' . $request->currency1,
                 'platinum_type' => $request->ptm_type,
-                'platinum_name' => $request->ptm_name,
+                'name' => $request->ptm_name,
                 'selling_price' => $request->selling_price,
                 'stock_qty' => $request->stock_qty,
                 'qty' => $request->stock_qty,
@@ -1295,7 +1291,7 @@ class PosController extends Controller
                 'photo' => $filename,
                 'capital' => $request->capital,
                 'barcode_text' => $request->barcode_text,
-                'barcode' => $request->code_number . '-' . $request->product_gram,
+                'barcode' => $request->code_number . '-' . $request->product_weight,
                 'type' => $request->inlineCheckbox,
             ]);
 
@@ -1391,18 +1387,18 @@ class PosController extends Controller
             $purchase->purchase_price = $request->purchase_price;
             $purchase->category_id = $request->category_id;
             $purchase->code_number = $request->code_number;
-            $purchase->product_gram = $request->product_gram;
+            $purchase->product_weight = $request->product_weight;
             $purchase->platinum_price = $request->ptm_price;
             $purchase->profit = $request->profit . '/' . $request->currency1;
             $purchase->platinum_type = $request->ptm_type;
-            $purchase->platinum_name = $request->ptm_name;
+            $purchase->name = $request->ptm_name;
             $purchase->selling_price = $request->selling_price;
             $purchase->stock_qty = $request->stock_qty;
             $purchase->remark = $request->remark;
             $purchase->photo = $filename;
             $purchase->capital = $request->capital;
             $purchase->barcode_text = $request->barcode_text;
-            $purchase->barcode = $request->code_number . '-' . $request->product_gram;
+            $purchase->barcode = $request->code_number . '-' . $request->product_weight;
             $purchase->type = $request->inlineCheckbox;
             $purchase->save();
             if ($request->shwe_item == 1) {
@@ -1459,7 +1455,7 @@ class PosController extends Controller
     public function wg_purchase_list(): View
     {
         $purchases = PosWhiteGoldPurchase::where('shop_owner_id', $this->get_shopid())
-            ->select('product_gram')
+            ->select('product_weight')
             ->get();
         $cats = Category::select('id', 'mm_name')->get();
         $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
@@ -1561,11 +1557,11 @@ class PosController extends Controller
                 'purchase_price' => $request->purchase_price,
                 'category_id' => $request->category_id,
                 'code_number' => $request->code_number,
-                'product_gram' => $request->product_gram,
+                'product_weight' => $request->product_weight,
                 'whitegold_price' => $request->wg_price,
                 'profit' => $request->profit . '/' . $request->currency1,
                 'whitegold_type' => $request->wg_type,
-                'whitegold_name' => $request->wg_name,
+                'name' => $request->wg_name,
                 'selling_price' => $request->selling_price,
                 'stock_qty' => $request->stock_qty,
                 'qty' => $request->stock_qty,
@@ -1573,7 +1569,7 @@ class PosController extends Controller
                 'photo' => $filename,
                 'capital' => $request->capital,
                 'barcode_text' => $request->barcode_text,
-                'barcode' => $request->code_number . '-' . $request->product_gram,
+                'barcode' => $request->code_number . '-' . $request->product_weight,
                 'type' => $request->inlineCheckbox,
             ]);
 
@@ -1638,14 +1634,11 @@ class PosController extends Controller
 
         return view('backend.pos.edit_whitegold_purchase', ['shopowner' => $shopowner, 'counters' => $counters, 'categories' => $categories, 'gradeA' => $gradeA, 'gradeB' => $gradeB, 'purchase' => $purchase, 'staffs' => $staffs]);
     }
-    public function delete_wg_purchase(Request $request): JsonResponse
+    public function delete_wg_purchase(PosWhiteGoldPurchase $purchase): RedirectResponse
     {
-        $purchase = PosWhiteGoldPurchase::find($request->pid);
         $purchase->delete();
         Session::flash('message', 'Purchase was successfully Deleted!');
-        return response()->json([
-            'data' => 'success',
-        ], 200);
+        return redirect()->route('backside.shop_owner.pos.wg_purchase_list');
     }
     public function update_wg_purchase(Request $request, $id): RedirectResponse
     {
@@ -1671,18 +1664,18 @@ class PosController extends Controller
             $purchase->purchase_price = $request->purchase_price;
             $purchase->category_id = $request->category_id;
             $purchase->code_number = $request->code_number;
-            $purchase->product_gram = $request->product_gram;
+            $purchase->product_weight = $request->product_weight;
             $purchase->whitegold_price = $request->wg_price;
             $purchase->profit = $request->profit . '/' . $request->currency1;
             $purchase->whitegold_type = $request->wg_type;
-            $purchase->whitegold_name = $request->wg_name;
+            $purchase->name = $request->wg_name;
             $purchase->selling_price = $request->selling_price;
             $purchase->stock_qty = $request->stock_qty;
             $purchase->remark = $request->remark;
             $purchase->photo = $filename;
             $purchase->capital = $request->capital;
             $purchase->barcode_text = $request->barcode_text;
-            $purchase->barcode = $request->code_number . '-' . $request->product_gram;
+            $purchase->barcode = $request->code_number . '-' . $request->product_weight;
             $purchase->type = $request->inlineCheckbox;
             $purchase->save();
             if ($request->shwe_item == 1) {
@@ -1739,14 +1732,12 @@ class PosController extends Controller
     //Gold
     public function sale_gold_list(): View
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosGoldSale::where('shop_owner_id', $this->get_shopid())->get();
-        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->get();
+        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->select('id', 'name')->get();
         $quals = PosQuality::all();
-        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
-        $cats = Category::all();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
+        $cats = Category::select('id', 'mm_name')->get();
 
-        return view('backend.pos.sale_gold_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
+        return view('backend.pos.sale_gold_list', ['counters' => $counters, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
     }
 
     public function get_sale_gold_list(Request $request): JsonResponse
@@ -1867,7 +1858,7 @@ class PosController extends Controller
     public function get_sale_values(Request $request): JsonResponse
     {
         $purchase = PosPurchase::where('id', $request->purchase_id)->where('shop_owner_id', $this->get_shopid())->with('quality')->with('category')->first();
-        $product_gram_kyat_pe_yway = explode('/', $purchase->product_gram_kyat_pe_yway);
+        $product_weight = explode('/', $purchase->product_weight);
         $service_pe_yway = explode('/', $purchase->service_pe_yway);
         $decrease_pe_yway = explode('/', $purchase->decrease_pe_yway);
         $profit_pe_yway = explode('/', $purchase->profit_pe_yway);
@@ -1876,7 +1867,7 @@ class PosController extends Controller
         $service_fee = explode('/', $purchase->service_fee);
         return response()->json([
             'purchase' => $purchase,
-            'product' => $product_gram_kyat_pe_yway,
+            'product' => $product_weight,
             'service' => $service_pe_yway,
             'decrease' => $decrease_pe_yway,
             'profitt' => $profit_pe_yway,
@@ -1957,13 +1948,11 @@ class PosController extends Controller
     //Kyout
     public function sale_kyout_list(): View
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosKyoutSale::where('shop_owner_id', $this->get_shopid())->get();
-        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->get();
+        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->select('id', 'name')->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
+        $cats = Category::select('id', 'mm_name')->get();
         $dias = PosDiamond::where('shop_owner_id', $this->get_shopid())->get();
-        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
-        $cats = Category::all();
-        return view('backend.pos.kyout_sale_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'dias' => $dias, 'cats' => $cats]);
+        return view('backend.pos.kyout_sale_list', ['counters' => $counters, 'sups' => $suppliers, 'dias' => $dias, 'cats' => $cats]);
     }
 
     public function get_sale_kyout_list(Request $request): JsonResponse
@@ -2077,7 +2066,7 @@ class PosController extends Controller
     public function get_sale_kyout_values(Request $request): JsonResponse
     {
         $purchase = PosKyoutPurchase::where('id', $request->purchase_id)->where('shop_owner_id', $this->get_shopid())->with('quality')->with('category')->first();
-        $product_gram_kyat_pe_yway = explode('/', $purchase->gold_gram_kyat_pe_yway);
+        $product_weight = explode('/', $purchase->product_weight);
         $service_pe_yway = explode('/', $purchase->service_pe_yway);
         $decrease_pe_yway = explode('/', $purchase->decrease_pe_yway);
         $profit_pe_yway = explode('/', $purchase->diamond_gram_kyat_pe_yway);
@@ -2085,7 +2074,7 @@ class PosController extends Controller
         $service_fee = explode('/', $purchase->service_fee);
         return response()->json([
             'purchase' => $purchase,
-            'product' => $product_gram_kyat_pe_yway,
+            'product' => $product_weight,
             'service' => $service_pe_yway,
             'decrease' => $decrease_pe_yway,
             'diamond' => $profit_pe_yway,
@@ -2168,7 +2157,7 @@ class PosController extends Controller
 
             $shopowner = Shops::find($this->get_shopid());
             Session::flash('message', 'Kyout Sale was successfully Created!');
-            $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->first();
+            $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
             $price = PosAssignGoldPrice::latest()->where('shop_owner_id', $this->get_shopid())->first();
             $shop_price = explode('/', $price->shop_price)[0];
             $price15 = explode('/', $price->inprice_15)[0];
@@ -2181,13 +2170,12 @@ class PosController extends Controller
     //Platinum
     public function sale_ptm_list(): View
     {
-        $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $purchases = PosPlatinumSale::where('shop_owner_id', $this->get_shopid())->get();
-        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->get();
+        $suppliers = PosSupplier::where('shop_owner_id', $this->get_shopid())->select('id', 'name')->get();
+        $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->select('shop_name')->get();
+        $cats = Category::select('id', 'mm_name')->get();
         $quals = PosQuality::all();
         $counters = PosCounterShop::where('shop_owner_id', $this->get_shopid())->get();
-        $cats = Category::all();
-        return view('backend.pos.sale_platinum_list', ['shopowner' => $shopowner, 'counters' => $counters, 'purchases' => $purchases, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
+        return view('backend.pos.sale_platinum_list', ['counters' => $counters, 'sups' => $suppliers, 'quals' => $quals, 'cats' => $cats]);
     }
 
     public function get_sale_ptm_list(Request $request): JsonResponse

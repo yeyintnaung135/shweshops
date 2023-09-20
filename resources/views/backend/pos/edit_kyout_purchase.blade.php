@@ -66,8 +66,8 @@
                           </div>
                          <div class="row mt-5">
                             <div class="col-3 form-group">
-                                <label for="gold_name">​ရွှေထည်အမည်</label>
-                                <input type="text" name="gold_name" class="form-control" value="{{$purchase->gold_name}}" required>
+                                <label for="name">​ရွှေထည်အမည်</label>
+                                <input type="text" name="name" class="form-control" value="{{$purchase->name}}" required>
                             </div>
                             <div class="col-3 form-group">
                                 <label for="supplier_id">ပန်းထိမ်ဆိုင်</label>
@@ -84,18 +84,18 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-3 form-group">
-                                        <input type="number" step="0.01" name="gold_gram" placeholder="Gram" id="gold_gram" class="form-control"  value="<?php echo explode('/',$purchase->gold_gram_kyat_pe_yway)[0]; ?>" required>
+                                        <input type="number" step="0.01" name="gold_gram" placeholder="Gram" id="gold_gram" class="form-control"  value="<?php echo explode('/',$purchase->product_weight)[0]; ?>" required>
 
                                     </div>
                                     <div class="col-3 form-group">
-                                        <input type="number" step="0.01" name="gold_kyat"  id="gold_kyat" class="form-control"  placeholder="ကျပ်" value="<?php echo explode('/',$purchase->gold_gram_kyat_pe_yway)[1]; ?>">
+                                        <input type="number" step="0.01" name="gold_kyat"  id="gold_kyat" class="form-control"  placeholder="ကျပ်" value="<?php echo explode('/',$purchase->product_weight)[1]; ?>">
 
                                     </div>
                                     <div class="col-3 form-group">
-                                        <input type="number" step="0.01" name="gold_pe" id="gold_pe" class="form-control"  placeholder="ပဲ" value="<?php echo explode('/',$purchase->gold_gram_kyat_pe_yway)[2]; ?>">
+                                        <input type="number" step="0.01" name="gold_pe" id="gold_pe" class="form-control"  placeholder="ပဲ" value="<?php echo explode('/',$purchase->product_weight)[2]; ?>">
                                     </div>
                                     <div class="col-3 form-group">
-                                        <input type="number" step="0.01" name="gold_yway" id="gold_yway" class="form-control"  placeholder="ရွေး" value="<?php echo explode('/',$purchase->gold_gram_kyat_pe_yway)[3]; ?>">
+                                        <input type="number" step="0.01" name="gold_yway" id="gold_yway" class="form-control"  placeholder="ရွေး" value="<?php echo explode('/',$purchase->product_weight)[3]; ?>">
                                     </div>
                                 </div>
                             </div>
@@ -275,13 +275,13 @@
                                             <!--</select>-->
                                         </div>
                                     </div>
-                                    
+
                                     <?php  $diamonds =explode(',',$purchase->diamonds);
                                         $carrats = explode(',',$purchase->carrats);
                                         $counts = explode(',',$purchase->counts);
                                         $yaties = explode(',',$purchase->yaties);
                                         $bes = explode(',',$purchase->bes); ?>
-                    
+
                                     <div class="row" >
                                         <div class="col-6" id="add_diamond">
                                             @for ($i = 0; $i < count($diamonds)-1; $i++)
@@ -312,8 +312,8 @@
                                     </div>
                                 </div>
 
-                           
-                            
+
+
                                 <div class="offset-1 col-3">
                                     <label for="stock_qty">အ​ရေအတွက်</label>
                                     <input type="text" name="stock_qty" class="form-control" value="{{$purchase->stock_qty}}">
@@ -382,7 +382,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (Auth::guard('shop_owner')->user()->pos_only == 'no')
+                            @if ($shopowner->pos_only == 'no')
                             <!-- ShweShop Item -->
                             <div class="col-12 mt-3" >
                                 <label for="shwe_item">Shwe Shop Item တွင်​ပြောင်းမည်</label>

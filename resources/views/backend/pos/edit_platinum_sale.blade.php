@@ -68,11 +68,11 @@
                             <div class="col-5">
                                 <div class="row">
                                     <div class="col-6 form-group">
-                                        <label for="gold_name">​ပလက်တီနမ်အမည်</label>
+                                        <label for="name">​ပလက်တီနမ်အမည်</label>
                                         <select name="purchase_id" id="" onchange="fillValues(this.value)"  class="form-control select2" required>
-                                            <option value="{{$sale->purchase_id}}">{{$sale->purchase->code_number}}-{{$sale->purchase->platinum_name}}</option>
+                                            <option value="{{$sale->purchase_id}}">{{$sale->purchase->code_number}}-{{$sale->purchase->name}}</option>
                                             @foreach ($purchases as $purchase)
-                                            <option value="{{$purchase->id}}">{{$purchase->purchase->code_number}}-{{$purchase->purchase->platinum_name}}</option>
+                                            <option value="{{$purchase->id}}">{{$purchase->purchase->code_number}}-{{$purchase->purchase->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -117,7 +117,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-3 form-group">
-                                                <input type="number" step="0.01" name="product_gram" placeholder="Gram" id="product_gram" class="form-control" value="{{$sale->purchase->product_gram}}" required>
+                                                <input type="number" step="0.01" name="product_weight" placeholder="Gram" id="product_weight" class="form-control" value="{{$sale->purchase->product_weight}}" required>
 
                                             </div>
                                         </div>
@@ -261,7 +261,7 @@
                     $('#quality').val(data.purchase.quality);
                     $('#platinum_type').val(data.purchase.platinum_type);
                     $('#category').val(data.purchase.category.mm_name);
-                    $('#product_gram').val(data.purchase.product_gram);
+                    $('#product_weight').val(data.purchase.product_weight);
                     calculate_quality_price(data.purchase.quality);
                 }
                 })
@@ -286,7 +286,7 @@
         }
 
         function calculate_price(){
-            var gram = parseFloat($('#product_gram').val());
+            var gram = parseFloat($('#product_weight').val());
             var ptm_price = parseInt($('#ptm_price').val());
             if(gram){ gram = gram;}else{ gram = 0;}
 

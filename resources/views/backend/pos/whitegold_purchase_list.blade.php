@@ -106,20 +106,15 @@
                         </div>
                     </div>
                     <div class="card mt-2">
-                        <?php $tot_g = 0;
-                        foreach ($purchases as $pg) {
-                            $tot_g += $pg->product_gram;
-                        }
-                        ?>
                         <div class="card-body">
                             <div class="row">
-                                <div class="offset-6 col-3 card" style="max-height: 70px;">
+                                <div class="col-3 card" style="max-height: 70px;">
                                     <h6 class="text-color mt-2">စုစု​ပေါင်းအ​ရေအတွက် &nbsp;&nbsp;&nbsp;<span
-                                            id="tot_qty">{{ count($purchases) }}</span></h6>
+                                            id="tot_qty">0</span></h6>
                                 </div>
                                 <div class="col-3 card" style="max-height: 70px;">
                                     <h6 class="text-color mt-2">စုစု​ပေါင်းအ​လေးချိန် &nbsp;&nbsp;&nbsp;<span
-                                            id="tot_g">{{ $tot_g }}</span> g<br>(Gram)</h6>
+                                            id="tot_g">0</span> g<br>(Gram)</h6>
                                 </div>
                             </div>
                             <div class=" table-responsive text-black">
@@ -164,6 +159,8 @@
                 changeYear: true
             });
 
+            var tot_g = 0;
+
             var whiteGoldPurchaseTable = $('#whiteGoldPurchaseTable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -182,8 +179,8 @@
                         name: 'id'
                     },
                     {
-                        data: 'whitegold_name',
-                        name: 'whitegold_name'
+                        data: 'name',
+                        name: 'name'
                     },
                     {
                         data: 'quality',
@@ -201,8 +198,8 @@
                         name: 'code_number'
                     },
                     {
-                        data: 'product_gram',
-                        name: 'product_gram'
+                        data: 'product_weight',
+                        name: 'product_weight'
                     },
                     {
                         data: 'stock_qty',
@@ -242,6 +239,26 @@
                         },
                     },
                 ],
+
+                drawCallback: function(settings) {
+                    var api = this.api();
+                    var purchasesData = api.rows().data(); // Access the data in the current view
+
+                    // Reset the totals to 0 before recalculating
+                    tot_g = 0;
+
+                    // Calculate totals based on the data in the current view
+                    for (var i = 0; i < purchasesData.length; i++) {
+                        var pg = purchasesData[i];
+
+                        tot_g += parseFloat(pg.product_weight);
+                    }
+
+                    // Update the HTML elements with the recalculated totals
+                    $('#tot_qty').text(purchasesData.length);
+                    $('#tot_g').text(tot_g);
+                },
+
                 dom: 'lBfrtip',
                 "responsive": true,
                 "autoWidth": false,

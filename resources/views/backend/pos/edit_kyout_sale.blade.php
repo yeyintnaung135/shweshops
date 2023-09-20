@@ -68,11 +68,11 @@
                             <div class="col-5">
                                 <div class="row">
                                     <div class="col-6 form-group">
-                                        <label for="gold_name">​ရွှေထည်အမည်</label>
+                                        <label for="name">​ရွှေထည်အမည်</label>
                                         <select name="purchase_id" id="" onchange="fillValues(this.value)"  class="form-control select2" required>
-                                            <option value="{{$sale->purchase_id}}">{{$sale->purchase->code_number}}-{{$sale->purchase->gold_name}}</option>
+                                            <option value="{{$sale->purchase_id}}">{{$sale->purchase->code_number}}-{{$sale->purchase->name}}</option>
                                             @foreach ($purchases as $purchase)
-                                            <option value="{{$purchase->id}}">{{$purchase->code_number}}-{{$purchase->gold_name}}</option>
+                                            <option value="{{$purchase->id}}">{{$purchase->code_number}}-{{$purchase->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -118,18 +118,18 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-3 form-group">
-                                                <input type="number" step="0.01" name="product_gram" placeholder="Gram" id="product_gram" class="form-control"  value="<?php echo explode('/',$sale->purchase->gold_gram_kyat_pe_yway)[0]; ?>" required>
+                                                <input type="number" step="0.01" name="product_weight" placeholder="Gram" id="product_weight" class="form-control"  value="<?php echo explode('/',$sale->purchase->product_weight)[0]; ?>" required>
 
                                             </div>
                                             <div class="col-3 form-group">
-                                                <input type="number" step="0.01" name="product_kyat"  id="product_kyat" class="form-control"  placeholder="ကျပ်" value="<?php echo explode('/',$sale->purchase->gold_gram_kyat_pe_yway)[1]; ?>">
+                                                <input type="number" step="0.01" name="product_kyat"  id="product_kyat" class="form-control"  placeholder="ကျပ်" value="<?php echo explode('/',$sale->purchase->product_weight)[1]; ?>">
 
                                             </div>
                                             <div class="col-3 form-group">
-                                                <input type="number" step="0.01" name="product_pe" id="product_pe" class="form-control"  placeholder="ပဲ" value="<?php echo explode('/',$sale->purchase->gold_gram_kyat_pe_yway)[2]; ?>">
+                                                <input type="number" step="0.01" name="product_pe" id="product_pe" class="form-control"  placeholder="ပဲ" value="<?php echo explode('/',$sale->purchase->product_weight)[2]; ?>">
                                             </div>
                                             <div class="col-3 form-group">
-                                                <input type="number" step="0.01" name="product_yway" id="product_yway" class="form-control"  placeholder="ရွေး" value="<?php echo explode('/',$sale->purchase->gold_gram_kyat_pe_yway)[3]; ?>">
+                                                <input type="number" step="0.01" name="product_yway" id="product_yway" class="form-control"  placeholder="ရွေး" value="<?php echo explode('/',$sale->purchase->product_weight)[3]; ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -345,7 +345,7 @@
                     $('#quality').val(data.purchase.quality.name);
                     $('#gold_type').val(data.purchase.gold_type);
                     $('#category').val(data.purchase.category.mm_name);
-                    $('#product_gram').val(data.product[0]);
+                    $('#product_weight').val(data.product[0]);
                     $('#product_kyat').val(data.product[1]);
                     $('#product_pe').val(data.product[2]);
                     $('#product_yway').val(data.product[3]);

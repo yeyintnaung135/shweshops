@@ -13,12 +13,17 @@ class Discount extends Model
     protected $fillable = ['discount_price', 'discount_min', 'dec_price', 'discount_max', 'item_id', 'percent', 'shop_id', 'base', 'deleted_at'];
 
     protected $table = 'discount';
-    protected $appends = ['MmPrice']; //this for vue if yout want to pass attribute to js json yout set this
+    protected $appends = ['MmPrice']; //this is for vue if you want to pass attribute to js json you set this
 
 //    function items()
 //    {
 //        return $this->belongsTo('App\Item','item_id');
 //    }
+
+    public function shop()
+    {
+        return $this->belongsTo(Shops::class, 'shop_id');
+    }
 
     public function getItembyDiscountAttribute()
     {

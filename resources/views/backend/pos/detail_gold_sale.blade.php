@@ -112,7 +112,7 @@
 
                                             </div>
                                             <?php
-                                            $product = explode('/',$purchase->purchase->product_gram_kyat_pe_yway);
+                                            $product = explode('/',$purchase->purchase->product_weight);
                                             $decrease = explode('/',$purchase->purchase->decrease_pe_yway);
                                             $profit = explode('/',$purchase->purchase->profit);
                                             $service = explode('/',$purchase->purchase->service_fee);
@@ -136,7 +136,7 @@
                                               <h6 class="text-color mt-4">{{$purchase->address}}</h6>
 
                                               <h6 class="text-color mt-4">{{$purchase->purchase->code_number}}</h6>
-                                              <h6 class="text-color mt-4">{{$purchase->purchase->gold_name}}</h6>
+                                              <h6 class="text-color mt-4">{{$purchase->purchase->name}}</h6>
                                               <h6 class="text-color mt-4">1</h6>
                                               <h6 class="text-color mt-4">{{$purchase->purchase->supplier->name}}</h6>
                                               <h6 class="text-color mt-4">{{$purchase->purchase->quality->name}}</h6>
@@ -169,7 +169,7 @@
                             </div>
                         </div>
                         <br>
-                      
+
 
                     </div>
                     <div class="col-1">
@@ -183,7 +183,7 @@
                             @csrf
                             @method('DELETE')
                         </form>
-                        
+
                     </div>
                 </div>
 
@@ -226,7 +226,7 @@
         function check_barcode(){
             if($('#print_barcode').is(':checked')){
                 var code = $('#code_number').val();
-                var gram = $('#product_gram').val();
+                var gram = $('#product_weight').val();
 
                 var barcode_text = $('#barcode_text').val();
                 if(code == '' || gram == ''){

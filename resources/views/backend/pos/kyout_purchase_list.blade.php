@@ -67,7 +67,6 @@
                                         <option value="{{ $counter->shop_name }}">{{ $counter->shop_name }}</option>
                                     @endforeach
                                 </select>
-                                <input type="hidden" id="print_counter" value="All">
                             </h6>
                         </div>
                         <div class="col-5">
@@ -84,86 +83,45 @@
                                 </div>
                                 <div class="col-4">
                                     <select name="" id="sup" class="mt-2 form-control">
-                                        <option value="">​ပန်းထိမ်ဆိုင်များ</option>
+                                        <option selected value="all">အားလုံး</option>
                                         @foreach ($sups as $sup)
                                             <option value="{{ $sup->id }}">{{ $sup->name }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" id="print_gtype" value="All">
                                     <select name="" id="dia" class="mt-2 form-control">
-                                        <option value="">စိန်​ကျောက်အမည်များ</option>
+                                        <option selected value="all">အားလုံး</option>
                                         @foreach ($dias as $dia)
                                             <option value="{{ $dia->diamond_name }}">{{ $dia->diamond_name }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" id="print_cat" value="All">
                                     <select name="" id="cat" class="mt-2 form-control">
-                                        <option value="">ပစ္စည်း​အမျိုးအစားများ</option>
+                                        <option selected value="all">အားလုံး</option>
                                         @foreach ($cats as $cat)
                                             <option value="{{ $cat->id }}">{{ $cat->mm_name }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" id="supid">
-                                    <input type="hidden" id="diaid">
-                                    <input type="hidden" id="catid">
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="card mt-2">
-                        <?php $tot_g = 0;
-                        $tot_y = 0;
-                        $tot_p = 0;
-                        $tot_k = 0;
-                        $tot_dy = 0;
-                        $tot_dp = 0;
-                        $tot_dk = 0;
-                        foreach ($purchases as $pg) {
-                            $product = explode('/', $pg->gold_gram_kyat_pe_yway);
-                            $decrease = explode('/', $pg->decrease_pe_yway);
-                            $tot_g += $product[0];
-                            $tot_y += $product[3] ? $product[3] : 0;
-                            $tot_p += $product[2] ? $product[2] : 0;
-                            $tot_k += $product[1] ? $product[1] : 0;
-                            $tot_dy += $decrease[1] ? $decrease[1] : 0;
-                            $tot_dp += $decrease[0] ? $decrease[0] : 0;
-                            if ($tot_y >= 8) {
-                                $tot_p += 1;
-                                $tot_y = $tot_y - 8;
-                            }
-                            if ($tot_p >= 16) {
-                                $tot_k += 1;
-                                $tot_p = $tot_p - 16;
-                            }
-                            if ($tot_dy >= 8) {
-                                $tot_dp += 1;
-                                $tot_dy = $tot_dy - 8;
-                            }
-                            if ($tot_dp >= 16) {
-                                $tot_dk += 1;
-                                $tot_dp = $tot_dp - 16;
-                            }
-                        }
-                        ?>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-3 card" style="max-height: 70px;">
                                     <h6 class="text-color mt-2">စုစု​ပေါင်းအ​ရေအတွက် &nbsp;&nbsp;&nbsp;<span
-                                            id="tot_qty">{{ count($purchases) }}</span></h6>
+                                            id="tot_qty">0</span></h6>
                                 </div>
                                 <div class="col-3 card" style="max-height: 70px;">
                                     <h6 class="text-color mt-2">စုစု​ပေါင်းအ​လေးချိန် &nbsp;&nbsp;&nbsp;<span
-                                            id="tot_g">{{ $tot_g }}</span> g<br>(Gram)</h6>
+                                            id="tot_g">0</span> g<br>(Gram)</h6>
                                 </div>
                                 <div class="col-3 card row" style="max-height: 70px;">
                                     <h6 class="col-7 text-color mt-2">စုစု​ပေါင်းအ​လေးချိန် (ကျပ်၊ ပဲ၊ ​ရွေး)</h6>
-                                    <h6 class="col-5 text-color mt-2" id="tot_kpy">{{ $tot_k }}ကျပ်
-                                        {{ $tot_p }}ပဲ {{ $tot_y }}​ရွေး</h6>
+                                    <h6 class="col-5 text-color mt-2" id="tot_kpy">0ကျပ် 0ပဲ 0ရွေး</h6>
                                 </div>
                                 <div class="col-3 card row" style="max-height: 70px;">
                                     <h6 class="col-8 text-color mt-2">စုစု​ပေါင်းအ​လျော့တွက် (ကျပ်၊ ပဲ၊ ​ရွေး)</h6>
-                                    <h6 class="col-4 text-color mt-2" id="tot_dkpy">{{ $tot_dk }}ကျပ်
-                                        {{ $tot_dp }}ပဲ {{ $tot_dy }}​ရွေး</h6>
+                                    <h6 class="col-4 text-color mt-2" id="tot_dkpy">0ကျပ် 0ပဲ 0ရွေး</h6>
                                 </div>
                             </div>
                             <div class=" table-responsive text-black">
@@ -208,6 +166,14 @@
                 changeYear: true
             });
 
+            var tot_g = 0;
+            var tot_y = 0;
+            var tot_p = 0;
+            var tot_k = 0;
+            var tot_dy = 0;
+            var tot_dp = 0;
+            var tot_dk = 0;
+
             var kyoutPurchaseTable = $('#kyoutPurchaseTable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -227,8 +193,8 @@
                         name: 'id'
                     },
                     {
-                        data: 'gold_name',
-                        name: 'gold_name'
+                        data: 'name',
+                        name: 'name'
                     },
                     {
                         data: 'code_number',
@@ -242,8 +208,8 @@
                         },
                     },
                     {
-                        data: 'gold_gram_kyat_pe_yway',
-                        name: 'gold_gram_kyat_pe_yway',
+                        data: 'product_weight',
+                        name: 'product_weight',
                         "render": function(data, type, full, meta) {
                             // Split the data using '/'
                             var arr = data.split('/');
@@ -305,6 +271,58 @@
                         },
                     },
                 ],
+
+                drawCallback: function(settings) {
+                    var api = this.api();
+                    var purchasesData = api.rows().data(); // Access the data in the current view
+
+                    // Reset the totals to 0 before recalculating
+                    tot_g = 0;
+                    tot_y = 0;
+                    tot_p = 0;
+                    tot_k = 0;
+                    tot_dy = 0;
+                    tot_dp = 0;
+                    tot_dk = 0;
+
+                    // Calculate totals based on the data in the current view
+                    for (var i = 0; i < purchasesData.length; i++) {
+                        var pg = purchasesData[i];
+                        var product = pg.product_weight.split('/');
+                        var decrease = pg.decrease_pe_yway.split('/');
+
+                        tot_g += parseFloat(product[0]);
+                        tot_y += product[3] ? parseFloat(product[3]) : 0;
+                        tot_p += product[2] ? parseFloat(product[2]) : 0;
+                        tot_k += product[1] ? parseFloat(product[1]) : 0;
+                        tot_dy += decrease[1] ? parseFloat(decrease[1]) : 0;
+                        tot_dp += decrease[0] ? parseFloat(decrease[0]) : 0;
+
+                        if (tot_y >= 8) {
+                            tot_p += 1;
+                            tot_y = tot_y - 8;
+                        }
+                        if (tot_p >= 16) {
+                            tot_k += 1;
+                            tot_p = tot_p - 16;
+                        }
+                        if (tot_dy >= 8) {
+                            tot_dp += 1;
+                            tot_dy = tot_dy - 8;
+                        }
+                        if (tot_dp >= 16) {
+                            tot_dk += 1;
+                            tot_dp = tot_dp - 16;
+                        }
+                    }
+
+                    // Update the HTML elements with the recalculated totals
+                    $('#tot_qty').text(purchasesData.length);
+                    $('#tot_g').text(tot_g);
+                    $('#tot_kpy').text(tot_k + 'ကျပ် ' + tot_p + 'ပဲ ' + tot_y + '​ရွေး');
+                    $('#tot_dkpy').text(tot_dk + 'ကျပ် ' + tot_dp + 'ပဲ ' + tot_dy + '​ရွေး');
+                },
+
                 dom: 'lBfrtip',
                 "responsive": true,
                 "autoWidth": false,
@@ -317,10 +335,10 @@
                             var tot_g = $('#tot_g').text();
                             var tot_kpy = $('#tot_kpy').text();
                             var tot_dkpy = $('#tot_dkpy').text();
-                            var date = $('#print_date').val();
-                            var counter = $('#print_counter').val();
-                            var gtype = $('#print_gtype').val();
-                            var ptype = $('#print_ptype').val();
+                            var date = $('#fromDate').val() + ' - ' + $('#toDate').val();
+                            var counter = $('#f_counter option:selected').text();
+                            var gtype = $('#dia option:selected').text();
+                            var cat = $('#cat option:selected').text();
                             var existingData = $(win.document.body).html();
                             var extraText1 = `<div class="row">
                             <div class="col-3 card" style="max-height: 70px;"><h6 class="text-color mt-2" >စုစု​ပေါင်းအ​ရေအတွက် &nbsp;&nbsp;&nbsp;<span>${tot_qty}</span></h6></div>
@@ -337,7 +355,7 @@
                             var extraText2 = `
                             <h6 class='text-color'>​ကောင်တာ : ${counter}</h6>
                             <h6 class='text-color'>​​စိန်​ကျောက်အမည် : ${gtype}</h6>
-                            <h6 class='text-color'>​အမျိုးအစား : ${ptype}</h6>
+                            <h6 class='text-color'>​အမျိုးအစား : ${cat}</h6>
                             <h6 class='text-color'>​Date : ${date}</h6>
                         `;
                             $(win.document.body).html(extraText1 + existingData + extraText2);

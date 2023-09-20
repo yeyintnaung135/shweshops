@@ -90,7 +90,7 @@
                                               <h6 class="mt-4">-</h6>
                                             </div>
                                             <?php
-                                            $product = explode('/',$purchase->product_gram_kyat_pe_yway);
+                                            $product = explode('/',$purchase->product_weight);
                                             $decrease = explode('/',$purchase->decrease_pe_yway);
                                             $profit = explode('/',$purchase->profit);
                                             $service = explode('/',$purchase->service_fee);
@@ -103,7 +103,7 @@
                                               <h6 class="text-color mt-4">{{$product[1] ? $product[1].'ကျပ်' : ''}} {{$product[2] ? $product[2].'ပဲ' : ''}} {{$product[3] ? $product[3].'ရွေး' : ''}}</h6>
                                               <h6 class="text-color mt-4">{{$decrease[0] ? $decrease[0].'ပဲ' : ''}} {{$decrease[1] ? $decrease[1].'ရွေး' : ''}}</h6>
                                               <h6 class="text-color mt-4">{{$purchase->code_number}}</h6>
-                                              <h6 class="text-color mt-4">{{$purchase->gold_name}}</h6>
+                                              <h6 class="text-color mt-4">{{$purchase->name}}</h6>
                                               <h6 class="text-color mt-4">{{$purchase->supplier->name}}</h6>
                                               <h6 class="text-color mt-4">{{$purchase->quality->name}}</h6>
                                               <h6 class="text-color mt-4">{{$purchase->gold_type}}</h6>
@@ -183,25 +183,14 @@
                     <div class="col-1">
                         <a href="{{route('backside.shop_owner.pos.edit_purchase',$purchase->id)}}" class="ml-2 mt-4 btn btn-sm btn-warning text-white"><i class="fa fa-pencil" ></i></a><br>
                         @if($purchase->sell_flag == 0)
-                        <a href="#myModal{{$purchase->id}}" class="btn btn-sm btn-danger text-white mt-3 ml-2" data-toggle="modal"><i class="fa fa-trash"></i></a>
+                        <a class="btn btn-sm btn-danger text-white mt-3 ml-2" onclick="Delete('{{ route('backside.shop_owner.pos.delete_purchase', ['purchase' => $purchase]) }}')">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                        <form id="delete_form_{{ $purchase->id }}" method="POST" style="display: none;">
+                            @csrf
+                            <input type="hidden" name="_method" value="DELETE">
+                        </form>
                         @endif
-                        <div id="myModal{{$purchase->id}}" class="modal">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Delete List</h5>
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p class="text-center">Are you Sure to Delete this List?</p>
-                                    </div>
-                                    <div class="modal-footer text-center">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCLE</button>
-                                        <button type="button" class="btn btn-color" onclick="suredelete({{$purchase->id}})">DELETE</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -244,7 +233,7 @@
         function check_barcode(){
             if($('#print_barcode').is(':checked')){
                 var code = $('#code_number').val();
-                var gram = $('#product_gram').val();
+                var gram = $('#product_weight').val();
 
                 var barcode_text = $('#barcode_text').val();
                 if(code == '' || gram == ''){
@@ -268,26 +257,41 @@
 
         }
 
-        function suredelete(id){
-            // alert(id);
-                $.ajax({
+        function Delete(deleteUrl) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-danger ml-2',
+                    cancelButton: 'btn btn-info'
+                },
+                buttonsStyling: false
+            });
 
-                    type:'POST',
-
-                    url: '{{route("backside.shop_owner.pos.delete_purchase")}}',
-
-                    data:{
-                    "_token":"{{csrf_token()}}",
-                    "pid" : id,
-                    },
-
-                    success:function(data){
-                        // window.open('https://test.shweshops.com/backside/shop_owner/purchase_list');
-                        window.location.href = "{{ route('backside.shop_owner.pos.purchase_list')}}";
-                    }
-                })
-
-
+            swalWithBootstrapButtons.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Check if "Confirm" button was clicked
+                    const deleteForm = document.createElement('form');
+                    deleteForm.action = deleteUrl;
+                    deleteForm.method = 'POST';
+                    deleteForm.style.display = 'none';
+                    deleteForm.innerHTML = `
+                    @csrf
+                    @method('DELETE')`;
+                    document.body.appendChild(deleteForm);
+                    deleteForm.submit();
+                }
+            });
         }
 
         function back(){

@@ -68,12 +68,12 @@
                             <div class="col-5">
                                 <div class="row">
                                     <div class="col-6 form-group">
-                                        <label for="gold_name">​ရွှေထည်အမည်</label>
+                                        <label for="name">​ရွှေထည်အမည်</label>
                                         <select name="purchase_id" id="" onchange="fillValues(this.value)"  class="form-control select2" required>
                                             <option value="">ရွှေထည်အမည်များ</option>
                                             @foreach ($purchases as $purchase)
                                             @if ($purchase->stock_qty > 0)
-                                            <option value="{{$purchase->id}}">{{$purchase->code_number}}-{{$purchase->gold_name}}</option>
+                                            <option value="{{$purchase->id}}">{{$purchase->code_number}}-{{$purchase->name}}</option>
                                             @endif
                                             @endforeach
                                         </select>
@@ -124,7 +124,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-3 form-group">
-                                                <input type="number" step="0.01" name="product_gram" placeholder="Gram" id="product_gram" class="form-control" required>
+                                                <input type="number" step="0.01" name="product_weight" placeholder="Gram" id="product_weight" class="form-control" required>
 
                                             </div>
                                             <div class="col-3 form-group">
@@ -407,7 +407,7 @@
                     $('#quality').val(data.purchase.quality.name);
                     $('#gold_type').val(data.purchase.gold_type);
                     $('#category').val(data.purchase.category.mm_name);
-                    $('#product_gram').val(data.product[0]);
+                    $('#product_weight').val(data.product[0]);
                     $('#product_kyat').val(data.product[1]);
                     $('#product_pe').val(data.product[2]);
                     $('#product_yway').val(data.product[3]);

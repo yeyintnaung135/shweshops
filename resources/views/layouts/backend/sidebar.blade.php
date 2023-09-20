@@ -18,7 +18,7 @@
             if (isset(Auth::guard('shop_owners_and_staffs')->user()->id)) {
                 $current_shop = Shops::where('id', Auth::guard('shop_owners_and_staffs')->user()->shop_id)->first();
                 $premium_status = $current_shop->preminum;
-            } 
+            }
 
         @endphp
 
@@ -84,16 +84,16 @@
                                         <i class="fa fa-circle pl-5"></i>
                                         <p class="ml-3">Trash</p>
                                     </a>
-                                 </li> 
+                                 </li>
                                 @endisRole
 
-                              
+
 
                             </ul>
                         </li>
                    @endisRole
-                  
-           
+
+
                 <li class="nav-item py-1">
                     <a href="#" class="nav-link">
                         <i class="fi fi-rs-gift nav-icon"></i>
@@ -115,7 +115,7 @@
                                 <p class="ml-3">Add</p>
                             </a>
                         </li>
-                 
+
                         <li class="nav-item py-1">
                             <a href="{{ route('backside.shop_owner.items.trash') }}" class="nav-link border-0">
                                 <i class="fa fa-circle pl-5"></i>
@@ -172,7 +172,7 @@
                 </a>
                </li>
                @endisRole
-                  
+
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fi fi-rr-document-signed"></i>
@@ -313,7 +313,7 @@
 
                     <hr />
                 @endcanany
-                <li class="nav-item nav-header ml-2">
+                {{-- <li class="nav-item nav-header ml-2">
                     Download Files
                 </li>
                 <li class="nav-item py-1">
@@ -323,7 +323,7 @@
                             Android
                         </span>
                     </a>
-                </li>
+                </li> --}}
 
                 {{-- maymyat --}}
                 @can('can_use_pos')

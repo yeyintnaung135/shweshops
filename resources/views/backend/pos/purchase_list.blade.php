@@ -94,28 +94,23 @@
                                 </div>
                                 <div class="col-4">
                                     <select name="" id="sup" class="mt-2 form-control">
-                                        <option value="">​ပန်းထိမ်ဆိုင်များ</option>
+                                        <option selected value="all">အားလုံး</option>
                                         @foreach ($sups as $sup)
                                             <option value="{{ $sup->id }}">{{ $sup->name }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" id="print_gtype" value="All">
                                     <select name="" id="qual" class="mt-2 form-control">
-                                        <option value="">ရွှေ​အမျိုးအစားများ</option>
+                                        <option selected value="all">အားလုံး</option>
                                         @foreach ($quals as $qual)
                                             <option value="{{ $qual->id }}">{{ $qual->name }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" id="print_cat" value="All">
                                     <select name="" id="cat" class="mt-2 form-control">
-                                        <option value="">ပစ္စည်း​အမျိုးအစားများ</option>
+                                        <option selected value="all">အားလုံး</option>
                                         @foreach ($cats as $cat)
                                             <option value="{{ $cat->id }}">{{ $cat->mm_name }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" id="supid">
-                                    <input type="hidden" id="qualid">
-                                    <input type="hidden" id="catid">
                                 </div>
                             </div>
                         </div>
@@ -211,8 +206,8 @@
                         name: 'id'
                     },
                     {
-                        data: 'gold_name',
-                        name: 'gold_name'
+                        data: 'name',
+                        name: 'name'
                     },
                     {
                         data: 'supplier',
@@ -226,12 +221,12 @@
                         name: 'code_number'
                     },
                     {
-                        data: 'product_gram_kyat_pe_yway_in_gram',
-                        name: 'product_gram_kyat_pe_yway_in_gram'
+                        data: 'product_weight_in_gram',
+                        name: 'product_weight_in_gram'
                     },
                     {
-                        data: 'product_gram_kyat_pe_yway',
-                        name: 'product_gram_kyat_pe_yway',
+                        data: 'product_weight',
+                        name: 'product_weight',
                         "render": function(data, type, full, meta) {
                             // Split the data using '/'
                             var arr = data.split('/');
@@ -306,7 +301,7 @@
                     // Calculate totals based on the data in the current view
                     for (var i = 0; i < purchasesData.length; i++) {
                         var pg = purchasesData[i];
-                        var product = pg.product_gram_kyat_pe_yway.split('/');
+                        var product = pg.product_weight.split('/');
                         var decrease = pg.decrease_pe_yway.split('/');
 
                         tot_g += parseFloat(product[0]);
@@ -353,10 +348,10 @@
                             var tot_g = $('#tot_g').text();
                             var tot_kpy = $('#tot_kpy').text();
                             var tot_dkpy = $('#tot_dkpy').text();
-                            var date = $('#print_date').val();
-                            var counter = $('#print_counter').val();
-                            var gtype = $('#print_gtype').val();
-                            var cat = $('#print_cat').val();
+                            var date = $('#fromDate').val() + ' - ' + $('#toDate').val();
+                            var counter = $('#f_counter option:selected').text();
+                            var gtype = $('#qual option:selected').text();
+                            var cat = $('#cat option:selected').text();
                             var existingData = $(win.document.body).html();
                             var extraText1 = `<div class="row">
                             <div class="col-3 card" style="max-height: 70px;"><h6 class="text-color mt-2" >စုစု​ပေါင်းအ​ရေအတွက် &nbsp;&nbsp;&nbsp;<span>${tot_qty}</span></h6></div>

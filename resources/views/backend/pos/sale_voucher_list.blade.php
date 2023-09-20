@@ -30,7 +30,7 @@
                     <div class="row justify-content-center">
                     <div class="card card-body printableArea" style="max-width: 750px;">
                         {{-- <div style="display:flex;justify-content:space-around"> --}}
-                            
+
                             <div class="row d-flex">
                                 <div style="border:1px solid #780116;border-radius:10px;" width='130'>
                                     <h6 class="text-color px-3 py-1">SHWESHOP</h6>
@@ -103,13 +103,13 @@
                                 </tr>
                                 @if ($cancel == 2)
                                 <?php
-                                $product = explode('/',$sale->purchase->gold_gram_kyat_pe_yway);
+                                $product = explode('/',$sale->purchase->product_weight);
                                 $diamond = explode('/',$sale->purchase->diamond_gram_kyat_pe_yway);
                                 $decrease = explode('/',$sale->purchase->decrease_pe_yway);
                                 ?>
                                 @else
                                 <?php
-                                $product = explode('/',$sale->purchase->product_gram_kyat_pe_yway);
+                                $product = explode('/',$sale->purchase->product_weight);
                                 $decrease = explode('/',$sale->purchase->decrease_pe_yway);
                                 $diamond = 'no';
                                 ?>
@@ -119,24 +119,24 @@
                                 <tr class="text-color">
                                     <td></td>
                                     <td class="text-center">အ​လေးချိန်</td>
-                                     @if (!$sale->purchase->product_gram)
+                                     @if (!$sale->purchase->product_weight)
                                     <td>{{$product[1] ? $product[1].'ကျပ်' : ''}} {{$product[2] ? $product[2].'ပဲ' : ''}} {{$product[3] ? $product[3].'ရွေး' : ''}}</td>
                                     <td>{{$product[0]}} g</td>
-                                     
+
                                     @else
                                      <td>-</td>
-                                    <td>{{$sale->purchase->product_gram}} g</td>
+                                    <td>{{$sale->purchase->product_weight}} g</td>
                                     @endif
-                                   
+
                                 </tr>
                                 <tr class="text-color">
                                     <td></td>
                                     <td class="text-center">စိန်​ကျောက်ချိန်</td>
-                                    @if (!$sale->purchase->product_gram)
+                                    @if (!$sale->purchase->product_weight)
                                     @if ($diamond != 'no')
                                     <td>{{$diamond[1] ? $diamond[1].'ကျပ်' : ''}} {{$diamond[2] ? $diamond[2].'ပဲ' : ''}} {{$diamond[3] ? $diamond[3].'ရွေး' : ''}}</td>
                                     <td>{{$diamond[0]}} g</td>
-                                     
+
                                     @else
                                      <td>-</td>
                                     <td>-</td>
@@ -145,12 +145,12 @@
                                     <td>-</td>
                                     <td>-</td>
                                     @endif
-                                   
+
                                 </tr>
                                 <tr class="text-color">
                                     <td></td>
                                     <td class="text-center">အ​လျော့တွက်</td>
-                                    @if (!$sale->purchase->product_gram)
+                                    @if (!$sale->purchase->product_weight)
                                     @if ($decrease)
                                     <td>{{$decrease[0] ? $decrease[0].'ပဲ' : ''}} {{$decrease[1] ? $decrease[1].'ရွေး' : ''}}</td>
                                     @else

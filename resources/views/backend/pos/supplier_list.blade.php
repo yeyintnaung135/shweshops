@@ -38,7 +38,8 @@
                                 <li>
                                     <hr class="dropdown-divider" />
                                 </li>
-                                <li><a href="#" id='save' class="btn btn-color btn-sm" style="margin-left: 50px;">Save</a></li>
+                                <li><a href="#" id='save' class="btn btn-color btn-sm"
+                                        style="margin-left: 50px;">Save</a></li>
                             </ul>
                         </div>
                     </div>
@@ -114,13 +115,22 @@
                             d.text += 'option1';
                         }
                         if ($("#kyout").is(":checked")) {
-                            d.text += '/option2';
+                            if (d.text !== '') {
+                                d.text += '/';
+                            }
+                            d.text += 'option2';
                         }
                         if ($("#diamond").is(":checked")) {
-                            d.text += '/option3';
+                            if (d.text !== '') {
+                                d.text += '/';
+                            }
+                            d.text += 'option3';
                         }
                         if ($("#platinum").is(":checked")) {
-                            d.text += '/option4';
+                            if (d.text !== '') {
+                                d.text += '/';
+                            }
+                            d.text += 'option4';
                         }
                     }
                 },

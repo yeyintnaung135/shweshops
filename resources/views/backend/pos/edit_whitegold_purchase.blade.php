@@ -67,7 +67,7 @@
                          <div class="row mt-5">
                             <div class="col-3 form-group">
                                 <label for="wg_name">​ရွှေဖြူအမည်</label>
-                                <input type="text" name="wg_name" class="form-control" value="{{$purchase->whitegold_name}}" required>
+                                <input type="text" name="wg_name" class="form-control" value="{{$purchase->name}}" required>
                             </div>
                             <div class="col-3 form-group">
                                 <label for="quality">​ရွှေဖြူအရည်အ​သွေး</label>
@@ -87,7 +87,7 @@
                                     </div>
                                     <div class="col-6 form-group">
                                         <label for="product_weight">Product အလေးချိန်</label>
-                                        <input type="number" step="0.01" name="product_gram" placeholder="Gram" id="product_gram" class="form-control" value="{{$purchase->product_gram}}" required>
+                                        <input type="number" step="0.01" name="product_weight" placeholder="Gram" id="product_weight" class="form-control" value="{{$purchase->product_weight}}" required>
                                     </div>
                                 </div>
                             </div>
@@ -222,7 +222,7 @@
                                         <label class="form-check-label" for="inlineCheckbox">က​လေးဝတ်</label>
                                       </div>
                                 </div>
-                            @if (Auth::guard('shop_owner')->user()->pos_only == 'no')
+                            @if ($shopowner->pos_only == 'no')
                             <!-- ShweShop Item -->
                             <div class="col-12 mt-3" >
                                 <label for="shwe_item">Shwe Shop Item တွင်​ပြောင်းမည်</label>
@@ -346,7 +346,7 @@
         function check_barcode(){
             if($('#print_barcode').is(':checked')){
                 var code = $('#code_number').val();
-                var gram = $('#product_gram').val();
+                var gram = $('#product_weight').val();
                 var barcode_text = $('#barcode_text').val();
                 if(code == '' || gram == ''){
                     swal({
@@ -415,7 +415,7 @@
         }
 
         function calculate_price(){
-            var gram = parseFloat($('#product_gram').val());
+            var gram = parseFloat($('#product_weight').val());
             var wg_price = parseInt($('#wg_price').val());
             if(gram){ gram = gram;}else{ gram = 0;}
 
