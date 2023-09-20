@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 class Item extends Model
 {
     //
-    use \Conner\Tagging\Taggable , SoftDeletes;
+    use \Conner\Tagging\Taggable, SoftDeletes;
 
     protected $fillable = ['id', 'main_category', 'diamond', 'gender', 'size', 'handmade', 'charge', 'carat', 'yati', 'pwint', 'd_gram', 'stock_count', 'product_code', 'photo_one', 'collection_id', 'min_price', 'max_price', 'weight_unit', 'photo_two', 'photo_three', 'photo_four', 'photo_five', 'photo_five', 'photo_six', 'default_photo', 'view_count', 'photo_seven', 'photo_eight', 'photo_nine', 'photo_ten', 'name', 'price', 'description', 'shop_id', 'gold_quality', 'gold_colour', 'sizing_guide', 'undamaged_product', 'valuable_product', 'damaged_product', 'weight', 'review', 'stock', 'category_id', 'user_id'];
 
@@ -261,7 +261,11 @@ class Item extends Model
     {
         $discount = Discount::where('item_id', $this->id)->first();
 
-        return $discount ?? 0;
+        if (empty($discount)) {
+            return 0;
+        } else {
+            return $discount;
+        }
     }
 
     public function getUserNameAttribute()
@@ -269,7 +273,6 @@ class Item extends Model
         if ((isset(Auth::guard('shop_owners_and_staffs')->user()->id) && Auth::guard('shop_owners_and_staffs')->user()->id == $this->shop_id)) {
             if ($this->user_id != 0) {
                 return Auth::guard('shop_owners_and_staffs')->user()->name;
-
             } else {
                 return (0);
             }

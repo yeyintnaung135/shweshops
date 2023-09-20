@@ -16,6 +16,7 @@ use App\Models\Collection;
 use App\Models\Contactus;
 use App\Models\discount;
 use App\Models\Event;
+use App\Models\FavouriteItem;
 use App\Models\foraddtohome;
 use App\Models\FrontUserLogs;
 use App\Models\Item;
@@ -418,8 +419,7 @@ class FrontController extends Controller
         if ($itemc->count() == 0) {
             return abort(404);
         }
-        $item = Item::where('id', $product_id)->first();
-
+        $item = Item::with(['shop'])->where('id', $product_id)->first();
         $this->addlog(url()->current(), $product_id, $item->shop_id, 'product_detail', '0');
         //forlogs
 
@@ -551,7 +551,7 @@ class FrontController extends Controller
             case when count(items.category_id) != 0 then count(categories.name) end DESC")->where('shop_id', $id)->get();
 
         $visitor_view_count =FrontUserLogs::where('front_user_logs.shop_id', '=', $id)->count();
-        $fav_count = UsersFav::leftjoin('items', 'items.id', '=', 'users_fav.fav_id')->leftjoin('shops', 'shops.id', '=', 'items.shop_id')->where('items.shop_id', $id)->count();
+        $fav_count = FavouriteItem::leftjoin('items', 'items.id', '=', 'favourite.fav_id')->leftjoin('shops', 'shops.id', '=', 'items.shop_id')->where('items.shop_id', $id)->count();
         // return count($fav_count);
 
      

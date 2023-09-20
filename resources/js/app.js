@@ -320,12 +320,16 @@ const app = new Vue({
                 var count = JSON.parse(
                     localStorage.getItem(value.user_id + "getspecificcount")
                 );
-                count[froshop.shops_id] = 0;
-                localStorage.setItem(
-                    value.user_id + "getspecificcount",
-                    JSON.stringify(count)
-                );
-                app.$refs.chatlistref.specificcount = count;
+                if(count !== null){
+                    count[froshop.shops_id] = 0;
+                    localStorage.setItem(
+                        value.user_id + "getspecificcount",
+                        JSON.stringify(count)
+                    );
+                    app.$refs.chatlistref.specificcount = count;
+
+                }
+              
             }
         },
 
@@ -403,8 +407,7 @@ const app = new Vue({
             shopdata,
             dt
         ) {
-            console.log("buynowffffffffffclick");
-
+            console.log('BUYNOW CLICKED','CLICKED ===='+to)
             //we must clear local chatlist data
             if (localStorage.getItem(window.userid + "chatlist") !== null) {
                 localStorage.removeItem(window.userid + "chatlist");
@@ -575,10 +578,7 @@ const app = new Vue({
             }
         },
 
-    
-
         //for facebook
-
         //forgot password
         sendphonetoserver: function () {
             axios

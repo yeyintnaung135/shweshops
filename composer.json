@@ -21,6 +21,8 @@
         "league/flysystem-aws-s3-v3": "^3.15",
         "mongodb/laravel-mongodb": "^v4.0.0-ALPHA2",
         "nesbot/carbon": "^2.69",
+        "pusher/pusher-php-server": "^7.2",
+        "react/promise": "2.7",
         "rtconner/laravel-tagging": "^4.1",
         "yajra/laravel-datatables": "^10.0"
     },

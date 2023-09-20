@@ -215,10 +215,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         Route::get('/app-files/android', [AppDownloadController::class, 'android'])->name('app-files.android');
         Route::get('/app-files/download/{appFile}', [AppDownloadController::class, 'download'])->name('app-files.download');
 
-        // User Messages
-        Route::post('/sendmessage', [UsermessageController::class, 'sendmessagetoshopowner']);
-        Route::post('/sendimagemessage', [UsermessageController::class, 'sendimagemessagetoshopowner']);
-
+   
         // Chat Panel
         Route::get('/chatpannel', [MessageController::class, 'chatpannel']);
         Route::post('/sendmessagetouser', [MessageController::class, 'sendmessagetouser']);

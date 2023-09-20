@@ -61,9 +61,8 @@ window.pricelogicsn = pricelogicsn;
 
 //for host name global var
 // Vue.prototype.$hostname = "https://" + window.location.hostname;
-Vue.prototype.$hostname = "http://" + window.location.hostname;
 
-// Vue.prototype.$hostname = "http://" + window.location.hostname + "/shweshops/public";
+Vue.prototype.$hostname = "http://" + window.location.hostname + "/shweshops/public";
 
 //HostName for Laragon or Valet Virtual Host
 // Vue.prototype.$hostname = "http://shweshops.test";

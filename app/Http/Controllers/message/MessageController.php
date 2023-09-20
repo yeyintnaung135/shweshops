@@ -27,13 +27,13 @@ class MessageController extends Controller
     {
         $this->middleware('chatison');
 
-        $this->middleware('auth:shop_owner,shop_role', ['except' => ['sendmessagetoshopowner']]);
+        $this->middleware('auth:shop_owners_and_staffs', ['except' => ['sendmessagetoshopowner']]);
 
     }
 
     public function storefirebasetokenforshop(Request $request)
     {
-        $shopid = $this->getshopid();
+        $shopid = $this->get_shopid();
         $input = $request->all();
         if (ForFirebase::updateOrCreate(['shopid' => $shopid], ['token' => $input['token']])) {
             return response()->json('done');
@@ -48,7 +48,7 @@ class MessageController extends Controller
     {
         $datamsg = Messages::create($request->data);
 //        $getmessages = Messages::join('users', 'users.id', '=', 'messages.message_user_id')->where('messages.id', $data->id)->select('*', 'messages.id as message_id', 'messages.created_at as message_created_at')->first();
-        $getshopdata = Shops::where('id', $this->getshopid())->first();
+        $getshopdata = Shops::where('id', $this->get_shopid())->first();
 
         $data = ['message' => $datamsg, 'shop' => $getshopdata];
 
@@ -74,6 +74,8 @@ class MessageController extends Controller
 
     public function sendmessagetoshopowner(Request $request)
     {
+        return response()->json(['success' => true, 'msg' => 'successfully send']);
+
 
         if (Messages::create($request->data)) {
             event(new Shopownermessage($request->data));
@@ -98,7 +100,7 @@ class MessageController extends Controller
 
     public function getshopschatslist()
     {
-        $getuserid = Messages::where('message_shop_id', intval($this->getshopid()))
+        $getuserid = Messages::where('message_shop_id', intval($this->get_shopid()))
             ->orderBy('created_at', 'desc')
             ->get()->unique('message_user_id')
             ->values()
@@ -120,14 +122,14 @@ class MessageController extends Controller
     public function gettotalchatcountforshop()
     {
 
-        $gettotalchatcount = Messages::where('to_id', $this->getshopid())
+        $gettotalchatcount = Messages::where('to_id', $this->get_shopid())
             ->where('read_by_user', 'no')->distinct()->count('message_user_id');
         return response()->json(['data' => $gettotalchatcount]);
     }
 
     public function getspecificchatcountforshop($user_id)
     {
-        $getspecificchatcount = Messages::where('to_id', $this->getshopid())
+        $getspecificchatcount = Messages::where('to_id', $this->get_shopid())
             ->where(function ($query) use ($user_id) {
                 $query->where('from_id', (int) $user_id)
                     ->orWhere('from_id', (string) $user_id);
@@ -142,12 +144,12 @@ class MessageController extends Controller
         $start = $request->limit;
         //we take 20 latest messages
         $getmessages = Messages::where(function ($query) use ($request) {
-            $query->where([['from_id', '=', intval($request->data)], ['to_id', '=', intval($this->getshopid())]])
-                ->orWhere([['from_id', '=', strval($request->data)], ['to_id', '=', intval($this->getshopid())]]);
+            $query->where([['from_id', '=', intval($request->data)], ['to_id', '=', intval($this->get_shopid())]])
+                ->orWhere([['from_id', '=', strval($request->data)], ['to_id', '=', intval($this->get_shopid())]]);
         })
             ->orWhere(function ($query) use ($request) {
-                $query->where([['from_id', '=', intval($this->getshopid())], ['to_id', '=', intval($request->data)]])
-                    ->orWhere([['from_id', '=', strval($this->getshopid())], ['to_id', '=', intval($request->data)]]);
+                $query->where([['from_id', '=', intval($this->get_shopid())], ['to_id', '=', intval($request->data)]])
+                    ->orWhere([['from_id', '=', strval($this->get_shopid())], ['to_id', '=', intval($request->data)]]);
             })
             ->orderBy('created_at', 'desc')->skip($start)->take(20)->get();
 
@@ -186,12 +188,12 @@ class MessageController extends Controller
     public function setreadbyshop(Request $request)
     {
         $getmessages = Messages::where(function ($query) use ($request) {
-            $query->where([['to_id', '=', $this->getshopid()], ['from_id', '=', $request->data], ['read_by_user', '=', 'no']])
-                ->orWhere([['to_id', '=', $this->getshopid()], ['from_id', '=', strval($request->data)], ['read_by_user', '=', 'no']]);
+            $query->where([['to_id', '=', $this->get_shopid()], ['from_id', '=', $request->data], ['read_by_user', '=', 'no']])
+                ->orWhere([['to_id', '=', $this->get_shopid()], ['from_id', '=', strval($request->data)], ['read_by_user', '=', 'no']]);
         })
         // ->orWhere(function($query) use ($request){
-        //   $query->where([['from_id', '=', $this->getshopid()], ['to_id', '=', $request->data], ['read_by_user', '=', 'no']])
-        //         ->orWhere([['from_id', '=', strval($this->getshopid())], ['to_id', '=', $request->data], ['read_by_user', '=', 'no']]);
+        //   $query->where([['from_id', '=', $this->get_shopid()], ['to_id', '=', $request->data], ['read_by_user', '=', 'no']])
+        //         ->orWhere([['from_id', '=', strval($this->get_shopid())], ['to_id', '=', $request->data], ['read_by_user', '=', 'no']]);
         // })
             ->update(['read_by_user' => 'yes']);
         return response()->json(['success' => true, 'data' => 'set read by user']);
