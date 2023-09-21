@@ -17,7 +17,7 @@ class SuperAdminForgotPasswordController extends Controller
 
     public function __construct()
     {
-        $this->middleware('guest:super_admins');
+        $this->middleware('guest:super_admin');
     }
 
     public function broker()

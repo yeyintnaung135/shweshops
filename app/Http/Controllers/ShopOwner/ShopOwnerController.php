@@ -14,13 +14,13 @@ use App\Models\CountSetting;
 use App\Models\Discount;
 use App\Models\FrontUserLogs;
 use App\Models\GoldPoint;
-use App\Models\SiteSettings;
 use App\Models\Item;
 use App\Models\ItemLogActivity;
 use App\Models\ShopBanner;
 use App\Models\ShopLogActivity;
 use App\Models\ShopOwnerGoldPoint;
 use App\Models\Shops;
+use App\Models\SiteSettings;
 use App\Models\User;
 use App\Models\WishlistClickLog;
 use Illuminate\Http\JsonResponse;
@@ -60,6 +60,7 @@ class ShopOwnerController extends Controller
         if ($products_count_setting != 0) {
             $items_count = Item::where('shop_id', $this->get_shopid())->count();
         } else {
+            $items_count = null;
             $shopview = null;
         }
 
