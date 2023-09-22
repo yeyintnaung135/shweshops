@@ -98,19 +98,7 @@
               <TextComponent :text="chatdata.message" />
             </div>
 
-            <!-- <div v-if="chatdata.type == 'text'" class="msg-other"
-                             :class="{'margin-left':!chatdata.showsendicon}">
-                         <span>
-                        {{ chatdata.message }}
-
-
-                         </span>
-
-                        </div>
-                        <div v-else class="msg-other" :class="{'margin-left':!chatdata.showsendicon}">
-                            <img :src="host +'/'+chatdata.message">
-
-                        </div> -->
+           
             <div style="display: flex">
               <span style="align-self: flex-end" class="msg-date"
                 >{{ chatdata.created_at | beautytime(chatdata.created_at) }}
@@ -190,8 +178,7 @@ import TextComponent from "./message/TextComponent.vue";
 import PostComponent from "./message/PostComponent.vue";
 import ImageComponent from "./message/ImageComponent.vue";
 
-import Echo from "laravel-echo";
-import $ from "jquery";
+
 import axios from "axios";
 
 let uuid = require("uuid");
@@ -453,7 +440,7 @@ export default {
       this.chatImages = [];
 
       axios
-        .post(this.host + "/backside/shop_owner/sendimagemessage", data, {
+        .post(this.host + "/sendimagemessage", data, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then(async (response) => {

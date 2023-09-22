@@ -26,12 +26,7 @@ class UsermessageController extends Controller
 
     public function sendwhatuserisactive(Request $request)
     {
-        $forcheck = Usersorshopsonlinestatus::where([['users_id', '=', $request->data], ['role', '=', 'user']]);
-        if ($forcheck->count() != 0) {
-            $getdata = $forcheck->update(['status' => 'online']);
-        } else {
-            $getdata = Usersorshopsonlinestatus::create(['users_id' => $request->data, 'role' => 'user', 'status' => 'online']);
-        }
+   
         event(new Activeusers(['users_id' => $request->data, 'role' => 'user', 'status' => 'online']));
         return $request->data;
     }
@@ -57,7 +52,6 @@ class UsermessageController extends Controller
         $getuser = User::where('id', $getdata->message_user_id)->first();
         $data = ['message' => $getdata, 'user' => $getuser];
         event(new Shopownermessage($data));
-        $checkonline = Usersorshopsonlinestatus::where('shops_id', $getdata->message_shop_id)->first();
         if ($getdata->type != 'text') {
             $message = 'photo message';
         } else {
@@ -121,8 +115,9 @@ class UsermessageController extends Controller
             ->values()
             ->all();
         foreach ($getshopid as $key => $value) {
-            $alldata = Shopowner::leftjoin('online_status', 'shop_owners.id', 'online_status.shops_id')->where('shop_owners.id', $value->message_shop_id)->first();
+            $alldata = Shops::select('shop_logo','id','shop_name')->where('id', $value->message_shop_id)->first();
             $getshopid[$key]['shopdata'] = $alldata;
+            $getshopid[$key]['shopdata']['status']='offline';
         }
 
         return response()->json(['success' => true, 'data' => $getshopid]);
@@ -170,7 +165,8 @@ class UsermessageController extends Controller
             ->orderBy('created_at', 'desc')->skip($start)->take(20)->get();
 
         //take shop data except psw
-        $getshopdata = Shops::leftjoin('online_status', 'shops.id', '=', 'online_status.shops_id')->where('shops.id', $request->data)->first();
+        $getshopdata =Shops::select('shop_logo','id','shop_name','shop_name_url')->where('id', $request->data)->first();
+        $getshopid['status']='offline';
 
         return response()->json(['success' => true, 'data' => ['messages' => $getmessages, 'shop_data' => $getshopdata]]);
     }

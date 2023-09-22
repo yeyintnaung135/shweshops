@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Shopownersmessage implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels,UserRole;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
     public $chatdata;
 
 

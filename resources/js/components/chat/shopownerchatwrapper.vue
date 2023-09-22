@@ -49,7 +49,7 @@
                     <span
                         class="active-now-user"
                         v-if="
-                            active == 'online' ||
+                       
                             chatdata.userdata.status == 'online'
                         "
                     ></span>

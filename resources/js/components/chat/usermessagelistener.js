@@ -44,12 +44,7 @@ window.Echo.join("user.channel." + Number(window.userid))
         console.log("user is online");
     })
     .listen("Usermessage", async (e) => {
-        //listen to event laravel
-        //we must clear local chatlist data
-        // if( localStorage.getItem('chatlist') !== null) {
-        //
-        //     localStorage.removeItem("chatlist");
-        // }
+     
 
         console.log("user listen event data", e);
         console.log(app.$refs.chatlistref.chatdata);
@@ -129,7 +124,7 @@ window.Echo.join("user.channel." + Number(window.userid))
     });
 
 //for what shop is online
-window.Echo.channel("activeusers").listen("Activeusers", (e) => {
+window.Echo.channel("activeshops").listen("ActiveShops", (e) => {
     console.log(e)
     //for chat template
     if (app.$refs.chatref.chatdata.length != 0) {
@@ -149,7 +144,6 @@ window.Echo.channel("activeusers").listen("Activeusers", (e) => {
             return object.message_shop_id == e.chatdata.shops_id ;
         });
         // set online status
-        console.log(findex);
 
         app.$refs.chatlistref.chatdata[findex].shopdata.status = e.chatdata.status;
     }
@@ -163,7 +157,22 @@ window.Echo.channel("activeusers").listen("Activeusers", (e) => {
         tmpforlsact.data.data.shop_data.status=e.chatdata.status;
         //set
         localStorage.setItem(e.chatdata.shops_id+'_messages',JSON.stringify(tmpforlsact));
-        console.log(tmpforlsact);
+
+    }
+
+    //for localstorage chatwrapper
+    if( localStorage.getItem(window.userid + "chatlist") !== null){
+        //retrive ls
+        var tmpforlschatlist=JSON.parse(localStorage.getItem(window.userid + "chatlist"));
+        //update status
+        const findlsindex = tmpforlschatlist.data.data.findIndex((object) => {
+            // find index of event shop id
+            return object.shopdata.id === e.chatdata.shops_id ;
+        });
+
+        tmpforlschatlist.data.data[findlsindex].shopdata.status='online';
+        //set
+        localStorage.setItem(window.userid + "chatlist",JSON.stringify(tmpforlschatlist));
 
     }
 

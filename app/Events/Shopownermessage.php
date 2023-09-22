@@ -32,7 +32,7 @@ class Shopownermessage implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PresenceChannel('yankee.shopowner.channel.'.$this->chatdata['message']['to_id']);
+        return new PresenceChannel('shopowner.channel.'.$this->chatdata['message']['to_id']);
     }
 
 }

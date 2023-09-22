@@ -219,6 +219,8 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         // Chat Panel
         Route::get('/chatpannel', [MessageController::class, 'chatpannel']);
         Route::post('/sendmessagetouser', [MessageController::class, 'sendmessagetouser']);
+        Route::post('/sendimagemessagetouser', [MessageController::class, 'sendimagemessagetouser']);
+
         Route::get('/getshopschatslist', [MessageController::class, 'getshopschatslist']);
         Route::get('gettotalchatcountforshop', [MessageController::class, 'gettotalchatcountforshop']);
         Route::get('getspecificchatcountforshop/{user_id}', [MessageController::class, 'getspecificchatcountforshop']);

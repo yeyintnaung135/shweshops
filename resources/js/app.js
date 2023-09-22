@@ -10,7 +10,7 @@ import VueAxios from "vue-axios";
 import axios from "axios";
 
 //for notification
-require("./components/chat/fusermessagelistener");
+require("./components/chat/usermessagelistener");
 //for notification
 
 Vue.use(VueAxios, axios);
@@ -43,13 +43,10 @@ Vue.use("jquery.cookie");
 Vue.use("jquery.sticky");
 Vue.use(BootstrapVue);
 
-
-
 Vue.component(
     "main-items-component",
     require("./components/frontend/MainItemsComponent.vue").default
 );
-
 
 Vue.component(
     "shops-component",
@@ -107,7 +104,10 @@ Vue.component(
     require("./components/backend/ShopsCreateValidate.vue").default
 );
 
-Vue.component("my-favourite", require("./components/frontend/Favourite.vue").default);
+Vue.component(
+    "my-favourite",
+    require("./components/frontend/Favourite.vue").default
+);
 Vue.component("my-cart", require("./components/frontend/Cart.vue").default);
 
 Vue.component("a2cicon-com", require("./components/temp/a2cicon.vue").default);
@@ -147,8 +147,8 @@ Vue.component(
     require("./components/frontend/checkout.vue").default
 );
 
-
-Vue.prototype.$hostname ="http://" + window.location.hostname + "/shweshops/public";
+Vue.prototype.$hostname =
+    "http://" + window.location.hostname + "/shweshops/public";
 
 //HostName for Laragon or Valet Virtual Host
 // Vue.prototype.$hostname = "http://shweshops.test";
@@ -210,6 +210,7 @@ const app = new Vue({
     methods: {
         //when user click back button in chat template
         toopenmainchatwrapper: function (v) {
+            
             this.$refs.chatlistref.showchatlist = v;
             this.$refs.chatref.showwrapper = false;
             this.$refs.chatlistref.onclickmsgicon("frombackbutton");
@@ -217,7 +218,7 @@ const app = new Vue({
 
         //when user click one of shop chat in chat wrapper
         getfromidparent: async function (value) {
-            let fromcache = false;
+            var fromcache = false;
             if (value.read_by_user == "no") {
                 localStorage.removeItem(value.id + "_messages");
             }
@@ -288,11 +289,8 @@ const app = new Vue({
                 if (froshop.shop_logo !== null) {
                     //if no result for this shop in db table online status
                     let status;
-                    if (froshop.status === null) {
-                        status = "offline";
-                    } else {
-                        status = froshop.status;
-                    }
+                    status = froshop.status;
+
                     this.$refs.chatref.shopdata = {
                         shop_logo: froshop.shop_logo,
                         shop_name: froshop.shop_name,
@@ -320,16 +318,14 @@ const app = new Vue({
                 var count = JSON.parse(
                     localStorage.getItem(value.user_id + "getspecificcount")
                 );
-                if(count !== null){
+                if (count !== null) {
                     count[froshop.shops_id] = 0;
                     localStorage.setItem(
                         value.user_id + "getspecificcount",
                         JSON.stringify(count)
                     );
                     app.$refs.chatlistref.specificcount = count;
-
                 }
-              
             }
         },
 
@@ -407,7 +403,7 @@ const app = new Vue({
             shopdata,
             dt
         ) {
-            console.log('BUYNOW CLICKED','CLICKED ===='+to)
+            console.log("BUYNOW CLICKED", "CLICKED ====" + to);
             //we must clear local chatlist data
             if (localStorage.getItem(window.userid + "chatlist") !== null) {
                 localStorage.removeItem(window.userid + "chatlist");
@@ -515,9 +511,7 @@ const app = new Vue({
         startregisterfirebase: function () {
             console.log("firebase register");
 
-          
             const firebaseConfig = {
-                
                 apiKey: "AIzaSyD1e63wA6bVB2PVPvA5o-mq7aEtEo8DVdk",
                 authDomain: "shweshops-82763.firebaseapp.com",
                 projectId: "shweshops-82763",
