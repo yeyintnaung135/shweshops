@@ -185,8 +185,6 @@ class PosSuperAdminController extends Controller
             $banner->save();
         }
 
-        $this->SuperadminShopCreateLog($shopdata);
-
         if ($shopdata) {
             $shop_id = $shopdata->id;
             $template_percent = [

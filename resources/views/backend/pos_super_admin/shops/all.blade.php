@@ -90,7 +90,7 @@
                                                  <td>{{$shop->email}}</td>
                                                  <td>{{$shop->main_phone}}</td>
                                                  <td>{{$shop->state}}</td>
-                                                 <td class="d-flex">
+                                                 <td class="d-flex ">
                                                     <a href="{{route('pos_super_admin_shops.edit',$shop->id)}}" role="button" class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="top" title="Shop Edit">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
@@ -155,7 +155,7 @@ function dateSearch(){
 
     type:'POST',
 
-    url: '{{route("pos_super_admin_shops.dateFilterShops")}}',
+    url: '{{route("pos_super_admin_shops.date_filter_shops")}}',
 
     data:{
     "_token":"{{csrf_token()}}",
