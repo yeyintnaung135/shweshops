@@ -80,7 +80,6 @@ trait SuperAdminLogActivityTrait
         $log['status'] = 'create';
         if (Auth::guard('super_admin')->user()->role == 0 or Auth::guard('super_admin')->user()->role == 4) {
             $log['role'] = "SuperAdmin";
-
         } else {
             $log['role'] = "Sub-Admin";
         }
