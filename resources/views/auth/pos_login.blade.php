@@ -1,5 +1,5 @@
 
-@extends('layouts.backend.datatable')
+@extends('layouts.app')
 
 @section('content')
     <div class="container py-2" >
@@ -31,10 +31,10 @@
 
                         {{-- <p class=" font-weight-bolder text-left">{{ __('Shwe Shops') }}<span class="font-weight-normal">{{ __('မှ ကြိုဆိုပါသည်') }}</span></p> --}}
                         <div class="logo d-none" style="margin-left: 60px">
-                            <img src="https://test.shweshops.com/test/img/logo-m.png" alt="" class="mt-4">
+                            <img src="https://test.shweshops.com/test/img/logo-m.png" alt="" class="mt-1 ml-1" width="70" height="65">
                         </div>
                         <div class="logo1 d-none" style="margin-left: 125px">
-                            <img src="https://test.shweshops.com/test/img/logo-m.png" alt="" class="mt-4">
+                            <img src="https://test.shweshops.com/test/img/logo-m.png" alt="" class="mt-1 ml-1" width="70" height="65">
                         </div>
 
                         <p class=" font-weight-bolder">
@@ -200,6 +200,7 @@
             $('.logo1').show();
             $('.logo1').removeClass('d-none');
             $('.logo').hide();
+            $('.card-color').addClass('d-none');
         }else{
             $('.card-color').removeClass('d-none');
             $('.logo').show();
