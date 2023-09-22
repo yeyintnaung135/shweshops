@@ -43,10 +43,10 @@
                             "
                         />
                     </div>
-                    <div class="active-now-user" v-if="data.shopdata != null">
+                    <div class="active-now-user" v-if="data.shopdata != null && data.shopdata.status=='online'">
                          <span
 
-                             v-if="active == 'online' || data.shopdata.status == 'online'"
+                             v-if="data.shopdata.status == 'online'"
                          ></span>
                     </div>
 

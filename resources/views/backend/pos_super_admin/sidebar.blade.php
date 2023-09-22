@@ -1,9 +1,9 @@
 @php
-    use App\Featuresforshops;
-    use App\Ads;
+    use App\Models\FeaturesForShops;
+    use App\Models\Ads;
     $ads_deleted_count = Ads::all()->count();
-    $all_shops_count = Featuresforshops::all()->count();
-    $admin_request = DB::table('super_admins')->where('role' , '==' , 2)->count();
+    $all_shops_count = FeaturesForShops::all()->count();
+    $admin_request = DB::table('pos_super_admins')->count();
 @endphp
 <aside class="main-sidebar sidebar-dark-primary elevation-4" style="z-index: 99999;">
     <!-- Brand Logo -->

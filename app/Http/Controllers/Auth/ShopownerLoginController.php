@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Role;
+use App\Models\Shops;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -57,7 +58,7 @@ class ShopownerLoginController extends Controller
 
         $roleCheck = Auth::guard('shop_owners_and_staffs')->attempt(['phone' => $request->value, 'password' => $request->password, 'deleted_at' => null]);
         if ($roleCheck) {
-            // if(Auth::guard('shop_owner')->user()->pos_only == 'yes'){
+            // if(Auth::guard('shop_owners_and_staffs')->user()->pos_only == 'yes'){
             //     return redirect()->route('backside.shop_owner.pos.dashboard');
             // }
             Session::flash('loginedSO', 'shopownerlogined');
@@ -84,9 +85,8 @@ class ShopownerLoginController extends Controller
             return redirect()->back()->with('error', 'Something wrong!!');
 
         }
-        $ownerCheck = Auth::guard('shop_owner')->attempt(['main_phone' => $request->value, 'password' => $request->password]);
-        $roleCheck = Auth::guard('shop_role')->attempt(['phone' => $request->value, 'password' => $request->password, 'deleted_at' => null]);
-        if ($roleCheck || $ownerCheck) {
+        $roleCheck = Auth::guard('shop_owners_and_staffs')->attempt(['phone' => $request->value, 'password' => $request->password, 'deleted_at' => null]);
+        if ($roleCheck) {
             Session::flash('loginedSO', 'shopownerlogined');
             if ($request->from == 'fromhelpandsupport') {
                 return redirect(url('backside/shop_owner/support'));
@@ -100,10 +100,9 @@ class ShopownerLoginController extends Controller
         } else {
             $staff = DB::table('pos_staffs')->where('phone', $request->value)->where('role_id', $request->role_id)->first();
             if ($staff && Hash::check($request->password, $staff->password)) {
-                $shop = Shopowner::where('id', $staff->shop_id)->first();
-                $ownerCheck = Auth::guard('shop_owner')->attempt(['main_phone' => $shop->main_phone, 'password' => $request->password]);
-                $roleCheck = Auth::guard('shop_role')->attempt(['phone' => $shop->main_phone, 'password' => $request->password, 'deleted_at' => null]);
-                if ($roleCheck || $ownerCheck) {
+                $shop = Shops::where('id', $staff->shop_id)->first();
+                $roleCheck = Auth::guard('shop_owners_and_staffs')->attempt(['phone' => $request->value, 'password' => $request->password, 'deleted_at' => null]);
+                if ($roleCheck) {
                     Session::put('staff_role', $request->role_id);
                     Session::flash('loginedSO', 'shopownerlogined');
                     return redirect()->route('backside.shop_owner.pos.dashboard');
@@ -142,7 +141,7 @@ class ShopownerLoginController extends Controller
         //     return redirect()->back();
 
         // } else {
-        //     Auth::guard('shop_owner')->logout();
+        //     Auth::guard('shop_owners_and_staffs')->logout();
         //     $request->session()->invalidate();
 
         //     $request->session()->regenerateToken();

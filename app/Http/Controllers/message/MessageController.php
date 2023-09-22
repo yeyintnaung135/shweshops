@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\message;
+use Carbon\Carbon;
 
-use App\Events\Activeusers;
+use App\Events\ActiveShops;
 use App\Events\Shopownermessage;
 use App\Events\Shopownersmessage;
 use App\Events\Usermessage;
@@ -52,10 +53,9 @@ class MessageController extends Controller
 
         $data = ['message' => $datamsg, 'shop' => $getshopdata];
 
-        $checkonline = Usersorshopsonlinestatus::where('users_id', $datamsg->message_user_id)->first();
 
         if ($data) {
-            broadcast(new Usermessage($data));
+            event(new Usermessage($data));
             event(new Shopownersmessage($data));
         }
         if ($datamsg->type != 'text') {
@@ -65,7 +65,7 @@ class MessageController extends Controller
             $message = $datamsg->message;
         }
         // Uncommented by Swe
-        $test = firebase::sendformessage($datamsg->message_user_id, $getshopdata->shop_name, $message, 'https://test.shweshops.com', 'logo', 'feafeaf');
+        // $test = firebase::sendformessage($datamsg->message_user_id, $getshopdata->shop_name, $message, 'https://test.shweshops.com', 'logo', 'feafeaf');
 
 //        $check = event(new Usermessage($getmessages->toArray()));
         return response()->json(['success' => true, 'msg' => 'success']);
@@ -107,13 +107,12 @@ class MessageController extends Controller
             ->all();
 
         foreach ($getuserid as $key => $value) {
-            $alldata = User::leftjoin('online_status', 'users.id', 'online_status.users_id')->select('*')->where('users.id', $value->message_user_id)->first();
-            if ($alldata != null) {
+            $alldata = User::where('id', $value->message_user_id)->first();
+        
 
                 $getuserid[$key]['userdata'] = $alldata;
-            } else {
-                unset($getuserid[$key]);
-            }
+                $getuserid[$key]['userdata']['status']='offline';
+       
 
         }
         return response()->json(['success' => true, 'data' => $getuserid]);
@@ -138,7 +137,22 @@ class MessageController extends Controller
             ->count('message_shop_id');
         return response()->json(['data' => $getspecificchatcount]);
     }
+    public function sendimagemessagetouser(Request $request)
+    {
+        $request->validate([
+            'message' => 'array',
+            'message.*' => 'mimes:jpeg,bmp,png,jpg,gif|max:5120'
+        ]);
 
+        $images = [];
+        foreach ($request->file('message') as $message) {
+            $new_name = Carbon::now()->timestamp . '_chat_' . $message->getClientOriginalName();
+            $message->move(public_path('images/chat'), $new_name);
+            array_push($images, $new_name);
+        }
+
+        return response()->json(['success' => 'File uploaded successfully.', 'images' => $images]);
+    }
     public function getcurrentchatuser(Request $request)
     {
         $start = $request->limit;
@@ -153,7 +167,8 @@ class MessageController extends Controller
             })
             ->orderBy('created_at', 'desc')->skip($start)->take(20)->get();
 
-        $getuserdata = User::leftjoin('online_status', 'users.id', '=', 'online_status.users_id')->where('users.id', $request->data)->first();
+        $getuserdata = User::where('id', $request->data)->first();
+      
 
         return response()->json(['success' => true, 'data' => ['messages' => $getmessages, 'userdata' => $getuserdata]]);
 
@@ -161,26 +176,16 @@ class MessageController extends Controller
 
     public function sendwhatshopisactive(Request $request)
     {
-        $forcheck = Usersorshopsonlinestatus::where([['shops_id', '=', $request->data], ['role', '=', 'shop']]);
-        if ($forcheck->count() != 0) {
-            $getdata = $forcheck->update(['status' => 'online']);
-        } else {
-            $getdata = Usersorshopsonlinestatus::create(['shops_id' => $request->data, 'role' => 'shop', 'status' => 'online']);
-        }
-        event(new Activeusers(['shops_id' => $request->data, 'role' => 'shop', 'status' => 'online']));
+       
+        event(new ActiveShops(['shops_id' => $request->data, 'role' => 'shop', 'status' => 'online']));
         return $request->data;
 
     }
 
     public function sendwhatshopisoffline(Request $request)
     {
-        $forcheck = Usersorshopsonlinestatus::where([['shops_id', '=', $request->data], ['role', '=', 'shop']]);
-        if ($forcheck->count() != 0) {
-            $getdata = $forcheck->update(['status' => 'offline']);
-        } else {
-            $getdata = Usersorshopsonlinestatus::create(['shops_id' => $request->data, 'role' => 'shop', 'status' => 'offline']);
-        }
-        event(new Activeusers(['shops_id' => $request->data, 'role' => 'shop', 'status' => 'offline']));
+    
+        event(new ActiveShops(['shops_id' => $request->data, 'role' => 'shop', 'status' => 'offline']));
         return $request->data;
 
     }

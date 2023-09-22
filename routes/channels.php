@@ -18,11 +18,11 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
 });
 
 
-Broadcast::channel('yankee.shopowner.channel.{to}', function ($user,$to) {
-     return true;
+Broadcast::channel('shopowner.channel.{to}', function ($user,$to) {
+     return (int) $user->shop_id === (int) $to;
 },['guards'=>['shop_owners_and_staffs']]);
 
 
-Broadcast::channel('user.channel.{to}', function ($user) {
-    return $user;
-});
+Broadcast::channel('user.channel.{to}', function ($user,$to) {
+    return (int) $user->id === (int) $to;
+},['guards'=>['web']]);

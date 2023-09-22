@@ -19,7 +19,7 @@
                 </div>
                 <span
                     class="active-now"
-                    v-if="this.userdata.status == 'online'"
+                    v-if="this.active == 'online'"
                 >
                 </span>
                 <span class="chattitle">
@@ -232,7 +232,6 @@ export default {
     },
     created() {
         this.host = this.$hostname;
-        console.log("fefe");
     },
     mounted() {
         this.chatdata = this.chatdatafromparent;
@@ -466,7 +465,7 @@ export default {
 
           this.chatImages = [];
 
-          axios.post(this.host+'/backside/shop_owner/sendimagemessage', data,
+          axios.post(this.host+'/backside/shop_owner/sendimagemessagetouser', data,
               {
                 headers: { "Content-Type": "multipart/form-data" }
               })
@@ -491,12 +490,7 @@ export default {
                 // this.chatdata.push(data);
                 data.created_at = new Date();
                 this.scrollbottom();
-                //set data to localstorage for fast
-                // if (localStorage.getItem(data.message_user_id + '_shop_messages') !== null) {
-                //     var tmplsd = JSON.parse(localStorage.getItem(data.message_user_id + '_shop_messages'));
-                //     tmplsd.data.data.messages.unshift(data);
-                //     localStorage.setItem(data.message_user_id + '_shop_messages', JSON.stringify(tmplsd));
-                // }
+              
 
                 const issend = await allfrommessagefunction.sendmessagetouser(data);
               })
