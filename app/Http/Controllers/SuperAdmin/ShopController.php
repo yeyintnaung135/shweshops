@@ -145,7 +145,7 @@ class ShopController extends Controller
             $this->SuperadminShopEditLog($input);
             Session::flash('message', 'Your ads was successfully updated');
 
-            return redirect(url('backside/super_admin/shop/all'));
+            return redirect(url('backside/super_admin/shops/all'));
         }
     }
 
@@ -242,9 +242,9 @@ class ShopController extends Controller
             ShopOwnersAndStaffs::create(['name' => $data['name'], 'phone' => $data['main_phone'], 'shop_id' => $shop_id, 'password' => $hashpassword, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'role_id' => 4]);
             Session::flash('message', 'Your Shop was successfully created');
 
-            return 'done';
+            return redirect(url('backside/super_admin/shops/all'));
         } else {
-            return 'false';
+            return back();
         }
     }
     /**
@@ -1047,7 +1047,7 @@ class ShopController extends Controller
 
         $this->shop_relevant_destroy($id);
         ShopDirectory::where('shop_id', $id)->delete();
-        return redirect(url('backside/super_admin/shop/all'))->with(['status' => 'success', 'message' => 'Your Shop was successfully Deleted']);
+        return redirect(url('backside/super_admin/shops/all'))->with(['status' => 'success', 'message' => 'Your Shop was successfully Deleted']);
     }
 
     public function get_trash(): View
@@ -1071,7 +1071,7 @@ class ShopController extends Controller
         $shop_dir['shop_id'] = $id;
         ShopDirectory::updateOrCreate($shop_dir);
 
-        return redirect(url('backside/super_admin/shop/all'))->with(['status' => 'success', 'message' => 'Your SHOP was restore']);
+        return redirect(url('backside/super_admin/shops/all'))->with(['status' => 'success', 'message' => 'Your SHOP was restore']);
     }
 
     public function force_delete($id): RedirectResponse
@@ -1097,7 +1097,7 @@ class ShopController extends Controller
 
         Shops::onlyTrashed()->findOrFail($id)->forceDelete();
         ShopDirectory::where('shop_id', $id)->delete();
-        return redirect()->route('shops.all_trash')->with(['status' => 'success', 'message' => 'Your SHOP was Delete']);
+        return redirect()->route('backside.super_admin.shops.all_trash')->with(['status' => 'success', 'message' => 'Your SHOP was Delete']);
     }
 
     public function shops_multiple_delete(Request $request): RedirectResponse

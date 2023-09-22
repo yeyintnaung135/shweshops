@@ -42,7 +42,7 @@ Route::prefix('backside/super_admin')->name('backside.super_admin.')->group(func
     Route::post('fbdata/messenger/getcount', [FacebookDataController::class, 'get_count']);
     Route::post('fbdata/messenger/getmsglogcount', [FacebookDataController::class, 'get_msg_log_count']);
     Route::get('fbdata/messenger/log', [FacebookDataController::class, 'get_msg_log'])->name('fbdata.messenger.log');
-    Route::get('fbdata/messenger/log/detail', [FacebookDataController::class, 'get_msg_log_detail']);
+    Route::get('fbdata/messenger/log/get_detail', [FacebookDataController::class, 'get_msg_log_detail']);
     Route::get('activity_logs/messenger/detail/{shopid}', [FacebookDataController::class, 'messenger_log_detail']);
     Route::get('activity_logs/messenger', [FacebookDataController::class, 'messenger_log'])->name('activity.messenger');
 

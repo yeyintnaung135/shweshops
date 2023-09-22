@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\Trait\category;
+use App\Http\Controllers\Trait\Category;
 use App\Models\Shops;
 use App\Models\SiteSettings;
 use Illuminate\Support\Facades\Auth;

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Trait\UserRole;
 use App\Models\FacebookMessage;
 use App\Models\FacebookTable;
 use App\Models\Item;
@@ -15,6 +16,7 @@ use Yajra\DataTables\DataTables;
 
 class FacebookDataController extends Controller
 {
+    use UserRole;
     public function __construct()
     {
         $this->middleware(['auth:super_admin']);
@@ -28,12 +30,12 @@ class FacebookDataController extends Controller
     public function get_all(Request $request): JsonResponse
     {
         $searchByFromdate = $request->input('searchByFromdate');
-        $searchByTodate = $request->input('searchByTodate');
+        $toDate = $request->input('toDate');
 
         $recordsQuery = FacebookTable::leftJoin('shops', 'facebook.shop_owner_id', '=', 'shops.id')
             ->select('shops.id', 'shops.shop_name', 'facebook.pagename', 'facebook.created_at')
             ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
-            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
+            ->when($toDate, fn($query) => $query->whereDate('created_at', '<=', $toDate));
 
         return DataTables::of($recordsQuery)
             ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
@@ -62,21 +64,33 @@ class FacebookDataController extends Controller
     }
     public function get_msg_log_detail(Request $request): JsonResponse
     {
-        $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
-        $searchByTodate = $request->input('toDate') ?? Carbon::now();
+        $fromDate = $request->input('fromDate') ?? '0-0-0 00:00:00';
+        $toDate = $request->input('toDate') ?? Carbon::now();
+        $shop_id = $request->input('shop_id');
 
-        $recordsQuery = FacebookMessage::leftJoin('shop_owners', 'fb_messenger_click_log.shop_id', '=', 'shop_owners.id')
-            ->leftJoin('items', 'fb_messenger_click_log.item_id', '=', 'items.id')
-            ->where('fb_messenger_click_log.shop_id', $request->get('shop_id'))
-            ->leftJoin('users', 'fb_messenger_click_log.user_id', '=', 'users.id')
-            ->orderBy('fb_messenger_click_log.created_at', 'desc')
-            ->select('*', 'fb_messenger_click_log.created_at as ff')
-            ->whereBetween('fb_messenger_click_log.created_at', [$searchByFromdate, $searchByTodate]);
+        $recordsQuery = FacebookMessage::where('shop_id', $shop_id)
+            ->select('id', 'user_fb_id', 'user_id', 'item_id', 'created_at')
+            ->when($fromDate, fn($query) => $query->whereDate('created_at', '>=', $fromDate))
+            ->when($toDate, fn($query) => $query->whereDate('created_at', '<=', $toDate));
 
         return DataTables::of($recordsQuery)
+            ->addColumn('user_name', function ($record) {
+                return $record->user->username;
+            })
+            ->addColumn('user_phone', function ($record) {
+                return $record->user->phone;
+            })
+            ->addColumn('item_name', function ($record) {
+                return $record->item->name;
+            })
+            ->addColumn('item_code', function ($record) {
+                return $record->item->product_code;
+            })
             ->addColumn('item_photo', function ($record) {
-                $photo = Item::where('id', $record->item_id)->first();
-                return !empty($photo) ? $photo->check_photo : '';
+                if ($record->item) {
+                    return $record->item->check_photo ?? '';
+                }
+                return '';
             })
             ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->make(true);
@@ -84,20 +98,20 @@ class FacebookDataController extends Controller
 
     public function get_msg_log(Request $request): JsonResponse
     {
-        $searchByFromdate = $request->input('searchByFromdate');
-        $searchByTodate = $request->input('searchByTodate');
+        $fromDate = $request->input('fromDate');
+        $toDate = $request->input('toDate');
 
         $recordsQuery = Shops::select('id', 'shop_name', 'created_at')
             ->withCount('facebook_message_clicks')
-            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
-            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
+            ->when($fromDate, fn($query) => $query->whereDate('created_at', '>=', $fromDate))
+            ->when($toDate, fn($query) => $query->whereDate('created_at', '<=', $toDate));
 
         return DataTables::of($recordsQuery)
             ->editColumn('created_at', function ($record) {
                 return date('F d, Y ( h:i A )', strtotime($record->created_at));
             })
             ->addColumn('action', function ($record) {
-                return $record->shop_id;
+                return $record->id;
             })
             ->make(true);
     }

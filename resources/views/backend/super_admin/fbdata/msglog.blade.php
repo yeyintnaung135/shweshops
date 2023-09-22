@@ -130,8 +130,8 @@
                         " 23:59:59" : null;
 
                     // Append to data
-                    data.searchByFromdate = from_date;
-                    data.searchByTodate = to_date;
+                    data.fromDate = from_date;
+                    data.toDate = to_date;
                 }
             },
 

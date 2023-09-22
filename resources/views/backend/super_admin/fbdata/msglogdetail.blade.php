@@ -122,7 +122,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                "url": "{{ url('backside/super_admin/fbdata/messenger/log/detail') }}",
+                "url": "{{ url('backside/super_admin/fbdata/messenger/log/get_detail') }}",
                 'data': function(data) {
                     // Read values
                     var from_date = $('#search_fromdate_shop').val() ? $('#search_fromdate_shop').val() +
@@ -131,8 +131,8 @@
                         " 23:59:59" : null;
                     var shopid = "{{ $shop_id }}";
                     // Append to data
-                    data.searchByFromdate = from_date;
-                    data.searchByTodate = to_date;
+                    data.fromDate = from_date;
+                    data.toDate = to_date;
                     data.shop_id = shopid;
                 }
             },

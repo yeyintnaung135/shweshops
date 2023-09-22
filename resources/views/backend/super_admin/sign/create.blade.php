@@ -33,11 +33,11 @@
                                     <div class="card-header">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <h2><i class="fas fa-user"></i> Create Baydin </h2>
-                                            <a href="{{ route('baydins.index') }}"> <i class="fas fa-list"></i></a>
+                                            <a href="{{ route('backside.super_admin.baydins.index') }}"> <i class="fas fa-list"></i></a>
                                         </div>
                                     </div>
                                     <div class="card-body p-lg-5">
-                                        <form method="POST" action="{{ route('baydins.store') }}"
+                                        <form method="POST" action="{{ route('backside.super_admin.baydins.store') }}"
                                             enctype="multipart/form-data">
                                             @csrf
                                             <div class="form-group">

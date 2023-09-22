@@ -89,7 +89,7 @@ return [
         ],
         'pos_super_admins' => [
             'driver' => 'eloquent',
-            'model' => App\PosSuperAdmin::class,
+            'model' => App\Models\POS\PosSuperAdmin::class,
         ],
 
         'shop_owner_and_staff' => [

@@ -48,7 +48,7 @@
                                     </div>
                                     <!-- /.card-header -->
                                     <div class="card-body">
-                                        <table id="shopTrashTable" class="table table-borderless">
+                                        <table id="messageExpireTable" class="table table-borderless">
                                             <thead>
                                                 <tr>
                                                     <th>Select</th>
@@ -150,7 +150,7 @@
             }
         }
 
-        $('#shopTrashTable').DataTable({
+        $('#messageExpireTable').DataTable({
             processing: true,
             serverSide: true,
             ajax: "{{ route('backside.super_admin.messages.getexpire') }}",
@@ -196,11 +196,11 @@
                 },
 
                 {
-                    data: 'created_at'
+                    data: 'message_created_at'
                 },
 
                 {
-                    data: 'action',
+                    data: 'mid',
                     render: function(data, type) {
 
                         var del = `<form action="{{ route('backside.super_admin.messages.delete', ':id') }}" method="post" >
@@ -216,15 +216,133 @@
                     }
                 }
             ],
-            dom: 'lBfrtip',
-                "responsive": true,
-                "autoWidth": false,
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ],
-                order: [
-                    [7, 'desc']
-                ],
+
+            responsive: true,
+            lengthChange: true,
+            autoWidth: false,
+            paging: true,
+            dom: 'Blfrtip',
+            buttons: ["copy", "csv", "excel", "pdf", "print"],
+            columnDefs: [{
+                    responsivePriority: 1,
+                    targets: 1
+                },
+                {
+                    responsivePriority: 2,
+                    targets: 2
+                },
+                {
+                    responsivePriority: 3,
+                    targets: 3
+                },
+                {
+                    responsivePriority: 4,
+                    targets: 4
+                },
+                {
+                    responsivePriority: 5,
+                    targets: 5
+                },
+                {
+                    responsivePriority: 6,
+                    targets: 6
+                },
+                {
+                    responsivePriority: 7,
+                    targets: 7
+                },
+
+            ],
+            language: {
+                "search": '<i class="fa-solid fa-search"></i>',
+                "searchPlaceholder": 'Search Shop Name',
+                paginate: {
+                    next: '<i class="fa fa-angle-right"></i>', // or '→'
+                    previous: '<i class="fa fa-angle-left"></i>' // or '←'
+                }
+            },
+
+            "order": [
+                [6, "desc"]
+            ],
         });
+
+        //INFO Not enough time to implement for MongoDB Model
+        // $('#messageExpireTable').DataTable({
+        //     processing: true,
+        //     serverSide: true,
+        //     ajax: "{{ route('backside.super_admin.messages.getexpire') }}",
+
+        //     columns: [{
+        //             data: 'checkbox',
+        //             render: function(data, type) {
+        //                 let localRetri = JSON.parse(window.localStorage.getItem("localData")) || [];
+        //                 return (localRetri.length == 0) ?
+        //                     `<input type="checkbox" value="${data}" id="checkBox" onclick="checkBox(this)">` :
+        //                     (localRetri.find(element => element == data) == data) ?
+        //                     `<input type="checkbox" value="${data}" id="checkBox" onclick="checkBox(this)" checked>` :
+        //                     `<input type="checkbox" value="${data}" id="checkBox" onclick="checkBox(this)">`
+
+        //             }
+        //         },
+        //         {
+        //             data: 'mid'
+        //         },
+        //         {
+        //             data: 'user_name'
+        //         },
+        //         {
+        //             data: 'shop_name'
+        //         },
+        //         {
+        //             data: 'message',
+        //             render: function(data, type, row) {
+        //                 if (data.includes('image')) {
+        //                     return `<img src="${"http://" + window.location.hostname+'/'+data}" class="photo_deleted" style="width: 80px;" alt="cover">`;
+        //                 } else {
+        //                     return data;
+
+        //                 }
+        //             }
+        //         },
+        //         {
+        //             data: 'expired_in',
+        //             render: function(data, type, row) {
+        //                 var result = `<span class="badge badge-danger">Expired At ${row.expired_in}</span>`;
+        //                 return result;
+        //             }
+        //         },
+
+        //         {
+        //             data: 'created_at'
+        //         },
+
+        //         {
+        //             data: 'action',
+        //             render: function(data, type) {
+
+        //                 var del = `<form action="{{ route('backside.super_admin.messages.delete', ':id') }}" method="post" >
+        //                 @csrf
+        //             @method('DELETE')
+        //             <button type="button" class="btn btn-sm btn-danger" onclick="shopForceDelete(this)"><i class="fa fa-trash"> Delete</i></button>
+        //             </form>`;
+        //                 var del = del.replace(':id', data);
+        //                 return `
+        //         <div class="d-flex">
+        //         ${del}
+        //         </div>`;
+        //             }
+        //         }
+        //     ],
+        //     dom: 'lBfrtip',
+        //         "responsive": true,
+        //         "autoWidth": false,
+        //         buttons: [
+        //             'copy', 'csv', 'excel', 'pdf', 'print'
+        //         ],
+        //         order: [
+        //             [7, 'desc']
+        //         ],
+        // });
     </script>
 @endpush

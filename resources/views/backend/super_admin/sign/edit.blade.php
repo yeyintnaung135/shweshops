@@ -34,7 +34,7 @@
                                         </div>
                                     </div>
                                     <div class="card-body p-lg-5">
-                                        <form method="POST" action="{{ route('baydins.update', $sign->id) }}"
+                                        <form method="POST" action="{{ route('backside.super_admin.baydins.update', $sign->id) }}"
                                             enctype="multipart/form-data">
                                             @csrf
                                             @method('PUT')

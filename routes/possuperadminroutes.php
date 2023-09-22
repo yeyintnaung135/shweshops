@@ -2,6 +2,7 @@
 //for superadmin
 
 use App\Http\Controllers\POS\PosSuperAdminController;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('backside/pos_super_admin')->name('backside.pos_super_admin.')->group(function () {
     // Auth

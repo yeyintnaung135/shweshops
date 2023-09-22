@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Mail\SuperAdminResetEmail;
-use App\Models\Superadmin;
+use App\Models\SuperAdmin;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -34,7 +34,7 @@ class SuperAdminForgotPasswordController extends Controller
     {
         $this->validateEmail($request);
 
-        $user = Superadmin::where('email', $request->email)->first();
+        $user = SuperAdmin::where('email', $request->email)->first();
 
         if (!$user) {
             return back()->withErrors(['email' => trans(Password::INVALID_USER)]);

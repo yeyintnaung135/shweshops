@@ -26,14 +26,14 @@ class Messages extends Model
 
     public function getShopNameAttribute()
     {
-        $shop_owner = Shops::where('id', $this->message_shop_id)->get();
-        return $shop_owner;
+        $shop_owner = Shops::where('id', $this->message_shop_id)->first();
+        return $shop_owner ? $shop_owner->shop_name : null;
     }
 
     public function getUserNameAttribute()
     {
-        $shop_owner = User::where('id', $this->message_user_id)->get();
-        return $shop_owner;
+        $user = User::where('id', $this->message_user_id)->first();
+        return $user ? $user->name : null;
     }
 
 }

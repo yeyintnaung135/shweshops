@@ -73,7 +73,7 @@ Route::group(
         // //for pos
 
         // //for pos super admin
-        // require "possuperadminroutes.php";
+        require "possuperadminroutes.php";
         // //for pos super admin
 
         // //for webservice
@@ -150,8 +150,6 @@ Route::group(
 
         Route::get('/temp/see_all_cato', [TempController::class, 'see_all_cato'])->name('temp');
 
-
-
         Route::put('/addtocart', [FrontController::class, 'addtocart_search']);
 
         Route::get('/addtocart/update', function () {
@@ -172,7 +170,6 @@ Route::group(
                 return view('front.temp.addtocart');
             }
         });
-
 
         Route::get('baydin_detail/{id}', function (Request $request, $id) {
             $baydin = Sign::findOrFail($id);
@@ -195,7 +192,6 @@ Route::group(
         Route::post('/myfav/check', [FavouriteController::class, 'check']);
         Route::post('/myfav/upload_after_logined', [FavouriteController::class, 'upload_after_logined']);
 
-
         Route::get('/mycart/see_all', [CartController::class, 'see_all']);
         Route::post('/mycart/get_cart_items_data', [CartController::class, 'get_cart_items_data']);
         Route::post('/mycart/get_cart_items_data_authuser', [CartController::class, 'get_cart_items_data_authuser']);
@@ -203,7 +199,6 @@ Route::group(
         Route::post('/mycart/action', [CartController::class, 'action_cart']);
         Route::post('/mycart/check', [CartController::class, 'check']);
         Route::post('/mycart/upload_after_logined', [CartController::class, 'upload_after_logined']);
-
 
         // News and Events
         Route::get('news&events', [NewsFrontController::class, 'index']);

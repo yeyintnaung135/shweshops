@@ -56,7 +56,7 @@ class SignController extends Controller
             'sign_logo' => $sign_logo,
             'credit' => $request->credit,
         ]);
-        return redirect()->route('baydins.index')->with('success', 'Your Sign is successfully Created');
+        return redirect()->route('backside.super_admin.baydins.index')->with('success', 'Your Sign is successfully Created');
     }
 
     /**
@@ -109,14 +109,14 @@ class SignController extends Controller
 
         }
         $result = $update_sign->update();
-        return redirect()->route('baydins.index')->with('success', 'Your Baydin is successfully Updated');
+        return redirect()->route('backside.super_admin.baydins.index')->with('success', 'Your Baydin is successfully Updated');
     }
 
     public function destroy($id): RedirectResponse
     {
         $delete_sign = Sign::findOrFail($id);
         $delete_sign->delete();
-        return redirect()->route('baydins.index')->with('delete_baydin', 'Your Baydin is successfully Updated');
+        return redirect()->route('backside.super_admin.baydins.index')->with('delete_baydin', 'Your Baydin is successfully Updated');
         //
     }
 

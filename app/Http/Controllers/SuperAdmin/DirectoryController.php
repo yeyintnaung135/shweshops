@@ -180,7 +180,7 @@ class DirectoryController extends Controller
         }
 
         ShopDirectory::where('id', $request->id)->delete();
-        Session::flash('message', 'Your Tooltips was successfully deleted');
+        Session::flash('message', 'Your Shop Directory was successfully deleted');
 
         return redirect('backside/super_admin/directory/all');
 

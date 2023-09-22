@@ -52,6 +52,9 @@
                                 class="sop-font">({{ $shop_name_myan }})</span></h3>
                         <div class="time">
                             <p class="time-d mr-3">
+                                @php
+                                use Illuminate\Support\Carbon;
+                            @endphp
                                 @if ($ad->deleted_at)
                                     <span class="text-danger">Start Date</span> - <span
                                         class="line-through">{{ Carbon::createFromFormat('Y-m-d H:i:s', $ad->start)->format('d M Y (h:i A)') }}</span>

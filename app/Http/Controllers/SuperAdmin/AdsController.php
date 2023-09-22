@@ -167,7 +167,7 @@ class AdsController extends Controller
             $shop_name_myan = $shop->shop_name_myan;
         }
 
-        $end_date = $ad->end;
+        $end_date = Carbon::createFromFormat('Y-m-d H:i:s', $ad->end);
         $today = Carbon::now();
 
         if ($ad->deleted_at == null) {

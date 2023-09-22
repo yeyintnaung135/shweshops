@@ -487,7 +487,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{url('baydins/create')}}" class="nav-link border-0">
+                            <a href="{{url('backside/super_admin/baydins/create')}}" class="nav-link border-0">
                                 {{--                                <i class="far fa-circle nav-icon"></i>--}}
                                 <i class="fa fa-circle pl-5"></i>
                                 <p class="ml-3">Create Baydin</p>

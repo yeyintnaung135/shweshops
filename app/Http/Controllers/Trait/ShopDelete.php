@@ -10,7 +10,6 @@ use App\Models\Event;
 use App\Models\FacebookTable;
 use App\Models\Item;
 use App\Models\ItemLogActivity;
-use App\Models\Manager;
 use App\Models\MultipleDamageLogs;
 use App\Models\MultipleDiscountLogs;
 use App\Models\MultiplePriceLogs;
@@ -77,7 +76,7 @@ trait ShopDelete
         $this->model_accept_restore(new BackRoleLogActivity(), $id);
         // $this->model_accept_restore(new BuyNowClickLog(),$id);
         $this->model_accept_restore(new ShopOwnerLogActivity(), $id);
-        $this->model_accept_restore(new Manager(), $id);
+        $this->model_accept_restore(new ShopOwnersAndStaffs(), $id);
         $this->model_accept_restore2(new ShopLogActivity(), $id);
         $this->model_accept_restore(new MultipleDamageLogs(), $id);
         $this->model_accept_restore(new MultipleDiscountLogs(), $id);
@@ -116,7 +115,7 @@ trait ShopDelete
         $this->model_accept_force_delete(new MultipleDiscountLogs(), $id);
         $this->model_accept_force_delete(new MultiplePriceLogs(), $id);
         //users role
-        $this->model_accept_force_delete(new Manager(), $id);
+        $this->model_accept_force_delete(new ShopOwnersAndStaffs(), $id);
         $this->model_accept_force_delete(new CountSetting(), $id);
     }
 
