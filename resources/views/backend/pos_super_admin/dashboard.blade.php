@@ -30,8 +30,8 @@
                             <div class="card">
                                 <div class="card-body">
                                     @php
-                                        use App\Featuresforshops;
-                                        $all_shops_count = Featuresforshops::all()->count();
+                                        use App\Models\FeaturesForShops;
+                                        $all_shops_count = FeaturesForShops::all()->count();
                                     @endphp
                                     <div class="row">
                                         <div class="col-4">
