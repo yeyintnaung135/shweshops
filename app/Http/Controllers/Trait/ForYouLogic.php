@@ -2,8 +2,8 @@
 namespace App\Http\Controllers\Trait;
 
 use App\Models\discount;
-use App\Models\frontuserlogs;
-use App\Models\Guestoruserid;
+use App\Models\FrontUserLogs;
+use App\Models\GuestOrUserId;
 use App\Models\Item;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +26,7 @@ trait ForYouLogic
         // return $idofcurrentuser;
 
         if ($checklogin) {
-            if (!empty(Guestoruserid::where('user_id', Auth::guard('web')->user()->id)->first())) {
+            if (!empty(GuestOrUserId::where('user_id', Auth::guard('web')->user()->id)->first())) {
 
                 $idofcurrentuser = Guestoruserid::where('user_id', Auth::guard('web')->user()->id)->first()->id;
                 return $idofcurrentuser;
@@ -51,7 +51,7 @@ trait ForYouLogic
     }
     public function getuserviewlogs()
     {
-        $getdatafromlogs = frontuserlogs::where('userorguestid', $this->getlogsuserid())->whereDate('created_at', '>', Carbon::now()->subMonth())->where([['status', '!=', 'homepage'], ['status', '!=', 'adsclick']])->get();
+        $getdatafromlogs = FrontUserLogs::where('userorguestid', $this->getlogsuserid())->whereDate('created_at', '>', Carbon::now()->subMonth())->where([['status', '!=', 'homepage'], ['status', '!=', 'adsclick']])->get();
 
         return $getdatafromlogs;
 
@@ -106,7 +106,7 @@ trait ForYouLogic
     }
     public function getgender()
     {
-        $getmostgenderlist = frontuserlogs::leftjoin('items', 'items.id', '=', 'front_user_logs.product_id')
+        $getmostgenderlist = FrontUserLogs::leftjoin('items', 'items.id', '=', 'front_user_logs.product_id')
             ->select('items.gender', DB::raw('count(*) as total '))
             ->where('front_user_logs.userorguestid', $this->getlogsuserid())
             ->where('items.deleted_at', null)
@@ -143,7 +143,7 @@ trait ForYouLogic
 
     public function foryoucatlogic()
     {
-        $getuserseecatlist = frontuserlogs::leftjoin('items', 'items.id', '=', 'front_user_logs.product_id')
+        $getuserseecatlist = FrontUserLogs::leftjoin('items', 'items.id', '=', 'front_user_logs.product_id')
             ->select('items.category_id', DB::raw('count(*) as total '))
             ->where('items.id', '!=', null)
 
@@ -162,7 +162,7 @@ trait ForYouLogic
 
     public function foryoumaincat()
     {
-        $getuserseecatlist = frontuserlogs::leftjoin('items', 'items.id', '=', 'front_user_logs.product_id')
+        $getuserseecatlist = FrontUserLogs::leftjoin('items', 'items.id', '=', 'front_user_logs.product_id')
             ->select('items.main_category', DB::raw('count(*) as total '))
             ->where('items.id', '!=', null)
 
@@ -181,7 +181,7 @@ trait ForYouLogic
 
     public function getshopsforforyou()
     {
-        $shoplist = frontuserlogs::leftjoin('items', 'items.id', '=', 'front_user_logs.product_id')
+        $shoplist = FrontUserLogs::leftjoin('items', 'items.id', '=', 'front_user_logs.product_id')
             ->select('items.*', DB::raw('count(*) as total '))
             ->where('items.id', '!=', null)
             ->where('front_user_logs.userorguestid', $this->getlogsuserid())

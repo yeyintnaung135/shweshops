@@ -3,11 +3,10 @@
 namespace App\Providers;
 
 use App\Http\Controllers\Trait\UserRole;
-use App\Models\Featuresforshops;
+use App\Models\FeaturesForShops;
 use App\Models\ShopOwnersAndStaffs;
 use App\Models\Shops;
-use App\Models\sitesettings;
-use App\Models\User;
+use App\Models\SiteSettings;
 use App\Policies\ShopOwnersAndStaffsPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
@@ -41,8 +40,8 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('can_use_pos', function () {
-            $checkpos = Featuresforshops::where([['shop_id', '=', $this->get_shopid()], ['feature', '=', 'pos']])->first();
-            $sitesetting = sitesettings::where('name', 'pos')->first();
+            $checkpos = FeaturesForShops::where([['shop_id', '=', $this->get_shopid()], ['feature', '=', 'pos']])->first();
+            $sitesetting = SiteSettings::where('name', 'pos')->first();
             if ($sitesetting->action == 'on' && !empty($checkpos)) {
                 return true;
             } else {

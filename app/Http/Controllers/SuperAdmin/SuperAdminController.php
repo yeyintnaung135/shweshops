@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\trait\CalculateCat;
+use App\Http\Controllers\Trait\CalculateCat;
 use App\Http\Requests\SuperAdmin\SuperAdminContactUsUpdateRequest;
 use App\Models\AddToCartClickLog;
 use App\Models\BuyNowClickLog;
@@ -107,10 +107,10 @@ class SuperAdminController extends Controller
         $allviewers = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->count();
 
         $alladsviewers = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
-        ->where('front_user_logs.status', 'adsclick')
-        ->groupBy('guestoruserid.ip')
-        ->get()
-        ->count();
+            ->where('front_user_logs.status', 'adsclick')
+            ->groupBy('guestoruserid.ip')
+            ->get()
+            ->count();
 
         $allshopviewers = FrontUserLogs::where('status', 'shopdetail')->count();
 

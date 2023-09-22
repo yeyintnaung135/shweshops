@@ -10,6 +10,7 @@ use App\Models\POS\PosSuperAdmin;
 use App\Models\ShopBanner;
 use App\Models\ShopDirectory;
 use App\Models\ShopOwner;
+use App\Models\ShopOwnersAndStaffs;
 use App\Models\Shops;
 use App\Models\State;
 use App\Models\Township;
@@ -25,13 +26,14 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Trait\YKImage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class PosSuperAdminController extends Controller
 {
     //use default auth class
-    use AuthenticatesUsers;
+    use AuthenticatesUsers,YKImage;
     public function login_form(Request $request): View
     {
         return view('auth.pos_super_admin_login');
@@ -145,7 +147,7 @@ class PosSuperAdminController extends Controller
         //file upload
         $imageNameone = time() . 'logo' . '.' . $shop_logo->getClientOriginalExtension();
 
-        $lpath = $shop_logo->move(public_path('images/logo/'), $imageNameone);
+        $this->save_image($shop_logo, $imageNameone, 'shop_owner/logo/');
         //   $this->setthumbslogo($lpath, $imageNameone);
 
         //store database
@@ -169,11 +171,11 @@ class PosSuperAdminController extends Controller
         $data['shop_logo'] = $filepath_logo;
         $data['active'] = 'yes';
         $withouthashpsw = $data['password'];
-
+        $hashpassword = Hash::make($data['password']);
         $data['password'] = Hash::make($data['password']);
         $data['additional_phones'] = json_encode($add_ph_array);
-        // $data['state']=$request->state;
-        // $data['township']=$request->township;
+        $data['state']=$request->state;
+        $data['township']=$request->township;
         $shopdata = Shops::create($data);
         $shopdata->pos_only = 'yes';
         $shopdata->save();
@@ -184,8 +186,6 @@ class PosSuperAdminController extends Controller
             $banner->location = $f;
             $banner->save();
         }
-
-        $this->SuperadminShopCreateLog($shopdata);
 
         if ($shopdata) {
             $shop_id = $shopdata->id;
@@ -205,7 +205,7 @@ class PosSuperAdminController extends Controller
             ShopDirectory::updateOrCreate($shop_dir);
 
             FeaturesForShops::create(['shop_id' => $shopdata->id, 'feature' => 'pos_only']);
-
+            ShopOwnersAndStaffs::create(['name' => $data['name'], 'phone' => $data['main_phone'], 'shop_id' => $shop_id, 'password' => $hashpassword, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'role_id' => 4]);
             Session::flash('message', 'Your Shop was successfully created');
 
             return redirect()->route('pos_super_admin_shops.all');
@@ -223,26 +223,7 @@ class PosSuperAdminController extends Controller
     {
         $input = $request->except('_token', '_method');
         $shopowner = Shops::findOrFail($id);
-//        return $shopowner;
-        $request->validate(
-            [
-                'name' => ['required', 'string', 'max:255'],
-                'shop_name' => ['required', 'string', 'max:255'],
-                'shop_name_url' => ['required', 'alpha_num', 'string', 'max:255'],
-                'description' => ['string', 'max:1255555'],
-                'shop_logo' => 'nullable|mimes:jpeg,bmp,png,jpg',
-                'banner.*' => 'nullable|mimes:jpeg,bmp,png,jpg',
-                // 'main_phone' =>  ['required', 'string', 'max:20','unique:manager,phone','unique:users,phone','unique:shop_owners,main_phone'],
-                'main_phone' => [
-                    'required',
-                    Rule::unique('shop_owners')->ignore($shopowner->id),
-                    Rule::unique('manager', 'phone')->ignore($shopowner->id),
-                ],
-                'messenger_link' => 'max:1130',
-                'state' => ['required'],
-//                'township' => ['required']
-            ]
-        );
+
         $add_ph = json_decode($request->additional_phones);
         $add_ph_array = [];
 
@@ -275,13 +256,13 @@ class PosSuperAdminController extends Controller
         $shopowner->township = $request->township;
         $shopowner->other_address = $request->other_address;
         if ($request->file('shop_logo')) {
-            if (File::exists(public_path('images/logo/' . $shopowner->shop_logo))) {
-                File::delete(public_path('images/logo/' . $shopowner->shop_logo));
+            if (dofile_exists('/shop_owner/logo/' . $shopowner->shop_logo)) {
+                $this->delete_image('shop_owner/logo/' . $shopowner->shop_logo);
             }
 
             $shop_logo = time() . '1.' . $request->file('shop_logo')->getClientOriginalExtension();
-            $get_path = $request->file('shop_logo')->move(public_path('images/logo/'), $shop_logo);
-            $this->setthumbslogo($get_path, $shop_logo);
+            $this->save_image($request->file('shop_logo'), $shop_logo, 'shop_owner/logo/');
+            // $this->setthumbslogo($get_path, $shop_logo);
 
             $shopowner->shop_logo = $shop_logo;
 
@@ -295,8 +276,8 @@ class PosSuperAdminController extends Controller
         if ($request->hasFile('banner')) {
             $shop_banner = ShopBanner::where('shop_owner_id', $id)->get();
             foreach ($shop_banner as $b) {
-                if (File::exists(public_path('images/banner/' . $b->location))) {
-                    File::delete(public_path('images/banner/' . $b->location));
+                if (dofile_exists('/shop_owner/banner/' . $b->location)) {
+                    $this->delete_image('shop_owner/banner/' . $b->location);
                 }
             }
             if (isset($shopowner->getPhotos)) {
@@ -309,7 +290,7 @@ class PosSuperAdminController extends Controller
             foreach ($request->banner as $b) {
                 $newFileName = uniqid() . '_banner' . '.' . $b->getClientOriginalExtension();
                 array_push($fileNameArr, $newFileName);
-                $b->move(public_path('images/banner'), $newFileName);
+                $this->save_image($b, $newFileName, 'shop_owner/banner/');
 
             }
             foreach ($fileNameArr as $f) {

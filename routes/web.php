@@ -73,7 +73,7 @@ Route::group(
         // //for pos
 
         // //for pos super admin
-        // require "possuperadminroutes.php";
+        require "possuperadminroutes.php";
         // //for pos super admin
 
         // //for webservice
