@@ -121,10 +121,10 @@
             },
 
             columns: [{
-                    data: 'id'
+                    data: 'shop_id'
                 },
                 {
-                    data: 'shop_name'
+                    data: 'shop.shop_name'
                 },
                 {
                     data: 'pagename'

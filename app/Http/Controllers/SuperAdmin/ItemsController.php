@@ -9,7 +9,7 @@ use App\Models\Shops;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Facades\DataTables;
 
 class ItemsController extends Controller
 {
@@ -40,7 +40,7 @@ class ItemsController extends Controller
             ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
             ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
-        return DataTables::of($shopsQuery)
+        return DataTables::eloquent($shopsQuery)
             ->editColumn('shop_banner', function ($shop) {
                 $checkbanner = ShopBanner::where('shop_owner_id', $shop->id)->first();
                 return empty($checkbanner) ? '' : $checkbanner->location;

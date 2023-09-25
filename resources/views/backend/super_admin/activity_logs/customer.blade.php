@@ -122,21 +122,26 @@
                         data: 'id'
                     },
                     {
-                        data: 'user_name'
+                        data: 'user_name',
+                        name: 'guest_or_user.user.username',
                     },
                     {
-                        data: 'status',
+                        data: 'modified_status',
+                        name: 'modified_status',
                     },
                     {
-                        data: 'product_code'
+                        data: 'product_code',
+                        name: 'item.product_code',
                     },
                     {
-                        data: 'guest_or_user_id'
-                    },
-                    {
-                        data: 'created_at'
-                    },
+                        data: 'guest_or_user_id',
+                        name: 'guest_or_user_id',
 
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at',
+                    },
                 ],
                 dom: 'lBfrtip',
                 "responsive": true,

@@ -180,6 +180,7 @@
                 {
                     data: 'items',
                     name: 'items_count',
+                    searchable: false
                 },
                 {
                     data: 'main_phone'

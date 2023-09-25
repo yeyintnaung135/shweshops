@@ -12,7 +12,7 @@ class FacebookMessage extends Model
 
     public function shop()
     {
-        return $this->belongsTo(Shop::class, 'shop_id');
+        return $this->belongsTo(Shops::class, 'shop_id');
     }
 
     public function item()

@@ -12,7 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\View\View;
-use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Facades\DataTables;
 
 class FacebookDataController extends Controller
 {
@@ -30,16 +30,19 @@ class FacebookDataController extends Controller
     public function get_all(Request $request): JsonResponse
     {
         $searchByFromdate = $request->input('searchByFromdate');
-        $toDate = $request->input('toDate');
+        $searchByTodate = $request->input('searchByTodate');
 
-        $recordsQuery = FacebookTable::leftJoin('shops', 'facebook.shop_owner_id', '=', 'shops.id')
-            ->select('shops.id', 'shops.shop_name', 'facebook.pagename', 'facebook.created_at')
+        $recordsQuery = FacebookTable::with('shop')
+            ->select('id', 'pagename', 'shop_id', 'created_at')
             ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
-            ->when($toDate, fn($query) => $query->whereDate('created_at', '<=', $toDate));
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
-        return DataTables::of($recordsQuery)
+        return DataTables::eloquent($recordsQuery)
+            ->addColumn('shop_name', function ($record) {
+                return $record->shop->shop_name;
+            })
             ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
-            ->make(true);
+            ->toJson();
     }
 
     public function get_count(Request $request): JsonResponse
