@@ -172,7 +172,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         Route::post('/store_supplier', [PosSecondPhaseController::class, 'store_supplier'])->name('pos.store_supplier');
         Route::get('/edit_supplier/{id}', [PosSecondPhaseController::class, 'edit_supplier'])->name('pos.edit_supplier');
         Route::post('/update_supplier/{id}', [PosSecondPhaseController::class, 'update_supplier'])->name('pos.update_supplier');
-        Route::post('/delete_supplier', [PosSecondPhaseController::class, 'delete_supplier'])->name('pos.delete_supplier');
+        Route::delete('/delete_supplier/{supplier}', [PosSecondPhaseController::class, 'delete_supplier'])->name('pos.delete_supplier');
 
         //Return List
         Route::get('/return_list', [PosSecondPhaseController::class, 'return_list'])->name('pos.return_list');

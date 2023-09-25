@@ -96,7 +96,7 @@ class PosSaleFilterService
         }
 
         if ($qualId) {
-            $query->where('pos_kyout_purchases.quality_id', $qualId);
+            $query->where('pos_kyout_purchases.diamonds', 'like', '%' . $qualId . '%');
         }
 
         if ($catId) {

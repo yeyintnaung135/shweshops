@@ -116,7 +116,8 @@
                                                     <h6 class="text-color mt-4">{{ $product[1] ? $product[1] . 'ကျပ်' : '' }}
                                                         {{ $product[2] ? $product[2] . 'ပဲ' : '' }}
                                                         {{ $product[3] ? $product[3] . 'ရွေး' : '' }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $diamond[1] ? $diamond[1] . 'ကျပ်' : '' }}
+                                                    <h6 class="text-color mt-4"> {{ $diamond[0] ? $diamond[0] . 'g' : '' }}
+                                                        {{ $diamond[1] ? $diamond[1] . 'ကျပ်' : '' }}
                                                         {{ $diamond[2] ? $diamond[2] . 'ပဲ' : '' }}
                                                         {{ $diamond[3] ? $diamond[3] . 'ရွေး' : '' }}</h6>
                                                     <h6 class="text-color mt-4">{{ $purchase->code_number }}</h6>

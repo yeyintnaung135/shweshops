@@ -99,12 +99,13 @@
                                                   name="role_id"
                                                   style="width: 100%"
                                               >   
-                                              <option value="4">shopowner</option>
+                                              <option value="4">owner</option>
                                               @foreach($role as $role)
-                                              
+                                                @if($role->id !=4)
                                                   <option value="{{$role -> id}}" selected>
                                                     {{$role -> name}}
                                                   </option>
+                                                  @endif
                                               @endforeach
                                                   
                                               </select> 

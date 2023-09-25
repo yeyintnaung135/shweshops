@@ -303,7 +303,6 @@ class PosSuperAdminController extends Controller
         }
 
         if ($updateSuccess) {
-            $this->SuperadminShopEditLog($input);
             Session::flash('message', 'Your ads was successfully updated');
             return redirect()->route('pos_super_admin_shops.all');
         }

@@ -266,7 +266,7 @@
                             </form>
                         </div> --}}
                        <div class="p-3">
-                          <a href="{{ route('shop.monthly_report' , $shop->id )}}" > View Monthly Report </a>
+                          <a href="{{ route('backside.super_admin.shop.monthly_report' , $shop->id )}}" > View Monthly Report </a>
                        </div>
                     </div>
                 </div>
@@ -382,7 +382,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('shops.update_action_all')}}",
+                url: " {{ route('backside.super_admin.shops.update_action_all')}}",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -404,7 +404,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('shops.update_action')}}",
+                url: " {{ route('backside.super_admin.shops.update_action')}}",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -427,7 +427,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('shops.update_action')}}",
+                url: " {{ route('backside.super_admin.shops.update_action')}}",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -451,7 +451,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('shops.update_action')}}",
+                url: " {{ route('backside.super_admin.shops.update_action')}}",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -473,7 +473,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('shops.update_action')}}",
+                url: " {{ route('backside.super_admin.shops.update_action')}}",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -495,7 +495,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('shops.update_action')}}",
+                url: " {{ route('backside.super_admin.shops.update_action')}}",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -517,7 +517,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{route('shops.update_action')}}",
+                url: " {{route('backside.super_admin.shops.update_action')}}",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -539,7 +539,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{route('shops.update_action')}}",
+                url: " {{route('backside.super_admin.shops.update_action')}}",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -561,7 +561,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{route('shops.update_action')}}",
+                url: " {{route('backside.super_admin.shops.update_action')}}",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -583,7 +583,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{route('shops.update_action')}}",
+                url: " {{route('backside.super_admin.shops.update_action')}}",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -605,7 +605,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{route('shops.update_action')}}",
+                url: " {{route('backside.super_admin.shops.update_action')}}",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -627,7 +627,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{route('shops.update_action')}}",
+                url: " {{route('backside.super_admin.shops.update_action')}}",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -650,7 +650,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('shops.update_action')}}",
+                url: " {{ route('backside.super_admin.shops.update_action')}}",
                 cache: false,
                 dataType: "json",
                 data: {

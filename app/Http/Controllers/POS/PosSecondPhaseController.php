@@ -154,19 +154,13 @@ class PosSecondPhaseController extends Controller
 
     public function update_staff(Request $request, $id)
     {
-        if (isset(Auth::guard('shop_role')->user()->id)) {
-            $this->role('shop_role');
-            $shop_id = $this->role_shop_id;
-        } else {
-            $shop_id = Auth::guard('shop_owner')->user()->id;
-        }
+        $shop_id = $this->get_shopid();
 
         //remove token and method from request
         $input = $request->except('_token', '_method');
 
         $manager = PosStaff::where('id', $id)->first();
-
-        //  return dd($role->name);
+        // dd($manager);
 
         $rules = [
             'name' => ['required', 'string', 'max:255'],
@@ -175,8 +169,7 @@ class PosSecondPhaseController extends Controller
             //rules
             'phone' => [
                 'required',
-                Rule::unique('shop_owners', 'main_phone')->ignore($manager->id),
-                Rule::unique('manager')->ignore($manager->id),
+                Rule::unique('shops', 'main_phone')->ignore($manager->id),
             ],
 
         ];
@@ -537,16 +530,11 @@ class PosSecondPhaseController extends Controller
         }
     }
 
-    public function delete_supplier(Request $request): JsonResponse
+    public function delete_supplier(PosSupplier $supplier): RedirectResponse
     {
-        $supplier = PosSupplier::find($request->sid);
-        $purchase = PosPurchase::where('supplier_id', $supplier->id)->delete();
-        $kpurchase = PosKyoutPurchase::where('supplier_id', $supplier->id)->delete();
         $supplier->delete();
         Session::flash('message', 'Supplier was successfully Deleted!');
-        return response()->json([
-            'data' => 'success',
-        ], 200);
+        return redirect()->route('backside.shop_owner.pos.supplier_list');
     }
 
     //Return

@@ -798,7 +798,6 @@ class PosController extends Controller
     public function get_kyout_purchase_list(Request $request): JsonResponse
     {
         $purchases = $this->purchaseFilterService->filter_kyout_purchases($request);
-
         return DataTables::of($purchases)
             ->addColumn('supplier', function ($purchase) {
                 return $purchase->supplier->name;

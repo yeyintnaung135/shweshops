@@ -221,7 +221,7 @@
                             var actions = '';
                             if (full.sell_flag == 0) {
                                 actions += `
-            <a class="btn btn-sm btn-danger" onclick="Delete('${full.actions.delete_url}')"
+            <a class="text-danger" onclick="Delete('${full.actions.delete_url}')"
             title="Delete">
             <span class="fa fa-trash"></span>
         </a>

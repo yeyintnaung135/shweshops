@@ -98,7 +98,7 @@ class PosPurchaseFilterService
         });
 
         $query->when($diamond !== 'all', function ($query) use ($diamond) {
-            $query->where('diamonds', $diamond);
+            $query->where('diamonds', 'like', '%' . $diamond . '%');
         });
 
         $query->when($catId !== 'all', function ($query) use ($catId) {
