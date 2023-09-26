@@ -264,10 +264,10 @@
                             var tot_qty = $('#tot_qty').text();
                             var tot_g = $('#tot_g').text();
                             var tot_sale = $('#tot_sale').text();
-                            var date = $('#print_date').val();
-                            var counter = $('#print_counter').val();
-                            var gtype = $('#print_gtype').val();
-                            var cat = $('#print_cat').val();
+                            var date = $('#fromDate').val() + ' - ' + $('#toDate').val();
+                            var counter = $('#f_counter option:selected').text();
+                            var gtype = $('#qual option:selected').text();
+                            var cat = $('#cat option:selected').text();
                             var existingData = $(win.document.body).html();
                             var extraText1 = `<div class="row">
                         <div class="col-3 card" style="max-height: 70px;"><h6 class="text-color mt-2" >စုစု​ပေါင်းအ​ရေအတွက် &nbsp;&nbsp;&nbsp;<span>${tot_qty}</span></h6></div>
