@@ -136,7 +136,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                "url": "{{ route('shops.showowner_using_chat_all') }}",
+                "url": "{{ url('backside/super_admin/shops/get_all_using_chat') }}",
                 'data': function(data) {
                     // Read values
                     var from_date = $('#search_fromdate_shop').val() ? $('#search_fromdate_shop').val() +
@@ -206,7 +206,7 @@
                     name: 'action',
                     render: function(data, type) {
                         var detail = `
-                      <a href="{{ route('showowner_using_chat_detail', ':action') }}" role="button" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Detail">
+                      <a href="{{ url('backside/super_admin/shopowner_using_chat_detail/:action') }}" role="button" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Detail">
                         <i class="fa fa-eye"></i>
                       </a>
           `;

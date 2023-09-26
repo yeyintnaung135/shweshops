@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\UserLoginandRegisterController;
 use App\Http\Controllers\Auth\YkforgotpasswordController;
+use App\Http\Controllers\BayDinController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\forfacebook\FacebookController;
@@ -171,17 +172,10 @@ Route::group(
             }
         });
 
-        Route::get('baydin_detail/{id}', function (Request $request, $id) {
-            $baydin = Sign::findOrFail($id);
-            $sign = $baydin->name;
-            $baydins = Sign::where('id', '!=', $id)->where('name', $sign)->get();
-            // return dd($baydins);
-            if (isset(Auth::guard('web')->user()->id)) {
-                return view('front.baydins.baydin_detail', compact('baydin', 'baydins'));
-            } else {
-                return redirect()->back();
-            }
-        })->name('baydin_detail');
+        Route::get(
+            'baydin_detail/{id}',
+            [BayDinController::class, 'baydin_detail']
+        )->name('baydin_detail');
 
         Route::get('/contact-us', [FrontController::class, 'contact_us']);
         Route::get('/myfav/see_all', [FavouriteController::class, 'see_all']);
@@ -262,7 +256,7 @@ Route::post('/get_shops_byfilter', [FrontController::class, 'get_shops_byfilter'
 //test
 Route::get('backside/pos/index', [PosController::class, 'index']);
 
-Route::get('baydin', [Auth\UserLoginandRegisterController::class, 'baydin']);
+Route::get('baydin', [BayDinController::class, 'baydin']);
 
 Route::get('terms', function () {
     return view('front.terms');

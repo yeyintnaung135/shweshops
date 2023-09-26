@@ -6,7 +6,7 @@
 
     <div id="page" class="site ms-md-5 me-md-5 my-0 py-0">
         <?php
-        if(\Illuminate\Support\Facades\Auth::guard('shop_owner')->check() or \Illuminate\Support\Facades\Auth::guard('shop_role')->check()){
+        if(\Illuminate\Support\Facades\Auth::guard('shop_owners_and_staffs')->check()){
             $shoploginned='yes';
         }else{
             $shoploginned='no';

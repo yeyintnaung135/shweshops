@@ -16,9 +16,7 @@
         <!-- .site-content-contain -->
         <div class="site-content-contain">
             <div class="mx-4 px-md-5 show_breadcrumb_">
-                <div class="remove_wrapp" style="position:relative !important;">
-                    @include('layouts.frontend.allpart.loading_wrapper')
-                </div>
+              
                 <div class="row">
                     <div id="main-content" class="show_dev col-sm-9 col-xs-12 d-none">
 

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
-class ShopownerLoginController extends Controller
+class ShopOwnerLoginController extends Controller
 {
     //use default auth class
     use AuthenticatesUsers;

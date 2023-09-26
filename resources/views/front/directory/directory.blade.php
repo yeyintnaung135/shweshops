@@ -13,9 +13,7 @@
       </div>
 
       <div class="mx-4 mx-md-3">
-        <div class="col-12" style="height: 222px !important;position:relative !important">
-            @include('layouts.frontend.allpart.loading_wrapper')
-        </div>
+     
 
       </div>
     </div>

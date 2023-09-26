@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Catsupport;
+use App\Models\CatSupport;
 use App\Models\Support;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -12,7 +12,7 @@ class SupportFrontController extends Controller
     //
     public function support(){
         $data=Support::where('for_what','for_user')->limit(6)->get();
-        $cats=Catsupport::all();
+        $cats=CatSupport::all();
         return view('front.support.support',['data'=>$data,'cats'=>$cats]);
     }
     public function get_support(Request $request){

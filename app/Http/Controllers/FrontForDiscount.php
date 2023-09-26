@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Item;
 use App\Models\Shopowner;
 
-class FrontfordiscountController extends Controller
+class FrontForDiscount extends Controller
 {
     //
     public function see_all($shop_id)
