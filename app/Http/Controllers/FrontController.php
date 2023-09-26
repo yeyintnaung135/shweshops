@@ -13,7 +13,7 @@ use App\Models\AddToCartClickLog;
 use App\Models\Ads;
 use App\Models\BuyNowClickLog;
 use App\Models\Collection;
-use App\Models\Contactus;
+use App\Models\ContactUs;
 use App\Models\discount;
 use App\Models\Event;
 use App\Models\FavouriteItem;
@@ -24,7 +24,7 @@ use App\Models\MainPopup;
 use App\Models\Manager_fav;
 use App\Models\News;
 use App\Models\OpeningTimes;
-use App\Models\Shopdirectory;
+use App\Models\ShopDirectory;
 use App\Models\Shops;
 use App\Models\Shop_owners_fav;
 use App\Models\State;
@@ -777,8 +777,8 @@ class FrontController extends Controller
 
     public function contact_us()
     {
-        $contact = Contactus::where('active', 1)->first();
-        return view('front.ContactUs.contactus', ['contact' => $contact]);
+        $contact = ContactUs::where('active', 1)->first();
+        return view('front.ContactUs.ContactUs', ['contact' => $contact]);
     }
 
     //sync add to cart and fav
