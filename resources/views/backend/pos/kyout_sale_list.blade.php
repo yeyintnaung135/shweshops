@@ -61,7 +61,6 @@
                             <h6 class="mt-3 text-color mb-1">ဆိုင်ခွဲဖြင့်ကြည့်ရှုရန်
                                 {{-- <input type="checkbox" class="mt-1 ml-2" name='chkflag' id="chkflag" onclick="stockcheck(1)"> --}}
                                 <select name="f_counter" id="f_counter">
-                                    <option value="">ဆိုင်ခွဲများ</option>
                                     <option value="all_shop" selected>အားလုံး</option>
                                     @foreach ($counters as $counter)
                                         <option value="{{ $counter->shop_name }}">{{ $counter->shop_name }}</option>
@@ -79,32 +78,32 @@
                                 </div>
                                 <div class="col-1">
                                     <input type="checkbox" class="sup mt-4" onclick="advanceFilter()">
-                                    <input type="checkbox" class="qual mt-4" onclick="advanceFilter()">
+                                    <input type="checkbox" class="dia mt-4" onclick="advanceFilter()">
                                     <input type="checkbox" class="cat mt-4" onclick="advanceFilter()">
                                 </div>
                                 <div class="col-4">
                                     <select name="" id="sup" class="mt-2 form-control">
-                                        <option value="">​ပန်းထိမ်ဆိုင်များ</option>
+                                        <option value="">အားလုံး</option>
                                         @foreach ($sups as $sup)
                                             <option value="{{ $sup->id }}">{{ $sup->name }}</option>
                                         @endforeach
                                     </select>
                                     <input type="hidden" id="print_gtype" value="All">
-                                    <select name="" id="qual" class="mt-2 form-control">
-                                        <option value="">စိန်​ကျောက်အမည်များ</option>
+                                    <select name="" id="dia" class="mt-2 form-control">
+                                        <option value="">အားလုံး</option>
                                         @foreach ($dias as $dia)
                                             <option value="{{ $dia->diamond_name }}">{{ $dia->diamond_name }}</option>
                                         @endforeach
                                     </select>
                                     <input type="hidden" id="print_cat" value="All">
                                     <select name="" id="cat" class="mt-2 form-control">
-                                        <option value="">ပစ္စည်း​အမျိုးအစားများ</option>
+                                        <option value="">အားလုံး</option>
                                         @foreach ($cats as $cat)
                                             <option value="{{ $cat->id }}">{{ $cat->mm_name }}</option>
                                         @endforeach
                                     </select>
                                     <input type="hidden" id="supid">
-                                    <input type="hidden" id="qualid">
+                                    <input type="hidden" id="diaid">
                                     <input type="hidden" id="catid">
                                 </div>
                             </div>
@@ -184,7 +183,7 @@
                         d.toDate = $('#toDate').val();
                         d.f_counter = $('#f_counter').val();
                         d.sup = $('#sup').val();
-                        d.qual = $('#qual').val();
+                        d.qual = $('#dia').val();
                         d.cat = $('#cat').val();
                     }
                 },
@@ -350,7 +349,7 @@
                         var extraText2 = `
                             <h6 class='text-color'>​ကောင်တာ : ${counter}</h6>
                             <h6 class='text-color'>​​​စိန်​ကျောက်အမည် : ${gtype}</h6>
-                            <h6 class='text-color'>​အမျိုးအစား : ${ptype}</h6>
+                            <h6 class='text-color'>​အမျိုးအစား : ${cat}</h6>
                             <h6 class='text-color'>​Date : ${date}</h6>
                         `;
                         $(win.document.body).html(extraText1+existingData+extraText2);
@@ -375,7 +374,7 @@
                 saleTable.draw();
             });
 
-            $('#qual').change(function() {
+            $('#dia').change(function() {
                 saleTable.draw();
             });
 
@@ -417,7 +416,7 @@
 
         $(document).ready(function() {
             $('#sup').hide();
-            $('#qual').hide();
+            $('#dia').hide();
             $('#cat').hide();
 
             function alignModal() {
@@ -442,11 +441,11 @@
                 $('#sup').hide();
                 $('#supid').val('');
             }
-            if ($('.qual').is(':checked', true)) {
-                $('#qual').show();
+            if ($('.dia').is(':checked', true)) {
+                $('#dia').show();
             } else {
-                $('#qual').hide();
-                $('#qualid').val('');
+                $('#dia').hide();
+                $('#diaid').val('');
             }
             if ($('.cat').is(':checked', true)) {
                 $('#cat').show();
