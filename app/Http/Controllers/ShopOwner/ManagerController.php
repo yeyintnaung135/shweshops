@@ -482,6 +482,8 @@ class ManagerController extends Controller
         $user_url = ShopOwnersAndStaffs::onlyTrashed()->findOrFail($id)->shop_id;
         $role_id = ShopOwnersAndStaffs::onlyTrashed()->findOrFail($id)->role_id;
         Gate::authorize('to_create_user', $role_id);
+        ShopOwnersAndStaffs::onlyTrashed()->findOrFail($id)->restore();
+        Session::flash('message', 'Your user was successfully restored');
 
         return redirect()->back();
     }

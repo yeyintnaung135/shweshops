@@ -156,13 +156,13 @@ trait UserRole
     public function trash_list_by_role()
     {
         if ($this->is_owner()) {
-            return ShopOwnersAndStaffs::select('id', 'name', 'phone', 'created_at', 'shop_id', 'role_id')->onlyTrashed();
+            return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->select('id', 'name', 'phone', 'created_at', 'shop_id', 'role_id')->onlyTrashed();
         }
         if ($this->is_admin()) {
-            return ShopOwnersAndStaffs::select('id', 'name', 'phone', 'created_at', 'shop_id', 'role_id')->onlyTrashed()->whereIn('role_id', [2, 3])->orderBy('created_at', 'desc');
+            return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->select('id', 'name', 'phone', 'created_at', 'shop_id', 'role_id')->onlyTrashed()->whereIn('role_id', [2, 3])->orderBy('created_at', 'desc');
         }
         if ($this->is_manager()) {
-            return ShopOwnersAndStaffs::select('id', 'name', 'phone', 'created_at', 'shop_id', 'role_id')->onlyTrashed()->where('role_id', 3)->orderBy('created_at', 'desc');
+            return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->select('id', 'name', 'phone', 'created_at', 'shop_id', 'role_id')->onlyTrashed()->where('role_id', 3)->orderBy('created_at', 'desc');
         }
     }
 
