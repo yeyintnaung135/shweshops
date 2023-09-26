@@ -8,8 +8,8 @@
         <!-- Main Sidebar Container -->
         @include('layouts.backend.sidebar')
         @php
-            use App\Shopowner;
-            use App\Manager;
+            use App\Models\Shops;
+            use App\Models\ShopOwnersAndStaffs;
 
 
                 $current_shop = $currentShop;

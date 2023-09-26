@@ -1,13 +1,10 @@
 <?php
-   
-namespace App\Http\Controllers;
-use App\Http\Controllers\Controller;
 
-use Illuminate\Http\Request;
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
 use App\Rules\MatchOldPassword;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use App\Models\Shopowner;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ChangePasswordController extends Controller
@@ -19,19 +16,19 @@ class ChangePasswordController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:shop_owner');
+        $this->middleware('auth:shop_owners_and_staffs');
     }
-   
+
     /**
      * Show the application dashboard.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index():View
+    public function index(): View
     {
         return view('changePassword');
-    } 
-   
+    }
+
     /**
      * Show the application dashboard.
      *
@@ -43,8 +40,7 @@ class ChangePasswordController extends Controller
         $request->validate([
             'current_password' => ['required', new MatchOldPassword],
         ]);
-   
-   
+
         return redirect('backside/shop_owner/update-password');
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\message;
-use Carbon\Carbon;
 
 use App\Events\ActiveShops;
 use App\Events\Shopownermessage;
@@ -15,7 +14,7 @@ use App\Models\ForFirebase;
 use App\Models\Messages;
 use App\Models\Shops;
 use App\Models\User;
-use App\Models\Usersorshopsonlinestatus;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -53,7 +52,6 @@ class MessageController extends Controller
 
         $data = ['message' => $datamsg, 'shop' => $getshopdata];
 
-
         if ($data) {
             event(new Usermessage($data));
             event(new Shopownersmessage($data));
@@ -76,7 +74,6 @@ class MessageController extends Controller
     {
         return response()->json(['success' => true, 'msg' => 'successfully send']);
 
-
         if (Messages::create($request->data)) {
             event(new Shopownermessage($request->data));
 
@@ -88,13 +85,8 @@ class MessageController extends Controller
 
     public function chatpannel()
     {
+        $current_shop = Shops::where('id', Auth::guard('shop_owners_and_staffs')->user()->shop_id)->first();
 
-        if (isset(Auth::guard('shop_owner')->user()->id)) {
-            $current_shop = Shops::where('id', Auth::guard('shop_owner')->user()->id)->first();
-        } else {
-            $manager = Manager::where('id', Auth::guard('shop_role')->user()->id)->pluck('shop_id');
-            $current_shop = Shops::where('id', $manager)->first();
-        }
         return view('backend.shopowner.chatpannel.chatpannel', ['currentShop' => $current_shop]);
     }
 
@@ -108,11 +100,9 @@ class MessageController extends Controller
 
         foreach ($getuserid as $key => $value) {
             $alldata = User::where('id', $value->message_user_id)->first();
-        
 
-                $getuserid[$key]['userdata'] = $alldata;
-                $getuserid[$key]['userdata']['status']='offline';
-       
+            $getuserid[$key]['userdata'] = $alldata;
+            $getuserid[$key]['userdata']['status'] = 'offline';
 
         }
         return response()->json(['success' => true, 'data' => $getuserid]);
@@ -141,7 +131,7 @@ class MessageController extends Controller
     {
         $request->validate([
             'message' => 'array',
-            'message.*' => 'mimes:jpeg,bmp,png,jpg,gif|max:5120'
+            'message.*' => 'mimes:jpeg,bmp,png,jpg,gif|max:5120',
         ]);
 
         $images = [];
@@ -168,7 +158,6 @@ class MessageController extends Controller
             ->orderBy('created_at', 'desc')->skip($start)->take(20)->get();
 
         $getuserdata = User::where('id', $request->data)->first();
-      
 
         return response()->json(['success' => true, 'data' => ['messages' => $getmessages, 'userdata' => $getuserdata]]);
 
@@ -176,7 +165,7 @@ class MessageController extends Controller
 
     public function sendwhatshopisactive(Request $request)
     {
-       
+
         event(new ActiveShops(['shops_id' => $request->data, 'role' => 'shop', 'status' => 'online']));
         return $request->data;
 
@@ -184,7 +173,7 @@ class MessageController extends Controller
 
     public function sendwhatshopisoffline(Request $request)
     {
-    
+
         event(new ActiveShops(['shops_id' => $request->data, 'role' => 'shop', 'status' => 'offline']));
         return $request->data;
 

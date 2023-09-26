@@ -134,34 +134,26 @@
                                 </div>
                                 <div class="row mb-4 px-4 px-md-5">
                                     <div class="col-12 col-md-8 col-lg-8  col-xl-6 row">
-                                        @isset(Auth::guard('shop_role')->user()->id)
-                                            <div class="col-6">
-                                                @if (Auth::guard('shop_role')->user()->role_id == 1 || Auth::guard('shop_role')->user()->role_id == 2)
-                                                    <a href="{{ route('backside.shop_owner.edit') }}"
-                                                        class="btn btn-primary btn-block"><b>
-                                                            <span class="fa fa-edit"></span>&nbsp;&nbsp;<span
-                                                                style="font-family: sans-serif!important">Edit
-                                                                Shop</span></b></a>
-                                                @endif
-                                            </div>
-                                        @endisset
-
-                                        @isset(Auth::guard('shop_owner')->user()->id)
-                                            <div class="col-6">
-                                                <a href="{{ route('backside.shop_owner.edit') }}"
-                                                    class="btn btn-primary btn-block"><b><span
-                                                            class="fa fa-edit"></span>&nbsp;&nbsp;<span
-                                                            style="font-family: sans-serif!important">Edit Shop</span></b></a>
-                                            </div>
-                                        @endisset
-                                        @isset(Auth::guard('shop_owner')->user()->id)
-                                            <div class="col-6">
-                                                <a href="{{ route('backside.shop_owner.change.password') }}"
-                                                    class="btn btn-primary btn-block sop-btn-primary"><b><span
-                                                            class="fa fa-lock"></span>&nbsp;&nbsp;<span
-                                                            style="font-family: sans-serif!important">Change
-                                                            Password</span></b></a>
-                                            </div>
+                                        @isset(Auth::guard('shop_owners_and_staffs')->user()->id)
+                                            @if (Auth::guard('shop_owners_and_staffs')->user()->role_id == 4)
+                                                <div class="col-6">
+                                                    @if (Auth::guard('shop_owners_and_staffs')->user()->role_id == 1 ||
+                                                            Auth::guard('shop_owners_and_staffs')->user()->role_id == 2)
+                                                        <a href="{{ route('backside.shop_owner.edit') }}"
+                                                            class="btn btn-primary btn-block"><b>
+                                                                <span class="fa fa-edit"></span>&nbsp;&nbsp;<span
+                                                                    style="font-family: sans-serif!important">Edit
+                                                                    Shop</span></b></a>
+                                                    @endif
+                                                </div>
+                                                <div class="col-6">
+                                                    <a href="{{ route('backside.shop_owner.change.password') }}"
+                                                        class="btn btn-primary btn-block sop-btn-primary"><b><span
+                                                                class="fa fa-lock"></span>&nbsp;&nbsp;<span
+                                                                style="font-family: sans-serif!important">Change
+                                                                Password</span></b></a>
+                                                </div>
+                                            @endif
                                         @endisset
                                     </div>
                                 </div>
@@ -327,10 +319,10 @@
         }
 
         /* .profile img{
-                  position: absolute;
-                  top: -5em;
-                  z-index: 100;
-                } */
+                      position: absolute;
+                      top: -5em;
+                      z-index: 100;
+                    } */
 
         .shop_name {
             position: absolute;
@@ -365,10 +357,10 @@
             }
 
             /* .profile img{
-                        position: absolute;
-                        top: -3.5em;
+                            position: absolute;
+                            top: -3.5em;
 
-                    } */
+                        } */
             .shop_name {
                 position: absolute;
                 left: 8em;
@@ -399,9 +391,9 @@
 
 
             /* .sop-profile-back {
-                        margin-top: -75px !important;
-                        margin-left: 25px;
-                    } */
+                            margin-top: -75px !important;
+                            margin-left: 25px;
+                        } */
         }
     </style>
 @endpush
