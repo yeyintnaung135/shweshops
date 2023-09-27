@@ -12,7 +12,7 @@ use App\Http\Controllers\ShopOwner\EventController;
 use App\Http\Controllers\ShopOwner\ItemsController;
 use App\Http\Controllers\ShopOwner\ManagerController;
 use App\Http\Controllers\ShopOwner\NewsController;
-use App\Http\Controllers\Shopowner\OpeningTimesController;
+use App\Http\Controllers\ShopOwner\OpeningTimesController;
 use App\Http\Controllers\ShopOwner\PopupAdsController;
 use App\Http\Controllers\ShopOwner\ShopOwnerController;
 use App\Http\Controllers\ShopOwner\ShopOwnerSupportController;
@@ -215,7 +215,6 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         // Route::get('/app-files/android', [AppDownloadController::class, 'android'])->name('app-files.android');
         // Route::get('/app-files/download/{appFile}', [AppDownloadController::class, 'download'])->name('app-files.download');
 
-   
         // Chat Panel
         Route::get('/chatpannel', [MessageController::class, 'chatpannel']);
         Route::post('/sendmessagetouser', [MessageController::class, 'sendmessagetouser']);
