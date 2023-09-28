@@ -19,7 +19,7 @@
 
             {{-- <div class="elementor-widget-container is-mobile d-flex"> --}}
             @if (isset(Auth::guard('web')->user()->id) || isset(Auth::guard('shop_owners_and_staffs')->user()->id))
-                )
+
                 <div class="ftc-cart-element is-mobile mt-1 me-4">
 
                     <div class="ftc-tini-cart">
@@ -299,7 +299,7 @@
                                                             <a href="{{ url('myfav/see_all') }}">
                                                                 <div class="cart-total">
 
-                                                                    <i 
+                                                                    <i
                                                                         class="fa-regular fa-heart fa-xl windowFavNav"
                                                                         style="color:#780116!important"></i>
                                                                     {{-- <span id="favw-a2c-count" class="sop-cart-count">0</span> --}}
