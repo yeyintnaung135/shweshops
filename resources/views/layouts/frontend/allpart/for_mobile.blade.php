@@ -176,10 +176,32 @@
     @endphp
 
     @if ($appFile)
-        <div class="text-center ms-3 d-grid gap-2">
-            <a href="{{ route('front.app-files.download', $appFile) }}" type="button"
-                class="btn btn-primary rounded-pill btn-block" style="background-color:#780116">
+        <div class="text-center mx-3 d-grid gap-2">
+            <a href="" class="btn btn-primary rounded-pill btn-block text-light" type="button"
+                data-toggle="modal" data-target="#appDownloadMobileModal" style="background-color:#780116">
                 <i class="fa-solid fa-download"></i> Download now</a>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="appDownloadMobileModal" tabindex="-1"
+            aria-labelledby="appDownloadMobileModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header d-flex justify-content-center  border-0">
+                        <h5 class="modal-title text-color" id="appDownloadMobileModalLabel">
+                            DOWNLOAD SHWESHOPS
+                        </h5>
+                    </div>
+                    <div class="modal-body text-center  border-0">
+                        <p class="text-dark">Are you sure you want to download?</p>
+                    </div>
+                    <div class="modal-footer justify-content-center  border-0">
+                        <button type="button" class="btn btn-outline-danger px-4" data-dismiss="modal">No</button>
+                        <a href="{{ route('front.app-files.download', $appFile) }}"
+                            class="btn btn-success text-light px-4">Yes</a>
+                    </div>
+                </div>
+            </div>
         </div>
     @endif
 
@@ -422,13 +444,13 @@
             }
 
             /* .ftc-mobile-wrapper {
-                                    transform: translate3d(-400px, 0, 0);
-                                } */
+                                                transform: translate3d(-400px, 0, 0);
+                                            } */
         }
 
         /* .sop-sans{
-                                font-family: sans-serif;
-                            } */
+                                            font-family: sans-serif;
+                                        } */
         .sop-sans a {
             font-size: 1.1rem !important;
             text-transform: capitalize;

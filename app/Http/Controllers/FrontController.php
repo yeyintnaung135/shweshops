@@ -30,6 +30,7 @@ use App\Models\State;
 use App\Models\Township;
 use App\Models\Usernoti;
 use App\Models\WishlistClickLog;
+use App\Services\AppDownloadService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,6 +43,13 @@ class FrontController extends Controller
 {
     use ForYouLogic, AllShops, SimilarLogic,
     Category, Logs, ShopLogActivityTrait;
+
+    protected $appDownloadService;
+
+    public function __construct(AppDownloadService $appDownloadService)
+    {
+        $this->appDownloadService = $appDownloadService;
+    }
 
     public function getstates()
     {
@@ -841,16 +849,9 @@ class FrontController extends Controller
         return view('front.shops', ['shops' => $shops, 'active' => 'all']);
     }
 
-    //NOTE download actual file
-    public function download(AppFile $appFile)
+    public function app_download(AppFile $appFile)
     {
-        $filepath = storage_path('app/app_files/' . $appFile->file);
-
-        if (file_exists($filepath)) {
-            return response()->download($filepath, $appFile->file);
-        } else {
-            return redirect()->back()->with('error', 'File not found.');
-        }
+        return $this->appDownloadService->download($appFile);
     }
 
     public function getPremiumShops()

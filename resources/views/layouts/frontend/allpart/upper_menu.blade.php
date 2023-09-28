@@ -161,9 +161,32 @@
             @endphp
 
             @if ($appFile)
-                <div class="text-center ms-3">
-                    <a href="{{ route('front.app-files.download', $appFile) }}" class="btn btn-primary rounded-pill"
-                        style="background-color:#F7B538">Download now</a>
+                <div class="text-center mx-3">
+                    <a href="" class="btn btn-primary rounded-pill" data-toggle="modal"
+                        data-target="#appDownloadModal" style="background-color:#F7B538">Download now</a>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="appDownloadModal" tabindex="-1" aria-labelledby="appDownloadModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header d-flex justify-content-center  border-0">
+                                <h5 class="modal-title text-color" id="appDownloadModalLabel">
+                                    DOWNLOAD SHWESHOPS
+                                </h5>
+                            </div>
+                            <div class="modal-body text-center  border-0">
+                                <p class="text-dark">Are you sure you want to download?</p>
+                            </div>
+                            <div class="modal-footer justify-content-center  border-0">
+                                <button type="button" class="btn btn-outline-danger px-4"
+                                    data-dismiss="modal">No</button>
+                                <a href="{{ route('front.app-files.download', $appFile) }}"
+                                    class="btn btn-success px-4">Yes</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             @endif
         </div>

@@ -252,7 +252,7 @@ Route::get('popular_shops', [FrontController::class, 'getPopularShops']);
 Route::post('/get_shops_byfilter', [FrontController::class, 'get_shops_byfilter']);
 
 // App File Download
-Route::get('/front/app-files/download/{appFile}', [FrontController::class, 'download'])->name('front.app-files.download');
+Route::get('/front/app-files/download/{appFile}', [FrontController::class, 'app_download'])->name('front.app-files.download');
 
 //test
 Route::get('backside/pos/index', [PosController::class, 'index']);
