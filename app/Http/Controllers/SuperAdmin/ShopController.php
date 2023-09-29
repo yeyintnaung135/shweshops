@@ -713,17 +713,19 @@ class ShopController extends Controller
 
         $addtocartclick = AddToCartClickLog::leftjoin('items', 'items.id', '=', 'add_to_cart_click_logs.item_id')->where('items.shop_id', $id)->orderBy('add_to_cart_click_logs.created_at', 'desc')->get()->unique('guest_id', 'user_id');
         $addtocartclick_count_setting = CountSetting::where('shop_id', $id)->where('name', 'addToCartClick')->get();
+        $whislistclick = [];
 
-        $whislistclick = WishlistClickLog::leftjoin('items', 'items.id', '=', 'whislist_click_logs.item_id')->where('items.shop_id', $id)->orderBy('whislist_click_logs.created_at', 'desc')->get();
+        // $whislistclick = WishlistClickLog::leftjoin('items', 'whislist_click_logs.item_id', '=', 'items.id')->where('items.shop_id', $id)->orderBy('whislist_click_logs.created_at', 'desc')->get();
         $whislistclick_count_setting = CountSetting::where('shop_id', $id)->where('name', 'whislistclick')->get();
         $discountview = FrontUserLogs::join('discount', 'discount.item_id', '=', 'front_user_logs.product_id')->where('front_user_logs.shop_id', $id)->where('front_user_logs.product_id', '!=', 0)->where('front_user_logs.product_id', '!=', null)->where('front_user_logs.status', 'product_detail')->groupBy('front_user_logs.product_id')->get();
 
         $discountview_count_setting = CountSetting::where('shop_id', $id)->where('name', 'discountview')->get();
+        $adsview = [];
 
-        $adsview = FrontUserLogs::join('guestoruserid', 'guestoruserid.id', '=', 'front_user_logs.userorguestid')->where('front_user_logs.status', 'homepage')->where('guestoruserid.user_agent', '!=', 'bot')->groupBy('front_user_logs.userorguestid')->get();
+        // $adsview = FrontUserLogs::join('guestoruserid', 'guestoruserid.id', '=', 'front_user_logs.userorguestid')->where('front_user_logs.status', 'homepage')->where('guestoruserid.user_agent', '!=', 'bot')->groupBy('front_user_logs.userorguestid')->get();
         $adsview_count_setting = CountSetting::where('shop_id', $id)->where('name', 'adsview')->get();
 
-        $users = Manager::where('shop_id', $id)->get();
+        $users = ShopOwnersAndStaffs::where('shop_id', $id)->get();
         $users_count_setting = CountSetting::where('shop_id', $id)->where('name', 'users')->get();
 
         $total_products = Item::all();

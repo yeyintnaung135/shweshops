@@ -45,7 +45,8 @@ class CatFilterRequest extends FormRequest
             }],
             'filtertype.cat_id' => ['array', 'max:30'],
             'filtertype.byshop.*' => [function ($attribute, $value, $fail) {
-                if (is_int($value) || 'all' === $value) {
+                $int= (int)$value;
+                if (is_int($int) || 'all' === $value) {
                     return true;
                 } else {
                     $fail($attribute . ' is invalid.');

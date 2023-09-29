@@ -35,6 +35,7 @@
                       :selected_gems="[]"
                       :gender="'all'"
                       :additional="'no'"
+                      :maincat_id="'all'"
                     ></products_filter>
 
                 </div>

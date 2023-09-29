@@ -24,7 +24,7 @@ class CartController extends Controller
 
     public function see_all()
     {
-        return view('front.Allcart');
+        return view('front.AllCart');
     }
     public function get_cart_items_data_authuser(Request $request): JsonResponse
     {

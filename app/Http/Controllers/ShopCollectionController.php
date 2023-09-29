@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 
 use App\Models\Item;
-use App\Models\Shopowner;
+use App\Models\Shops;
 use App\Models\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 class ShopCollectionController extends Controller
 {
     public function collection_for_shop($shopname, $col_id){
-        $id = DB::table('shop_owners')->where('shop_name_url', $shopname)->value('id');
+        $id = DB::table('shops')->where('shop_name_url', $shopname)->value('id');
 
         $collection = Collection::leftJoin('items','collection.id','=','items.collection_id')
         ->select('collection.id','collection.name', 'items.default_photo')

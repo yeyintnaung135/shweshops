@@ -84,37 +84,14 @@
                         </div>
                         @endforelse
 
-                        {{--                <div class="mb-5">--}}
-                        {{--                  <img class="" src="{{ asset('images/news/62ab47867b0f7.png')}}" alt="">--}}
-                        {{--                  <a class="sn-latest-news-sub">Up to 70% off sale</a>--}}
-                        {{--                  <p>Lorem ipsum dolor sit amet. At suscipit voluptatem ut quod libero ea tenetur modi. Ut molestias sapiente ab harum illum quo voluptatem ...</p>--}}
-                        {{--                </div>--}}
+                        
                         @if($premium == "Yes")
                             <a class="sn-latest-news-button float" href="/all_events/{{$event->shop_id}}">More News</a>
                         @else
                             <a class="sn-latest-news-button float" href="/events">More News</a>
                         @endif
                     </div>
-                    {{-- <div class="sn-ads-img">
-                      <img class="" src="{{ asset('images/news/62ab47867b0f7.png')}}" alt="">
-                    </div> --}}
-                    {{--<div class="sn-top-stories mb-sm-5">
-                        <h2 class="sn-top-stories-title"><a href="http://" class="d-flex"><span class="flex-grow-1">Top Stories</span><i
-                                    class="fa-solid fa-long-arrow-alt-right"></i></a></h2>
-                        <div>
-                            <a href="#" class="sn-top-stories-sub">Lorem ipsum dolor sit amet</a>
-                            <p>Lorem ipsum dolor sit amet. At suscipit voluptatem ut quod libero ea tenetur modi...</p>
-                        </div>
-                        <div>
-                            <a href="#" class="sn-top-stories-sub">Lorem ipsum dolor sit amet</a>
-                            <p>Lorem ipsum dolor sit amet. At suscipit voluptatem ut quod libero ea tenetur modi...</p>
-                        </div>
-                        <div>
-                            <a href="#" class="sn-top-stories-sub">Lorem ipsum dolor sit amet</a>
-                            <p>Lorem ipsum dolor sit amet. At suscipit voluptatem ut quod libero ea tenetur modi...</p>
-                        </div>
-                        <a class="sn-top-stories-button float d-md-none">More News</a>
-                    </div>--}}
+
                 </div>
 
             </div>
