@@ -31,7 +31,7 @@
                     <div class="sn-profile-img">
                         <div class="sn-img-wrap text-center">
 
-                            <img class=" img-fluid img-circle" src="{{ url('images/logo/' . $shop->shop_logo) }}"
+                            <img class=" img-fluid img-circle" src="{{ url('images/shop_owner/logo/' . $shop->shop_logo) }}"
                                 alt="User profile picture">
                             <h3 class="d-none d-md-block profile-username text-center">
                                 {{ \Illuminate\Support\Str::limit($shop->shop_name, 20, '..') }}

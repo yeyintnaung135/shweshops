@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers\ShopOwner;
 
-use App\Models\AppFile;
 use App\Http\Controllers\Controller;
+use App\Models\AppFile;
+use App\Services\AppDownloadService;
 use Illuminate\View\View;
 
 class AppDownloadController extends Controller
 {
+    protected $appDownloadService;
+
+    public function __construct(AppDownloadService $appDownloadService)
+    {
+        $this->appDownloadService = $appDownloadService;
+    }
+
     //NOTE return view for android apk
     public function android(): View
     {
@@ -23,12 +31,6 @@ class AppDownloadController extends Controller
     //NOTE download actual file
     public function download(AppFile $appFile)
     {
-        $filepath = storage_path('app/app_files/' . $appFile->file);
-
-        if (file_exists($filepath)) {
-            return response()->download($filepath, $appFile->file);
-        } else {
-            return redirect()->route('backside.shop_owner.app-files.android')->with('error', 'File not found.');
-        }
+        return $this->appDownloadService->download($appFile);
     }
 }

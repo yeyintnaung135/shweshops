@@ -18,9 +18,7 @@ use App\Http\Controllers\Shwe_News\NewsFrontController;
 use App\Http\Controllers\SupportFrontController;
 use App\Models\Manager;
 use App\Models\Shops;
-use App\Models\Sign;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -252,6 +250,9 @@ Route::get('shops', [FrontController::class, 'getShops']);
 Route::get('premium_shops', [FrontController::class, 'getPremiumShops']);
 Route::get('popular_shops', [FrontController::class, 'getPopularShops']);
 Route::post('/get_shops_byfilter', [FrontController::class, 'get_shops_byfilter']);
+
+// App File Download
+Route::get('/front/app-files/download/{appFile}', [FrontController::class, 'app_download'])->name('front.app-files.download');
 
 //test
 Route::get('backside/pos/index', [PosController::class, 'index']);

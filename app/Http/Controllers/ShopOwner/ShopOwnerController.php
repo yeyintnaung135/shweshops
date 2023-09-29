@@ -509,8 +509,8 @@ class ShopOwnerController extends Controller
                 // 'main_phone' =>  ['required', 'string', 'max:20','unique:manager,phone','unique:users,phone','unique:shop_owners,main_phone'],
                 'main_phone' => [
                     'required',
-                    Rule::unique('shop_owners')->ignore($shopowner->id),
-                    Rule::unique('manager', 'phone')->ignore($shopowner->id),
+                    Rule::unique('shops')->ignore($shopowner->id),
+                    Rule::unique('shop_owners_and_staffs', 'phone')->where('shop_id', '<>', $shopowner->id),
                 ],
                 'messenger_link' => 'max:1130',
             ]

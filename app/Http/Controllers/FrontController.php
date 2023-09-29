@@ -11,6 +11,7 @@ use App\Http\Controllers\Trait\Logs\ShopLogActivityTrait;
 use App\Http\Controllers\Trait\SimilarLogic;
 use App\Models\AddToCartClickLog;
 use App\Models\Ads;
+use App\Models\AppFile;
 use App\Models\BuyNowClickLog;
 use App\Models\Collection;
 use App\Models\ContactUs;
@@ -21,18 +22,15 @@ use App\Models\foraddtohome;
 use App\Models\FrontUserLogs;
 use App\Models\Item;
 use App\Models\MainPopup;
-use App\Models\Manager_fav;
 use App\Models\News;
 use App\Models\OpeningTimes;
 use App\Models\ShopDirectory;
 use App\Models\Shops;
-use App\Models\Shop_owners_fav;
 use App\Models\State;
 use App\Models\Township;
 use App\Models\Usernoti;
-use App\Models\Users_fav;
-use App\Models\UsersFav;
 use App\Models\WishlistClickLog;
+use App\Services\AppDownloadService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -45,6 +43,13 @@ class FrontController extends Controller
 {
     use ForYouLogic, AllShops, SimilarLogic,
     Category, Logs, ShopLogActivityTrait;
+
+    protected $appDownloadService;
+
+    public function __construct(AppDownloadService $appDownloadService)
+    {
+        $this->appDownloadService = $appDownloadService;
+    }
 
     public function getstates()
     {
@@ -236,9 +241,8 @@ class FrontController extends Controller
         })->values();
 
         $catlist = Cache::get('cat');
-   
-        $premiumshops = Shops::orderBy('created_at', 'desc')->where('premium', 'yes')->where('pos_only', 'no')->limit(20)->get();
 
+        $premiumshops = Shops::orderBy('created_at', 'desc')->where('premium', 'yes')->where('pos_only', 'no')->limit(20)->get();
 
         $this->addlog(url()->current(), 'all', 'all', 'homepage', '0');
 
@@ -327,7 +331,6 @@ class FrontController extends Controller
     public function get_popitems_ajax($latest, $limit)
     {
 
-
         if ($latest === "true") {
             $date = '>';
         } else {
@@ -412,7 +415,7 @@ class FrontController extends Controller
 
     }
 
-    public function product_detail($shop_name, $product_id):View
+    public function product_detail($shop_name, $product_id): View
     {
 
         $itemc = Item::where('id', $product_id);
@@ -447,9 +450,6 @@ class FrontController extends Controller
         $view_count = Item::where('id', $product_id)->update(['view_count' => $add_view_count]);
 
         // for account
-
-   
-
 
         return view('front.product_detail', ['item' => $item, 'category' => $item->category_id, 'sim_items' => $similar_minimum_products, 'sim_items_othershops' => $similar_minimum_products_other_shops, 'fav_total_count' => 0]);
 
@@ -500,7 +500,7 @@ class FrontController extends Controller
     {
         $id = DB::table('shops')->where('name', $shopname)->value('id');
 
-        $shop = Shops::whereRaw("REPLACE(shop_name,' ','') = ?",[$shopname])
+        $shop = Shops::whereRaw("REPLACE(shop_name,' ','') = ?", [$shopname])
             ->orWhere('shop_name_url', $shopname)
             ->with(['getPhotos'])
             ->first();
@@ -550,36 +550,35 @@ class FrontController extends Controller
                         WHEN count(items.category_id) = 0 THEN categories.id END ASC,
             case when count(items.category_id) != 0 then count(categories.name) end DESC")->where('shop_id', $id)->get();
 
-        $visitor_view_count =FrontUserLogs::where('front_user_logs.shop_id', '=', $id)->count();
+        $visitor_view_count = FrontUserLogs::where('front_user_logs.shop_id', '=', $id)->count();
         $fav_count = FavouriteItem::leftjoin('items', 'items.id', '=', 'favourite.fav_id')->leftjoin('shops', 'shops.id', '=', 'items.shop_id')->where('items.shop_id', $id)->count();
         // return count($fav_count);
 
-     
         if ($shop->premium == "no") {
             return view('front.shop_detail', ['premium' => $premiumshops, 'othersellers' => $othersellers, 'shop_data' => $shop, 'forcheck_count' => $forcheck_count, 'get_pop_items' => $get_pop_items, 'items' => $remove_discount_item, 'shops' => $shops, 'allcatcount' => $allcatcount, 'discount' => $discount]);
         } else if ($shop->premium == "yes") {
             $popup = MainPopup::select('video_name', 'ad_title')->where('shop_id', $id)->first();
             $openingTime = OpeningTimes::select('opening_time')->where('shop_id', $id)->first();
-    
+
             $news = News::where('shop_id', $id)->get();
             $news->map(function ($n) {
                 $n['type'] = 'news';
                 return $n;
             });
-    
+
             $events = Event::where('shop_id', $id)->get();
             $events->map(function ($e) {
                 $e['type'] = 'events';
                 return $e;
             });
-    
+
             $news_and_events = $news->merge($events)->sortByDesc('updated_at');
             $collections = Collection::leftJoin('items', 'collection.id', '=', 'items.collection_id')->select('collection.id', 'collection.name', 'items.default_photo')->where('collection.shop_id', $id)->groupBy('collection.id')->orderBy('collection.created_at', 'desc')->get();
-           
+
             $premium_type = Shops::leftjoin('premium_templates', 'shops.premium_template_id', '=', 'premium_templates.id')
-            ->select('premium_templates.id')
-            ->where('shops.id', $id)
-            ->first();
+                ->select('premium_templates.id')
+                ->where('shops.id', $id)
+                ->first();
             if ($premium_type->id == '1') {
                 return view('front.shop_detail_gold', ['premium' => $premiumshops, 'premium_type' => $premium_type->id, 'othersellers' => $othersellers, 'shop_data' => $shop, 'favcount' => $fav_count, 'forcheck_count' => $forcheck_count, 'get_pop_items' => $get_pop_items, 'items' => $remove_discount_item, 'shops' => $shops, 'allcatcount' => $allcatcount, 'discount' => $discount, 'view_count' => $visitor_view_count, 'popup' => $popup, 'opening' => $openingTime, 'newsNevents' => $news_and_events, 'collections' => $collections]);
             }
@@ -848,6 +847,11 @@ class FrontController extends Controller
     {
         $shops = Shops::orderBy('created_at', 'desc')->where('pos_only', 'no')->limit(20)->get();
         return view('front.shops', ['shops' => $shops, 'active' => 'all']);
+    }
+
+    public function app_download(AppFile $appFile)
+    {
+        return $this->appDownloadService->download($appFile);
     }
 
     public function getPremiumShops()
