@@ -6,7 +6,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use App\Models\BuyNowClickLog;
 use Illuminate\Http\Request;
-use App\Models\Passwordresetforshop;
+use App\Models\PasswordResetForShop;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\Logs;
@@ -115,7 +115,7 @@ class UserLoginandRegisterController extends Controller
                 $input['code'] = $generate_code;
                 $input['expire_at'] = Carbon::now()->addMinutes(120);
                 $input['status'] = 'forregisteruser';
-                $setdata = Passwordresetforshop::create($input);
+                $setdata = PasswordResetForShop::create($input);
             }
             return response()->json(['status' => 'success', 'data' => $request->all()]);
         }
@@ -139,7 +139,7 @@ class UserLoginandRegisterController extends Controller
 
                 if ($request->phone != '09425472782') {
 
-                    // $sendresponse = $this->sendresetcode($request->phone, $generate_code);
+                    $sendresponse = $this->sendresetcode($request->phone, $generate_code);
                     $sendresponse ='done';
 
                 }
@@ -149,7 +149,7 @@ class UserLoginandRegisterController extends Controller
                     $input['code'] = $generate_code;
                     $input['expire_at'] = Carbon::now()->addMinutes(120);
                     $input['status'] = 'forregisteruser';
-                    $setdata = Passwordresetforshop::create($input);
+                    $setdata = PasswordResetForShop::create($input);
                     if ($input['emailorphone'] == '09425472782') {
 
                         return response()->json(['status' => 'success', 'data' => $request->all(), 'code' => $code]);
@@ -177,7 +177,7 @@ class UserLoginandRegisterController extends Controller
                 $input['code'] = $generate_code;
                 $input['expire_at'] = Carbon::now()->addMinutes(120);
                 $input['status'] = 'forregisteruser';
-                $setdata = Passwordresetforshop::create($input);
+                $setdata = PasswordResetForShop::create($input);
                 return response()->json(['status' => 'success', 'data' => $request->all()]);
             }
         }
@@ -188,13 +188,10 @@ class UserLoginandRegisterController extends Controller
         $request->validate([
             'phone' => 'required|regex:/(^09([0-9]+)(\d+)?$)/u|min:5|max:11',
             'code' => 'required|numeric',
-
-
-
         ]);
         $password = 'thantzaw123!@#';
 
-        $tocheck = Passwordresetforshop::where([['emailorphone', '=', $request->phone], ['code', '=', $request->code], ['expire_at', '>', Carbon::now()], ['status', '=', 'forregisteruser']]);
+        $tocheck = PasswordResetForShop::where([['emailorphone', '=', $request->phone], ['code', '=', $request->code], ['expire_at', '>', Carbon::now()], ['status', '=', 'forregisteruser']]);
 
         $isBuynow = $request->frombuynow;
         $ismessenger = $request->frommessenger;

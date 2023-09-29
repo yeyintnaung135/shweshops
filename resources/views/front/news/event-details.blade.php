@@ -29,17 +29,14 @@
             <div class="row pb-5 pb-md-0">
                 <div class="col-lg-8 col-md-12">
                     <div class="sn-main-promo">
-                        @if($premium == "Yes")
-                            <img class="" src="{{ filedopath('/shop_owner/events/' . $event->photo)}}" alt="">
-                        @else
-                        @if(dofile_exists('/news_&_events/events/' . $n->image))
-                        <img class="w-100" src="{{ filedopath('/news_&_events/events/' . $event->image)}}" alt=""
+                     
+                        @if(dofile_exists('/news_&_events/event/' . $event->photo))
+                        <img class="w-100" src="{{ filedopath('/news_&_events/event/' . $event->photo)}}" alt=""
                          >
                          @else
-                         <img class="w-100" src="{{ url('/images/news_&_events/events/' . $event->image)}}" alt=""
+                         <img class="w-100" src="{{ url('/images/news_&_events/event/' . $event->photo)}}" alt=""
                          >
                          @endif      
-                                              @endif
                         <h3 class="sn-main-promo-title">{{ $event->title }}</h3>
                         <p class="mb-3 mt-2"><span><i class="fa-solid fa-calendar-days"></i></span> {{ $event->created_at->format('d M Y')}}</p>
                         <p class="sn-main-promo-desc">{{ $event->description }}</p>
@@ -47,63 +44,9 @@
                             June to 15 June
                         </div>--}}
                     </div>
-                    {{-- <div class="d-lg-none">
-                        <a onclick="showEventsPanel()">Events</a>
-                        <a onclick="showNewsPanel()">News</a>
-                    </div> --}}
+                  
                     <div class="d-lg-block" id="eventsPanel">
-                        {{--<div class="sn-promo">
-                            <h2 class="sn-promo-title">Promotions</h2>
-                            <ul class="list-unstyled">
-                                <li class="d-flex sn-promo-list">
-                                    <div><img class="" src="{{ asset('images/news/62ab47867b0f7.png')}}" alt=""></div>
-                                    <div>
-                                        <a href={{ url('news_and_events/1') }} class="sn-promo-list-title">Up to 70% off
-                                            sale</a>
-                                        <a href="#" class="sn-promo-list-shop">Lucky Diamonds Myanmar</a>
-                                        <p>Lorem ipsum dolor sit amet. At suscipit voluptatem ut quod libero ea tenetur
-                                            modi ...</p>
-                                    </div>
-                                </li>
-                                <li class="d-flex sn-promo-list">
-                                    <div><img class="" src="{{ asset('images/news/62ab47867b0f7.png')}}" alt=""></div>
-                                    <div>
-                                        <a href={{ url('news_and_events/1') }} class="sn-promo-list-title">Up to 70% off
-                                            sale</a>
-                                        <a href="#" class="sn-promo-list-shop">Lucky Diamonds Myanmar</a>
-                                        <p>Lorem ipsum dolor sit amet. At suscipit voluptatem ut quod libero ea tenetur
-                                            modi ...</p>
-                                    </div>
-                                </li>
-                                <li class="d-flex sn-promo-list mb-0">
-                                    <div><img class="" src="{{ asset('images/news/62ab47867b0f7.png')}}" alt=""></div>
-                                    <div>
-                                        <a href={{ url('news_and_events/1') }} class="sn-promo-list-title">Up to 70% off
-                                            sale</a>
-                                        <a href="#" class="sn-promo-list-shop">Lucky Diamonds Myanmar</a>
-                                        <p>Lorem ipsum dolor sit amet. At suscipit voluptatem ut quod libero ea tenetur
-                                            modi ...</p>
-                                    </div>
-                                </li>
-                            </ul>
-                            <a class="sn-news-button float">More Promotions</a>
-                        </div>
-                        <div class="sn-upcoming-events">
-                            <h2 class="sn-upcoming-events-title">Up Coming Events</h2>
-                            <div>
-                                <span class="sn-upcoming-events-date">7.7.2022</span>
-                                <a href="#" class="sn-upcoming-events-sub">ShweShops Website Launch Event</a>
-                                <p>Lorem ipsum dolor sit amet. At suscipit voluptatem ut quod libero ea tenetur modi. Ut
-                                    molestias sapiente ab harum illum quo voluptatem ...</p>
-                            </div>
-                            <div>
-                                <span class="sn-upcoming-events-date">7.7.2022</span>
-                                <a href="#" class="sn-upcoming-events-sub">ShweShops Website Launch Event</a>
-                                <p>Lorem ipsum dolor sit amet. At suscipit voluptatem ut quod libero ea tenetur modi. Ut
-                                    molestias sapiente ab harum illum quo voluptatem ...</p>
-                            </div>
-                            <a class="sn-news-button float">More Events</a>
-                        </div>--}}
+                
                     </div>
                     {{-- </div> --}}
                 </div>
@@ -121,11 +64,11 @@
                                 </a>
                             @else
                                 <a href="{{route('events.detail',$e->id)}}" target="_blank" rel="noopener noreferrer">
-                                    @if(dofile_exists('/news_&_events/events/' . $n->image))
-                                    <img class="w-100" src="{{ filedopath('/news_&_events/events/' . $e->photo)}}" alt=""
+                                    @if(dofile_exists('/news_&_events/events/' . $e->photo))
+                                    <img class="w-100" src="{{ filedopath('/news_&_events/event/' . $e->photo)}}" alt=""
                                      >
                                      @else
-                                     <img class="w-100" src="{{ url('/images/news_&_events/events/' . $e->photo)}}" alt=""
+                                     <img class="w-100" src="{{ url('/images/news_&_events/event/' . $e->photo)}}" alt=""
                                      >
                                      @endif   
                                                                          <h6 class="mt-3 text-black  more-events-title">{{ $e->title }}</h6>

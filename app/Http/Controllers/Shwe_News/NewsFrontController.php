@@ -14,14 +14,14 @@ class NewsFrontController extends Controller
     public function index()
     {
 
-        $latest_news = News::where('shop_id', 0)->latest()->first();
+        $latest_news = News::latest()->first();
         if (!empty($latest_news)) {
             $news = News::where('id', '<>', $latest_news->id)->latest()->paginate(3);
         } else {
-            $news = News::where('shop_id', 0)->get();
+            $news = News::get();
         }
         $promotions = Promotions::orderBy('id', 'DESC')->paginate(4);
-        $events = Event::where('shop_id', 0)->latest()->paginate(3);
+        $events = Event::latest()->paginate(3);
         return view('front.news.news', [
             'latestNews' => $latest_news,
             'promotions' => $promotions,
@@ -32,7 +32,7 @@ class NewsFrontController extends Controller
 
     public function allNews()
     {
-        $news = News::where('shop_id', 0)->orderBy('id', 'desc')->get();
+        $news = News::orderBy('id', 'desc')->get();
         return view('front.news.allnews', compact('news'));
     }
     public function pAllNews($shopid)
@@ -48,7 +48,7 @@ class NewsFrontController extends Controller
     }
     public function allEvents()
     {
-        $events = Event::where('shop_id', 0)->orderBy('id', 'desc')->get();
+        $events = Event::orderBy('id', 'desc')->get();
         return view('front.news.allevents', compact('events'));
     }
 
@@ -59,7 +59,7 @@ class NewsFrontController extends Controller
     }
 
     public function NewsDetail($id){
-        $news = News::where('shop_id', 0)->where('id', $id)->first();
+        $news = News::where('id', $id)->first();
         if (empty($news)) {
             return abort(404);
         }
@@ -80,7 +80,7 @@ class NewsFrontController extends Controller
 
     public function EventDetail($id)
     {
-        $event = Event::where('shop_id', 0)->where('id', $id)->first();
+        $event = Event::where('id', $id)->first();
         if (empty($event)) {
             return abort(404);
         }

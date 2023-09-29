@@ -44,8 +44,8 @@ class EventController extends Controller
 
     public function store(StoreEventRequest $request): RedirectResponse
     {
-        $baseDirectory = 'shop_owner';
-        $subDirectory = 'events';
+        $baseDirectory = 'news_&_events';
+        $subDirectory = 'event';
         if (env('USE_DO') != 'true') {
             $fileName = $this->imageService->saveImage(
                 $request->file('photo'),
@@ -77,8 +77,8 @@ class EventController extends Controller
     public function update(UpdateEventRequest $request, Event $event): RedirectResponse
     {
         $image = $event->photo;
-        $baseDirectory = 'shop_owner';
-        $subDirectory = 'events';
+        $baseDirectory = 'news_&_events';
+        $subDirectory = 'event';
 
         if (env('USE_DO') != 'true' && $request->hasFile('photo')) {
             $newImage = $this->imageService->saveImage(
@@ -123,8 +123,8 @@ class EventController extends Controller
     public function destroy(Event $event): RedirectResponse
     {
         $event->delete();
-        $baseDirectory = 'shop_owner';
-        $subDirectory = 'events';
+        $baseDirectory = 'news_&_events';
+        $subDirectory = 'event';
 
         if (env('USE_DO') != 'true' && $event->photo) {
             $this->imageService->deleteImage("{$baseDirectory}/{$subDirectory}/{$event->photo}", "{$baseDirectory}/{$subDirectory}/thumbs/{$event->photo}");

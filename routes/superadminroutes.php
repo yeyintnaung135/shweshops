@@ -217,7 +217,7 @@ Route::prefix('backside/super_admin')->name('backside.super_admin.')->group(func
 
     Route::get('activity_logs/customers', [CustomerController::class, 'activity_index'])->name('activity.customer');
     Route::get('activity_logs/ads', [AdsController::class, 'activity_index'])->name('activity.ads');
-    Route::get('activity_logs/shop', [ShopownerRegisterController::class, 'activity_index'])->name('activity.shop');
+    Route::get('activity_logs/shop', [ShopController::class, 'shops_activity_index'])->name('activity.shop');
     Route::get('activity_logs/admin', [SuperAdminRoleController::class, 'activity_index'])->name('activity.admin');
 
 // Customers

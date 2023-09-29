@@ -21,7 +21,7 @@
                 </ul>
             </div>
 
-            <div class="col-lg-10">
+            <div class="col-lg-10 mb-4">
                 <div class="row">
                     @forelse ($promotions as $p )
                         <div class="col-md-4 mb-3">
@@ -48,7 +48,9 @@
                         <a class="sn-news-button">Load More</a>
                     </div>
                 </div>
-
+                <br>
+                <br>
+                <br>
             </div>
         </div>
     </div>

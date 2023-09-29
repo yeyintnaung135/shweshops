@@ -54,16 +54,14 @@
                             News
                         </a>
                     </li>
-                    {{--<li class="text-black mb-2">
-                        <a class="btn" href="promotions">Promotions</a>
-                    </li>--}}
+              
                     <li class="mb-2 mt-3 px-5">
                         <a href="events">Events</a>
                     </li>
                 </ul>
             </div>
 
-            <div class="col-lg-10">
+            <div class="col-lg-10 mb-4">
                 <div class="row">
                     @forelse ($news as $n)
                         <div class="col-md-4 mb-3">
@@ -94,6 +92,9 @@
                         </div>
                     @endforelse
                 </div>
+                <br>
+                <br>
+                <br>
 
             </div>
         </div>

@@ -35,7 +35,7 @@
                                     @enderror
                                 </div>
                                 <div class="mb-2">
-                                    <img src="{{ filedopath('/shop_owner/news/' . $news->image) }}" alt="news" width="200">
+                                    <img src="{{ filedopath('/news_&_events/news/' . $news->image) }}" alt="news" width="200">
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="image">Upload New Photo</label>

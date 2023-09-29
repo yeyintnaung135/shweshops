@@ -11,13 +11,13 @@ window.Echo = new Echo({
     key: process.env.MIX_PUSHER_APP_KEY,
     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
     wsHost: window.location.host,
-    // wssPort: 6002,
-    wsPort: 6001,
-    forceTLS: false,
+    wssPort: 6002,
+    wsPort: 6002,
+    forceTLS: true,
     disableStats: false,
     enabledTransports: ["ws", "wss"],
-    // authEndpoint: "/broadcasting/auth",
-    authEndpoint: '/shweshops/public/broadcasting/auth'
+    authEndpoint: "/broadcasting/auth",
+    // authEndpoint: '/shweshops/public/broadcasting/auth'
 });
 // var tempid = window.userid;
 // if (window.userid != undefined) {

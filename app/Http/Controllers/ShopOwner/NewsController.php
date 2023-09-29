@@ -43,7 +43,7 @@ class NewsController extends Controller
 
     public function store(StoreNewsRequest $request): RedirectResponse
     {
-        $baseDirectory = 'shop_owner';
+        $baseDirectory = 'news_&_events';
         $subDirectory = 'news';
         if (env('USE_DO') != 'true') {
             $fileName = $this->imageService->saveImage(
@@ -76,7 +76,7 @@ class NewsController extends Controller
     public function update(UpdateNewsRequest $request, News $news): RedirectResponse
     {
         $image = $news->image;
-        $baseDirectory = 'shop_owner';
+        $baseDirectory = 'news_&_events';
         $subDirectory = 'news';
 
         if (env('USE_DO') != 'true' && $request->hasFile('image')) {
@@ -122,7 +122,7 @@ class NewsController extends Controller
     public function destroy(News $news): RedirectResponse
     {
         $news->delete();
-        $baseDirectory = 'shop_owner';
+        $baseDirectory = 'news_&_events';
         $subDirectory = 'news';
         if (env('USE_DO') != 'true' && $news->image) {
             $this->imageService->deleteImage("{$baseDirectory}/{$subDirectory}/{$news->image}", "{$baseDirectory}/{$subDirectory}/thumbs/{$news->image}");

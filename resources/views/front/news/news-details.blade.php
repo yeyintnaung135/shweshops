@@ -25,10 +25,7 @@
             <div class="row pb-5 pb-md-0">
                 <div class="col-lg-8 col-md-12">
                     <div class="sn-main-promo">
-                        @if($premium == "Yes")
-                       
-                            <img class="" src="{{ filedopath('/shop_owner/news/' . $news->image)}}" alt="">
-                        @else
+                    
                         @if(dofile_exists('/news_&_events/news/' . $news->image))
                         <img class="w-100" src="{{ filedopath('/news_&_events/news/' . $news->image)}}" alt=""
                          >
@@ -36,7 +33,6 @@
                          <img class="w-100" src="{{ url('/images/news_&_events/news/' . $news->image)}}" alt=""
                          >
                          @endif
-                        @endif
                         <h3 class="sn-main-promo-title">{{ $news->title }}</h3>
                         <p class="mb-3 mt-2"><span><i class="fa-solid fa-calendar-days"></i></span> {{ $news->created_at->format('d M Y')}}</p>
                         <p class="sn-main-promo-desc">{{ $news->description}}</p>

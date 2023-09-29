@@ -59,7 +59,7 @@
                 </ul>
             </div>
 
-            <div class="col-lg-10">
+            <div class="col-lg-10 mb-4">
                 <div class="row">
                     @forelse ($events as $e)
                         <div class="col-md-4 mb-3">
@@ -90,7 +90,9 @@
                         </div>
                     @endforelse
                 </div>
-
+                <br>
+                <br>
+                <br>
 
             </div>
         </div>

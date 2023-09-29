@@ -51,6 +51,11 @@ class ShopController extends Controller
     {
         $this->middleware(['auth:super_admin']);
     }
+    public function shops_activity_index()
+    {
+        $shopowner = Shops::all();
+        return view('backend.super_admin.activity_logs.shops',['shopowner'=>$shopowner]);
+    }
     public function edit($id)
     {
         $states = State::get();
