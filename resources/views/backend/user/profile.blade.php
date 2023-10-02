@@ -194,9 +194,9 @@
 @endpush
 @stack('profile-css')
 @php
-use App\UserPoint;
-use App\Point;
-use App\ShopOwnerGoldPoint;
+use App\Models\UserPoint;
+use App\Models\Point;
+use App\Models\ShopOwnerGoldPoint;
 
     $user = Auth::guard('web')->user();
     $user_id = Auth::guard('web')->id();
