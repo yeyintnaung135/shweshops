@@ -629,7 +629,7 @@ class PosSecondPhaseController extends Controller
                 'shop_owner_id' => $this->get_shopid(),
                 'quality_id' => $request->quality,
                 'category_id' => $request->category_id,
-                'product_weight' => $request->product_weight . '/' . $request->product_kyat . '/' . $request->product_pe . '/' . $request->product_yway,
+                'product_gram_kyat_pe_yway' => $request->product_gram . '/' . $request->product_kyat . '/' . $request->product_pe . '/' . $request->product_yway,
                 //  'gold_price' => $request->gold_price,
                 'gold_fee' => $request->gold_fee,
                 'remark' => $request->remark,
@@ -652,8 +652,7 @@ class PosSecondPhaseController extends Controller
 
             return view('backend.pos.return_voucher_list', ['shopowner' => $shopowner, 'code' => $code, 'return' => $return, 'counters' => $counters]);
         } catch (\Exception $e) {
-            Session::flash('alert-class', 'Something Wrong!');
-            return redirect()->back();
+            return view('backend.pos.return_list');
         }
     }
     public function update_return($id, Request $request): RedirectResponse
