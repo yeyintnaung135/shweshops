@@ -41,7 +41,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Facades\DataTables;
 
 class ShopController extends Controller
 {
@@ -54,7 +54,7 @@ class ShopController extends Controller
     public function shops_activity_index()
     {
         $shopowner = Shops::all();
-        return view('backend.super_admin.activity_logs.shops',['shopowner'=>$shopowner]);
+        return view('backend.super_admin.activity_logs.shops', ['shopowner' => $shopowner]);
     }
     public function edit($id)
     {
@@ -258,54 +258,111 @@ class ShopController extends Controller
      * @var array
      */
 
-    public function show_owner_using_chat(): View
+    public function shop_owner_using_chat(): View
     {
-
         $shopowner_only_count = Messages::where('from_role', 'shopowner')->groupBy('message_shop_id')->get();
         return view('backend.super_admin.shops.shopowner_chat_using', compact('shopowner_only_count'));
     }
 
     // NOTE : This method has a model which uses MongoDB
-    public function show_owner_using_chat_all(Request $request): JsonResponse
+    public function shop_owner_using_chat_all(Request $request)
     {
-        $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
-        $searchByTodate = $request->input('toDate') ?? Carbon::now();
+        $id = 1;
 
-        $recordsQuery = Messages::whereBetween('created_at', [
-            Carbon::createFromDate($searchByFromdate),
-            Carbon::createFromDate($searchByTodate)->addDays(1),
-        ])
-            ->get(['message_shop_id', 'created_at']);
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length"); // total number of rows per page
 
-        $data_arr = [];
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+        $order_arr = $request->get('order');
+        $search_arr = $request->get('search');
 
-        foreach ($recordsQuery as $record) {
+        $columnIndex = $columnIndex_arr[0]['column']; // Column index
+        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        $searchValue = $search_arr['value']; // Search value
+
+        $searchByFromdate = $request->get('searchByFromdate');
+        $searchByTodate = $request->get('searchByTodate');
+
+        if (!empty($searchByFromdate) || !empty($searchByTodate)) {
+            $totalRecords = Messages::groupBy('message_shop_id')
+                ->whereBetween('created_at', array(
+                    Carbon::createFromDate($searchByFromdate),
+                    Carbon::createFromDate($searchByTodate)->addDays(1),
+                ))
+                ->get();
+
+            $totalRecordswithFilter = $totalRecords->count();
+            $records = Messages::orderBy($columnName, $columnSortOrder)
+                ->orderBy('created_at', 'desc')
+                ->groupBy('message_shop_id')
+                ->whereBetween('created_at', array(
+                    Carbon::createFromDate($searchByFromdate),
+                    Carbon::createFromDate($searchByTodate)->addDays(1),
+                ))
+                ->get(['message_shop_id', 'created_at']);
+        } else {
+            $totalRecords = Messages::groupBy('message_shop_id')->get();
+
+            $totalRecordswithFilter = $totalRecords->count();
+            $records = Messages::orderBy($columnName, $columnSortOrder)
+                ->groupBy('message_shop_id')
+                ->where('from_role', 'regex', '/.*' . $searchValue . '.*/')
+                ->orWhere('created_at', 'regex', '/.*' . $searchValue . '.*/')
+                ->skip($start)
+                ->take($rowperpage)
+                ->get(['message_shop_id', 'created_at']);
+        }
+
+        $data_arr = array();
+
+        foreach ($records as $record) {
             foreach ($record->ShopName as $shop_name) {
-                $owner_chat_count = Messages::where('message_shop_id', (int) $shop_name->id)
-                    ->where('from_role', 'shopowner')
+                $owner_chat_count = Messages::where('message_shop_id', (int) $shop_name->id)->where('from_role', 'shopowner')
                     ->groupBy('message_user_id')
-                    ->count();
-
-                $user_chat_count = Messages::where('message_shop_id', (int) $shop_name->id)
-                    ->where('from_role', 'user')
+                    ->get();
+                $user_chat_count = Messages::where('message_shop_id', (int) $shop_name->id)->where('from_role', 'user')
                     ->groupBy('message_user_id')
-                    ->count();
-
-                $data_arr[] = [
-                    "id" => $shop_name->id,
+                    ->get();
+                $data_arr[] = array(
+                    "id" => $id++,
                     "name" => $shop_name->shop_name,
                     "created_at" => $record->created_at,
-                    "owner_chat_count" => $owner_chat_count,
-                    "user_chat_count" => $user_chat_count,
+                    "owner_chat_count" => count($owner_chat_count),
+                    "user_chat_count" => count($user_chat_count),
                     "action" => $shop_name->id,
-                ];
+                );
             }
         }
 
-        return DataTables::of(collect($data_arr))->make(true);
+        $response = array(
+            "draw" => intval($draw),
+            "iTotalRecords" => $totalRecords,
+            "iTotalDisplayRecords" => $totalRecordswithFilter,
+            "aaData" => $data_arr,
+        );
+        echo json_encode($response);
+
+        //NOTE : This method has a model which uses MongoDB and yajrabox was a little bit harder to implement
+        // $searchByFromdate = $request->input('fromDate') ?? '0-0-0 00:00:00';
+        // $searchByTodate = $request->input('toDate') ?? Carbon::now();
+
+        // $recordsQuery = Messages::with('user', 'shop')
+        //     ->select('id', 'name', 'from_role', 'message_user_id', 'message_shop_id')
+        //     ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+        //     ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
+
+        // return DataTables::eloquent($recordsQuery)
+        //     ->addColumn('shop_name', function ($record) {
+        //         return $record->shop->shop_name;
+        //     })
+        //     ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
+        //     ->toJson();
     }
 
-    public function show_owner_using_chat_detail($id): View
+    public function shop_owner_using_chat_detail($id): View
     {
         $get_message_shops = Messages::where('message_shop_id', (int) $id)
             ->groupBy('message_user_id')

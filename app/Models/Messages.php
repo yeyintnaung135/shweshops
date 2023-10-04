@@ -16,24 +16,24 @@ class Messages extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'message_user_id', 'id');
+        return $this->belongsTo(User::class, 'message_user_id');
     }
 
     public function shop()
     {
-        return $this->belongsTo(Shops::class, 'message_shop_id', 'id');
+        return $this->belongsTo(Shops::class, 'message_shop_id');
     }
 
     public function getShopNameAttribute()
     {
-        $shop_owner = Shops::where('id', $this->message_shop_id)->first();
-        return $shop_owner ? $shop_owner->shop_name : null;
+        $shop_owner = Shops::where('id', $this->message_shop_id)->get();
+        return $shop_owner;
     }
 
     public function getUserNameAttribute()
     {
-        $user = User::where('id', $this->message_user_id)->first();
-        return $user ? $user->name : null;
+        $shop_owner = User::where('id', $this->message_user_id)->get();
+        return $shop_owner;
     }
 
 }
