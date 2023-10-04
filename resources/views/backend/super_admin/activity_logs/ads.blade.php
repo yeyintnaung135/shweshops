@@ -16,7 +16,7 @@
             <!-- Content Header (Page header) -->
             {{-- <section class="content-header">
             <x-title>All Customer</x-title>
-        </section> --}}
+            </section> --}}
 
             <!-- Main content -->
             <section class="content pt-3">
@@ -71,7 +71,7 @@
                                     <table id="superAdminTable" class="table table-borderless">
                                         <thead>
                                             <tr>
-                                                <td>id</td>
+                                                <td>Id</td>
                                                 <td>Name</td>
                                                 <td>Type</td>
                                                 <td>Type Name</td>
@@ -83,7 +83,7 @@
 
                                         <tfoot>
                                             <tr>
-                                                <td>id</td>
+                                                <td>Id</td>
                                                 <td>Name</td>
                                                 <td>Type</td>
                                                 <td>Type Name</td>
@@ -117,7 +117,6 @@
         <!-- Control sidebar content goes here -->
     </aside>
     <!-- /.control-sidebar -->
-    </div>
 @endsection
 
 @push('css')
@@ -207,4 +206,3 @@
         });
     </script>
 @endpush
-

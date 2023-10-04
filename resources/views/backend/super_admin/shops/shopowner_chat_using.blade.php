@@ -64,6 +64,7 @@
                                                 </th>
                                                 <th class="text-center">User Inquiry count</th>
                                                 <th>Detail</th>
+                                                <th>Created Date</th>
                                                 <!--<th>Action</th> -->
                                             </tr>
                                         </thead>
@@ -136,7 +137,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                "url": "{{ url('backside/super_admin/shops/get_all_using_chat') }}",
+                "url": "{{ route('backside.super_admin.shopowner_using_chat_all') }}",
                 'data': function(data) {
                     // Read values
                     var from_date = $('#search_fromdate_shop').val() ? $('#search_fromdate_shop').val() +
@@ -202,11 +203,10 @@
                     }
                 },
                 {
-                    data: 'id',
-                    name: 'action',
+                    data: 'action',
                     render: function(data, type) {
                         var detail = `
-                      <a href="{{ url('backside/super_admin/shopowner_using_chat_detail/:action') }}" role="button" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Detail">
+                      <a href="{{ route('backside.super_admin.shopowner_using_chat_detail', ':action') }}" role="button" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Detail">
                         <i class="fa fa-eye"></i>
                       </a>
           `;
@@ -220,11 +220,46 @@
                 }
 
             ],
-            dom: 'lBfrtip',
-            "responsive": true,
-            "autoWidth": false,
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+
+            responsive: true,
+            lengthChange: true,
+            autoWidth: false,
+            paging: true,
+            dom: 'Blfrtip',
+            buttons: ["copy", "csv", "excel", "pdf", "print"],
+            columnDefs: [{
+                    responsivePriority: 1,
+                    targets: 1
+                },
+                {
+                    responsivePriority: 2,
+                    targets: 2
+                },
+                {
+                    responsivePriority: 3,
+                    targets: 3
+                },
+                {
+                    'targets': [1, 2, 3],
+                    'orderable': false,
+                },
+                {
+                    'targets': [5],
+                    'visible': false,
+                    'searchable': false,
+                }
+            ],
+            language: {
+                "search": '<i class="fa-solid fa-search"></i>',
+                "searchPlaceholder": 'Search',
+                paginate: {
+                    next: '<i class="fa fa-angle-right"></i>', // or '→'
+                    previous: '<i class="fa fa-angle-left"></i>' // or '←'
+                }
+            },
+
+            "order": [
+                [5, "desc"]
             ],
         });
 

@@ -1,7 +1,6 @@
 <?php
 //for superadmin
 
-use App\Http\Controllers\Auth\ShopownerRegisterController;
 use App\Http\Controllers\Auth\SuperAdminForgotPasswordController;
 use App\Http\Controllers\Auth\SuperadminLoginController;
 use App\Http\Controllers\SuperAdmin\AdsController;
@@ -233,10 +232,9 @@ Route::prefix('backside/super_admin')->name('backside.super_admin.')->group(func
     Route::get('sitesetting/edit', [SiteSettingController::class, 'update_action'])->name('superadmin.update_action');
 
 //shop_owner_using chat
-    Route::get('shop_owner_using_chat', [ShopController::class, 'show_owner_using_chat']);
-    Route::get('shopowner_using_chat_detail/{id}', [ShopController::class, 'show_owner_using_chat_detail'])->name('showowner_using_chat_detail');
-    Route::get('shopowner_chat_count_detail/{id}', [ShopController::class, 'shop_owner_chat_count_detail'])->name('shopowner_chat_count_detail');
-    Route::get('shops/get_all_using_chat', [ShopController::class, 'show_owner_using_chat_all'])->name('showowner_using_chat_all');
+    Route::get('shop_owner_using_chat', [ShopController::class, 'shop_owner_using_chat']);
+    Route::get('shopowner_using_chat_detail/{id}', [ShopController::class, 'shop_owner_using_chat_detail'])->name('shopowner_using_chat_detail');
+    Route::get('shops/get_all_using_chat', [ShopController::class, 'shop_owner_using_chat_all'])->name('shopowner_using_chat_all');
     Route::get('shops/product_code_search', [ShopController::class, 'shop_owner_chat_product_code_search'])->name('shops.shopowner_using_chat_search');
 //for superadmin
 
