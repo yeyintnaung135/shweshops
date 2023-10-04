@@ -136,30 +136,29 @@
                                     <div class="col-12 col-md-8 col-lg-8  col-xl-6 row">
                                         @isset(Auth::guard('shop_owners_and_staffs')->user()->id)
                                             <div class="col-6">
-                                                @if(Auth::guard('shop_owners_and_staffs')->user()->role_id == 1 || Auth::guard('shop_owners_and_staffs')->user()->role_id == 2)
-
-                                                    <a href="{{route('backside.shop_owner.pos.shop_edit')}}"
-                                                       class="btn btn-primary btn-block"><b>
-                                                            <span class="fa fa-edit"></span>&nbsp;&nbsp;<span
-                                                                style="font-family: sans-serif!important">Edit Shop</span></b></a>
-                                                @endif
-                                            </div>
-                                        @endisset
-
-                                        @isset(Auth::guard('shop_owners_and_staffs')->user()->id)
-                                            <div class="col-6">
-                                                <a href="{{route('backside.shop_owner.pos.shop_edit')}}"
-                                                   class="btn btn-color btn-block"><b><span
-                                                            class="fa fa-edit"></span>&nbsp;&nbsp;<span
-                                                            style="font-family: sans-serif!important">Edit Shop</span></b></a>
-                                            </div>
-                                        @endisset
-                                        @isset(Auth::guard('shop_owners_and_staffs')->user()->id)
-                                            <div class="col-6">
                                                 <a href="{{route('backside.shop_owner.pos.change.password')}}"
                                                    class="btn btn-color btn-block sop-btn-primary"><b><span
                                                             class="fa fa-lock"></span>&nbsp;&nbsp;<span
                                                             style="font-family: sans-serif!important">Change Password</span></b></a>
+                                            </div>
+                                        @endisset
+                                        @isset(Auth::guard('shop_owners_and_staffs')->user()->id)
+                                                @if(Auth::guard('shop_owners_and_staffs')->user()->role_id == 1 || Auth::guard('shop_owners_and_staffs')->user()->role_id == 2)
+                                                 <div class='col-6'>
+                                                    <a href="{{route('backside.shop_owner.pos.shop_edit')}}"
+                                                       class="btn btn-primary btn-block sop-btn-primary"><b>
+                                                            <span class="fa fa-edit"></span>&nbsp;&nbsp;<span
+                                                                style="font-family: sans-serif!important">Edit Shop</span></b></a>
+                                                 </div>
+                                                @endif
+                                        @endisset
+
+                                        @isset(Auth::guard('shop_owners_and_staffs')->user()->id)
+                                            <div class='col-6'>
+                                                <a href="{{route('backside.shop_owner.pos.shop_edit')}}"
+                                                   class="btn btn-color btn-block sop-btn-primary"><b><span
+                                                   class="fa fa-edit"></span>&nbsp;&nbsp;<span
+                                                   style="font-family: sans-serif!important">Edit Shop</span></b></a>
                                             </div>
                                         @endisset
                                     </div>

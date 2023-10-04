@@ -95,7 +95,8 @@
                                                     <fieldset>
                                                       <legend>Password</legend>
                                                       <div class="position-relative">
-                                                        <input type="password" pattern="[0-9]*" inputmode="numeric" id="password" class="pin form-control sop-form-control @error('password') is-invalid @enderror" name="password"
+                                                        
+                                                        <input type="password"  id="password" class="pin form-control sop-form-control @error('password') is-invalid @enderror" name="password"
                                                         placeholder="Enter password" autocomplete="off" required/>
                                                        <span class="zh-eye-picon d-flex align-items-center">
                                                          <button id="eye_slash" type="button" onclick="Peyeslash(this.id)" style="
@@ -110,8 +111,8 @@
                                                       </div>
                                                       
                                                     </fieldset>
-                                                    <div class="sn_generatepass_wrapper">
-                                                      <button type="button" class="sn_generate_password btn btn-secondary d-block float-right">Generate Password</button>
+                                                    <div>
+                                                      <button type="button" class="sn_generate_password btn btn-secondary d-block float-right" onclick="generate()">Generate Password</button>
                                                     </div>
                                                     <div class="col-12 sn-pin-noti">
                                                       <i class="fa fa-info-circle"></i>
@@ -194,105 +195,31 @@
 
 @endsection
 @push('scripts')
-
-    <script>
-        document.querySelectorAll(".pin").forEach(elem => { elem.addEventListener("keypress", function (evt) {
-                if (evt.which != 8 && evt.which != 0 && evt.which < 48 || evt.which > 57)
-                    {
-                        evt.preventDefault();   
-                    }
-                
-                });
-            }
-        );
-        function Peyeslash(id) {
-                    eye= "eye"
-                    var element = document.getElementById("password");
-                    document.getElementById(eye).style.display = "block";
-                    document.getElementById(id).style.display = "none";
-                    element.type = "text";
-                }
-            function Peye(id) {
-                    
-                    eye_slash= "eye_slash"
-                    var element = document.getElementById("password");
-                    document.getElementById(eye_slash).style.display = "block";
-                    document.getElementById(id).style.display = "none";
-                    element.type = "password";
-        }
-
-        $(document).ready(function(){
-        $('#code_chk').hide();
-        $('.sn_generate_password').click(function () {
-        var chars = "0123456789";
-        var passwordLength = 6;
-        var generated_password = "";
-        for (var i = 1; i <= passwordLength; i++) {
-            var randomNumber = Math.floor(Math.random() * chars.length);
-            generated_password += chars.substring(randomNumber, randomNumber +1);
-        }
-        document.getElementById("password").type = 'text';
-        
-        
-        var element = document.getElementById("password");
-        document.getElementById("eye").style.display = "block";
-        document.getElementById('eye_slash').style.display = "none";
-        document.getElementById("password").value = generated_password;
-        })
-         });
-        
-      function changeState(id){
-        $.ajax({
-
-        type:'POST',
-
-        url: '{{route("backside.shop_owner.pos.change_state")}}',
-
-        data:{
-        "_token":"{{csrf_token()}}",
-        "sid" : id,
-        },
-
-        success:function(data){
-            var html = '';
-            $.each(data, function(i, v) {
-                html+=`
-                <option value="${v.id}">${v.name}</option>
-                `;
-            })
-            $('#township').html(html);
-        }
-        })
-      }
+   <script type='text/javascript'> 
       
-      function changecode(code){
-        //   alert(code);
-         $.ajax({
-
-        type:'POST',
-
-        url: '{{route("backside.shop_owner.pos.check_staff_code")}}',
-
-        data:{
-        "_token":"{{csrf_token()}}",
-        "code" : code,
-        },
-
-        success:function(data){
-            if(data.data == 0){
-                $('#code_chk').show();
-            }
-            else{
-                $('#code_chk').hide();
-            }
+      $(document).ready(function() {
+        alert('hi');
+      });
+        function Peyeslash(id) {
+            eye= "eye"
+            var element = document.getElementById("password");
+            document.getElementById(eye).style.display = "block";
+            document.getElementById(id).style.display = "none";
+            element.type = "text";
         }
-        })
-      }
+        function Peye(id) {        
+            eye_slash= "eye_slash"
+            var element = document.getElementById("password");
+            document.getElementById(eye_slash).style.display = "block";
+            document.getElementById(id).style.display = "none";
+            element.type = "password";
+        }
+        function generate(){
+            alert('hello');
+        }
+        
 
-      function back(){
-        history.go(-1);
-      }
-    </script>
+   </script>
 @endpush
 @push('css')
     <style>

@@ -11,7 +11,7 @@ use App\Models\POS\PosKyoutPurchase;
 use App\Models\POS\PosPurchase;
 use App\Models\POS\PosDiamond;
 use App\Models\POS\PosReturnList;
-
+use App\Models\POS\PosCreditList;
 //NOTE PosItemFilterService is responsible for filtering item lists' datatables
 
 class PosItemFilterService
@@ -33,6 +33,24 @@ class PosItemFilterService
 
         if ($toDate) {
             $query->whereDate('date', '<=', $toDate);
+        }
+
+        return $query;
+    }
+    public function filter_credits($request)
+    {
+        $shopId = $this->get_shopid();
+        $fromDate = $request->input('fromDate');
+        $toDate = $request->input('toDate');
+        $query =  PosCreditList::select('id', 'customer_name', 'phone', 'address', 'purchase_code', 'credit', 'purchase_date')
+            ->where('shop_owner_id', $shopId);
+
+        if ($fromDate) {
+            $query->whereDate('purchase_date', '>=', $fromDate);
+        }
+
+        if ($toDate) {
+            $query->whereDate('purchase_date', '<=', $toDate);
         }
 
         return $query;

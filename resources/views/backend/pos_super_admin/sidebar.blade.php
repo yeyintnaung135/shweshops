@@ -64,7 +64,7 @@
                 <!-- Add icons to the links using the .nav-icon class
                      with font-awesome or any other icon font library -->
                 <li class="nav-item">
-                    <a href="{{url('backside/pos_super_admin')}}" class="mobile-nav nav-link">
+                    <a href="{{url('backside/pos_super_admin/dashboard')}}" class="mobile-nav nav-link">
                         <!-- <i class="nav-icon fas fa-chart-line"></i> -->
                         <img id="logo" class="logo rounded-5" src="{{'/images/logo/super_admin_logo/Dashboard.svg'}}" alt=""/>
                         <img id="mobile" class="logo rounded-5" src="{{'/images/logo/super_admin_mobile_logo/Dashboard.svg'}}" alt=""/>

@@ -191,8 +191,8 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
 
         // Credit List
         Route::get('/credit_list', [PosSecondPhaseController::class, 'credit_list'])->name('pos.credit_list');
-        Route::post('/credit_type_filter', [PosSecondPhaseController::class, 'credit_type_filter'])->name('pos.credit_type_filter');
-        Route::post('/delete_credit', [PosSecondPhaseController::class, 'delete_credit'])->name('pos.delete_credit');
+        Route::get('/get_credit_list', [PosSecondPhaseController::class, 'get_credit_list'])->name('pos.get_credit_list');
+        Route::delete('/delete_credit/{credit}', [PosSecondPhaseController::class, 'delete_credit'])->name('pos.delete_credit');
 
         // Second Phase
         // Purchases

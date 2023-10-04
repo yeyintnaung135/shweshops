@@ -79,37 +79,27 @@ class ShopOwnerLoginController extends Controller
         $data = $request->except('_token');
         $validator = Validator::make($data, [
             "value" => 'required|regex:/(^09([0-9]+)(\d+)?$)/u|min:5|max:11',
-            "password" => "required",
+            "password" => "required|max:100",
         ]);
         if ($validator->fails()) {
             return redirect()->back()->with('error', 'Something wrong!!');
 
         }
+
         $roleCheck = Auth::guard('shop_owners_and_staffs')->attempt(['phone' => $request->value, 'password' => $request->password, 'deleted_at' => null]);
         if ($roleCheck) {
+            // if(Auth::guard('shop_owners_and_staffs')->user()->pos_only == 'yes'){
+            //     return redirect()->route('backside.shop_owner.pos.dashboard');
+            // }
             Session::flash('loginedSO', 'shopownerlogined');
-            if ($request->from == 'fromhelpandsupport') {
-                return redirect(url('backside/shop_owner/support'));
-            } else if ($request->role_id == 4) {
-                return redirect()->route('backside.shop_owner.pos.dashboard');
+            if ($request->fromsupport == 'support') {
+                return redirect(route('backside.shop_owner.support'));
             } else {
-                Auth::logout();
-                Session::flush();
-                return redirect()->back()->with('error', 'Need to choose right role!');
+                return redirect()->route('backside.shop_owner.pos.dashboard');
             }
         } else {
-            $staff = DB::table('pos_staffs')->where('phone', $request->value)->where('role_id', $request->role_id)->first();
-            if ($staff && Hash::check($request->password, $staff->password)) {
-                $shop = Shops::where('id', $staff->shop_id)->first();
-                $roleCheck = Auth::guard('shop_owners_and_staffs')->attempt(['phone' => $request->value, 'password' => $request->password, 'deleted_at' => null]);
-                if ($roleCheck) {
-                    Session::put('staff_role', $request->role_id);
-                    Session::flash('loginedSO', 'shopownerlogined');
-                    return redirect()->route('backside.shop_owner.pos.dashboard');
-                }
-            } else {
-                return redirect()->back()->with('error', 'Phone or password is invalid');
-            }
+
+            return redirect()->back()->with('error', 'Phone or password is invalid');
         }
     }
 

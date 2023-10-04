@@ -836,29 +836,28 @@ class PosSecondPhaseController extends Controller
     public function credit_list(): View
     {
         $shopowner = Shops::where('id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        $credits = PosCreditList::where('shop_owner_id', $this->get_shopid())->get();
-        return view('backend.pos.credit_list', ['shopowner' => $shopowner, 'credits' => $credits]);
+        return view('backend.pos.credit_list', ['shopowner' => $shopowner]);
     }
-    public function credittypeFilter(Request $request): JsonResponse
+    public function get_credit_list(Request $request): JsonResponse
     {
-        // dd($request->all());
-        if ($request->type == 2) {
-            $data = PosCreditList::whereBetween('purchase_date', [$request->start_date, $request->end_date])->where('shop_owner_id', $this->get_shopid())->get();
-        }
+        $credits = $this->itemsFilterService->filter_credits($request);
 
-        return response()->json([
-            'data' => $data,
-        ]);
+        return DataTables::of($credits)
+            ->addColumn('actions', function ($credit) {
+                $urls = [
+                    'delete_url' => route('backside.shop_owner.pos.delete_credit', $credit->id),
+                ];
+
+                return $urls;
+            })
+            ->toJson();
     }
-    public function delete_credit(Request $request): JsonResponse
+    public function delete_credit(PosCreditList $credit): RedirectResponse
     {
-        $credit = PosCreditList::find($request->id);
+        dd($credit);
         $credit->delete();
         Session::flash('message', 'Credit Amount was successfully Paid!');
-        return response()->json([
-            'data' => 'success',
-        ], 200);
-
+        return redirect()->route('backside.shop_owner.pos.credit_list');
     }
     //Second Phase
     //Purchases
@@ -1267,8 +1266,6 @@ class PosSecondPhaseController extends Controller
                 // 'main_phone' =>  ['required', 'string', 'max:20','unique:manager,phone','unique:users,phone','unique:shop_owners,main_phone'],
                 'main_phone' => [
                     'required',
-                    Rule::unique('shop_owners')->ignore($shopowner->id),
-                    Rule::unique('manager', 'phone')->ignore($shopowner->id),
                 ],
                 'messenger_link' => 'max:1130',
             ]

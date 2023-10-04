@@ -45,14 +45,24 @@
                         </ul>
                     </div> --}}
                 </div>
-                <div class="row">
-                    <label for="">From:<input type="date" id="start_date"></label>
-                    <label for="" class="ml-3">To:<input type="date" id="end_date"></label>
-                    <label for="" style="margin-left: 20px;margin-top:30px;"><a href="#" class="btn btn-color btn-m" onclick="typefilter(2)">Search</a></label>
-                </div>
+                <div class="d-flex justify-content-start align-items-center mt-3">
+                        <div class="form-group">
+                            <label for="fromDate" class="form-label">Choose Date</label>
+                            <input type="text" id="fromDate" class="form-control" placeholder="From Date"
+                                autocomplete="off">
+                        </div>
+                        <div class="form-group mx-3">
+                            <label for="toDate" class="form-label">Choose Date</label>
+                            <input type="text" id="toDate" class="form-control" placeholder="To Date"
+                                autocomplete="off">
+                        </div>
+                        <div>
+                            <button id="searchButton" class="btn btn-color btn-m mt-3">Filter</button>
+                        </div>
+                    </div>
                 <div class="card mt-2">
                     <div class="card-body">
-                        <table class="table table-striped" id="example23">
+                        <table class="table table-striped" id="creditTable">
                             <thead>
                                 <th>နံပါတ်</th>
                                 <th>​ဝယ်သူအမည်</th>
@@ -63,48 +73,7 @@
                                 <th>ဝယ်ယူသည့်နေ့</th>
                                 <th></th>
                             </thead>
-                            <tbody class="text-center" id="filter">
-                                <?php $i=1;?>
-                            @foreach ($credits as $credit)
-                                <tr>
-                                 <td>{{$i++}}</td>
-                                 <td>{{$credit->customer_name}}</td>
-                                 <td>{{$credit->phone}}</td>
-                                 <td>{{$credit->address}}</td>
-                                 <td>{{$credit->purchase_code}}</td>
-                                 <td>{{$credit->credit}}</td>
-                                 <td>{{$credit->purchase_date}}</td>
-                                 <td>
-                                    <div class="d-flex">
-                                        <a href="#myModal{{$credit->id}}" class="btn btn-sm btn-color" data-toggle="modal">Repay</a>
-                                        {{-- <a href="#myModal{{$credit->id}}" class="text-danger" data-toggle="modal"><i class="fa fa-trash"></i></a> --}}
-                                        {{-- <a href="{{route('backside.shop_owner.pos.edit_diamond',$credit->id)}}" class="ml-4 text-warning"><i class="fa fa-edit" ></i></a> --}}
-                                        {{-- <a href="#" class="ml-4 text-success"><i class="fa fa-eye" aria-hidden="true"></i></a> --}}
-                                    </div>
-                                 </td>
-
-                                 <div id="myModal{{$credit->id}}" class="modal">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Repay List</h5>
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p class="text-center">Are you Sure to pay credit amount for this List?</p>
-                                            </div>
-                                            <div class="modal-footer text-center">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCLE</button>
-                                                <button type="button" class="btn btn-color" onclick="suredelete({{$credit->id}})">REPAY</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                </tr>
-                                @endforeach
-
-                            </tbody>
+                            
                         </table>
                     </div>
                 </div>
@@ -141,98 +110,144 @@
 @endpush
 @push('scripts')
     <script type="text/javascript">
-        $(document).ready(function(){
-            function alignModal(){
-        var modalDialog = $(this).find(".modal-dialog");
 
-        // Applying the top margin on modal to align it vertically center
-        modalDialog.css("margin-top", Math.max(0, ($(window).height() - modalDialog.height()) / 2));
+$(document).ready(function() {
+
+$('#fromDate, #toDate').datepicker({
+    "dateFormat": "yy-mm-dd",
+    changeYear: true
+});
+
+var creditTable = $('#creditTable').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+        "url": "{{ route('backside.shop_owner.pos.get_credit_list') }}",
+        "data": function(d) {
+            d.fromDate = $('#fromDate').val();
+            d.toDate = $('#toDate').val();
         }
-        // Align modal when it is displayed
-        $(".modal").on("shown.bs.modal", alignModal);
+    },
+    columns: [{
+            data: 'id',
+            name: 'id'
+        },
+        {
+            data: 'customer_name',
+            name: 'customer_name'
+        },
+        {
+            data: 'phone',
+            name: 'phone',
+        },
+        {
+            data: 'address',
+            name: 'address'
+        },
+        {
+            data: 'purchase_code',
+            name: 'purchase_code'
+        },
+        {
+            data: 'credit',
+            name: 'credit'
+        },
+        {
+            data: 'purchase_date',
+            name: 'purchase_date'
+        },
+        {
+            data: 'actions',
+            orderable: false,
+            searchable: false,
+            render: function(data, type, full, meta) {
+                return `
+                <a class="btn btn-sm btn-danger" onclick="Delete('${full.actions.delete_url}')"
+                    title="Delete">
+                    Repay
+                </a>
+                <form id="delete_form_${full.id}" action="${full.actions.delete_url}" method="POST"
+                    style="display: none;">
+                    @csrf
+                    @method('DELETE')
+                </form>
 
-        // Align modal when user resize the window
-        $(window).on("resize", function(){
-            $(".modal:visible").each(alignModal);
-        });
-            $('#example23').DataTable({
+            </div>`;
+            }
+        },
+    ],
+    dom: 'lBfrtip',
+    "responsive": true,
+    "autoWidth": false,
+    buttons: [
+        'copy', 'csv', 'excel', 'pdf', 'print'
+    ],
+    order: [
+        [6, 'desc']
+    ],
+});
 
-                dom: 'Blfrtip',
-                    buttons: [
-                        'copy', 'csv', 'excel', 'pdf', 'print'
-                    ],
-                    processing: true,
-                    "ordering": true,
-                    "info": true,
-                    "paging": true,
-
+//Date Filter
+$('#searchButton').click(function() {
+    creditTable.draw();
+});
+});
+    
+    function Delete(deleteUrl) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-danger ml-2',
+                    cancelButton: 'btn btn-info'
+                },
+                buttonsStyling: false
             });
-            $('#example-getting-started').multiselect();
-        });
-        function suredelete(id){
-                // alert('ok');
-                $.ajax({
 
-                    type:'POST',
-
-                    url: '{{route("backside.shop_owner.pos.delete_credit")}}',
-
-                    data:{
-                    "_token":"{{csrf_token()}}",
-                    "id" : id,
-                    },
-
-                    success:function(data){
-                        location.reload();
-                        // console.log('success');
-                    }
-                })
-        }
-
-        function typefilter(val){
-            var dataTable = $('#example23').DataTable();
-            var html = '';
-            // if($("#gold").is(":checked") == true){
-            //     html += 'option1'
-            // }
-            // if($("#kyout").is(":checked") == true){
-            //     html += '/option2'
-            // }
-            // if($("#diamond").is(":checked") == true){
-            //     html += '/option3'
-            // }
-            // if($("#platinum").is(":checked") == true){
-            //     html += '/option4'
-            // }
-            var start_date = $('#start_date').val();
-            var end_date = $('#end_date').val();
-
-            $.ajax({
-
-            type:'POST',
-
-            url: '{{route("backside.shop_owner.pos.credit_type_filter")}}',
-
-            data:{
-            "_token":"{{csrf_token()}}",
-            "start_date" : start_date,
-            "end_date" : end_date,
-            "type" : val,
-            },
-
-            success:function(data){
-                dataTable.clear().draw();
-               
-                $.each(data.data, function(i, v) {
-                    var html1 = `<div class="d-flex">
-                                        <a href="#myModal${v.id}" class="btn btn-sm btn-color" data-toggle="modal">Repay</a>
-                                    </div>`;
-                    dataTable.row.add([++i,v.customer_name,v.phone,v.address,v.purchase_code,v.credit,v.purchase_date,html1]).draw();
-                })
-               
+            swalWithBootstrapButtons.fire({
+                title: 'Are you sure?',
+                text: "Are you Sure to pay credit amount for this List!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, repay it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
                 }
-            })
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Check if "Confirm" button was clicked
+                    const deleteForm = document.createElement('form');
+                    deleteForm.action = deleteUrl;
+                    deleteForm.method = 'POST';
+                    deleteForm.style.display = 'none';
+                    deleteForm.innerHTML = `
+                    @csrf
+                    @method('DELETE')`;
+                    document.body.appendChild(deleteForm);
+                    deleteForm.submit();
+                }
+            });
         }
+
+            $(document).ready(function() {
+                function alignModal() {
+                    var modalDialog = $(this).find(".modal-dialog");
+
+                    // Applying the top margin on modal to align it vertically center
+                    modalDialog.css("margin-top", Math.max(0, ($(window).height() - modalDialog.height()) / 2));
+                }
+                // Align modal when it is displayed
+                $(".modal").on("shown.bs.modal", alignModal);
+
+                // Align modal when user resize the window
+                $(window).on("resize", function() {
+                    $(".modal:visible").each(alignModal);
+                });
+
+                $('#example-getting-started').multiselect();
+            });
+        
     </script>
 @endpush
 @push('css')
