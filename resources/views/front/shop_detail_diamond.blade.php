@@ -27,13 +27,13 @@
     <!-- .site-content-contain -->
     <div class="site-content-contain sop-font">
         {{-- breadcum--}}
-        {{--banner pic --}}     
+        {{--banner pic --}}
         <div class="px-lg-5 mx-lg-3 py-0 my-0">
             <div class="position-relative">
                 <div id='main_slide' class="text-center owl-carousel owl-theme w-100" style="z-index: -1">
                     @if((count($shop_data->getPhotos) != 0))
                         @foreach ( $shop_data->getPhotos as $img)
-                        <img class="item zh-main_slide" 
+                        <img class="item zh-main_slide"
                         src="{{ url('images/banner/'.$img->location)}}"/>
                         @endforeach
                     @elseif(!empty($shop_data->shop_banner))
@@ -50,7 +50,7 @@
         <div id="content" class="site-content">
             {{-- profile --}}
             <div class="px-2 px-lg-5 mx-lg-3 mx-1 pb-lg-0 pb-3 text-left">
-                
+
                 <div class="row ms-lg-5 ms-1" style="min-height: 80px;">
                     <div class="col-12 col-lg-6 d-flex p-0">
                         {{-- Shop Logo --}}
@@ -72,7 +72,7 @@
                                         {{-- Eaint Yadanar Phyo Diamond Gold & Jewellery --}}
                                         <img src="{{url('/images/directory/banner/Diamond_Mark.png')}}" alt="" srcset="" class="premium-badge ms-1">
                                     </p>
-                                    
+
                                 </div>
                                 <div class="row g-0">
                                     <p class="premium-title-myan pt-sm-1">
@@ -84,14 +84,14 @@
                                         <div class="d-flex text-center position-relative">
                                             <div class="icon-bg mx-auto icon-bg-diamond " style="width:24px; height:24px;">
                                                 <i class="fa-regular fa-eye text-secondary text-diamond" style="font-size: 12px; margin-top:6px;"></i>
-                                            </div>                   
+                                            </div>
                                             <p class="mt-1 ms-lg-3 ms-2 me-lg-4 me-3 text-diamond" style="font-size: 14px;">{{ $view_count }}</p>
                                         </div>
                                         <div class="d-flex text-center position-relative">
                                             <div class="icon-bg mx-auto icon-bg-diamond" style="width:24px; height:24px;">
                                                 <i class="fa-regular fa-heart text-secondary" style="font-size: 12px; margin-top:6px;"></i>
                                             </div>
-                                            <p class="mt-1 ms-lg-3 ms-2 me-lg-4 me-3 text-diamond" style="font-size: 14px;">{{ $favcount }}</p>             
+                                            <p class="mt-1 ms-lg-3 ms-2 me-lg-4 me-3 text-diamond" style="font-size: 14px;">{{ $favcount }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -101,7 +101,7 @@
                     </div>
                 </div>
 
-                
+
                 <!-- Contact buttons section -->
                 <div class="d-flex justify-content-between ms-lg-5 ms-2" style="max-height: 60px;">
                     <div class="d-flex">
@@ -119,8 +119,8 @@
                                     {{-- <i class="fab fa-facebook-messenger pt-1" style="font-size:24px !important;"></i> --}}
                                     <img src="{{url('images/icons/messenger.png')}}" alt="" srcset="" width="24px" class="pt-1">
                                 </a>
-                            </div> 
-                        </div>   
+                            </div>
+                        </div>
                         {{-- End FB & Messenger --}}
                     </div>
 
@@ -230,7 +230,7 @@
                     {{-- End Phone --}}
                     {{-- Contact --}}
                     {{-- <div>
-                        
+
                         <a href="#contact" data-toggle="modal" data-target="#contact" class="sop-social premium-btn-main" id="contact-button">
                             <i class="sop-social-i fa-solid fa-location-dot pe-1 pe-md-2"></i>
                             <div class="d-none d-sm-block">Contact</div>
@@ -303,7 +303,7 @@
                                 <i class="fa-regular fa-eye text-diamond" style="margin-top:14px;"></i>
                             </div>
                             <p class="mt-3 text-diamond">
-                                {{ $view_count }} 
+                                {{ $view_count }}
                                 <span class="text-diamond-2">
                                     Visitors
                                 </span>
@@ -314,7 +314,7 @@
                                 <i class="fa-regular fa-heart mt-3 text-diamond" style="margin-top:14px;"></i>
                             </div>
                             <p class="mt-3 text-diamond">
-                                {{$favcount}} 
+                                {{$favcount}}
                                 <span class="text-diamond-2">
                                     Likes
                                 </span>
@@ -347,7 +347,7 @@
                             @endif
                         </div>
 
-                        
+
 
                         <!-- Modal -->
                         {{-- <div class="modal fade" id="contact" tabindex="-1" aria-labelledby="contactModal" aria-hidden="true">
@@ -412,7 +412,7 @@
                                         @endif
                                         <hr>
                                     </div>
-                                    
+
                                     {{-- more address --}}
                                     {{-- @if(isset($shop_data->other_address) and !is_null($shop_data->other_address) and !empty($shop_data->other_address))
                                         @foreach ($shop_data as $sd)
@@ -474,13 +474,13 @@
             {{--collecstions--}}
             @endif
         </div>
-        
-        <div class="px-4 px-lg-5 mx-lg-3 my-lg-4 my-3 "> 
+
+        <div class="px-4 px-lg-5 mx-lg-3 my-lg-4 my-3 ">
             <div class="mx-lg-4 m-1 my-lg-4 my-3 ">
                     <div class="diamond-hr"></div>
                 </div>
         </div>
-        
+
         <div class="px-4 px-lg-5 mx-lg-3 mt-5">
             <nav class="navbar navbar-expand-sm justify-content-between mb-3 px-md-3">
                 <ul class="navbar-nav">
@@ -504,7 +504,7 @@
                     <i class="fas fa-long-arrow-alt-right mt-3 text-secondary pb-2" style="font-size:24px;"></i>
                 </a>
             </nav>
-            
+
             {{--new item--}}
             <div class="zh-new_item sop-font px-md-3">
                 @if (count($items) == 0)
@@ -514,11 +514,11 @@
                     <span>ပစ္စည်းမရှိသေးပါ</span>
                 </div>
                 @else
-                <newitems-forshop :newitems="{{$items}}" :uri="'get_newitems_forshop_ajax'"></newitems-forshop>                    
+                <newitems-forshop :newitems="{{$items}}" :uri="'get_newitems_forshop_ajax'"></newitems-forshop>
                 @endif
             </div>
             {{--new item--}}
-            
+
             {{-- pop item--}}
             <div class="zh-pop_items sop-font px-md-3">
                 @if (count($get_pop_items) == 0)
@@ -591,7 +591,7 @@
                     <div class="modal-body">
                         {{-- <img src="/images/baydin/9SK6sqSgmgsWrVZ9o7OwPVooFf4NZNTful9cKVHE.jpg" alt="" srcset="" class="popup-video"> <!--Temp--> --}}
                         <video class="popup-video" controls>
-                            <source src="{{ asset('test/video/'.$popup->video_name) }}" type="video/mp4">
+                            <source src="{{ filedopath('/videos/' . $popup->video_name) }}" type="video/mp4">
                         </video>
                     </div>
                 </div>
@@ -805,7 +805,7 @@
         var convertedNum = '';
         for(let i=0; i < inputNum.length; i++) {
             convertedNum += mmNums[tmp[i]];
-        } 
+        }
         return convertedNum;
     }
 </script>
@@ -965,7 +965,7 @@
             margin-top: -25px !important;
         }
         .premium-logo {
-            
+
             width: 100% !important;
             height: 100% !important;
         }
@@ -1009,7 +1009,7 @@
         }
 
         .contact-wrap {
-            width: 80% !important; 
+            width: 80% !important;
         }
 
         .premium-title{
@@ -1017,7 +1017,7 @@
         }
 
         .premium-title-myan{
-            font-size: 16px !important; 
+            font-size: 16px !important;
         }
 
         .premium-badge{
@@ -1108,7 +1108,7 @@
         background-color: #fdf8d8 !important;
         border-color: #fdf8d8 !important;
     }
-    
+
     .btn-premium:focus, .btn-premium.focus {
         color: #fff !important;
         background-color: #fdf8d8 !important;
@@ -1128,7 +1128,7 @@
     }
 
     .btn-premium-diamond {
-        color: #fff !important; 
+        color: #fff !important;
         background-color: #58b5e4 !important;
         border-color: #58b5e4 !important;
     }
@@ -1179,7 +1179,7 @@
         font-family: 'Myanmar3', Sans-Serif !important;
     }
     #main_slide .owl-dots {
-        display: none !important; 
+        display: none !important;
     }
 
     .nav-link {
@@ -1223,7 +1223,7 @@
         position: relative;
     }
 
-    
+
 
     .category-bg {
         border-radius: 10px;

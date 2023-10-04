@@ -27,7 +27,8 @@
                             <div class="action mb-4">
                                 <a href="{{ route('backside.super_admin.baydins.edit', $sign->id) }}" role="button"
                                     class="btn btn-sm btn-success">Edit</a>
-                                <a href="{{ route('backside.super_admin.baydins.index') }}" class="btn btn-sm btn-outline-dark">Back</a>
+                                <a href="{{ route('backside.super_admin.baydins.index') }}"
+                                    class="btn btn-sm btn-outline-dark">Back</a>
                             </div>
                             <div class="action mb-4">
                                 <button type="button" onclick="delete_sign('{{ $sign->id }}')"
@@ -53,9 +54,9 @@
 @push('css')
     <style>
         /* .my-container {
-          position: relative;
-          border:1px solid red;
-        } */
+              position: relative;
+              border:1px solid red;
+            } */
 
         .icon {
             cursor: pointer;
@@ -136,7 +137,7 @@
                                     text: "Successfully Deleted!",
                                     icon: "success",
                                 });
-                                var url = '{{ route('baydins.index') }}';
+                                var url = '{{ route('backside.super_admin.baydins.index') }}';
 
 
 
