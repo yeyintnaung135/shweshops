@@ -14,7 +14,6 @@ use Illuminate\Contracts\Validation\Validator as ValidationValidator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -78,7 +77,8 @@ class DiscountController extends Controller
         return response()->json(['status' => 'success', 'data' => $willupdatepricelist]);
     }
 
-    public function list(): View {
+    public function list(): View
+    {
 
         $items = Discount::where('shop_id', $this->get_shopid())->onlyTrashed()->get();
         return view('backend.shopowner.item.discount.list', ['items' => $items, 'shopowner' => $this->current_shop_data()]);
@@ -189,18 +189,16 @@ class DiscountController extends Controller
 
         foreach ($request->id as $id) {
             //for noti
-            $checkShopOwnerFav = DB::table('shop_owners_fav')->where('fav_id', $id)->pluck('user_id');
-            $checkManagerFav = DB::table('manager_fav')->where('fav_id', $id)->pluck('user_id');
-            $checkUserFav = DB::table('users_fav')->where('fav_id', $id)->pluck('user_id');
+            $checkFav = DB::table('favourite')->where('fav_id', $id)->pluck('user_id');
 
             $message = "Item " . $id . " is on discount!";
             $read_by_receiver = 0;
             $item_id = intval($id);
             $sender_id = $this->get_shopid();
-            if (count($checkShopOwnerFav) != 0) {
+            if (count($checkFav) != 0) {
                 $shop_owners = 'shop_owners';
-                for ($i = 0; $i < count($checkShopOwnerFav); $i++) {
-                    $receiver_user_id = $checkShopOwnerFav[$i];
+                for ($i = 0; $i < count($checkFav); $i++) {
+                    $receiver_user_id = $checkFav[$i];
                     $UserNoti = UserNoti::where('sender_shop_id', $sender_id)
                         ->where('receiver_user_id', $receiver_user_id)
                         ->where('user_type', $shop_owners);
@@ -214,38 +212,7 @@ class DiscountController extends Controller
                     ]);
                 }
             }
-            if (count($checkManagerFav) != 0) {
-                $manager = 'manager';
-                for ($i = 0; $i < count($checkManagerFav); $i++) {
-                    $receiver_user_id = $checkManagerFav[$i];
-                    $UserNoti = UserNoti::where('sender_shop_id', $sender_id)
-                        ->where('receiver_user_id', $receiver_user_id);
-                    $query = $UserNoti->updateOrInsert([
-                        'sender_shop_id' => $sender_id,
-                        'receiver_user_id' => $receiver_user_id,
-                        'user_type' => $manager,
-                        'item_id' => $item_id,
-                        'message' => $message,
-                        'read_by_receiver' => $read_by_receiver,
-                    ]);
-                }
-            }
-            if (count($checkUserFav) != 0) {
-                $users = 'users';
-                for ($i = 0; $i < count($checkUserFav); $i++) {
-                    $receiver_user_id = $checkUserFav[$i];
-                    $UserNoti = UserNoti::where('sender_shop_id', $sender_id)
-                        ->where('receiver_user_id', $receiver_user_id);
-                    $query = $UserNoti->updateOrInsert([
-                        'sender_shop_id' => $sender_id,
-                        'receiver_user_id' => $receiver_user_id,
-                        'user_type' => $users,
-                        'item_id' => $item_id,
-                        'message' => $message,
-                        'read_by_receiver' => $read_by_receiver,
-                    ]);
-                }
-            }
+
             $takecheckphoto = Item::where('id', $item_id)->first();
             $link = url($takecheckphoto->withoutspace_shopname . '/product_detail/' . $item_id);
             Firebase::send($item_id, 'Discount Product', $message, $link, 'logo', url($takecheckphoto->check_photo));
@@ -302,14 +269,13 @@ class DiscountController extends Controller
         }
 
         //for noti
-       $checkUserFav = DB::table('favourite')->where('fav_id', $request->item_id)->pluck('user_id');
+        $checkUserFav = DB::table('favourite')->where('fav_id', $request->item_id)->pluck('user_id');
 
         $message = "Item " . $request->item_id . " is on discount!";
         $read_by_receiver = 0;
         $item_id = intval($request->item_id);
         $sender_id = $this->get_shopid();
 
-     
         if (count($checkUserFav) != 0) {
             $users = 'users';
             for ($i = 0; $i < count($checkUserFav); $i++) {
@@ -331,7 +297,6 @@ class DiscountController extends Controller
         $takecheckphoto = Item::where('id', $item_id)->first();
         $link = url($takecheckphoto->withoutspace_shopname . '/product_detail/' . $item_id);
         $test = Firebase::send($request->item_id, 'Discount Product', $message, $link, 'logo', url($takecheckphoto->check_photo));
-
 
         $input = $request->except('_token');
 
