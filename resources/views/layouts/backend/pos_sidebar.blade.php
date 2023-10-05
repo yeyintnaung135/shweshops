@@ -63,10 +63,7 @@
 
                 <!-- Add icons to the links using the .nav-icon class
                      with font-awesome or any other icon font library -->
-                     @if(Auth::guard('shop_owners_and_staffs')->check()
-                     && (Auth::guard('shop_owners_and_staffs')->user()->role_id == 4
-                     || Auth::guard('shop_owners_and_staffs')->user()->role_id == 1
-                     || Auth::guard('shop_owners_and_staffs')->user()->role_id == 2))
+                     @if(Auth::guard('shop_owners_and_staffs')->check())
                     <li class="nav-item py-1">
                         <a href="{{route('backside.shop_owner.pos.dashboard')}}" class="nav-link">
                             {{-- <i class="fi fi-rr-home nav-icon"></i> --}}

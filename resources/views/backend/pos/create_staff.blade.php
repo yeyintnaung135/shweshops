@@ -90,42 +90,27 @@
         
                                             </div>
                                             <div class="col-md-12">
-                                                <div class="form-group ">
-                                                    
-                                                    <fieldset>
-                                                      <legend>Password</legend>
-                                                      <div class="position-relative">
-                                                        
-                                                        <input type="password"  id="password" class="pin form-control sop-form-control @error('password') is-invalid @enderror" name="password"
-                                                        placeholder="Enter password" autocomplete="off" required/>
-                                                       <span class="zh-eye-picon d-flex align-items-center">
-                                                         <button id="eye_slash" type="button" onclick="Peyeslash(this.id)" style="
-                                                         background-color: transparent;
-                                                         ">
-                                                           <i class="fi fi-rr-eye-crossed"></i>
-                                                         </button>
-                                                         <button id="eye" type="button" onclick="Peye(this.id)" style=" background-color: transparent; display:none; ">
-                                                           <i class="fi fi-rs-eye"></i>
-                                                         </button>
-                                                       </span>
-                                                      </div>
-                                                      
-                                                    </fieldset>
-                                                    <div>
-                                                      <button type="button" class="sn_generate_password btn btn-secondary d-block float-right" onclick="generate()">Generate Password</button>
-                                                    </div>
-                                                    <div class="col-12 sn-pin-noti">
-                                                      <i class="fa fa-info-circle"></i>
-                                                      <p>Pin Number ကို အနည်းဆုံးခြောက်လုံးထားပေးပါရန် <br/>(eg . 0123456)</p>
-                                                    </div>
+                                            <div class="fs form-group row">
+                                            <div class="col-md-12">
+                                                <label for="exampleInputEmail1">Password <span
+                                                            style="color: red;">*</span></label>
+
+                                                <div class="input-group mb-3">
+
+                                                    <input id="password" type="password"
+                                                        class="form-control @error('password') is-invalid @enderror"
+                                                        name="password" placeholder="Enter Password"
+                                                        autocomplete="password" minlength="6" maxlength="20" required>
                                                 </div>
-                                                
+                                               
                                                 @error('password')
-                                                <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                                </span>
+                                                <x-error>
+                                                    {{$message}}
+                                                </x-error>
                                                 @enderror
-        
+                                            </div>
+                                            <div class="col-md-12"><button type="button" class="sn_generate_password btn btn-secondary d-block">Generate Password</button></div>
+                                            </div>
                                             </div>
                                             
                                             <div class="col-md-12">
@@ -198,27 +183,21 @@
    <script type='text/javascript'> 
       
       $(document).ready(function() {
-        alert('hi');
-      });
-        function Peyeslash(id) {
-            eye= "eye"
-            var element = document.getElementById("password");
-            document.getElementById(eye).style.display = "block";
-            document.getElementById(id).style.display = "none";
-            element.type = "text";
-        }
-        function Peye(id) {        
-            eye_slash= "eye_slash"
-            var element = document.getElementById("password");
-            document.getElementById(eye_slash).style.display = "block";
-            document.getElementById(id).style.display = "none";
-            element.type = "password";
-        }
-        function generate(){
-            alert('hello');
-        }
-        
 
+        $('.sn_generate_password').click(function () {
+        var chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%&^*ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        var passwordLength = 6;
+        var generated_password = "";
+        for (var i = 1; i <= passwordLength; i++) {
+            var randomNumber = Math.floor(Math.random() * chars.length);
+            generated_password += chars.substring(randomNumber, randomNumber +1);
+        }
+        document.getElementById("password").type = 'text';
+
+        document.getElementById("password").value = generated_password;
+        })
+      });
+       
    </script>
 @endpush
 @push('css')

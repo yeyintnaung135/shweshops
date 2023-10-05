@@ -894,10 +894,11 @@ class FrontController extends Controller
             $dateE = Carbon::now();
             $shops = frontuserlogs::join('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
                 ->join('shops', 'front_user_logs.shop_id', '=', 'shops.id')
+                ->where('shops.pos_only','no')
                 ->where('guestoruserid.user_agent', '!=', 'bot')
                 ->where('front_user_logs.status', 'shopdetail')
                 ->where(function ($query) use ($shopname) {
-                    $query->where('shops.shop_name', 'like', $shopname)
+                     $query->where('shops.shop_name', 'like', $shopname)
                         ->orWhere('shops.shop_name_myan', 'like', $shopname);
                 })
                 ->whereBetween('front_user_logs.created_at', [$dateS, $dateE])
@@ -909,6 +910,7 @@ class FrontController extends Controller
 
         } else {
             $shops = Shops::orderBy('created_at', 'desc')
+                ->where('pos_only','no')
                 ->where(function ($query) use ($shopname) {
                     $query->where('shop_name', 'like', $shopname)
                         ->orWhere('shop_name_myan', 'like', $shopname);

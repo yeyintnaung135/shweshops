@@ -10,6 +10,7 @@ use App\Http\Controllers\Trait\YKImage;
 use App\Models\BackRoleEditDetail;
 use App\Models\Category;
 use App\Models\Item;
+use App\Models\ShopOwnersAndStaffs;
 use App\Models\POS\PosAssignGoldPrice;
 use App\Models\POS\PosCounterShop;
 use App\Models\POS\PosCreditList;
@@ -128,6 +129,13 @@ class PosSecondPhaseController extends Controller
         if ($validate->fails()) {
             return redirect()->back()->withErrors($validate)->withInput();
         } elseif (PosStaff::insert($input)) {
+            ShopOwnersAndStaffs::create([
+                'name'=>$input['name'],
+                'phone'=>$input['phone'],
+                'role_id'=>$input['role_id'],
+                'shop_id'=>$input['shop_id'],
+                'password'=>$input['password']
+            ]);
             if ($input['role_id'] == 1) {
                 Session::flash('message', 'Your admin was successfully added');
                 return redirect()->route('backside.shop_owner.pos.staff_list');
@@ -1365,7 +1373,7 @@ class PosSecondPhaseController extends Controller
             'new_confirm_password' => ['same:new_password'],
         ]);
 
-        Shops::where('id', Auth::guard('shop_owner')->user()->id)->update(['password' => Hash::make($request->new_password)]);
+        Shops::where('id', Auth::guard('shop_owners_and_staffs')->user()->id)->update(['password' => Hash::make($request->new_password)]);
 
         return redirect()->route('backside.shop_owner.pos.shop_profile')->with(['status' => 'success', 'message' => 'Your Shop Password was successfully Updated']);
     }
