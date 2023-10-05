@@ -24,7 +24,7 @@ class MatchOldPassword implements Rule
             return Hash::check($value, Auth::guard('pos_super_admin')->user()->password);
         }
         else{
-            return Hash::check($value, Auth::guard('shop_owner')->user()->password);
+            return Hash::check($value, Auth::guard('shop_owners_and_staffs')->user()->password);
         }
     }
    

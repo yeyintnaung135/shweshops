@@ -86,21 +86,19 @@ class ShopOwnerLoginController extends Controller
 
         }
 
-        $roleCheck = Auth::guard('shop_owners_and_staffs')->attempt(['phone' => $request->value, 'password' => $request->password, 'deleted_at' => null]);
-        if ($roleCheck) {
-            // if(Auth::guard('shop_owners_and_staffs')->user()->pos_only == 'yes'){
-            //     return redirect()->route('backside.shop_owner.pos.dashboard');
-            // }
-            Session::flash('loginedSO', 'shopownerlogined');
-            if ($request->fromsupport == 'support') {
-                return redirect(route('backside.shop_owner.support'));
-            } else {
-                return redirect()->route('backside.shop_owner.pos.dashboard');
+        $roleCheck = Auth::guard('shop_owners_and_staffs')->attempt(['phone' => $request->value, 'password' => $request->password,'role_id'=>$request->role_id, 'deleted_at' => null]);
+        if ($roleCheck ) {
+                Session::flash('loginedSO','shopownerlogined');
+                if($request->from == 'fromhelpandsupport'){
+                    return redirect(url('backside/shop_owner/support'));
+                }
+                else{
+                    return redirect()->route('backside.shop_owner.pos.dashboard');
+                }
             }
-        } else {
-
-            return redirect()->back()->with('error', 'Phone or password is invalid');
-        }
+            else {
+                 return redirect()->back()->with('error', 'Phone or password is invalid');
+            }
     }
 
     //logout function
