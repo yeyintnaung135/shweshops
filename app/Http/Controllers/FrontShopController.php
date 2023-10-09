@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\AllShops;
 use App\Models\Item;
 use App\Models\ShopOwnersAndStaffs;
 use App\Models\Shops;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
 
 class FrontShopController extends Controller
 {
@@ -20,26 +18,21 @@ class FrontShopController extends Controller
     public function see_all($shop_name, $cat_name, $shop_id)
     {
 
-
         $data = Item::where([['shop_id', '=', $shop_id], ['category_id', '=', $cat_name]])->limit('20')->get();
-        if(count($data) == 0){
+        if (count($data) == 0) {
             abort(404);
         }
-
 
         $all_shop_id = Shops::where('id', '!=', 1)->orderBy('shop_name', 'asc')->get();
         // $all_shop_id = Shops::where('id', '!=', 1)->orderBy('created_at', 'desc')->get();
 
         // for account
-        if (isset(Auth::guard('shop_owner')->user()->id)) {
-            $shopowner_acc = Shops::where('id', Auth::guard('shop_owner')->user()->id)->orderBy('created_at', 'desc')->get();
-        } else if (isset(Auth::guard('shop_role')->user()->id)) {
-            $manager = ShopOwnersAndStaffs::where('id', Auth::guard('shop_role')->user()->id)->pluck('shop_id');
-            $shopowner_acc = Shops::where('id', $manager)->orderBy('created_at', 'desc')->get();
+        if (isset(Auth::guard('shop_owners_and_staffs')->user()->id)) {
+            $shop_user = ShopOwnersAndStaffs::where('id', Auth::guard('shop_owners_and_staffs')->user()->id)->pluck('shop_id');
+            $shop = Shops::where('id', $shop_user)->orderBy('created_at', 'desc')->get();
         }
 
-
-            return view('front.forcat_shop', ['data' => $data,'cat_id' => $cat_name, 'shop_data' => $this->getshopbyid($shop_id), 'shop_ids' => $all_shop_id]);
+        return view('front.forcat_shop', ['data' => $data, 'cat_id' => $cat_name, 'shop_data' => $this->getshopbyid($shop_id), 'shop_ids' => $all_shop_id]);
 
         // return $get_by_shopid;
 
@@ -50,9 +43,9 @@ class FrontShopController extends Controller
     {
         $shop = Shops::orderBy('id', 'desc')->skip($limit)->take(20)->get();
         if (count($shop) < 20) {
-          $emptyonserver = 1;
-        }else{
-          $emptyonserver = 0;
+            $emptyonserver = 1;
+        } else {
+            $emptyonserver = 0;
         }
         return response()->json([$shop->shuffle()->values(), count($shop), $emptyonserver]);
 
@@ -71,7 +64,6 @@ class FrontShopController extends Controller
 
         }
 
-
         $remove_discount_pop = collect($pop_items)->filter(function ($value, $key) {
             return $value->check_discount == 0;
         })->values();
@@ -89,11 +81,10 @@ class FrontShopController extends Controller
     public function get_newitems_forshop_ajax($limit, $shop_id)
     {
 
-       $getitems=Item::select('items.*')->leftjoin('discount','items.id','=','discount.item_id')->where('items.shop_id',$shop_id)->where('discount.item_id','=',NULL)->orderBy('items.id','desc')->skip($limit)->take(20)->get();
+        $getitems = Item::select('items.*')->leftjoin('discount', 'items.id', '=', 'discount.item_id')->where('items.shop_id', $shop_id)->where('discount.item_id', '=', null)->orderBy('items.id', 'desc')->skip($limit)->take(20)->get();
 
         return response()->json($getitems);
 
     }
-
 
 }
