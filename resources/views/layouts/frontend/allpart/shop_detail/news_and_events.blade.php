@@ -29,7 +29,7 @@
                             <a href="{{ url($ne->type . '/p/' . $ne->id . '/' . $ne->shop_id) }}">
                                 @if ($ne->type == 'events')
                                     <img class="card-img-top sop-image-w-h sop-img n-e-img"
-                                        src="{{ filedopath('/news_&_events/events/' . $ne->photo) }}"
+                                        src="{{ filedopath('/news_&_events/event/' . $ne->photo) }}"
                                         alt="Card image cap">
                                 @elseif($ne->type == 'news')
                                     <img class="card-img-top sop-image-w-h sop-img n-e-img"
