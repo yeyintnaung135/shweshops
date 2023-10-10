@@ -130,9 +130,14 @@
                                                       @if(Session::get('staff_role') == 2) 
                                                       <option value="3">staff</option>
                                                       @endif
-                                                      @else
-                                                      <option value="4">shopowner</option>
+                                                      @if(Session::get('staff_role') == 4) 
                                                       <option value="4">owner</option>
+                                                        <option value="1">admin</option>
+                                                        <option value="2">manager</option>
+                                                        <option value="3">staff</option>
+                                                      @endif
+                                                      @else
+                                                        <option value="4">owner</option>
                                                         <option value="1">admin</option>
                                                         <option value="2">manager</option>
                                                         <option value="3">staff</option>
