@@ -97,15 +97,15 @@
                               </td>
                           </tr>
                           <tr id="n_ud">
-                              <th scope="row">undamaged_product</th>
+                              <th scope="row">အထည်မပျက်_ပြန်သွင်း</th>
                               <td id="undamage"></td>
                           </tr>
                           <tr id="n_et">
-                              <th scope="row">valuable_product</th>
+                              <th scope="row">တန်ဖိုးမြင့်အထည်_နှင့်_အထည်မပျက်ပြန်လဲ</th>
                               <td id="expensive_thing"></td>
                           </tr>
                           <tr id="n_dam">
-                              <th scope="row">အထည်ပျက်စီး ချို့ယွင်း</th>
+                              <th scope="row">အထည်ပျက်စီးချို့ယွင်း</th>
                               <td id="damage"></td>
                           </tr>
                           <tr id="n_w">
@@ -156,9 +156,9 @@
                               <td id="handmade"></td>
                           </tr>
                           <!-- <tr id="n_cg">
-                    <th scope="row">လက်ခ</th>
-                    <td id="charge"></td>
-                  </tr> -->
+                  <th scope="row">လက်ခ</th>
+                  <td id="charge"></td>
+                </tr> -->
                           <tr id="n_pw">
                               <th scope="row">Pwint</th>
                               <td id="pwint"></td>

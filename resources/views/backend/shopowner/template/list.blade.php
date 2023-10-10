@@ -60,40 +60,30 @@
                                         </div>
 
                                     </div>
+                                    <div class="card-body">
+                                        <table id="templateTable" class="table table-borderless mt-3">
+                                            <thead>
+                                                <tr>
+                                                    <td>ID</td>
+                                                    <td>Name</td>
+                                                    <td>Undamaged Product</td>
+                                                    <td>Damaged Product</td>
+                                                    <td>Valuable_product</td>
+                                                    <td>Action</td>
+                                                    <td>date</td>
+                                                </tr>
+                                            </thead>
+                                        </table>
 
-                                    <table id="templateTable" class="table table-borderless">
-                                        <thead>
-                                            <tr>
-                                                <td>ID</td>
-                                                <td>Name</td>
-                                                <td>Undamaged Product</td>
-                                                <td>Damaged Product</td>
-                                                <td>Valuable_product</td>
-                                                <td>Action</td>
-                                                <td>date</td>
-                                            </tr>
-                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <td>ID</td>
-                                                <td>Name</td>
-                                                <td>Undamaged Product</td>
-                                                <td>Damaged Product</td>
-                                                <td>Valuable Product</td>
-                                                <td>Action</td>
-                                                <td>date</td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-
+                                    </div>
+                                    <!-- /.card-body -->
                                 </div>
-                                <!-- /.card-body -->
+                                <!-- /.card -->
                             </div>
-                            <!-- /.card -->
+                            <!-- /.col -->
                         </div>
-                        <!-- /.col -->
+                        <!-- /.row -->
                     </div>
-                    <!-- /.row -->
                 </div>
                 {{-- <div id="item-panel-2">
               <p class="mt-5 text-center pt-5">Coming Soon ...</p>
@@ -151,15 +141,9 @@
                 }
 
             ],
-            dom: 'lBfrtip',
-            "responsive": true,
-            "autoWidth": false,
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ],
             order: [
-                    [6, 'desc']
-                ],
+                [6, 'desc']
+            ],
         });
     </script>
 @endpush

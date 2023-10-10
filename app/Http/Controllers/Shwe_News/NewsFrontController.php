@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Shwe_News;
 
-use App\Models\News;
-use App\Models\Event;
-use App\Models\Promotions;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use App\Models\Event;
+use App\Models\News;
+use App\Models\Promotions;
 
 class NewsFrontController extends Controller
 {
@@ -26,7 +24,7 @@ class NewsFrontController extends Controller
             'latestNews' => $latest_news,
             'promotions' => $promotions,
             'events' => $events,
-            'news' => $news
+            'news' => $news,
         ]);
     }
 
@@ -58,7 +56,8 @@ class NewsFrontController extends Controller
         return view('front.news.allevents', compact('events'));
     }
 
-    public function NewsDetail($id){
+    public function NewsDetail($id)
+    {
         $news = News::where('id', $id)->first();
         if (empty($news)) {
             return abort(404);
@@ -68,7 +67,8 @@ class NewsFrontController extends Controller
         return view('front.news.news-details', compact('news', 'other_news', 'premium'));
     }
 
-    public function pNewsDetail($id, $shopid){
+    public function pNewsDetail($id, $shopid)
+    {
         $news = News::where('shop_id', $shopid)->where('id', $id)->first();
         if (empty($news)) {
             return abort(404);
@@ -97,7 +97,7 @@ class NewsFrontController extends Controller
         }
         $other_events = Event::where('shop_id', $shopid)->where('id', '<>', $event->id)->latest()->paginate(2);
         $premium = "Yes";
-        return view('front.news.event_details', compact('event', 'other_events', 'premium'));
+        return view('front.news.event-details', compact('event', 'other_events', 'premium'));
     }
 
     public function PromotionDetail($id)
