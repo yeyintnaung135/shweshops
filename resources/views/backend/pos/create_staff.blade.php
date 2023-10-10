@@ -132,11 +132,10 @@
                                                       @endif
                                                       @else
                                                       <option value="4">shopowner</option>
-                                                      @foreach($role as $role)
-                                                          <option value="{{$role -> id}}" selected>
-                                                            {{$role -> name}}
-                                                          </option>
-                                                      @endforeach
+                                                      <option value="4">owner</option>
+                                                        <option value="1">admin</option>
+                                                        <option value="2">manager</option>
+                                                        <option value="3">staff</option>
                                                       @endif
                                                      
         

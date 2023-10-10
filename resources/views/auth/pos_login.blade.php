@@ -103,8 +103,7 @@
                                               <option value="1">admin</option>
                                               <option value="2">manager</option>
                                               <option value="3">staff</option>
-                                              
-                                                  
+                                        
                                               </select> 
                                         </div>
                                     </div>
