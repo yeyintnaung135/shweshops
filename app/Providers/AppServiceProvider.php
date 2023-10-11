@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Http\Controllers\Trait\Category;
 use App\Models\Shops;
 use App\Models\SiteSettings;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
@@ -65,5 +66,7 @@ class AppServiceProvider extends ServiceProvider
         View::share('cat_list', $catlist);
 
         date_default_timezone_set('Asia/Yangon');
+
+        Paginator::useBootstrap();
     }
 }

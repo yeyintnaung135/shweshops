@@ -11,15 +11,9 @@
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-
-         
-  
-
-
-            <item-edit :main_cat="{{ $main_cat }}" :editdata="{{ $item }}"
-            :catlist="{{ $cat_list }}" :collection="{{ $collection }}"
-            link="{{ url('/backside/shop_owner/editajax') }}" ></item-edit>
-       
+            <item-edit :main_cat="{{ $main_cat }}" :editdata="{{ $item }}" :catlist="{{ $cat_list }}"
+                :collection="{{ $collection }}" link="{{ url('/backside/shop_owner/editajax') }}">
+            </item-edit>
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->
