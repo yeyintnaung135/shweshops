@@ -89,9 +89,9 @@
 
 
                         @if ($premium == 'Yes')
-                            <a class="sn-latest-news-button float" href="/all_events/{{ $event->shop_id }}">More News</a>
+                            <a class="sn-latest-news-button float" href="/all_events/{{ $event->shop_id }}">More Events</a>
                         @else
-                            <a class="sn-latest-news-button float" href="/events">More News</a>
+                            <a class="sn-latest-news-button float" href="/events">More Events</a>
                         @endif
                     </div>
 
