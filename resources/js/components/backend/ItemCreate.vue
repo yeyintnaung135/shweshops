@@ -5,17 +5,18 @@
             <div class="sn-item-create-wrapper">
                 <div class="">
                     <h3 class="">Create Your Item</h3>
+                    <h6 class=" text-danger mt-4">ဖြည့်ရန်လိုအပ်သည်*</h6>
                 </div>
                 <div>
                     <div class="">
-                        <div class="row">
+                        <div class="row mt-1">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label
                                         >Item Name
                                         <span
                                             v-if="this.name == ''"
-                                            class="sn-required-asterick"
+                                            class="sn-required-asterick text-primary"
                                             >*</span
                                         ></label
                                     >
@@ -44,7 +45,7 @@
                                         >Product Code
                                         <span
                                             v-if="this.product_code == 0"
-                                            class="sn-required-asterick"
+                                            class="sn-required-asterick text-primary"
                                             >*</span
                                         ></label
                                     >
@@ -69,9 +70,188 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-6 p-0">
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label>Stock <span class=' text-primary'>*</span></label>
+                                        <select
+                                            class="form-control"
+                                            v-model="stock"
+                                            v-on:change="stockchange"
+                                            style="width: 100%"
+                                        >
+                                            <option value="In Stock">
+                                                In Stock
+                                            </option>
+                                            <option value="Out Of Stock">
+                                                Out Of Stock
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div
+                                        class="col-6"
+                                        v-if="this.stock === 'In Stock'"
+                                    >
+                                        <label
+                                            >Counts
+                                            <span
+                                                class="sn-required-asterick text-primary"
+                                                >*</span
+                                            ></label
+                                        >
+
+                                        <input
+                                            v-bind:class="{
+                                                'border-danger':
+                                                    forvalidate_css(
+                                                        'stock_count'
+                                                    ),
+                                            }"
+                                            type="number"
+                                            class="form-control"
+                                            v-model="stock_count"
+                                            placeholder="Enter Exact Count"
+                                        />
+                                    </div>
+                                    <div
+                                        class="sn-required-asterick"
+                                        v-if="forvalidate_css('stock_count')"
+                                    >
+                                        {{
+                                            this.validate_errors[0].stock_count
+                                                .msg
+                                        }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 p-0">
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <label>Price Type <span class=' text-primary'>*</span></label>
+
+                                        <select
+                                            class="form-control form-select"
+                                            v-on:change="changeprice()"
+                                            v-model="exceptorrates"
+                                        >
+                                            <option value="Range">Range</option>
+
+                                            <option value="Exactly">
+                                                Exactly
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div
+                                        class="col-4"
+                                        v-if="this.exceptorrates == 'Range'"
+                                    >
+                                        <label style="font-size: 14px"
+                                            >MIN(Ks)
+                                            <span
+                                                v-if="this.min_price == 0"
+                                                class="sn-required-asterick text-primary"
+                                                >*</span
+                                            >
+                                        </label>
+
+                                        <input
+                                            @focus="$event.target.select()"
+                                            type="number"
+                                            v-on:input="
+                                                priceToWordLogic(
+                                                    min_price,
+                                                    'min'
+                                                )
+                                            "
+                                            class="form-control"
+                                            name="min_price"
+                                            v-model="min_price"
+                                            value=""
+                                            placeholder="Enter Min price"
+                                            v-bind:class="{
+                                                'border-danger':
+                                                    forvalidate_css('price'),
+                                            }"
+                                        />
+                                        <!-- <span id="min_price_word"></span> -->
+                                        <div>{{ snprice_to_word_min }}</div>
+                                    </div>
+                                    <div
+                                        class="col-4"
+                                        v-if="this.exceptorrates == 'Range'"
+                                    >
+                                        <label style="font-size: 14px"
+                                            >MAX(Ks)
+                                            <span
+                                                v-if="this.max_price == 0"
+                                                class="sn-required-asterick text-primary"
+                                                >*</span
+                                            >
+                                        </label>
+
+                                        <input
+                                            @focus="$event.target.select()"
+                                            type="number"
+                                            v-bind:class="{
+                                                'border-danger':
+                                                    forvalidate_css('price'),
+                                            }"
+                                            v-on:input="
+                                                priceToWordLogic(
+                                                    max_price,
+                                                    'max'
+                                                )
+                                            "
+                                            class="form-control"
+                                            name="max_price"
+                                            v-model="max_price"
+                                            value=""
+                                            placeholder="Enter MAX price"
+                                        />
+                                        <div>{{ snprice_to_word_max }}</div>
+                                    </div>
+                                    <div
+                                        class="col-8"
+                                        v-if="this.exceptorrates == 'Exactly'"
+                                    >
+                                        <label
+                                            >Price Exactly(Ks)
+                                            <span
+                                                v-if="this.price == 0"
+                                                class="sn-required-asterick text-primary"
+                                                >*</span
+                                            ></label
+                                        >
+
+                                        <input
+                                            @focus="$event.target.select()"
+                                            v-bind:class="{
+                                                'border-danger':
+                                                    forvalidate_css('price'),
+                                            }"
+                                            v-on:input="
+                                                priceToWordLogic(price, 'exact')
+                                            "
+                                            type="number"
+                                            class="form-control"
+                                            v-model="price"
+                                            name="price"
+                                            placeholder="Enter Exact price"
+                                        />
+                                        <div>{{ snprice_to_word_exact }}</div>
+                                    </div>
+                                    <div
+                                        class="sn-required-asterick"
+                                        v-if="forvalidate_css('price')"
+                                    >
+                                        {{ this.validate_errors[0].price.msg }}
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Main Category</label>
+                                    <label>Main Category <span class=' text-primary'>*</span></label>
                                     <select
                                         class="form-control"
                                         name="main_category"
@@ -88,9 +268,28 @@
                                     </select>
                                 </div>
                             </div>
+                            <!-- /.col -->
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Gold Colour</label>
+                                    <label>Product Category <span class=' text-primary'>*</span></label>
+                                    <select
+                                        class="form-control"
+                                        v-model="category_id"
+                                        style="width: 100%"
+                                    >
+                                        <option
+                                            v-for="cat in this.catlist"
+                                            :key="cat.index"
+                                            :value="cat.name"
+                                        >
+                                            {{ cat.mm_name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                             <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Gold Colour <span class=' text-primary'>*</span></label>
                                     <select
                                         class="form-control select2"
                                         name="gold_colour"
@@ -114,11 +313,10 @@
                                     </select>
                                 </div>
                             </div>
-
                             <!-- /.col -->
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Gold Quality</label>
+                                    <label>Gold Quality <span class=' text-primary'>*</span></label>
                                     <select
                                         class="form-control select2"
                                         name="gold_quality"
@@ -170,7 +368,7 @@
                             <div class="col-md-6 d-none">
                                 <div class="form-group row">
                                     <div class="col-6">
-                                        <label>Diamond Include </label>
+                                        <label>Diamond Include <span class=' text-primary'>*</span></label>
 
                                         <select
                                             class="form-control form-select"
@@ -191,7 +389,7 @@
                                         <label style="font-size: 14px"
                                             >ကာရက်(Carat)<span
                                                 v-if="this.carat == 0"
-                                                class="sn-required-asterick"
+                                                class="sn-required-asterick text-primary"
                                                 >*</span
                                             >
                                         </label>
@@ -212,7 +410,7 @@
                                         <label style="font-size: 14px"
                                             >ရတီ(Yati)<span
                                                 v-if="this.yati == 0"
-                                                class="sn-required-asterick"
+                                                class="sn-required-asterick text-primary"
                                                 >*</span
                                             >
                                         </label>
@@ -233,7 +431,7 @@
                                         <label style="font-size: 14px"
                                             >ပွင့်<span
                                                 v-if="this.pwint == 0"
-                                                class="sn-required-asterick"
+                                                class="sn-required-asterick text-primary"
                                                 >*</span
                                             >
                                         </label>
@@ -254,7 +452,7 @@
                                         <label style="font-size: 14px"
                                             >ဂရမ်(Gram)<span
                                                 v-if="this.d_gram == 0"
-                                                class="sn-required-asterick"
+                                                class="sn-required-asterick text-primary"
                                                 >*</span
                                             >
                                         </label>
@@ -272,170 +470,8 @@
                             </div>
                             <!--                            //temporary hide div-->
 
-                            <div class="col-md-6 p-0">
-                                <div class="form-group row">
-                                    <div class="col-12">
-                                        <label>Include Gems count </label>
-                                        <multi
-                                            v-model="gems"
-                                            :options="optionsm"
-                                            :multiple="true"
-                                            placeholder="Pick some"
-                                            @select="inputHandler"
-                                            @remove="removeHandler"
-                                            label="name"
-                                        ></multi>
-                                    </div>
-                                </div>
+                            
 
-                                <div
-                                    class="form-group row"
-                                    v-for="g in this.gems"
-                                    :key="g.index"
-                                >
-                                    <div class="col-12">
-                                        <label>Name</label>
-
-                                        <div class="form-control">
-                                            {{ g.name }}
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <label
-                                            v-if="g.error == false"
-                                            class="sn-required-asterick"
-                                            >Counts<span>*</span>
-                                        </label>
-                                        <label
-                                            v-else
-                                            class="sn-required-asterick"
-                                            >Counts<span>*</span>
-                                        </label>
-
-                                        <input
-                                            type="number"
-                                            class="form-control"
-                                            v-model="g.count"
-                                            v-bind:class="{
-                                                'border-danger': g.error,
-                                            }"
-                                            placeholder="Enter Count"
-                                        />
-                                    </div>
-                                    <div class="col-6">
-                                        <label style="font-size: 14px"
-                                            >ကာရက်<span></span>
-                                        </label>
-
-                                        <input
-                                            type="number"
-                                            class="form-control"
-                                            v-model="g.carat"
-                                            placeholder="Enter Count"
-                                        />
-                                    </div>
-
-                                    <div class="col-6">
-                                        <label style="font-size: 14px"
-                                            >ရတီ<span></span>
-                                        </label>
-
-                                        <input
-                                            type="number"
-                                            class="form-control"
-                                            v-model="g.yati"
-                                            placeholder="Enter Count"
-                                        />
-                                    </div>
-                                    <div class="col-6">
-                                        <label style="font-size: 14px"
-                                            >ဘီ<span></span>
-                                        </label>
-
-                                        <input
-                                            type="number"
-                                            class="form-control"
-                                            v-model="g.pwint"
-                                            placeholder="Enter Count"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 p-0">
-                                <div class="form-group row">
-                                    <div class="col-6">
-                                        <label>Stock</label>
-                                        <select
-                                            class="form-control"
-                                            v-model="stock"
-                                            v-on:change="stockchange"
-                                            style="width: 100%"
-                                        >
-                                            <option value="In Stock">
-                                                In Stock
-                                            </option>
-                                            <option value="Out Of Stock">
-                                                Out Of Stock
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div
-                                        class="col-6"
-                                        v-if="this.stock === 'In Stock'"
-                                    >
-                                        <label
-                                            >Counts
-                                            <span
-                                                v-if="this.stock_count == 0"
-                                                class="sn-required-asterick"
-                                                >*</span
-                                            ></label
-                                        >
-
-                                        <input
-                                            v-bind:class="{
-                                                'border-danger':
-                                                    forvalidate_css(
-                                                        'stock_count'
-                                                    ),
-                                            }"
-                                            type="number"
-                                            class="form-control"
-                                            v-model="stock_count"
-                                            placeholder="Enter Exact Count"
-                                        />
-                                    </div>
-                                    <div
-                                        class="sn-required-asterick"
-                                        v-if="forvalidate_css('stock_count')"
-                                    >
-                                        {{
-                                            this.validate_errors[0].stock_count
-                                                .msg
-                                        }}
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /.col -->
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Category</label>
-                                    <select
-                                        class="form-control"
-                                        v-model="category_id"
-                                        style="width: 100%"
-                                    >
-                                        <option
-                                            v-for="cat in this.catlist"
-                                            :key="cat.index"
-                                            :value="cat.name"
-                                        >
-                                            {{ cat.mm_name }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
                             <div class="col-sm-6">
                                 <!-- textarea -->
                                 <div class="form-group">
@@ -443,7 +479,7 @@
                                         >Description
                                         <span
                                             v-if="this.description == ''"
-                                            class="sn-required-asterick"
+                                            class="sn-required-asterick text-primary"
                                             >*</span
                                         ></label
                                     >
@@ -470,149 +506,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- /.col -->
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Gender </label>
-                                    <select
-                                        @change="temp"
-                                        class="form-control"
-                                        v-model="gender"
-                                        style="width: 100%"
-                                    >
-                                        <option value="Kid">Kid</option>
+                            <ykdropzone
+                                :link="this.link"
+                                ref="ykdz"
+                            ></ykdropzone>
+                            
+                            <h6 class="text-danger mt-2">** These are optional (လိုအပ်မှသာဖြည့်ရန်)</h6>
 
-                                        <option value="Men">Men</option>
-                                        <option value="Women">Women</option>
-                                        <option value="Couple">Couple</option>
-                                        <option value="UniSex">Uni Sex</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6 p-0">
-                                <div class="form-group row">
-                                    <div class="col-4">
-                                        <label>Price Type </label>
-
-                                        <select
-                                            class="form-control form-select"
-                                            v-on:change="changeprice()"
-                                            v-model="exceptorrates"
-                                        >
-                                            <option value="Range">Range</option>
-
-                                            <option value="Exactly">
-                                                Exactly
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div
-                                        class="col-4"
-                                        v-if="this.exceptorrates == 'Range'"
-                                    >
-                                        <label style="font-size: 14px"
-                                            >MIN(Ks)
-                                            <span
-                                                v-if="this.min_price == 0"
-                                                class="sn-required-asterick"
-                                                >*</span
-                                            >
-                                        </label>
-
-                                        <input
-                                            @focus="$event.target.select()"
-                                            type="number"
-                                            v-on:input="
-                                                priceToWordLogic(
-                                                    min_price,
-                                                    'min'
-                                                )
-                                            "
-                                            class="form-control"
-                                            name="min_price"
-                                            v-model="min_price"
-                                            value=""
-                                            placeholder="Enter Min price"
-                                            v-bind:class="{
-                                                'border-danger':
-                                                    forvalidate_css('price'),
-                                            }"
-                                        />
-                                        <!-- <span id="min_price_word"></span> -->
-                                        <div>{{ snprice_to_word_min }}</div>
-                                    </div>
-                                    <div
-                                        class="col-4"
-                                        v-if="this.exceptorrates == 'Range'"
-                                    >
-                                        <label style="font-size: 14px"
-                                            >MAX(Ks)
-                                            <span
-                                                v-if="this.max_price == 0"
-                                                class="sn-required-asterick"
-                                                >*</span
-                                            >
-                                        </label>
-
-                                        <input
-                                            @focus="$event.target.select()"
-                                            type="number"
-                                            v-bind:class="{
-                                                'border-danger':
-                                                    forvalidate_css('price'),
-                                            }"
-                                            v-on:input="
-                                                priceToWordLogic(
-                                                    max_price,
-                                                    'max'
-                                                )
-                                            "
-                                            class="form-control"
-                                            name="max_price"
-                                            v-model="max_price"
-                                            value=""
-                                            placeholder="Enter MAX price"
-                                        />
-                                        <div>{{ snprice_to_word_max }}</div>
-                                    </div>
-                                    <div
-                                        class="col-8"
-                                        v-if="this.exceptorrates == 'Exactly'"
-                                    >
-                                        <label
-                                            >Price Exactly(Ks)
-                                            <span
-                                                v-if="this.price == 0"
-                                                class="sn-required-asterick"
-                                                >*</span
-                                            ></label
-                                        >
-
-                                        <input
-                                            @focus="$event.target.select()"
-                                            v-bind:class="{
-                                                'border-danger':
-                                                    forvalidate_css('price'),
-                                            }"
-                                            v-on:input="
-                                                priceToWordLogic(price, 'exact')
-                                            "
-                                            type="number"
-                                            class="form-control"
-                                            v-model="price"
-                                            name="price"
-                                            placeholder="Enter Exact price"
-                                        />
-                                        <div>{{ snprice_to_word_exact }}</div>
-                                    </div>
-                                    <div
-                                        class="sn-required-asterick"
-                                        v-if="forvalidate_css('price')"
-                                    >
-                                        {{ this.validate_errors[0].price.msg }}
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="pc"></div>
+                            <div class="col-6 col-md-8">&nbsp;</div>
+                            
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label style="font-size: 15px"
@@ -637,6 +540,7 @@
                                     />
                                 </div>
                             </div>
+                            
                             <div class="row sn-percent">
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -705,6 +609,118 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-6 p-0">
+                                <div class="form-group row">
+                                    <div class="col-12">
+                                        <label>Include Gems count </label>
+                                        <multi
+                                            v-model="gems"
+                                            :options="optionsm"
+                                            :multiple="true"
+                                            placeholder="Pick some"
+                                            @select="inputHandler"
+                                            @remove="removeHandler"
+                                            label="name"
+                                        ></multi>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="form-group row"
+                                    v-for="g in this.gems"
+                                    :key="g.index"
+                                >
+                                    <div class="col-12">
+                                        <label>Name</label>
+
+                                        <div class="form-control">
+                                            {{ g.name }}
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <label
+                                            v-if="g.error == false"
+                                            class="sn-required-asterick text-primary"
+                                            >Counts<span>*</span>
+                                        </label>
+                                        <label
+                                            v-else
+                                            class="sn-required-asterick text-primary"
+                                            >Counts<span>*</span>
+                                        </label>
+
+                                        <input
+                                            type="number"
+                                            class="form-control"
+                                            v-model="g.count"
+                                            v-bind:class="{
+                                                'border-danger': g.error,
+                                            }"
+                                            placeholder="Enter Count"
+                                        />
+                                    </div>
+                                    <div class="col-6">
+                                        <label style="font-size: 14px"
+                                            >ကာရက်<span></span>
+                                        </label>
+
+                                        <input
+                                            type="number"
+                                            class="form-control"
+                                            v-model="g.carat"
+                                            placeholder="Enter Count"
+                                        />
+                                    </div>
+
+                                    <div class="col-6">
+                                        <label style="font-size: 14px"
+                                            >ရတီ<span></span>
+                                        </label>
+
+                                        <input
+                                            type="number"
+                                            class="form-control"
+                                            v-model="g.yati"
+                                            placeholder="Enter Count"
+                                        />
+                                    </div>
+                                    <div class="col-6">
+                                        <label style="font-size: 14px"
+                                            >ဘီ<span></span>
+                                        </label>
+
+                                        <input
+                                            type="number"
+                                            class="form-control"
+                                            v-model="g.pwint"
+                                            placeholder="Enter Count"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                             <!-- /.col -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Gender </label>
+                                    <select
+                                        @change="temp"
+                                        class="form-control"
+                                        v-model="gender"
+                                        style="width: 100%"
+                                    >
+                                        <option value="Kid">Kid</option>
+
+                                        <option value="Men">Men</option>
+                                        <option value="Women">Women</option>
+                                        <option value="Couple">Couple</option>
+                                        <option value="UniSex">Uni Sex</option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <!-- /.col -->
                             <Ykweight ref="aa"></Ykweight>
 
@@ -714,7 +730,8 @@
                                 class="d-none"
                                 width="300"
                             ></canvas>
-                            <div class="col-md-6 pt-3">
+
+                             <div class="col-md-6 pt-3">
                                 <label for="tags-basic"
                                     >Type a new tag and press enter</label
                                 >
@@ -725,22 +742,15 @@
                                     separator=",;"
                                 ></b-form-tags>
                             </div>
-                            <ykdropzone
-                                :link="this.link"
-                                ref="ykdz"
-                            ></ykdropzone>
-
-                            <div class="pc"></div>
-                            <div class="col-6 col-md-8">&nbsp;</div>
-
+                            
                             <div class="col-12">
                                 <button
                                     class="sn-item-create-button btn btn-primary float-right float-sm-none"
                                     type="submit"
                                     @click="submitform"
                                 >
-                                    Create
-                                </button>
+                                    Done
+                            </button>
                             </div>
                         </div>
                     </div>

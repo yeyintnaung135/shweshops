@@ -88,6 +88,7 @@ class ShopOwnerLoginController extends Controller
 
         $roleCheck = Auth::guard('shop_owners_and_staffs')->attempt(['phone' => $request->value, 'password' => $request->password,'role_id'=>$request->role_id, 'deleted_at' => null]);
         if ($roleCheck ) {
+            Session::put('staff_role',$request->role_id);
                 Session::flash('loginedSO','shopownerlogined');
                 if($request->from == 'fromhelpandsupport'){
                     return redirect(url('backside/shop_owner/support'));
