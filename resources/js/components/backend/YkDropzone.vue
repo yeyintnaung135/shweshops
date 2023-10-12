@@ -1,14 +1,5 @@
 <template>
     <div class="col-md-12 pt-3">
-        <div>
-            <label
-                style="font-size: 15px"
-                v-bind:class="{
-                    'sn-required-asterick': validatedz_css(),
-                }"
-                >အနည်းဆုံး ပုံ တစ်ပုံတင်ပါ</label
-            >
-        </div>
 
         <vue-dropzone
             :include-styling="false"
@@ -29,6 +20,15 @@
                 class="dropzone-custom-content yk-mt-lg mb-2"
                 style="text-align: center"
             >
+             <div>
+            <label
+                style="font-size: 15px"
+                v-bind:class="{
+                    'sn-required-asterick': validatedz_css(),
+                }"
+                >Choose Your Product Photos <span class=' text-primary'>*</span></label
+            >
+            </div>
                 <i
                     class="fa fa-plus-circle"
                     aria-hidden="true"
@@ -36,6 +36,8 @@
                 ></i>
             </div>
         </vue-dropzone>
+        
+        <hr class="mt-4">
     </div>
 </template>
 <script>
