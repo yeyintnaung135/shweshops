@@ -138,7 +138,8 @@
                                             @if (Auth::guard('shop_owners_and_staffs')->user()->role_id == 4)
                                                 <div class="col-6">
                                                     @if (Auth::guard('shop_owners_and_staffs')->user()->role_id == 1 ||
-                                                            Auth::guard('shop_owners_and_staffs')->user()->role_id == 2)
+                                                            Auth::guard('shop_owners_and_staffs')->user()->role_id == 2 ||
+                                                            Auth::guard('shop_owners_and_staffs')->user()->role_id == 4)
                                                         <a href="{{ route('backside.shop_owner.edit') }}"
                                                             class="btn btn-primary btn-block"><b>
                                                                 <span class="fa fa-edit"></span>&nbsp;&nbsp;<span
@@ -319,10 +320,10 @@
         }
 
         /* .profile img{
-                      position: absolute;
-                      top: -5em;
-                      z-index: 100;
-                    } */
+                          position: absolute;
+                          top: -5em;
+                          z-index: 100;
+                        } */
 
         .shop_name {
             position: absolute;
@@ -357,10 +358,10 @@
             }
 
             /* .profile img{
-                            position: absolute;
-                            top: -3.5em;
+                                position: absolute;
+                                top: -3.5em;
 
-                        } */
+                            } */
             .shop_name {
                 position: absolute;
                 left: 8em;
@@ -391,9 +392,9 @@
 
 
             /* .sop-profile-back {
-                            margin-top: -75px !important;
-                            margin-left: 25px;
-                        } */
+                                margin-top: -75px !important;
+                                margin-left: 25px;
+                            } */
         }
     </style>
 @endpush

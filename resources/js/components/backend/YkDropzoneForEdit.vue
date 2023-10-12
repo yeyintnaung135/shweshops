@@ -62,7 +62,7 @@ export default {
             thumb_photos: [],
             submittedLoading: 0,
             dzerror: [],
-            imgurl:'',
+            imgurl: "",
 
             removeimgqueue: [],
 
@@ -117,17 +117,15 @@ export default {
             },
         };
     },
-    beforeMount(){
+    beforeMount() {
         if (process.env.MIX_USE_DO == "true") {
             this.imgurl = process.env.MIX_DO_URL;
         } else {
-            this.imgurl = this.$hostname+'/images';
+            this.imgurl = this.$hostname + "/images";
         }
     },
 
     mounted() {
-      
-       
         this.setdefaultphoto(this.editdata.default_photo);
     },
     components: {
@@ -271,7 +269,7 @@ export default {
 
         callaftermount: function () {
             $(".dz-message").addClass("yk-width-full");
-            console.log('call'+this.imgurl)
+            console.log("call" + this.imgurl);
 
             var url = [];
             if (this.editdata.photo_one != "") {
@@ -282,9 +280,7 @@ export default {
                     size: 423,
                     type: "image/jpg",
                 });
-                url.push(
-                    this.imgurl + "/items/" + this.editdata.photo_one
-                );
+                url.push(this.imgurl + "/items/" + this.editdata.photo_one);
             }
             if (this.editdata.photo_two != "") {
                 this.tempphotonames.push(this.editdata.photo_two);
@@ -294,9 +290,7 @@ export default {
                     size: 323,
                     type: "image/jpg",
                 });
-                url.push(
-                    this.imgurl + "/items/" + this.editdata.photo_two
-                );
+                url.push(this.imgurl + "/items/" + this.editdata.photo_two);
             }
             if (this.editdata.photo_three != "") {
                 this.tempphotonames.push(this.editdata.photo_three);
@@ -306,11 +300,7 @@ export default {
                     size: 223,
                     type: "image/jpg",
                 });
-                url.push(
-                    this.imgurl +
-                        "/items/" +
-                        this.editdata.photo_three
-                );
+                url.push(this.imgurl + "/items/" + this.editdata.photo_three);
             }
             if (this.editdata.photo_four != "") {
                 this.tempphotonames.push(this.editdata.photo_four);
@@ -320,9 +310,7 @@ export default {
                     size: 223,
                     type: "image/jpg",
                 });
-                url.push(
-                    this.imgurl + "/items/" + this.editdata.photo_four
-                );
+                url.push(this.imgurl + "/items/" + this.editdata.photo_four);
             }
             if (this.editdata.photo_five != "") {
                 this.tempphotonames.push(this.editdata.photo_five);
@@ -332,9 +320,7 @@ export default {
                     size: 223,
                     type: "image/jpg",
                 });
-                url.push(
-                    this.imgurl + "/items/" + this.editdata.photo_five
-                );
+                url.push(this.imgurl + "/items/" + this.editdata.photo_five);
             }
             if (this.editdata.photo_six != "") {
                 this.tempphotonames.push(this.editdata.photo_six);
@@ -344,9 +330,7 @@ export default {
                     size: 223,
                     type: "image/jpg",
                 });
-                url.push(
-                    this.imgurl + "/items/" + this.editdata.photo_six
-                );
+                url.push(this.imgurl + "/items/" + this.editdata.photo_six);
             }
             if (this.editdata.photo_seven != "") {
                 this.tempphotonames.push(this.editdata.photo_seven);
@@ -356,11 +340,7 @@ export default {
                     size: 223,
                     type: "image/jpg",
                 });
-                url.push(
-                    this.imgurl +
-                        "/items/" +
-                        this.editdata.photo_seven
-                );
+                url.push(this.imgurl + "/items/" + this.editdata.photo_seven);
             }
             if (this.editdata.photo_eight != "") {
                 this.tempphotonames.push(this.editdata.photo_eight);
@@ -370,11 +350,7 @@ export default {
                     size: 223,
                     type: "image/jpg",
                 });
-                url.push(
-                    this.imgurl +
-                        "/items/" +
-                        this.editdata.photo_eight
-                );
+                url.push(this.imgurl + "/items/" + this.editdata.photo_eight);
             }
             if (this.editdata.photo_nine != "") {
                 this.tempphotonames.push(this.editdata.photo_nine);
@@ -384,9 +360,7 @@ export default {
                     size: 223,
                     type: "image/jpg",
                 });
-                url.push(
-                    this.imgurl + "/items/" + this.editdata.photo_nine
-                );
+                url.push(this.imgurl + "/items/" + this.editdata.photo_nine);
             }
             if (this.editdata.photo_ten != "") {
                 this.tempphotonames.push(this.editdata.photo_ten);
@@ -396,9 +370,7 @@ export default {
                     size: 223,
                     type: "image/jpg",
                 });
-                url.push(
-                    this.imgurl + "/items/" + this.editdata.photo_ten
-                );
+                url.push(this.imgurl + "/items/" + this.editdata.photo_ten);
             }
             for (var i = 0; i < this.existingFiles.length; i++) {
                 this.$refs.myVueDropzone.manuallyAddFile(
