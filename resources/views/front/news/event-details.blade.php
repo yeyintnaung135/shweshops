@@ -59,14 +59,13 @@
                                 @if ($premium == 'Yes')
                                     <a href="{{ route('pEvents.detail', ['id' => $e->id, 'shopid' => $e->shop_id]) }}"
                                         target="_blank" rel="noopener noreferrer">
-                                        <img class="w-100" src="{{ filedopath('/news_&_events/event/' . $e->photo) }}"
+                                        <img class="w-100" src="{{ filedopath('/shop_owner/events/' . $e->photo) }}"
                                             alt="">
                                         <h6 class="mt-3 text-black  more-events-title">{{ $e->title }}</h6>
                                     </a>
                                 @else
-                                    <a href="{{ route('events.detail', $e->id) }}" target="_blank"
-                                        rel="noopener noreferrer">
-                                        @if (dofile_exists('/news_&_events/event/' . $e->photo))
+                                    <a href="{{ route('events.detail', $e->id) }}" target="_blank" rel="noopener noreferrer">
+                                        @if (dofile_exists('/news_&_events/events/' . $e->photo))
                                             <img class="w-100" src="{{ filedopath('/news_&_events/event/' . $e->photo) }}"
                                                 alt="">
                                         @else
@@ -89,9 +88,9 @@
 
 
                         @if ($premium == 'Yes')
-                            <a class="sn-latest-news-button float" href="/all_events/{{ $event->shop_id }}">More Events</a>
+                            <a class="sn-latest-news-button float" href="/all_events/{{ $event->shop_id }}">More News</a>
                         @else
-                            <a class="sn-latest-news-button float" href="/events">More Events</a>
+                            <a class="sn-latest-news-button float" href="/events">More News</a>
                         @endif
                     </div>
 
