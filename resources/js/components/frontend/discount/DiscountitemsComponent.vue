@@ -250,7 +250,7 @@ export default {
         if (process.env.MIX_USE_DO == "true") {
             this.imgurl = process.env.MIX_DO_URL;
         } else {
-            this.imgurl = this.$hostname;
+            this.imgurl = this.$hostname + "/images";
         }
         if (this.shop_id != undefined) {
             this.shopid = this.shop_id;
