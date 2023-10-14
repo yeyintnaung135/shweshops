@@ -71,7 +71,7 @@
                         >
                             <div v-lazy-container="{ selector: 'img' }">
                                 <img
-                                    :data-src="imgurl + d.CheckPhoto"
+                                :data-src="imgurl + d.CheckPhotobig"
                                     :data-loading="imgurl + d.CheckPhotothumbs"
                                     class="sop-image-w-h"
                                     lazy="loading"

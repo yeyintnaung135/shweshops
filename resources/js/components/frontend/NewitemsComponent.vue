@@ -60,7 +60,7 @@
                             >
                                 <div v-lazy-container="{ selector: 'img' }">
                                     <img
-                                        :data-src="imgurl + item.CheckPhoto"
+                                        :data-src="imgurl + item.CheckPhotobig"
                                         :data-loading="
                                             imgurl + item.CheckPhotothumbs
                                         "

@@ -149,17 +149,26 @@ class Item extends Model
     public function getCheckPhotobigAttribute()
     {
         $photo_column = ['photo_one', 'photo_two', 'photo_three', 'photo_four', 'photo_five', 'photo_six', 'photo_seven', 'photo_eight', 'photo_nine', 'photo_ten'];
-        if ($this->default_photo == '') {
+
+        if ($this->default_photo == '' or !dofile_exists('/items/' . $this->default_photo)) {
             foreach ($photo_column as $pc) {
                 if ($this[$pc] != '') {
                     $show_photo = $this[$pc];
-                    return '/items/' . $show_photo;
-
+                    if (dofile_exists('/items/' . $show_photo)) {
+                        return '/items/' . $show_photo;
+                    } else {
+                        return '/items/mid/' . $show_photo;
+                    }
                     break;
                 }
             }
         } else {
-            return '/items/' . $this->default_photo;
+            if (dofile_exists('/items/' . $this->default_photo)) {
+
+                return '/items/' . $this->default_photo;
+            } else {
+                return '/items/mid/' . $this->default_photo;
+            }
         }
     }
 
