@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\forfacebook;
 
-use App\facebookmessage;
-use App\facebooktable;
+use App\Models\FacebookMessage;
+use App\Models\FacebookTable;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\traid\UserRole;
+use App\Http\Controllers\Trait\UserRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,8 +22,8 @@ class FacebookController extends Controller
 //    }
     public function checkwehavetoken(){
 //             $shop_id=Auth::guard('shop_owner')->user()->id;
-             $shop_id=$this->getshopid();
-             $countrecords=facebooktable::where('shop_owner_id',$shop_id)->count();
+             $shop_id=$this->get_shopid();
+             $countrecords=FacebookTable::where('shop_owner_id',$shop_id)->count();
              if($countrecords == 0){
                  return response()->json(['status'=>false]);
              }else{
@@ -33,7 +33,7 @@ class FacebookController extends Controller
     }
     public function addlog(Request $request){
         if(Auth::guard('web')->check()){
-            facebookmessage::create(['user_fb_id'=>$request->userid,'shop_id'=>$request->shopid,'user_id'=>$request->userid,'item_id'=>$request->itemid]);
+            FacebookMessage::create(['user_fb_id'=>$request->userid,'shop_id'=>$request->shopid,'user_id'=>$request->userid,'item_id'=>$request->itemid]);
             return response()->json(['status'=>'done']);
 
         }else{
@@ -44,12 +44,12 @@ class FacebookController extends Controller
 
     public function storetoken(Request $request){
 //             $shop_id=Auth::guard('shop_owner')->user()->id;
-        $shop_id=$this->getshopid();
+        $shop_id=$this->get_shopid();
 
         $input=$request->all();
         $input['shop_id']=$shop_id;
         $input['shop_owner_id']=$shop_id;
-        $countrecords=facebooktable::create($input)->count();
+        $countrecords=FacebookTable::create($input)->count();
         if($countrecords == 0){
             return response()->json(['status'=>false]);
         }else{

@@ -88,7 +88,7 @@ const backend = new Vue({
         fbdata: { connected: "test", longliveusertoken: "empty", showdv: "no" },
     },
     created() {
-        console.log("backend start====ff");
+        console.log("backend start====");
         allfromfbjs.initialfacebook(this);
     },
     mounted() {
@@ -237,7 +237,6 @@ const backend = new Vue({
         fblogin() {
             console.log("start fb login====");
             allfromfbjs.fblogin(this);
-            console.log(this.testfbdata);
         },
         //for facebook
         //

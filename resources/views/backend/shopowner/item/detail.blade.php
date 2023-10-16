@@ -72,7 +72,7 @@
 
                                     @if ($item->photo_one != '' && $item->photo_one != $item->default_photo)
                                         <div class="carousel__slide "
-                                            data-src="{{ filedopath('/items/mid' . $item->photo_one) }}"
+                                            data-src="{{ filedopath('/items/' . $item->photo_one) }}"
                                             data-fancybox="group">
                                             @if ($item->check_discount != '0')
                                                 <div class="sop-ribbon-pd ">

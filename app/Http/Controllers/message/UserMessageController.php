@@ -65,7 +65,7 @@ class UsermessageController extends Controller
 
 
 
-
+            
         return response()->json(['success' => true, 'msg' => 'successfully send']);
     }
 

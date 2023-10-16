@@ -60,7 +60,7 @@
                             >
                                 <div v-lazy-container="{ selector: 'img' }">
                                     <img
-                                        :data-src="imgurl + item.CheckPhoto"
+                                        :data-src="imgurl + item.CheckPhotobig"
                                         :data-loading="
                                             imgurl + item.CheckPhotothumbs
                                         "
@@ -215,7 +215,7 @@ export default {
         if (process.env.MIX_USE_DO == "true") {
             this.imgurl = process.env.MIX_DO_URL;
         } else {
-            this.imgurl = this.$hostname;
+            this.imgurl = this.$hostname + "/images";
         }
         this.newdata = this.newitems;
         console.log(this.current_shop_count);

@@ -71,7 +71,7 @@
                         >
                             <div v-lazy-container="{ selector: 'img' }">
                                 <img
-                                    :data-src="imgurl + d.CheckPhoto"
+                                :data-src="imgurl + d.CheckPhotobig"
                                     :data-loading="imgurl + d.CheckPhotothumbs"
                                     class="sop-image-w-h"
                                     lazy="loading"
@@ -250,7 +250,7 @@ export default {
         if (process.env.MIX_USE_DO == "true") {
             this.imgurl = process.env.MIX_DO_URL;
         } else {
-            this.imgurl = this.$hostname;
+            this.imgurl = this.$hostname + "/images";
         }
         if (this.shop_id != undefined) {
             this.shopid = this.shop_id;
