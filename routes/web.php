@@ -9,7 +9,7 @@ use App\Http\Controllers\forfacebook\FacebookController;
 
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ShopCollectionController;
-
+use App\Http\Controllers\ShopOwner\ShopOwnerController;
 use App\Http\Controllers\FrontForCatController;
 use App\Http\Controllers\FrontForDiscountController;
 use App\Http\Controllers\FrontShopController;
@@ -26,12 +26,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
+
 //URL::forceScheme('https');  //at the top of the file
 Route::get('/getprice', [DiscountController::class, 'price_update']);
 
 Route::group(
     ['middleware' => ['web', 'foratc']],
     function () {
+        //move datas from shops to shop_owner_and_staff
+        Route::get('/test/movedatas',[SupportFrontController::class, 'movedatas']);
+
         // for frontend user
         Route::get('/adsclick/{name}/{id}', [LogController::class, 'storeadsclicklog']);
         Route::get('/support', [SupportFrontController::class, 'support']);
