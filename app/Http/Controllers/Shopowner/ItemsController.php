@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\FacebookTrait;
 use App\Http\Controllers\Trait\Logs\MultipleDamageLogsTrait;
 use App\Http\Controllers\Trait\Logs\MultiplePriceLogsTrait;
-use App\Http\Controllers\Trait\Logs\ShopsLogActivityTrait;
+use App\Http\Controllers\Trait\Logs\ShopOwnerLogActivityTrait;
 use App\Http\Controllers\Trait\MultipleItem;
 use App\Http\Controllers\Trait\UserRole;
 use App\Http\Controllers\Trait\YKImage;
@@ -39,7 +39,7 @@ use Yajra\DataTables\DataTables;
 
 class ItemsController extends Controller
 {
-    use YKImage, UserRole, FacebookTrait, ShopsLogActivityTrait,
+    use YKImage, UserRole, FacebookTrait, ShopOwnerLogActivityTrait,
     MultipleItem, MultipleDamageLogsTrait, MultiplePriceLogsTrait;
 
     public $err_data = [];
@@ -327,7 +327,7 @@ class ItemsController extends Controller
         $input['weight_unit'] = 0;
 
         $itemupload = Item::create($input);
-        $this->ShopsCreateLog($itemupload, $this->get_shopid());
+        $this->shop_owner_item_create_log($itemupload, $this->get_shopid());
         if ($itemupload) {
             Gems::create(['gems' => $input['gems'], 'item_id' => $itemupload->id]);
             $itemupload->tag($request->tags);
@@ -428,7 +428,7 @@ class ItemsController extends Controller
 
             $shop_id = $this->get_shopid();
 
-            $this->ShopsEditLog($change, $shop_id);
+            $shopownerlogid = $this->shop_owner_item_edit_log($change, $shop_id);
             Item::find($request->id)->retag($request->all()['tags']);
 
             $checkgcount = Gems::where('item_id', $request->id)->count();
@@ -457,282 +457,13 @@ class ItemsController extends Controller
         //     return dd($input);
 
         // }
-        // $new_gem = Gems::where('item_id', $request->id)->first();
-        // $changes = $change->getChanges();
-        // $new_tags = $request->tags;
-        // $items_edit_detail_logs = new ItemsEditDetailLogs();
-        // $new_gem = Gems::where('item_id', $request->id)->first();
-        // $new_tags = $request->tags;
-        // $item_newtag = Item::where('id', $request->id)->first();
-        // $item_newtagarray = explode(',', $item_newtag->tags);
-        // $newcollection = collect($item_newtagarray);
-        // $newoutput = $newcollection->implode(',');
 
-        // $changes = $change->getChanges();
-
-        // $items_edit_detail_logs = new ItemsEditDetailLogs();
-        // // return dd($item_tag['tags']);
-
-        // $items_edit_detail_logs->tags = $output;
-
-        // if ($output == $newoutput) {
-        //     $items_edit_detail_logs->new_tags = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_tags = $new_tags;
-        // }
-        // $items_edit_detail_logs->gems = $old_gem->gems;
-
-        // if ($old_gem == $new_gem) {
-        //     $items_edit_detail_logs->new_gems = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_gems = $new_gem->gems;
-        // }
-
-        // $items_edit_detail_logs->photo_one = $current_item->photo_one;
-        // if ($current_item->photo_one == $change->photo_one) {
-        //     $items_edit_detail_logs->new_photo_one = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_photo_one = "images changes";
-        // }
-        // $items_edit_detail_logs->photo_two = $current_item->photo_two;
-        // if ($current_item->photo_two == $change->photo_two) {
-        //     $items_edit_detail_logs->new_photo_two = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_photo_two = "images changes";
-        // }
-        // $items_edit_detail_logs->photo_three = $current_item->photo_three;
-        // if ($current_item->photo_three == $change->photo_three) {
-        //     $items_edit_detail_logs->new_photo_three = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_photo_three = "images changes";
-        // }
-        // $items_edit_detail_logs->photo_four = $current_item->photo_four;
-        // if ($current_item->photo_four == $change->photo_four) {
-        //     $items_edit_detail_logs->new_photo_four = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_photo_four = "images changes";
-        // }
-        // $items_edit_detail_logs->photo_five = $current_item->photo_five;
-        // if ($current_item->photo_five == $change->photo_five) {
-        //     $items_edit_detail_logs->new_photo_five = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_photo_five = "images changes";
-        // }
-        // $items_edit_detail_logs->photo_six = $current_item->photo_six;
-        // if ($current_item->photo_six == $change->photo_six) {
-        //     $items_edit_detail_logs->new_photo_six = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_photo_six = "images changes";
-        // }
-        // $items_edit_detail_logs->photo_seven = $current_item->photo_seven;
-        // if ($current_item->photo_seven == $change->photo_seven) {
-        //     $items_edit_detail_logs->new_photo_seven = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_photo_seven = "images changes";
-        // }
-        // $items_edit_detail_logs->photo_eight = $current_item->photo_eight;
-        // if ($current_item->photo_eight == $change->photo_eight) {
-        //     $items_edit_detail_logs->new_photo_eight = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_photo_eight = "images changes";
-        // }
-        // $items_edit_detail_logs->photo_nine = $current_item->photo_nine;
-        // if ($current_item->photo_nine == $change->photo_nine) {
-        //     $items_edit_detail_logs->new_photo_nine = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_photo_nine = "images changes";
-        // }
-        // $items_edit_detail_logs->photo_ten = $current_item->photo_ten;
-        // if ($current_item->photo_ten == $change->photo_ten) {
-        //     $items_edit_detail_logs->new_photo_ten = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_photo_ten = "images changes";
-        // }
-        // $items_edit_detail_logs->default_photo = $current_item->default_photo;
-        // if ($current_item->default_photo == $change->default_photo) {
-        //     $items_edit_detail_logs->new_default_photo = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_default_photo = "images changes";
-        // }
-
-        // $items_edit_detail_logs->name = $current_item->name;
-        // if ($current_item->name == $change->name) {
-        //     $items_edit_detail_logs->new_name = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_name = $changes['name'];
-        // }
-
-        // $items_edit_detail_logs->price = $current_item->price;
-        // if ($current_item->price == $change->price) {
-        //     $items_edit_detail_logs->new_price = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_price = $changes['price'];
-        // }
-        // $items_edit_detail_logs->description = $current_item->description;
-        // if ($current_item->description == $change->description) {
-        //     $items_edit_detail_logs->new_description = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_description = $changes['description'];
-        // }
-        // $items_edit_detail_logs->product_code = $current_item->product_code;
-        // if ($current_item->product_code == $change->product_code) {
-        //     $items_edit_detail_logs->new_product_code = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_product_code = $changes['product_code'];
-        // }
-        // $items_edit_detail_logs->gold_quality = $current_item->gold_quality;
-        // if ($current_item->gold_quality == $change->gold_quality) {
-        //     $items_edit_detail_logs->new_gold_quality = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_gold_quality = $changes['gold_quality'];
-        // }
-        // $items_edit_detail_logs->gold_colour = $current_item->gold_colour;
-        // if ($current_item->gold_colour == $change->gold_colour) {
-        //     $items_edit_detail_logs->new_gold_colour = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_gold_colour = $changes['gold_colour'];
-        // }
-        // //   $items_edit_detail_logs->sizing_guide = $old['sizing_guide'];
-        // //   if($changes == []){
-        // //         $items_edit_detail_logs->new_sizing_guide = "-----";
-        // //   }else{
-        // //       $items_edit_detail_logs->new_sizing_guide = $changes['sizing_guide'];
-        // //   }
-        // $items_edit_detail_logs->undamage = $current_item->undamaged_product;
-        // if ($current_item->undamaged_product == $change->undamaged_product) {
-        //     $items_edit_detail_logs->new_undamage = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_undamage = $changes['undamaged_product'];
-        // }
-        // $items_edit_detail_logs->expensive_thing = $current_item->valuable_product;
-        // if ($current_item->valuable_product == $change->valuable_product) {
-        //     $items_edit_detail_logs->new_expensive_thing = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_expensive_thing = $changes['valuable_product'];
-        // }
-        // $items_edit_detail_logs->damage = $current_item->damaged_product;
-        // if ($current_item->damaged_product == $change->damaged_product) {
-        //     $items_edit_detail_logs->new_damage = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_damage = $changes['damaged_product'];
-        // }
-        // $items_edit_detail_logs->weight = $current_item->weight;
-        // if ($current_item->weight == $change->weight) {
-        //     $items_edit_detail_logs->new_weight = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_weight = $changes['weight'];
-        // }
-        // //   $items_edit_detail_logs->weight_unit = $old['weight_unit'];
-        // //   if($changes == []){
-        // //         $items_edit_detail_logs->new_weight_unit = "-----";
-        // //   }else{
-        // //       $items_edit_detail_logs->new_weight_unit = $changes['weight_unit'];
-        // //   }
-
-        // $items_edit_detail_logs->min_price = $current_item->min_price;
-        // if ($current_item->min_price == $change->min_price) {
-        //     $items_edit_detail_logs->new_min_price = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_min_price = $changes['min_price'];
-        // }
-        // $items_edit_detail_logs->max_price = $current_item->max_price;
-        // if ($current_item->max_price == $change->max_price) {
-        //     $items_edit_detail_logs->new_max_price = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_max_price = $changes['max_price'];
-        // }
-        // $items_edit_detail_logs->review = $current_item->review;
-        // if ($current_item->review == $change->review) {
-        //     $items_edit_detail_logs->new_review = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_review = $changes['review'];
-        // }
-        // $items_edit_detail_logs->stock = $current_item->stock;
-        // if ($current_item->stock == $change->stock) {
-        //     $items_edit_detail_logs->new_stock = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_stock = $changes['stock'];
-        // }
-        // $items_edit_detail_logs->stock_count = $current_item->stock_count;
-        // if ($current_item->stock_count == $change->stock_count) {
-        //     $items_edit_detail_logs->new_stock_count = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_stock_count = $changes['stock_count'];
-        // }
-        // $items_edit_detail_logs->diamond = $current_item->diamond;
-        // if ($current_item->diamond == $change->diamond) {
-        //     $items_edit_detail_logs->new_diamond = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_diamond = $changes['diamond'];
-        // }
-        // $items_edit_detail_logs->carat = $current_item->carat;
-        // if ($current_item->carat == $change->carat) {
-        //     $items_edit_detail_logs->new_carat = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_carat = $changes['carat'];
-        // }
-        // $items_edit_detail_logs->yati = $current_item->yati;
-        // if ($current_item->yati == $change->yati) {
-        //     $items_edit_detail_logs->new_yati = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_yati = $changes['yati'];
-        // }
-        // $items_edit_detail_logs->gender = $current_item['gender'];
-        // if ($current_item->gender == $change->gender) {
-        //     $items_edit_detail_logs->new_gender = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_gender = $changes['gender'];
-        // }
-        // $items_edit_detail_logs->handmade = $current_item->handmade;
-        // if ($current_item->handmade == $change->handmade) {
-        //     $items_edit_detail_logs->new_handmade = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_handmade = $changes['handmade'];
-        // }
-        // $items_edit_detail_logs->pwint = $current_item->pwint;
-        // if ($current_item->pwint == $change->pwint) {
-        //     $items_edit_detail_logs->new_pwint = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_pwint = $changes['pwint'];
-        // }
-        // $items_edit_detail_logs->d_gram = $current_item->d_gram;
-        // if ($current_item->d_gram == $change->d_gram) {
-        //     $items_edit_detail_logs->new_d_gram = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_d_gram = $changes['d_gram'];
-        // }
-        // $items_edit_detail_logs->category_id = $current_item->category_id;
-        // if ($current_item->category_id == $change->category_id) {
-        //     $items_edit_detail_logs->new_category_id = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_category_id = $changes['category_id'];
-        // }
-        // $items_edit_detail_logs->view_count = $current_item->view_count;
-        // if ($current_item->view_count == $change->view_count) {
-        //     $items_edit_detail_logs->new_view_count = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_view_count = $changes['view_count'];
-        // }
-        // $items_edit_detail_logs->charge = $current_item->charge;
-        // if ($current_item->charge == $change->charge) {
-        //     $items_edit_detail_logs->new_charge = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_charge = $changes['charge'];
-        // }
-        // $items_edit_detail_logs->collection_id = $current_item->collection_id;
-        // if ($current_item->collection_id == $change->collection_id) {
-        //     $items_edit_detail_logs->new_collection_id = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_collection_id = $changes['collection_id'];
-        // }
-        // $items_edit_detail_logs->user_id = $current_item->user_id;
-        // $items_edit_detail_logs->shop_id = $current_item->shop_id;
-        // $items_edit_detail_logs->shopownereditlogs_id = $shopownerlogid->id;
-        // $items_edit_detail_logs->save();
+        $this->save_items_edit_detail_logs($current_item, $change, $shopownerlogid, $old_gem, $request->id, $request->tags);
 
         Session::flash('message', 'Your item was successfully updated');
         return response()->json(['msg' => 'success', 'id' => $request->id]);
     }
+
     //show edit form
     public function edit($id): View
     {
@@ -830,7 +561,7 @@ class ItemsController extends Controller
         //      return $this->unauthorize();
         //  }
         $all_image_fields = ['photo_one', 'photo_two', 'photo_three', 'photo_four', 'photo_five', 'photo_six', 'photo_seven', 'photo_eight', 'photo_nine', 'photo_ten'];
-
+        $current_item = Item::where('id', $request->id)->first();
         $input = $request->except('_token', 'id', 'gems', 'tags', 'file', 'formidphotos', 'forthumbphotos', 'discount', 'unsetdiscount');
         if ($input['price'] > 9999999999 or $input['min_price'] > 9999999999 or $input['max_price'] > 9999999999 or ($input['min_price'] > $input['max_price'])) {
             return response()->json(['msg' => 'error', 'error_msg' => 'Wrong Price']);
@@ -853,9 +584,8 @@ class ItemsController extends Controller
         if ($change->update($input)) {
 
             $shop_id = $this->get_shopid();
-            $this->ShopsEditLog($change, $shop_id);
+            $shopownerlogid = $this->shop_owner_item_edit_log($change, $shop_id);
 
-            // $shopownerlogid = \ShopownerLogActivity::ShopownerEditLog($request, $shop_id);
             $old_tags = DB::table('tagging_tagged')->where('taggable_id', $request->id)->get();
             $item_tag = Item::where('id', $request->id)->first();
             $item_tagarray = explode(',', $item_tag->tags);
@@ -882,207 +612,7 @@ class ItemsController extends Controller
             }
         }
 
-        // $new_gem = Gems::where('item_id', $request->id)->first();
-        // $new_tags = $request->tags;
-        // $item_newtag = Item::where('id', $request->id)->first();
-        // $item_newtagarray = explode(',', $item_newtag->tags);
-        // $newcollection = collect($item_newtagarray);
-        // $newoutput = $newcollection->implode(',');
-
-        // $changes = $change->getChanges();
-
-        // $items_edit_detail_logs = new ItemsEditDetailLogs();
-        // // return dd($item_tag['tags']);
-
-        // $items_edit_detail_logs->tags = $output;
-
-        // if ($output == $newoutput) {
-        //     $items_edit_detail_logs->new_tags = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_tags = $new_tags;
-        // }
-
-        // $items_edit_detail_logs->gems = $old_gem->gems;
-
-        // if ($old_gem == $new_gem) {
-        //     $items_edit_detail_logs->new_gems = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_gems = $new_gem->gems;
-        // }
-
-        // $items_edit_detail_logs->name = $old['name'];
-        // if ($old['name'] == $change->name) {
-        //     $items_edit_detail_logs->new_name = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_name = $changes['name'];
-        // }
-        // $items_edit_detail_logs->price = $old['price'];
-        // if ($old['price'] == $change->price) {
-        //     $items_edit_detail_logs->new_price = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_price = $changes['price'];
-        // }
-        // $items_edit_detail_logs->description = $old['description'];
-        // if ($old['description'] == $change->description) {
-        //     $items_edit_detail_logs->new_description = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_description = $changes['description'];
-        // }
-        // $items_edit_detail_logs->product_code = $old['product_code'];
-        // if ($old['product_code'] == $change->product_code) {
-        //     $items_edit_detail_logs->new_product_code = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_product_code = $changes['product_code'];
-        // }
-        // $items_edit_detail_logs->gold_quality = $old['gold_quality'];
-        // if ($old['gold_quality'] == $change->gold_quality) {
-        //     $items_edit_detail_logs->new_gold_quality = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_gold_quality = $changes['gold_quality'];
-        // }
-        // $items_edit_detail_logs->gold_colour = $old['gold_colour'];
-        // if ($old['gold_colour'] == $change->gold_colour) {
-        //     $items_edit_detail_logs->new_gold_colour = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_gold_colour = $changes['gold_colour'];
-        // }
-        // //   $items_edit_detail_logs->sizing_guide = $old['sizing_guide'];
-        // //   if($changes == []){
-        // //         $items_edit_detail_logs->new_sizing_guide = "-----";
-        // //   }else{
-        // //       $items_edit_detail_logs->new_sizing_guide = $changes['sizing_guide'];
-        // //   }
-        // $items_edit_detail_logs->undamage = $old['undamaged_product'];
-        // if ($old['undamaged_product'] == $change->undamaged_product) {
-        //     $items_edit_detail_logs->new_undamage = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_undamage = $changes['undamaged_product'];
-        // }
-        // $items_edit_detail_logs->expensive_thing = $old['valuable_product'];
-        // if ($old['valuable_product'] == $change->valuable_product) {
-        //     $items_edit_detail_logs->new_expensive_thing = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_expensive_thing = $changes['valuable_product'];
-        // }
-        // $items_edit_detail_logs->damage = $old['damaged_product'];
-        // if ($old['damaged_product'] == $change->damaged_product) {
-        //     $items_edit_detail_logs->new_damage = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_damage = $changes['damaged_product'];
-        // }
-        // $items_edit_detail_logs->weight = $old['weight'];
-        // if ($old['weight'] == $change->weight) {
-        //     $items_edit_detail_logs->new_weight = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_weight = $changes['weight'];
-        // }
-        // //   $items_edit_detail_logs->weight_unit = $old['weight_unit'];
-        // //   if($changes == []){
-        // //         $items_edit_detail_logs->new_weight_unit = "-----";
-        // //   }else{
-        // //       $items_edit_detail_logs->new_weight_unit = $changes['weight_unit'];
-        // //   }
-
-        // $items_edit_detail_logs->min_price = $old['min_price'];
-        // if ($old['min_price'] == $change->min_price) {
-        //     $items_edit_detail_logs->new_min_price = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_min_price = $changes['min_price'];
-        // }
-        // $items_edit_detail_logs->max_price = $old['max_price'];
-        // if ($old['max_price'] == $change->max_price) {
-        //     $items_edit_detail_logs->new_max_price = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_max_price = $changes['max_price'];
-        // }
-        // $items_edit_detail_logs->review = $old['review'];
-        // if ($old['review'] == $change->review) {
-        //     $items_edit_detail_logs->new_review = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_review = $changes['review'];
-        // }
-        // $items_edit_detail_logs->stock = $old['stock'];
-        // if ($old['stock'] == $change->stock) {
-        //     $items_edit_detail_logs->new_stock = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_stock = $changes['stock'];
-        // }
-        // $items_edit_detail_logs->stock_count = $old['stock_count'];
-        // if ($old['stock_count'] == $change->stock_count) {
-        //     $items_edit_detail_logs->new_stock_count = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_stock_count = $changes['stock_count'];
-        // }
-        // $items_edit_detail_logs->diamond = $old['diamond'];
-        // if ($old['diamond'] == $change->diamond) {
-        //     $items_edit_detail_logs->new_diamond = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_diamond = $changes['diamond'];
-        // }
-        // $items_edit_detail_logs->carat = $old['carat'];
-        // if ($old['carat'] == $change->carat) {
-        //     $items_edit_detail_logs->new_carat = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_carat = $changes['carat'];
-        // }
-        // $items_edit_detail_logs->yati = $old['yati'];
-        // if ($old['yati'] == $change->yati) {
-        //     $items_edit_detail_logs->new_yati = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_yati = $changes['yati'];
-        // }
-        // $items_edit_detail_logs->gender = $old['gender'];
-        // if ($old['gender'] == $change->gender) {
-        //     $items_edit_detail_logs->new_gender = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_gender = $changes['gender'];
-        // }
-        // $items_edit_detail_logs->handmade = $old['handmade'];
-        // if ($old['handmade'] == $change->handmade) {
-        //     $items_edit_detail_logs->new_handmade = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_handmade = $changes['handmade'];
-        // }
-        // $items_edit_detail_logs->pwint = $old['pwint'];
-        // if ($old['pwint'] == $change->pwint) {
-        //     $items_edit_detail_logs->new_pwint = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_pwint = $changes['pwint'];
-        // }
-        // $items_edit_detail_logs->d_gram = $old['d_gram'];
-        // if ($old['d_gram'] == $change->d_gram) {
-        //     $items_edit_detail_logs->new_d_gram = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_d_gram = $changes['d_gram'];
-        // }
-        // $items_edit_detail_logs->category_id = $old['category_id'];
-        // if ($old['category_id'] == $change->category_id) {
-        //     $items_edit_detail_logs->new_category_id = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_category_id = $changes['category_id'];
-        // }
-        // $items_edit_detail_logs->view_count = $old['view_count'];
-        // if ($old['view_count'] == $change->view_count) {
-        //     $items_edit_detail_logs->new_view_count = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_view_count = $changes['view_count'];
-        // }
-        // $items_edit_detail_logs->charge = $old['charge'];
-        // if ($old['charge'] == $change->charge) {
-        //     $items_edit_detail_logs->new_charge = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_charge = $changes['charge'];
-        // }
-        // $items_edit_detail_logs->collection_id = $old['collection_id'];
-        // if ($old['collection_id'] == $change->collection_id) {
-        //     $items_edit_detail_logs->new_collection_id = "-----";
-        // } else {
-        //     $items_edit_detail_logs->new_collection_id = $changes['collection_id'];
-        // }
-        // $items_edit_detail_logs->user_id = $old['user_id'];
-        // $items_edit_detail_logs->shop_id = $old['shop_id'];
-        // $items_edit_detail_logs->shopownereditlogs_id = $shopownerlogid->id;
-        // $items_edit_detail_logs->save();
+        $this->save_items_edit_detail_logs($current_item, $change, $shopownerlogid, $old_gem, $request->id, $request->tags);
 
         Session::flash('message', 'Your item was successfully updated');
         return response()->json(['msg' => 'success', 'id' => $request->id]);
@@ -1307,7 +837,7 @@ class ItemsController extends Controller
         $shop_id = $this->get_shopid();
         $item = Item::where('id', $id)->where('shop_id', $shop_id)->first();
         $item->delete();
-        $this->ShopsDeleteLog($item, $shop_id);
+        $this->shop_owner_item_delete_log($item, $shop_id);
         // $shopowner_log = Item::where('id', $id)->get();
 
         // $item_log = ItemLogActivity::where('item_id', $id);
@@ -1331,7 +861,7 @@ class ItemsController extends Controller
         //     }
         //     $shop_id = "yahoo";
         // }
-        // $shopownerlogid = $this->ShopsDeleteLog($shopowner_log, $shop_id);
+        // $shopownerlogid = $this->shop_owner_item_delete_log($shopowner_log, $shop_id);
 
         return redirect(url('backside/shop_owner/items'))->with(['status' => 'success', 'message' => 'Your Item was successfully Deleted']);
     }
@@ -1374,7 +904,7 @@ class ItemsController extends Controller
         $this->items_photos_delete($id);
         $forceDeletedItem = Item::onlyTrashed()->where('id', $id)->where('shop_id', $this->get_shopid())->first();
         $forceDeletedItem->forceDelete();
-        $this->ShopsForceDeleteLog($forceDeletedItem, $this->get_shopid());
+        $this->shop_owner_item_force_delete_log($forceDeletedItem, $this->get_shopid());
 
         Session::flash('message', 'Your item was successfully hard deleted ');
 
