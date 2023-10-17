@@ -111,9 +111,9 @@ trait ShopOwnerLogActivityTrait
         ];
 
         foreach ($itemFields as $field) {
-            if (isset($changes[$field])) {
+            foreach ($itemFields as $field) {
                 $items_edit_detail_logs->{$field} = $current_item->{$field};
-                $items_edit_detail_logs->{'new_' . $field} = $current_item->{$field} === $change->{$field} ? '-----' : $changes[$field];
+                $items_edit_detail_logs->{'new_' . $field} = $current_item->{$field} === $change->{$field} ? '-----' : $changes[$field] ?? '-----';
             }
         }
 
