@@ -33,7 +33,7 @@ Route::get('/getprice', [DiscountController::class, 'price_update']);
 Route::group(
     ['middleware' => ['web', 'foratc']],
     function () {
-        //move datas from shops to shop_owner_and_staff
+        //move datas from shops to shop_owner_and_staff(16/10/2023)
         Route::get('/test/movedatas',[SupportFrontController::class, 'movedatas']);
 
         // for frontend user
