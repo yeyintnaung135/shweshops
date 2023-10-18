@@ -74,7 +74,7 @@ trait ShopOwnerLogActivityTrait
         return $shopownerlogid;
     }
 
-    public function save_items_edit_detail_logs($current_item, $change, $shopownerlogid, $old_gem, $id, $tags)
+    public function save_items_edit_detail_logs($current_item, $change, $shopownerlogid, $old_gem, $id, $tags, $output)
     {
         $new_gem = Gems::where('item_id', $id)->first();
         $new_tags = $tags;
@@ -87,10 +87,20 @@ trait ShopOwnerLogActivityTrait
         $changes = $change->getChanges();
 
         $items_edit_detail_logs = new ItemsEditDetailLogs();
-        $items_edit_detail_logs->tags = $new_output;
-        $items_edit_detail_logs->new_tags = $new_tags !== $new_output ? $new_tags : null;
+
+        if ($output == $new_output) {
+            $items_edit_detail_logs->new_tags = "-----";
+        } else {
+            $items_edit_detail_logs->new_tags = $new_tags;
+
+        }
         $items_edit_detail_logs->gems = $old_gem->gems;
-        $items_edit_detail_logs->new_gems = $old_gem !== $new_gem ? $new_gem->gems : null;
+
+        if ($old_gem == $new_gem) {
+            $items_edit_detail_logs->new_gems = "-----";
+        } else {
+            $items_edit_detail_logs->new_gems = $new_gem->gems;
+        }
 
         $itemPhotos = [
             'photo_one', 'photo_two', 'photo_three', 'photo_four',

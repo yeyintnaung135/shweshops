@@ -627,6 +627,4 @@ class ShopOwnerController extends Controller
             return redirect()->back()->withErrors(['error' => 'User does not exit']);
         }
     }
-
-    
 }

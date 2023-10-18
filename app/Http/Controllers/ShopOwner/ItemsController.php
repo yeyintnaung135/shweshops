@@ -458,7 +458,7 @@ class ItemsController extends Controller
 
         // }
 
-        $this->save_items_edit_detail_logs($current_item, $change, $shopownerlogid, $old_gem, $request->id, $request->tags);
+        $this->save_items_edit_detail_logs($current_item, $change, $shopownerlogid, $old_gem, $request->id, $request->tags, $output);
 
         Session::flash('message', 'Your item was successfully updated');
         return response()->json(['msg' => 'success', 'id' => $request->id]);
