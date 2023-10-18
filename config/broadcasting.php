@@ -37,18 +37,20 @@ return [
             'app_id' => env('PUSHER_APP_ID'),
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
-                 'host' => '150.95.83.139',
-                // 'host' => 'localhost',
+                'host' => '150.95.83.139',
+                //   'host' => 'localhost',
                 'useTLS' => true,
                 'port' => 6002,
                 'scheme' => 'https',
-                // 'scheme' => 'http',
+                //              'scheme' => 'http',
                 'curl_options' => [
                     CURLOPT_SSL_VERIFYHOST => 0,
                     CURLOPT_SSL_VERIFYPEER => 0,
                 ],
-                'encrypted' => true
 
+            ],
+            'client_options' => [
+                'verify' => false, // to disable TLS checks
             ],
         ],
 
