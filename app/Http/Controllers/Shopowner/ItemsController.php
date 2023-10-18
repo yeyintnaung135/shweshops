@@ -1383,6 +1383,7 @@ class ItemsController extends Controller
 
     public function from_detail_edit(Request $request)
     {
+        
         $input = $request->except('_token', '_method', 'id');
         $id = $request->input('id');
         if (($request->input('price')) != null) {

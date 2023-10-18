@@ -75,7 +75,7 @@
               <div class="post-info px-2">
                   <header class="entry-header">
                       <!-- Blog Title -->
-                      <h3 class="yk-product-title">
+                      <h3 class="yk-product-title multiline-truncate">
                           <a
                               class="sop-font-content mt-2"
                               style="font-family: sans-serif !important"
@@ -418,6 +418,8 @@ textarea {
 .sn-shop-list .slick-slider {
   margin: 0px 0 30px;
 }
+
+
 @media only screen and (max-width: 576px) {
     .sop-filter-search {
         width: 50px;
@@ -449,6 +451,13 @@ textarea {
       height: 99% !important;
       left: 2px !important;
       object-fit: fill;
+    }
+
+    .multiline-truncate{
+      white-space: nowrap;     
+      overflow: hidden;        
+      text-overflow: ellipsis; 
+      max-height: 400px;
     }
 }
 @keyframes fade {
