@@ -43,7 +43,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         //forgot password owner
         Route::get('pos/forgot_password', [YkforgotpasswordController::class, 'showLinkRequestForm'])->name('forgot_password');
         Route::post('forgot_password', [YkforgotpasswordController::class, 'send_reset_code_form'])->name('send_reset_code');
-        Route::put('forgot_password', [YkforgotpasswordController::class, 'codeCheck']);
+        Route::put('forgot_password', [YkforgotpasswordController::class, 'codeCheck'])->name('send_reset_code');
         Route::post('add_new_password', [YkforgotpasswordController::class, 'add_new_password'])->name('add_new_password');
 
         //reg ph confirmation
@@ -121,8 +121,8 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         Route::get('/shop', [ShopOwnerController::class, 'shop_detail'])->name('shop_detail');
         Route::put('/detail', [ItemsController::class, 'from_detail_edit'])->name('detail.update');
 
-        Route::get('/edit', [ShopOwnerController::class, 'edit']);
-        Route::put('/edit/{id}', [ShopOwnerController::class, 'update']);
+        Route::get('/edit', [ShopOwnerController::class, 'edit'])->name('edit');
+        Route::put('/edit/{id}', [ShopOwnerController::class, 'update'])->name('update');
 
         Route::post('editajax', [ItemsController::class, 'edit_ajax'])->name('editajax');
 
