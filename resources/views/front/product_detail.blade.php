@@ -828,7 +828,6 @@
                                 <div class="row g-1 g-md-2 position-relative mt-3">
 
                                     @if ($is_chat_on == 'on')
-
                                         <div id="chatWithUs"
                                             class="col-2 mt-1 mt-md-2 chat-with-us d-flex flex-column align-items-center">
                                             <img src="{{ asset('images/icons/discuss-fill.png') }}" alt="Chat with Us"
@@ -842,8 +841,8 @@
                                                 <h3 class="px-4 my-2 fbold" style="color: #780116">စုံစမ်းရန်</h3>
                                                 <ul class="list-group">
                                                     <li class="list-group-item list-group-item-action border-0 px-4 my-2">
-                                                        <a id="buynowbutton" class="d-flex align-items-center chat-width"
-                                                            @click="buynowbuttonclick('{{ \Illuminate\Support\Facades\Auth::guard('web')->check() }}',"'{{ $item->shop->id }}'",{{ $item }},'post','{{ \Illuminate\Support\Facades\Auth::guard('web')->check() == 1 ? \Illuminate\Support\Facades\Auth::guard('web')->user()->username : '' }}',{{ $item->shop }},'{{ \Carbon\Carbon::now() }}')">
+                                                        {{-- <a id="buynowbutton" class="d-flex align-items-center chat-width"
+                                                          @click="buynowbuttonclick('{{ \Illuminate\Support\Facades\Auth::guard('web')->check() }}','{{ $item->shop->id }}',{{ $item }},'post','{{ \Illuminate\Support\Facades\Auth::guard('web')->check() == 1 ? \Illuminate\Support\Facades\Auth::guard('web')->user()->username : '' }}',{{ $item->shop }},'{{ \Carbon\Carbon::now() }}')">
                                                             <div class="btn shweshops-chat-btn d-flex align-items-center">
                                                                 <div class="ss-chat-wrapper d-inline-block m-2"
                                                                     style="width: 40px; height: 40px;">
@@ -853,15 +852,16 @@
                                                                 </div>
                                                                 <div class="mx-3">Shweshops Chat</div>
                                                             </div>
-                                                        </a>
+                                                        </a>  --}}
                                                     </li>
                                                     <li class="list-group-item list-group-item-action border-0 px-4">
                                                         @if ($is_fb_on == 'on')
                                                             <?php
                                                             $check_connect = \Illuminate\Support\Facades\DB::table('facebook')
-                                                                ->where('shop_id', $item->shop_name->id)
+                                                                ->where('shop_id', $item->shop->id)
                                                                 ->first();
                                                             ?>
+                                                          
                                                             @if (!empty($check_connect))
                                                                 <a class="d-flex align-items-center chat-width"
                                                                     id="fbbutton"

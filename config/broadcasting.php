@@ -37,7 +37,7 @@ return [
             'app_id' => env('PUSHER_APP_ID'),
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
-                               'host' => '150.95.83.139',
+                 'host' => '150.95.83.139',
                 // 'host' => 'localhost',
                 'useTLS' => true,
                 'port' => 6002,

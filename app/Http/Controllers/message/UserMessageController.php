@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\message;
 
-use App\Events\Activeusers;
+use App\Events\ActiveUsers;
 use App\Events\Shopownermessage;
 use App\Models\Events\Usermessage;
 use App\Http\Controllers\Controller;
@@ -13,7 +13,7 @@ use App\Models\Messages;
 use App\Models\Shops;
 use App\Models\Item;
 use App\Models\User;
-use App\Models\Usersorshopsonlinestatus;
+use App\Models\UsersOrShopsOnlineStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,20 +27,20 @@ class UsermessageController extends Controller
     public function sendwhatuserisactive(Request $request)
     {
    
-        event(new Activeusers(['users_id' => $request->data, 'role' => 'user', 'status' => 'online']));
+        event(new ActiveUsers(['users_id' => $request->data, 'role' => 'user', 'status' => 'online']));
         return $request->data;
     }
 
     public function sendwhatuserisoffline(Request $request)
     {
-        $forcheck = Usersorshopsonlinestatus::where([['users_id', '=', $request->data], ['role', '=', 'user']]);
+        $forcheck = UsersOrShopsOnlineStatus::where([['users_id', '=', $request->data], ['role', '=', 'user']]);
         if ($forcheck->count() != 0) {
             $getdata = $forcheck->update(['status' => 'offline']);
         } else {
-            $getdata = Usersorshopsonlinestatus::create(['users_id' => $request->data, 'role' => 'user', 'status' => 'offline']);
-            // $getdata = Usersorshopsonlinestatus::create(['users_id' => $request->data, 'role' => 'user', 'status' => 'offline']);
+            $getdata = UsersOrShopsOnlineStatus::create(['users_id' => $request->data, 'role' => 'user', 'status' => 'offline']);
+            // $getdata = UsersOrShopsOnlineStatus::create(['users_id' => $request->data, 'role' => 'user', 'status' => 'offline']);
         }
-        event(new Activeusers(['users_id' => $request->data, 'role' => 'user', 'status' => 'offline']));
+        event(new ActiveUsers(['users_id' => $request->data, 'role' => 'user', 'status' => 'offline']));
         return $request->data;
     }
 
@@ -88,13 +88,13 @@ class UsermessageController extends Controller
 
     public function sendwhatshopisoffline(Request $request)
     {
-        $forcheck = Usersorshopsonlinestatus::where([['shops_id', '=', $request->data], ['role', '=', 'shop']]);
+        $forcheck = UsersOrShopsOnlineStatus::where([['shops_id', '=', $request->data], ['role', '=', 'shop']]);
         if ($forcheck->count() != 0) {
             $getdata = $forcheck->update(['status' => 'offline']);
         } else {
-            $getdata = Usersorshopsonlinestatus::create(['shops_id' => $request->data, 'role' => 'shop', 'status' => 'offline']);
+            $getdata = UsersOrShopsOnlineStatus::create(['shops_id' => $request->data, 'role' => 'shop', 'status' => 'offline']);
         }
-        event(new Activeusers(['shops_id' => $request->data, 'role' => 'shop', 'status' => 'offline']));
+        event(new ActiveUsers(['shops_id' => $request->data, 'role' => 'shop', 'status' => 'offline']));
         return $request->data;
     }
     public function getitemdata(Request $request)
