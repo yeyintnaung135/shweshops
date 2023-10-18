@@ -6,6 +6,7 @@ use App\Models\ForFirebase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
+
 Route::get('testdigitalocean', function () {
     return Storage::disk('digitalocean')->get('shweshops/images/items/1680587196328_1672231655663_1669198955202_73.jpg');
 });
@@ -113,3 +114,5 @@ Route::get('unittest/delete', function () {
 
 //Index static design (Arkar)
 Route::get('unittest/index', 'IndexTest@index')->name('frontTest');
+
+

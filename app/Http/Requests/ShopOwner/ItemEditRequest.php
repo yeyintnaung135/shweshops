@@ -63,7 +63,7 @@ class ItemEditRequest extends FormRequest
 
             'file.*' => ['required', 'mimes:jpg,jpeg,png,bmp,gif'],
             // 'small_files.*'=>['required','mimes:jpg,jpeg,png,bmp,gif'],
-            'stock_count' => ['required', 'integer', 'between:1,100'],
+            'stock_count' => ['required', 'integer', 'between:0,100'],
             'main_category' => ['required', 'integer', 'between:1,5'],
             'category_id' => ["required", "max:255", Rule::in(['footchain', 'headband', 'brooch', 'comb', 'bayat', 'ring', 'earring', 'necklace', 'nrrswel', 'swal_tee', 'braceket', 'hand_chain', 'pendant', 'hair_clip', 'accessories', 'pixiu', 'bayat'])],
 
