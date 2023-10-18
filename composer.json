@@ -23,7 +23,7 @@
         "mongodb/laravel-mongodb": "^v4.0.0-ALPHA2",
         "nesbot/carbon": "^2.69",
         "pusher/pusher-php-server": "^7.2",
-        "react/promise": "2.7",
+        "react/promise": "3.0",
         "rtconner/laravel-tagging": "^4.1",
         "yajra/laravel-datatables": "^10.0"
     },

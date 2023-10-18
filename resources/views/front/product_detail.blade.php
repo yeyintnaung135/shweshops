@@ -841,7 +841,7 @@
                                                 <h3 class="px-4 my-2 fbold" style="color: #780116">စုံစမ်းရန်</h3>
                                                 <ul class="list-group">
                                                     <li class="list-group-item list-group-item-action border-0 px-4 my-2">
-                                                        {{-- <a id="buynowbutton" class="d-flex align-items-center chat-width"
+                                                        <a id="buynowbutton" class="d-flex align-items-center chat-width"
                                                           @click="buynowbuttonclick('{{ \Illuminate\Support\Facades\Auth::guard('web')->check() }}','{{ $item->shop->id }}',{{ $item }},'post','{{ \Illuminate\Support\Facades\Auth::guard('web')->check() == 1 ? \Illuminate\Support\Facades\Auth::guard('web')->user()->username : '' }}',{{ $item->shop }},'{{ \Carbon\Carbon::now() }}')">
                                                             <div class="btn shweshops-chat-btn d-flex align-items-center">
                                                                 <div class="ss-chat-wrapper d-inline-block m-2"
@@ -852,7 +852,7 @@
                                                                 </div>
                                                                 <div class="mx-3">Shweshops Chat</div>
                                                             </div>
-                                                        </a>  --}}
+                                                        </a> 
                                                     </li>
                                                     <li class="list-group-item list-group-item-action border-0 px-4">
                                                         @if ($is_fb_on == 'on')
