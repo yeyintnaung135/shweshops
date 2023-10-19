@@ -224,6 +224,27 @@ export default {
                         refp[j].id = file.name;
                     } else {
                         refp[j].id = file.upload.filename;
+                        //for default photo if empty in dz pannel
+                        if (
+                            this.$refs.myVueDropzone.getAcceptedFiles()
+                                .length === 1
+                        ) {
+                            //when user start add one photo auto add setdefault icon
+
+                            if (this.checkhasdefaultimage()) {
+                            } else {
+                                this.setdefaultphoto(file.upload.filename);
+                            }
+                        } else {
+                            if (this.checkhasdefaultimage()) {
+                            } else {
+                                //when user start add multiple photo auto add setdefault icon
+                                this.setdefaultphoto(
+                                    this.$refs.myVueDropzone.getAcceptedFiles()[0]
+                                        .upload.filename
+                                );
+                            }
+                        }
                     }
 
                     //for dz upload icon
