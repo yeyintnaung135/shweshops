@@ -89,7 +89,7 @@ export default {
     if (process.env.MIX_USE_DO == "true") {
       this.imgurl = process.env.MIX_DO_URL;
     } else {
-      this.imgurl = this.hostpar;
+      this.imgurl = this.hostpar+'/images';
     }
     this.parsepostdata();
   },

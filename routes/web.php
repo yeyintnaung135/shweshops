@@ -9,6 +9,8 @@ use App\Http\Controllers\forfacebook\FacebookController;
 
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ShopCollectionController;
+use App\Http\Controllers\FacebookWebhookController;
+
 use App\Http\Controllers\ShopOwner\ShopOwnerController;
 use App\Http\Controllers\FrontForCatController;
 use App\Http\Controllers\FrontForDiscountController;

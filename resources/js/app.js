@@ -353,6 +353,7 @@ const app = new Vue({
         },
         messengerbuttonclick: async function (checkauth, link, shopid, itemid) {
             let auth = checkauth;
+            // console.log('M.ME LINK',link);
             if (window.userid == undefined && auth != "1") {
                 // user must be logined to send msg
                 $(document).ready(function () {
