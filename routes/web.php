@@ -255,10 +255,10 @@ Route::get('logActivity', [LogController::class, 'logActivity']);
 Route::get('notification', [FrontController::class, 'getNoti']);
 Route::post('notification', [FrontController::class, 'readNoti']);
 
-Route::get('shops', [FrontController::class, 'getShops']);
+Route::get('shops', [FrontShopController::class, 'getShops']);
 Route::get('premium_shops', [FrontController::class, 'getPremiumShops']);
 Route::get('popular_shops', [FrontController::class, 'getPopularShops']);
-Route::post('/get_shops_byfilter', [FrontController::class, 'get_shops_byfilter']);
+Route::post('/get_shops_byfilter', [FrontShopController::class, 'get_shops_byfilter']);
 
 // App File Download
 Route::get('/front/app-files/download/{appFile}', [FrontController::class, 'app_download'])->name('front.app-files.download');

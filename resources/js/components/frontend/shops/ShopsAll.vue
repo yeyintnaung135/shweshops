@@ -85,7 +85,7 @@
                                   d.shop_name_url
 
                               "
-                              >{{ d.shop_name }}</a
+                              >{{ d.shop_name | strlimit(13, "...") }}</a
                           >
                       </h3>
 
@@ -169,6 +169,7 @@ export default {
         };
     },
 
+
     mounted() {
         this.host = this.$hostname;
         this.shops = this.latest_shops;
@@ -198,7 +199,16 @@ export default {
         }
       });
     },
-
+    filters: {
+        strlimit: function (str, limit, other) {
+            if (str.length > limit) {
+                let shortstring = str.substring(0, limit) + other;
+                return shortstring;
+            } else {
+                return str;
+            }
+        },
+    },
     computed: {
         // filteredList() {
         //     return Object.values(this.shops).filter((shop) => {
@@ -208,7 +218,6 @@ export default {
         //     });
         // },
     },
-    filters: {},
     methods: {
       setActive(type) {
         this.activeItem = type;

@@ -180,7 +180,7 @@ export default {
             this.shopid = this.shop_id;
         }
 
-        console.log("this is discount ffffffffffff  ");
+        console.log("this is discount");
         console.log(this.discountitems);
         this.discountdata = this.discountitems;
         if (this.discountdata.length < 12) {

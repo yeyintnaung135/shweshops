@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\AllShops;
+use App\Models\FrontUserLogs;
 use App\Models\Item;
 use App\Models\ShopOwnersAndStaffs;
 use App\Models\Shops;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 
 class FrontShopController extends Controller
 {
@@ -37,6 +42,62 @@ class FrontShopController extends Controller
         // return $get_by_shopid;
 
     }
+    public function getShops()
+    {
+        $shops = Shops::orderBy('created_at', 'desc')->where('pos_only','!=', 'yes')->limit(20)->get();
+        return view('front.shops', ['shops' => $shops, 'active' => 'all']);
+    }
+    public function get_shops_byfilter(Request $request)
+    {
+        if ($request->filtertype['shopname'] == '') {
+            $shopname = '%';
+        } else {
+            $shopname = '%' . $request->filtertype['shopname'] . '%';
+        }
+        if ($request->filtertype['premium'] == '') {
+            $premium = '%';
+        } else {
+            $premium = '%' . $request->filtertype['premium'] . '%';
+        }
+        if ($request->filtertype['isPopular'] == 'yes') {
+            $dateS = Carbon::now()->subMonths(6);
+            $dateE = Carbon::now();
+            $shops = FrontUserLogs::join('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
+                ->join('shops', 'front_user_logs.shop_id', '=', 'shops.id')
+                ->where('shops.pos_only','no')
+                ->where('guestoruserid.user_agent', '!=', 'bot')
+                ->where('front_user_logs.status', 'shopdetail')
+                ->where(function ($query) use ($shopname) {
+                     $query->where('shops.shop_name', 'like', $shopname)
+                        ->orWhere('shops.shop_name_myan', 'like', $shopname);
+                })
+                ->whereBetween('front_user_logs.created_at', [$dateS, $dateE])
+                ->select('front_user_logs.shop_id', 'shops.*', DB::raw('count(*) as total'))
+                ->groupBy('front_user_logs.shop_id')
+                ->orderBy('total', 'DESC')
+                ->skip($request->filtertype['shoplimit'])->take('20')
+                ->get();
+
+        } else {
+            $shops = Shops::orderBy('created_at', 'desc')
+                ->where('pos_only','!=','yes')
+                ->where(function ($query) use ($shopname) {
+                    $query->where('shop_name', 'like', $shopname)
+                        ->orWhere('shop_name_myan', 'like', $shopname);
+                })
+                ->where('premium', 'like', $premium)
+                ->skip($request->filtertype['shoplimit'])->take('20')->get();
+        }
+
+        if (count($shops) < 20) {
+            $empty_on_server = 1;
+        } else {
+            $empty_on_server = 0;
+        }
+
+        return response()->json(['shops' => $shops, 'count' => count($shops), 'empty_on_server' => $empty_on_server]);
+    }
+
 //see all for cat by shop
 
     public function view_more_ajax($limit)
