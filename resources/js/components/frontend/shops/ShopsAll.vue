@@ -65,9 +65,9 @@
                     </a>
                   </div>
                   <a :href="'/' +d.shop_name_url">
-                      <img
+                      <img style="width:95% !important"
                           :src="'images/logo/mid/' + d.shop_logo"
-                          class="sn-image-w-h sn-shop-image"
+                          class="sn-shop-image"
                       />
                   </a>
                 </div>
