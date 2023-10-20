@@ -41,21 +41,21 @@
                                             <div class="form-group mr-md-2">
                                                 <fieldset>
                                                     <legend>From Date</legend>
-                                                    <input type="text" id='search_fromdate_adsact'
-                                                        class="adsactdatepicker form-control" placeholder='Choose date'
+                                                    <input type="text" id='search_fromdate_visitor'
+                                                        class="visitordatepicker form-control" placeholder='Choose date'
                                                         autocomplete="off" />
                                                 </fieldset>
                                             </div>
                                             <div class="form-group mr-md-2">
                                                 <fieldset>
                                                     <legend>To Date</legend>
-                                                    <input type="text" id='search_todate_adsact'
-                                                        class="adsactdatepicker form-control" placeholder='Choose date'
+                                                    <input type="text" id='search_todate_visitor'
+                                                        class="visitordatepicker form-control" placeholder='Choose date'
                                                         autocomplete="off" />
                                                 </fieldset>
                                             </div>
                                             <div class="pr-md-4">
-                                                <input type='button' id="adsact_search_button" value="Search"
+                                                <input type='button' id="visitor_search_button" value="Search"
                                                     class="btn bg-info">
                                             </div>
                                         </div>

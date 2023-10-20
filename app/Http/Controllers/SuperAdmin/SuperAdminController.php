@@ -543,7 +543,7 @@ class SuperAdminController extends Controller
 
         if (ContactUs::create($input)) {
 
-            return redirect()->route('superAdmin.contactus_get')->with(['status' => 'success', 'message' => 'Your Shop was successfully Edited']);
+            return redirect()->route('backside.super_admin.superAdmin.contactus_get')->with(['status' => 'success', 'message' => 'Your Shop was successfully Edited']);
         }
     }
 

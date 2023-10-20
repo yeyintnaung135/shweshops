@@ -45,7 +45,7 @@
                                                     autocomplete="off" />
                                             </fieldset>
                                         </div>
-                                        <div class="pr-md-4">
+                                        <div class="pr-md-4 mt-4">
                                             <input type='button' id="shop_search_button" value="Search"
                                                 class="btn bg-info">
                                         </div>
