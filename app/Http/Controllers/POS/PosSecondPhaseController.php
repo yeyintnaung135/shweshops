@@ -7,10 +7,8 @@ use App\Http\Controllers\Trait\Logs\BackRoleLogActivityTrait;
 use App\Http\Controllers\Trait\MultipleItem;
 use App\Http\Controllers\Trait\UserRole;
 use App\Http\Controllers\Trait\YKImage;
-use App\Models\BackRoleEditDetail;
 use App\Models\Category;
 use App\Models\Item;
-use App\Models\ShopOwnersAndStaffs;
 use App\Models\POS\PosAssignGoldPrice;
 use App\Models\POS\PosCounterShop;
 use App\Models\POS\PosCreditList;
@@ -29,6 +27,7 @@ use App\Models\POS\PosWhiteGoldPurchase;
 use App\Models\POS\PosWhiteGoldSale;
 use App\Models\Role;
 use App\Models\ShopBanner;
+use App\Models\ShopOwnersAndStaffs;
 use App\Models\Shops;
 use App\Models\State;
 use App\Models\Township;
@@ -130,11 +129,11 @@ class PosSecondPhaseController extends Controller
             return redirect()->back()->withErrors($validate)->withInput();
         } elseif (PosStaff::insert($input)) {
             ShopOwnersAndStaffs::create([
-                'name'=>$input['name'],
-                'phone'=>$input['phone'],
-                'role_id'=>$input['role_id'],
-                'shop_id'=>$input['shop_id'],
-                'password'=>$input['password']
+                'name' => $input['name'],
+                'phone' => $input['phone'],
+                'role_id' => $input['role_id'],
+                'shop_id' => $input['shop_id'],
+                'password' => $input['password'],
             ]);
             if ($input['role_id'] == 1) {
                 Session::flash('message', 'Your admin was successfully added');
@@ -185,193 +184,19 @@ class PosSecondPhaseController extends Controller
         if ($validate->fails()) {
             return redirect()->back()->withErrors($validate)->withInput();
         } else {
-
-            if (PosStaff::where('id', $id)->update($input)) {
+            $change = PosStaff::where('id', $id)->first();
+            if ($change->update($input)) {
                 $backroleid = $this->BackroleEditLog($input, $shop_id);
+                $this->save_users_edit_detail_logs($manager, $change, $backroleid, $id);
 
-                $old_name = $manager->name;
-                $old_phone = $manager->phone;
-                $old_role = Role::where('id', $manager->role_id)->first();
-                $old_role_id = $old_role->name;
-                // return dd($old_role_id);
-
-                $new_name = $request['name'];
-                $new_phone = $request['phone'];
-                $new = $request['role_id'];
-                $new_role = Role::where('id', $new)->first();
-                $new_role_id = $new_role->name;
-                // return dd($new_role_id);
-
-                if ($old_name == $new_name && $old_phone == $new_phone && $old_role_id == $new_role_id) {
-                    // return dd($old_name,$new_name,$old_phone,$new_phone,$old_role_id,$new_role_id);
-                    $back_role_edit_detail = new BackRoleEditDetail();
-                    $back_role_edit_detail->old_name = "no";
-                    $back_role_edit_detail->new_name = "no";
-                    $back_role_edit_detail->old_phone = "no";
-                    $back_role_edit_detail->new_phone = "no";
-                    $back_role_edit_detail->old_role_id = "no";
-                    $back_role_edit_detail->new_role_id = "no";
-                    $back_role_edit_detail->user_id = $id;
-                    $back_role_edit_detail->backrole_log_activities_id = $backroleid->id;
-                    $back_role_edit_detail->save();
-                    if ($input['role_id'] == 1) {
-                        Session::flash('message', 'Your admin was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    } else if ($input['role_id'] == 2) {
-                        Session::flash('message', 'Your manager was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    } else if ($input['role_id'] == 3) {
-                        Session::flash('message', 'Your staff was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    }
-                } else if ($old_name !== $new_name && $old_phone !== $new_phone && $old_role_id !== $new_role_id) {
-                    // return dd($old_name,$new_name,$old_phone,$new_phone,$old_role_id,$new_role_id);
-                    $back_role_edit_detail = new BackRoleEditDetail();
-                    $back_role_edit_detail->old_name = $old_name;
-                    $back_role_edit_detail->new_name = $new_name;
-                    $back_role_edit_detail->old_phone = $old_phone;
-                    $back_role_edit_detail->new_phone = $new_phone;
-                    $back_role_edit_detail->old_role_id = $old_role_id;
-                    $back_role_edit_detail->new_role_id = $new_role_id;
-                    $back_role_edit_detail->user_id = $id;
-                    $back_role_edit_detail->backrole_log_activities_id = $backroleid->id;
-                    $back_role_edit_detail->save();
-                    if ($input['role_id'] == 1) {
-                        Session::flash('message', 'Your admin was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    } else if ($input['role_id'] == 2) {
-                        Session::flash('message', 'Your manager was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    } else if ($input['role_id'] == 3) {
-                        Session::flash('message', 'Your staff was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    }
-                } else if ($old_name !== $new_name && $old_phone !== $new_phone) {
-                    $back_role_edit_detail = new BackRoleEditDetail();
-                    $back_role_edit_detail->old_name = $old_name;
-                    $back_role_edit_detail->new_name = $new_name;
-                    $back_role_edit_detail->old_phone = $old_phone;
-                    $back_role_edit_detail->new_phone = $new_phone;
-                    $back_role_edit_detail->user_id = $id;
-                    $back_role_edit_detail->backrole_log_activities_id = $backroleid->id;
-                    $back_role_edit_detail->save();
-                    if ($input['role_id'] == 1) {
-                        Session::flash('message', 'Your admin was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    } else if ($input['role_id'] == 2) {
-                        Session::flash('message', 'Your manager was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    } else if ($input['role_id'] == 3) {
-                        Session::flash('message', 'Your staff was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    }
-
-                } else if ($old_name !== $new_name && $old_role_id !== $new_role_id) {
-                    $back_role_edit_detail = new BackRoleEditDetail();
-                    $back_role_edit_detail->old_name = $old_name;
-                    $back_role_edit_detail->new_name = $new_name;
-                    $back_role_edit_detail->old_role_id = $old_role_id;
-                    $back_role_edit_detail->new_role_id = $new_role_id;
-                    $back_role_edit_detail->user_id = $id;
-                    $back_role_edit_detail->backrole_log_activities_id = $backroleid->id;
-                    $back_role_edit_detail->save();
-                    if ($input['role_id'] == 1) {
-                        Session::flash('message', 'Your admin was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    } else if ($input['role_id'] == 2) {
-                        Session::flash('message', 'Your manager was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    } else if ($input['role_id'] == 3) {
-                        Session::flash('message', 'Your staff was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    }
-
-                } else if ($old_phone !== $new_phone && $old_role_id !== $new_role_id) {
-                    $back_role_edit_detail = new BackRoleEditDetail();
-                    $back_role_edit_detail->old_phone = $old_phone;
-                    $back_role_edit_detail->new_phone = $new_phone;
-                    $back_role_edit_detail->old_role_id = $old_role_id;
-                    $back_role_edit_detail->new_role_id = $new_role_id;
-                    $back_role_edit_detail->user_id = $id;
-                    $back_role_edit_detail->backrole_log_activities_id = $backroleid->id;
-                    $back_role_edit_detail->save();
-                    if ($input['role_id'] == 1) {
-                        Session::flash('message', 'Your admin was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    } else if ($input['role_id'] == 2) {
-                        Session::flash('message', 'Your manager was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    } else if ($input['role_id'] == 3) {
-                        Session::flash('message', 'Your staff was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    }
-
-                } else if ($old_name !== $new_name) {
-                    $back_role_edit_detail = new BackRoleEditDetail();
-                    $back_role_edit_detail->old_name = $old_name;
-                    $back_role_edit_detail->new_name = $new_name;
-                    $back_role_edit_detail->user_id = $id;
-                    $back_role_edit_detail->backrole_log_activities_id = $backroleid->id;
-
-                    $back_role_edit_detail->save();
-
-                    if ($input['role_id'] == 1) {
-                        Session::flash('message', 'Your admin was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    } else if ($input['role_id'] == 2) {
-                        Session::flash('message', 'Your manager was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    } else if ($input['role_id'] == 3) {
-                        Session::flash('message', 'Your staff was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    }
-
-                } else if ($old_phone !== $new_phone) {
-                    $back_role_edit_detail = new BackRoleEditDetail();
-                    $back_role_edit_detail->old_phone = $old_phone;
-                    $back_role_edit_detail->new_phone = $new_phone;
-                    $back_role_edit_detail->user_id = $id;
-                    $back_role_edit_detail->backrole_log_activities_id = $backroleid->id;
-                    $back_role_edit_detail->save();
-                    if ($input['role_id'] == 1) {
-                        Session::flash('message', 'Your admin was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    } else if ($input['role_id'] == 2) {
-                        Session::flash('message', 'Your manager was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    } else if ($input['role_id'] == 3) {
-                        Session::flash('message', 'Your staff was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    }
-                } else if ($old_role_id !== $new_role_id) {
-                    $back_role_edit_detail = new BackRoleEditDetail();
-                    $back_role_edit_detail->old_role_id = $old_role_id;
-                    $back_role_edit_detail->new_role_id = $new_role_id;
-                    $back_role_edit_detail->user_id = $id;
-                    $back_role_edit_detail->backrole_log_activities_id = $backroleid->id;
-                    $back_role_edit_detail->save();
-                    if ($input['role_id'] == 1) {
-                        Session::flash('message', 'Your admin was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    } else if ($input['role_id'] == 2) {
-                        Session::flash('message', 'Your manager was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    } else if ($input['role_id'] == 3) {
-                        Session::flash('message', 'Your staff was successfully updated');
-                        return redirect()->route('backside.shop_owner.pos.staff_list');
-                    }
-
-                } else if ($input['role_id'] == 1) {
-                    Session::flash('message', 'Your admin was successfully updated');
-                    return redirect()->route('backside.shop_owner.pos.staff_list');
+                if ($input['role_id'] == 1) {
+                    Session::flash('message', 'Your admin was successfully added');
                 } else if ($input['role_id'] == 2) {
-                    Session::flash('message', 'Your manager was successfully updated');
-                    return redirect()->route('backside.shop_owner.pos.staff_list');
+                    Session::flash('message', 'Your manager was successfully added');
                 } else if ($input['role_id'] == 3) {
-                    Session::flash('message', 'Your staff was successfully updated');
-                    return redirect()->route('backside.shop_owner.pos.staff_list');
+                    Session::flash('message', 'Your staff was successfully added');
                 }
-
+                return redirect()->route('backside.shop_owner.pos.staff_list');
             }
 
         }
