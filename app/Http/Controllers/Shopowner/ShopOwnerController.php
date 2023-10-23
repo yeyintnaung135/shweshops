@@ -546,14 +546,12 @@ class ShopOwnerController extends Controller
         $shopowner->other_address = $request->other_address;
 
         if ($request->file('shop_logo')) {
+            $this->delete_all_logo_images($shopowner->shop_logo);
 
-            if (File::exists(public_path($shopowner->shop_logo))) {
-                File::delete(public_path($shopowner->shop_logo));
-            }
 
             $shop_logo = time() . '1.' . $request->file('shop_logo')->getClientOriginalExtension();
-            $get_path = $request->file('shop_logo')->move(public_path('images/logo'), $shop_logo);
-            $this->setthumbslogo($get_path, $shop_logo);
+            $this->save_image_shop_logo($request->file('shop_logo'), $shop_logo, 'shop_owner/logo/');
+            // $this->setthumbslogo($get_path, $shop_logo);
 
             $shopowner->shop_logo = $shop_logo;
         }
@@ -590,6 +588,17 @@ class ShopOwnerController extends Controller
             return redirect()->route('backside.shop_owner.shop_detail')->with(['status' => 'success', 'message' => 'Your Shop was successfully Edited']);
         } else {
             return dd($input);
+        }
+    }
+    public function delete_all_logo_images($imagename){
+        if (dofile_exists('/shop_owner/logo/' . $imagename)) {
+            $this->delete_image('shop_owner/logo/' .$imagename);
+        }
+        if (dofile_exists('/shop_owner/logo/mid/' . $imagename)) {
+            $this->delete_image('shop_owner/logo/mid/' . $imagename);
+        }
+        if (dofile_exists('/shop_owner/logo/thumbs/' . $imagename)) {
+            $this->delete_image('shop_owner/logo/thumbs/' . $imagename);
         }
     }
 

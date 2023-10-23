@@ -54,7 +54,7 @@
                 <div class="px-4 text-left px-md-5 mx-md-3 my-4 my-md-5 pb-md-0 pb-3">
                     <div class=" d-flex">
                         <div class="">
-                            <img src="{{ url('/images/logo/' . $shop_data->shop_logo) }}" class="sop-logo" alt="shop logo">
+                            <img src="{{ filedopath('/shop_owner/logo/' . $shop_data->shop_logo) }}" class="sop-logo" alt="shop logo">
                         </div>
                         <div class="col-8 sop-font ">
                             <div class="pt-2 ps-4 col-lg-8">

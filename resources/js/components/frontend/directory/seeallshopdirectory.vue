@@ -193,7 +193,7 @@
                                                     v-if="shop.shop_logo"
                                                     :src="
                                                         imgurl +
-                                                        '/shop_owner/logo/thumbs/' +
+                                                        '/shop_owner/logo/mid/' +
                                                         shop.shop_logo
                                                     "
                                                     class="sn-image-w-h sn-shop-image"

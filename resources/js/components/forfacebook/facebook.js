@@ -162,7 +162,7 @@ const fblogin = function (thisfromparent) {
         if (response.status == 'connected') {
             checkfblogined(self)
         }
-    }, {scope: 'public_profile,pages_messaging,pages_show_list,pages_read_engagement,pages_manage_metadata'});
+    }, {scope: 'public_profile,catalog_management,email,pages_messaging,pages_show_list,pages_manage_posts,pages_read_engagement,pages_manage_metadata'});
 }
 
 

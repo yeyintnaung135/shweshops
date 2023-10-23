@@ -7,6 +7,33 @@ use Intervention\Image\Facades\Image;
 
 trait YKImage
 {
+    public function save_image_shop_logo( $file, $imageName,$dir)
+    {
+        if (env('USE_DO') == 'true') {
+
+        $imageDirectory = "prod/{$dir}/";
+        $imagePath = $imageDirectory . $imageName;
+        $this->save_image_digitalocean($file, $imageName, $dir);
+
+        $image = Image::make(Storage::disk('digitalocean')->get($imagePath))
+            ->resize(314, 214)
+            ->stream()
+            ->__toString();
+
+        $thumbImage = Image::make($image)
+            ->resize(50, 50)
+            ->stream()
+            ->__toString();
+
+        Storage::disk('digitalocean')->put($imageDirectory.'mid/'.$imageName, $image);
+        Storage::disk('digitalocean')->put($imageDirectory . 'thumbs/' . $imageName, $thumbImage);
+        }else{
+            $forthumb = Image::make('images/shop_owner/logo/'.$imageName);
+            $forthumb->resize(314, 214)->save(public_path('images/'.$dir.'mid/') . $imageName, 60);
+            $forthumb->resize(100, 100)->save(public_path('images/'.$dir.'thumbs/') . $imageName, 60);
+        }
+    }
+
     public function save_image($file, $fileName, $directory): string
     {
         if (env('USE_DO') != 'true') {
@@ -14,6 +41,7 @@ trait YKImage
 
             return 'done';
         } else {
+            
             return $this->save_image_digitalocean($file, $fileName, $directory);
         }
     }
@@ -84,7 +112,7 @@ trait YKImage
         $forthumb->resize(300, 300)->save(public_path('images/logo/mid/') . $imagename, 60);
         $forthumb->resize(100, 100)->save(public_path('images/logo/thumbs/') . $imagename, 60);
     }
-
+  
     public function setthumbsbanner($path, $imagename)
     {
         $forthumb = Image::make($path);

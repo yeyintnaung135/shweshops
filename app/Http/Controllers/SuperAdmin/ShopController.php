@@ -103,12 +103,11 @@ class ShopController extends Controller
         $shopowner->other_address = $request->other_address;
         $shopowner->premium_template_id = $request->premium_template_id;
         if ($request->file('shop_logo')) {
-            if (dofile_exists('/shop_owner/logo/' . $shopowner->shop_logo)) {
-                $this->delete_image('shop_owner/logo/' . $shopowner->shop_logo);
-            }
+            $this->delete_all_logo_images($shopowner->shop_logo);
+
 
             $shop_logo = time() . '1.' . $request->file('shop_logo')->getClientOriginalExtension();
-            $this->save_image($request->file('shop_logo'), $shop_logo, 'shop_owner/logo/');
+            $this->save_image_shop_logo($request->file('shop_logo'), $shop_logo, 'shop_owner/logo/');
             // $this->setthumbslogo($get_path, $shop_logo);
 
             $shopowner->shop_logo = $shop_logo;
@@ -187,7 +186,7 @@ class ShopController extends Controller
         //file upload
         $imageNameone = time() . 'logo' . '.' . $shop_logo->getClientOriginalExtension();
 
-        $this->save_image($shop_logo, $imageNameone, 'shop_owner/logo/');
+        $this->save_image_shop_logo($shop_logo, $imageNameone, 'shop_owner/logo/');
 
         // $this->setthumbslogo($lpath, $imageNameone);
 
@@ -1137,14 +1136,24 @@ class ShopController extends Controller
 
         return redirect(url('backside/super_admin/shops/all'))->with(['status' => 'success', 'message' => 'Your SHOP was restore']);
     }
+    public function delete_all_logo_images($imagename){
+        if (dofile_exists('/shop_owner/logo/' . $imagename)) {
+            $this->delete_image('shop_owner/logo/' .$imagename);
+        }
+        if (dofile_exists('/shop_owner/logo/mid/' . $imagename)) {
+            $this->delete_image('shop_owner/logo/mid/' . $imagename);
+        }
+        if (dofile_exists('/shop_owner/logo/thumbs/' . $imagename)) {
+            $this->delete_image('shop_owner/logo/thumbs/' . $imagename);
+        }
+    }
+
 
     public function force_delete($id): RedirectResponse
     {
         $shop_owner = Shops::onlyTrashed()->with('getPhotos')->findOrFail($id);
 
-        if (dofile_exists('/shop_owner/logo/' . $shop_owner->shop_logo)) {
-            $this->delete_image('shop_owner/logo/' . $shop_owner->shop_logo);
-        }
+       $this->delete_all_logo_images($shop_owner->shop_logo);
         if (isset($shop_owner->getPhotos)) {
             $re_id = ShopBanner::where('shop_owner_id', $id)->onlyTrashed()->get();
 

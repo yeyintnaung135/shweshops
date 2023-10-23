@@ -24,7 +24,8 @@
             }
 
             .all-news-title{
-                font-size: 24px;
+                font-size: 20px;
+                line-height: 30px;
             }
             .all-news-title:hover{
                 color: #780116;
@@ -78,12 +79,12 @@
                             </div>
                             <div>
                                 <a href="{{ route('news.detail',$n->id)}}">
-                                    <h6 class="mt-3 text-black mb-2 all-news-title">{{ Str::words($n->title ,10) }}</h6>
+                                    <h6 class="mt-3 text-black mb-2 all-news-title">{{ Str::limit($n->title, 26,'...')}}</h6>
                                 </a>
                                 <p class="mb-3 mt-2 d-none"><span><i
                                             class="fa-solid fa-calendar-days"></i></span> {{ $n->created_at->format('d M Y')}}
                                 </p>
-                                <p class="description text-black-50">{{ Str::words($n->description ,10)}}</p>
+                                <p class="description text-black-50"> {{ Str::limit($n->description, 100,'...')}}</p>
                             </div>
                         </div>
                     @empty
