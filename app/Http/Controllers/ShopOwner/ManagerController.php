@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ShopOwner;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\Logs\BackRoleLogActivityTrait;
+use App\Http\Controllers\Trait\Logs\ShopOwnerLogActivityTrait;
 use App\Http\Controllers\Trait\UserRole;
 use App\Models\BackRoleEditDetail;
 use App\Models\BackRoleLogActivity;
@@ -25,7 +26,7 @@ use Yajra\DataTables\DataTables;
 
 class ManagerController extends Controller
 {
-    use UserRole, BackRoleLogActivityTrait;
+    use UserRole, BackRoleLogActivityTrait, ShopOwnerLogActivityTrait;
 
     public function __construct()
     {
@@ -256,186 +257,12 @@ class ManagerController extends Controller
             return redirect()->back()->withErrors($validate)->withInput();
         } else {
 
-            if (ShopOwnersAndStaffs::where('id', $id)->update($input)) {
-                $this->BackroleEditLog($input, $shop_id);
+            $change = ShopOwnersAndStaffs::where('id', $id)->first();
+            if ($change->update($input)) {
+                $backroleid = $this->BackroleEditLog($input, $shop_id);
 
-                // $old_name = $manager->name;
-                // $old_phone = $manager->phone;
-                // $old_role = Role::where('id', $manager->role_id)->first();
-                // $old_role_id = $old_role->name;
-                // // return dd($old_role_id);
+                $this->save_users_edit_detail_logs($manager, $change, $backroleid, $id);
 
-                // $new_name = $request['name'];
-                // $new_phone = $request['phone'];
-                // $new = $request['role_id'];
-                // $new_role = Role::where('id', $new)->first();
-                // $new_role_id = $new_role->name;
-                // // return dd($new_role_id);
-
-                // if ($old_name == $new_name && $old_phone == $new_phone && $old_role_id == $new_role_id) {
-                //     // return dd($old_name,$new_name,$old_phone,$new_phone,$old_role_id,$new_role_id);
-                //     $back_role_edit_detail = new BackroleEditdetail();
-                //     $back_role_edit_detail->old_name = "no";
-                //     $back_role_edit_detail->new_name = "no";
-                //     $back_role_edit_detail->old_phone = "no";
-                //     $back_role_edit_detail->new_phone = "no";
-                //     $back_role_edit_detail->old_role_id = "no";
-                //     $back_role_edit_detail->new_role_id = "no";
-                //     $back_role_edit_detail->user_id = $id;
-                //     $back_role_edit_detail->backrole_log_activities_id = $backroleid->id;
-                //     $back_role_edit_detail->save();
-                //     if ($input['role_id'] == 1) {
-                //         Session::flash('message', 'Your admin was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     } else if ($input['role_id'] == 2) {
-                //         Session::flash('message', 'Your manager was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     } else if ($input['role_id'] == 3) {
-                //         Session::flash('message', 'Your staff was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     }
-                // } else if ($old_name !== $new_name && $old_phone !== $new_phone && $old_role_id !== $new_role_id) {
-                //     // return dd($old_name,$new_name,$old_phone,$new_phone,$old_role_id,$new_role_id);
-                //     $back_role_edit_detail = new BackroleEditdetail();
-                //     $back_role_edit_detail->old_name = $old_name;
-                //     $back_role_edit_detail->new_name = $new_name;
-                //     $back_role_edit_detail->old_phone = $old_phone;
-                //     $back_role_edit_detail->new_phone = $new_phone;
-                //     $back_role_edit_detail->old_role_id = $old_role_id;
-                //     $back_role_edit_detail->new_role_id = $new_role_id;
-                //     $back_role_edit_detail->user_id = $id;
-                //     $back_role_edit_detail->backrole_log_activities_id = $backroleid->id;
-                //     $back_role_edit_detail->save();
-                //     if ($input['role_id'] == 1) {
-                //         Session::flash('message', 'Your admin was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     } else if ($input['role_id'] == 2) {
-                //         Session::flash('message', 'Your manager was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     } else if ($input['role_id'] == 3) {
-                //         Session::flash('message', 'Your staff was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     }
-                // } else if ($old_name !== $new_name && $old_phone !== $new_phone) {
-                //     $back_role_edit_detail = new BackroleEditdetail();
-                //     $back_role_edit_detail->old_name = $old_name;
-                //     $back_role_edit_detail->new_name = $new_name;
-                //     $back_role_edit_detail->old_phone = $old_phone;
-                //     $back_role_edit_detail->new_phone = $new_phone;
-                //     $back_role_edit_detail->user_id = $id;
-                //     $back_role_edit_detail->backrole_log_activities_id = $backroleid->id;
-                //     $back_role_edit_detail->save();
-                //     if ($input['role_id'] == 1) {
-                //         Session::flash('message', 'Your admin was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     } else if ($input['role_id'] == 2) {
-                //         Session::flash('message', 'Your manager was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     } else if ($input['role_id'] == 3) {
-                //         Session::flash('message', 'Your staff was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     }
-                // } else if ($old_name !== $new_name && $old_role_id !== $new_role_id) {
-                //     $back_role_edit_detail = new BackroleEditdetail();
-                //     $back_role_edit_detail->old_name = $old_name;
-                //     $back_role_edit_detail->new_name = $new_name;
-                //     $back_role_edit_detail->old_role_id = $old_role_id;
-                //     $back_role_edit_detail->new_role_id = $new_role_id;
-                //     $back_role_edit_detail->user_id = $id;
-                //     $back_role_edit_detail->backrole_log_activities_id = $backroleid->id;
-                //     $back_role_edit_detail->save();
-                //     if ($input['role_id'] == 1) {
-                //         Session::flash('message', 'Your admin was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     } else if ($input['role_id'] == 2) {
-                //         Session::flash('message', 'Your manager was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     } else if ($input['role_id'] == 3) {
-                //         Session::flash('message', 'Your staff was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     }
-                // } else if ($old_phone !== $new_phone && $old_role_id !== $new_role_id) {
-                //     $back_role_edit_detail = new BackroleEditdetail();
-                //     $back_role_edit_detail->old_phone = $old_phone;
-                //     $back_role_edit_detail->new_phone = $new_phone;
-                //     $back_role_edit_detail->old_role_id = $old_role_id;
-                //     $back_role_edit_detail->new_role_id = $new_role_id;
-                //     $back_role_edit_detail->user_id = $id;
-                //     $back_role_edit_detail->backrole_log_activities_id = $backroleid->id;
-                //     $back_role_edit_detail->save();
-                //     if ($input['role_id'] == 1) {
-                //         Session::flash('message', 'Your admin was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     } else if ($input['role_id'] == 2) {
-                //         Session::flash('message', 'Your manager was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     } else if ($input['role_id'] == 3) {
-                //         Session::flash('message', 'Your staff was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     }
-                // } else if ($old_name !== $new_name) {
-                //     $back_role_edit_detail = new BackroleEditdetail();
-                //     $back_role_edit_detail->old_name = $old_name;
-                //     $back_role_edit_detail->new_name = $new_name;
-                //     $back_role_edit_detail->user_id = $id;
-                //     $back_role_edit_detail->backrole_log_activities_id = $backroleid->id;
-
-                //     $back_role_edit_detail->save();
-
-                //     if ($input['role_id'] == 1) {
-                //         Session::flash('message', 'Your admin was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     } else if ($input['role_id'] == 2) {
-                //         Session::flash('message', 'Your manager was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     } else if ($input['role_id'] == 3) {
-                //         Session::flash('message', 'Your staff was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     }
-                // } else if ($old_phone !== $new_phone) {
-                //     $back_role_edit_detail = new BackroleEditdetail();
-                //     $back_role_edit_detail->old_phone = $old_phone;
-                //     $back_role_edit_detail->new_phone = $new_phone;
-                //     $back_role_edit_detail->user_id = $id;
-                //     $back_role_edit_detail->backrole_log_activities_id = $backroleid->id;
-                //     $back_role_edit_detail->save();
-                //     if ($input['role_id'] == 1) {
-                //         Session::flash('message', 'Your admin was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     } else if ($input['role_id'] == 2) {
-                //         Session::flash('message', 'Your manager was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     } else if ($input['role_id'] == 3) {
-                //         Session::flash('message', 'Your staff was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     }
-                // } else if ($old_role_id !== $new_role_id) {
-                //     $back_role_edit_detail = new BackroleEditdetail();
-                //     $back_role_edit_detail->old_role_id = $old_role_id;
-                //     $back_role_edit_detail->new_role_id = $new_role_id;
-                //     $back_role_edit_detail->user_id = $id;
-                //     $back_role_edit_detail->backrole_log_activities_id = $backroleid->id;
-                //     $back_role_edit_detail->save();
-                //     if ($input['role_id'] == 1) {
-                //         Session::flash('message', 'Your admin was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     } else if ($input['role_id'] == 2) {
-                //         Session::flash('message', 'Your manager was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     } else if ($input['role_id'] == 3) {
-                //         Session::flash('message', 'Your staff was successfully updated');
-                //         return redirect('/backside/shop_owner/users');
-                //     }
-                // } else if ($input['role_id'] == 1) {
-                //     Session::flash('message', 'Your admin was successfully updated');
-                //     return redirect('/backside/shop_owner/users');
-                // } else if ($input['role_id'] == 2) {
-                //     Session::flash('message', 'Your manager was successfully updated');
-                //     return redirect('/backside/shop_owner/users');
-                // } else if ($input['role_id'] == 3) {
-                //     Session::flash('message', 'Your staff was successfully updated');
-                //     return redirect('/backside/shop_owner/users');
-                // }
                 if ($input['role_id'] == 1) {
                     Session::flash('message', 'Your admin was successfully added');
                 } else if ($input['role_id'] == 2) {

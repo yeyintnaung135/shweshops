@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Trait\Logs;
 
+use App\Models\BackRoleEditDetail;
 use App\Models\Gems;
 use App\Models\Item;
 use App\Models\ItemsEditDetailLogs;
@@ -74,6 +75,46 @@ trait ShopOwnerLogActivityTrait
         return $shopownerlogid;
     }
 
+    public static function shop_owner_item_force_delete_log($action, $shop_id)
+    {
+        $log = [];
+        $log['shop_id'] = $shop_id;
+        $log['shop_name'] = Shops::where('id', $log['shop_id'])->value('name');
+        $log['item_id'] = $action->id;
+        $log['product_code'] = $action->product_code;
+        $log['item_name'] = $action->name;
+        $log['category'] = $action->category_id;
+        $log['user_name'] = Auth::guard('shop_owners_and_staffs')->user()->name;
+        $log['action'] = 'ForceDelete';
+
+        $role = Auth::guard('shop_owners_and_staffs')->user()->role_id;
+        $roles = [1 => 'admin', 2 => 'manager', 3 => 'staff', 4 => 'shopowner'];
+        $log['role'] = $roles[$role] ?? 'unknown';
+
+        $shopownerlogid = ShopOwnerLogActivity::create($log);
+        return $shopownerlogid;
+    }
+
+    public function save_users_edit_detail_logs($manager, $change, $backroleid, $id)
+    {
+        $changes = $change->getChanges();
+        $back_role_edit_detail = new BackRoleEditDetail();
+
+        $managerFields = [
+            'name', 'phone', 'role_id',
+        ];
+
+        foreach ($managerFields as $field) {
+            $back_role_edit_detail->{'old_' . $field} = $manager->{$field};
+            $back_role_edit_detail->{'new_' . $field} = $manager->{$field} === $change->{$field} ? 'no' : $changes[$field] ?? 'no';
+        }
+
+        $back_role_edit_detail->user_id = $id;
+        $back_role_edit_detail->backrole_log_activities_id = $backroleid->id;
+        $back_role_edit_detail->save();
+
+    }
+
     public function save_items_edit_detail_logs($current_item, $change, $shopownerlogid, $old_gem, $id, $tags, $output)
     {
         $new_gem = Gems::where('item_id', $id)->first();
@@ -121,10 +162,8 @@ trait ShopOwnerLogActivityTrait
         ];
 
         foreach ($itemFields as $field) {
-            foreach ($itemFields as $field) {
-                $items_edit_detail_logs->{$field} = $current_item->{$field};
-                $items_edit_detail_logs->{'new_' . $field} = $current_item->{$field} === $change->{$field} ? '-----' : $changes[$field] ?? '-----';
-            }
+            $items_edit_detail_logs->{$field} = $current_item->{$field};
+            $items_edit_detail_logs->{'new_' . $field} = $current_item->{$field} === $change->{$field} ? '-----' : $changes[$field] ?? '-----';
         }
 
         // $items_edit_detail_logs->sizing_guide = $old['sizing_guide'];
@@ -148,26 +187,6 @@ trait ShopOwnerLogActivityTrait
         $items_edit_detail_logs->shop_id = $current_item->shop_id;
         $items_edit_detail_logs->shopownereditlogs_id = $shopownerlogid->id;
         $items_edit_detail_logs->save();
-    }
-
-    public static function shop_owner_item_force_delete_log($action, $shop_id)
-    {
-        $log = [];
-        $log['shop_id'] = $shop_id;
-        $log['shop_name'] = Shops::where('id', $log['shop_id'])->value('name');
-        $log['item_id'] = $action->id;
-        $log['product_code'] = $action->product_code;
-        $log['item_name'] = $action->name;
-        $log['category'] = $action->category_id;
-        $log['user_name'] = Auth::guard('shop_owners_and_staffs')->user()->name;
-        $log['action'] = 'ForceDelete';
-
-        $role = Auth::guard('shop_owners_and_staffs')->user()->role_id;
-        $roles = [1 => 'admin', 2 => 'manager', 3 => 'staff', 4 => 'shopowner'];
-        $log['role'] = $roles[$role] ?? 'unknown';
-
-        $shopownerlogid = ShopOwnerLogActivity::create($log);
-        return $shopownerlogid;
     }
 
     public static function ShopsLogActivityLists()
