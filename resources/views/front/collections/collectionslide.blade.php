@@ -22,7 +22,7 @@
                     <div class="ftc-product product ">
                         <div class="images post-img sop-img" style="margin-bottom: 0px !important;">
                             <div class="yk-hover-title sop-rounded-top text-capitalize text-left g-0" style="width:100% !important;">
-                                <img src="{{url($col->shop_name->shop_logo)}}" class="yk-hover-logo float-left"/>
+                                <img src="{{filedopath('shop_owner/logo/mid'.$col->shop_name->shop_logo)}}" class="yk-hover-logo float-left"/>
                                 <span>
                                 {{\Illuminate\Support\Str::limit($col->shop_name->shop_name, 15, '...')}}
                             </span>
@@ -34,7 +34,7 @@
                             
                             
                             <a href="{{url('product_detail/'.$col->id)}}">
-                                <img class="sop-image-w-h" src="{{url($col->check_photo)}}"/>
+                                <img class="sop-image-w-h" src="{{filedopath('items/mid/'.$col->check_photo)}}"/>
                             </a>
                         </div>
 

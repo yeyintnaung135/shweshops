@@ -20,10 +20,12 @@
                     fav_action_to_local_storage(parseInt(itemid), "add");
                     $("#ficon").removeClass("fa-regular");
                     $("#ficon").addClass("fa-solid");
+                 
                 } else {
                     fav_action_to_local_storage(parseInt(itemid), "remove");
                     $("#ficon").removeClass("fa-solid");
                     $("#ficon").addClass("fa-regular");
+              
                 }
             }
             if (typeof localStorage.getItem('favourite') !== 'undefined' && localStorage.getItem('favourite') !==

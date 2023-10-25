@@ -119,12 +119,12 @@
                                             <img class="w-100" src="{{ url('/images/news_&_events/news/' . $n->image) }}"
                                                 alt="">
                                         @endif
-                                        <h6 class="mt-3 text-black more-news-title">{{ $n->title }}</h6>
+                                        <h6 class="mt-3 text-black more-news-title">{{ Str::limit($n->title, 70,'...')}}</h6>
                                     </a>
                                 @endif
                                 <p class="mb-3 mt-2"><span><i class="fa-solid fa-calendar-days"></i></span>
                                     {{ $n->created_at->format('d M Y') }}</p>
-                                <p>{{ Str::words($n->title, 20) }}</p>
+                                <p>{{ Str::limit($n->description, 100,'...')}}</p>
                             </div>
                         @empty
                             <div class="mb-5">

@@ -61,7 +61,7 @@
                                         target="_blank" rel="noopener noreferrer">
                                         <img class="w-100" src="{{ filedopath('/shop_owner/events/' . $e->photo) }}"
                                             alt="">
-                                        <h6 class="mt-3 text-black  more-events-title">{{ $e->title }}</h6>
+                                        <h6 class="mt-3 text-black  more-events-title">{{ Str::limit($e->title, 70,'...')}}</h6>
                                     </a>
                                 @else
                                     <a href="{{ route('events.detail', $e->id) }}" target="_blank" rel="noopener noreferrer">
@@ -72,13 +72,13 @@
                                             <img class="w-100" src="{{ url('/images/news_&_events/event/' . $e->photo) }}"
                                                 alt="">
                                         @endif
-                                        <h6 class="mt-3 text-black  more-events-title">{{ $e->title }}</h6>
+                                        <h6 class="mt-3 text-black  more-events-title">{{ Str::limit($e->title, 70,'...')}}</h6>
                                     </a>
                                 @endif
                                 <p class="mb-3 mt-2"><span><i class="fa-solid fa-calendar-days"></i></span>
                                     {{ $e->created_at->format('d M Y') }}</p>
                                 {{--                  <a class="sn-latest-news-sub">Up to 70% off sale</a> --}}
-                                <p>{{ Str::words($e->description, 5) }}</p>
+                                <p>{{ Str::limit($e->description, 100,'...')}}</p>
                             </div>
                         @empty
                             <div class="mb-5">
@@ -88,9 +88,9 @@
 
 
                         @if ($premium == 'Yes')
-                            <a class="sn-latest-news-button float" href="/all_events/{{ $event->shop_id }}">More News</a>
+                            <a class="sn-latest-news-button float" href="/all_events/{{ $event->shop_id }}">More Events</a>
                         @else
-                            <a class="sn-latest-news-button float" href="/events">More News</a>
+                            <a class="sn-latest-news-button float" href="/events">More Events</a>
                         @endif
                     </div>
 

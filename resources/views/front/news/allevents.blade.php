@@ -1,4 +1,3 @@
-use Illuminate\Support\Str;
 
 @extends('layouts.frontend.frontend')
 @section('content')
@@ -69,17 +68,17 @@ use Illuminate\Support\Str;
                             <div class="all-events-image">
                                 <a href="{{route('events.detail',$e->id)}}">
                                     @if(dofile_exists('/news_&_events/event/' . $e->photo))
-                                     <img class="w-100" src="{{ filedopath('/news_&_events/event/' . $e->photo)}}" alt=""
-                                      style="height: 200px;">
+                                     <img  src="{{ filedopath('/news_&_events/event/' . $e->photo)}}" alt=""
+                                    >
                                       @else
                                       <img class="w-100" src="{{ url('/images/news_&_events/event/' . $e->photo)}}" alt=""
-                                      style="height: 200px;">
+                                      >
                                       @endif
                                 </a>
                             </div>
                             <div>
                                 <a class="mb-3" href="{{route('events.detail',$e->id)}}">
-                                    <h6 class="mt-3 text-black mb-2 all-events-title"> {{ Str::limit($e->description, 25,'...')}}</h6>
+                                    <h6 class="mt-3 text-black mb-2 all-events-title"> {{ Str::limit($e->title, 50,'...')}}</h6>
                                 </a>
                                 <p class="mb-3 mt-2 d-none"><span><i
                                             class="fa-solid fa-calendar-days"></i></span> {{ $e->created_at->format('d M Y')}}

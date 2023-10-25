@@ -44,7 +44,7 @@
                                             <div class="swiper-wrapper">
                                                 @foreach ($shopowner->getPhotos as $p)
                                                     <div class="swiper-sliendforeachde">
-                                                        <img src="{{ asset('images/banner/' . $p->location) }}"
+                                                        <img src="{{ filedopath('/shop_owner/banner/' . $p->location) }}"
                                                             alt="">
                                                     </div>
                                                 @endforeach
@@ -60,7 +60,7 @@
                                             $getbanner = 'default.jpg';
                                         }
                                         ?>
-                                        <img class="img-fluid" src="{{ url('images/banner/' . $getbanner) }}"
+                                        <img class="img-fluid" src="{{ filedopath('/shop_owner/banner/' . $getbanner) }}"
                                             alt="Photo">
                                     @endif
                                 @endif
@@ -68,7 +68,7 @@
                             <div class="profile-content">
                                 <div class=" profile position-relative mb-4">
                                     <img class="profile-user-img img-fluid img-circle"
-                                        src="{{ url('images/logo/' . $shopowner->shop_logo) }}" alt="User profile picture">
+                                        src="{{ filedopath('/shop_owner/logo/' . $shopowner->shop_logo) }}" alt="User profile picture">
                                     <div class="shop_name">
                                         <h3>
                                             {{ $shopowner->shop_name }} <br>

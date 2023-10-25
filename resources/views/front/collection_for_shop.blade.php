@@ -58,7 +58,7 @@
                      <div class="">
                         <img class="card-img-top sop-image-w-h collection-img sop-img" src="
                            @if(isset($collection[0]->default_photo) || !is_null($collection[0]->default_photo) || !empty($collection[0]->default_photo))
-                              {{ asset('images/items/' . $collection[0]->default_photo) }}
+                              {{ filedopath('/items/' . $collection[0]->default_photo) }}
                            @else
                               {{ asset('images/items/default-placeholder.png') }}
                            @endif
@@ -79,7 +79,7 @@
                               <div class="post-img sop-img">
                                  <span class="fa fa-user yk-viewcount">{{$item->view_count}}</span>
                                  <a href="{{route('front_productdetail',['shop_name' => $shop_name , 'product_id' => $item->id])}}">
-                                    <img src="{{ url('/images/items/'.$item->photo_one)}}" class="sop-image-w-h" />
+                                    <img src="{{ filedopath('/items/'.$item->photo_one)}}" class="sop-image-w-h" />
                                  </a>
                               </div>
                               <div>
@@ -105,7 +105,7 @@
                                  <a href="{{route('pCollections',['shop_name' => $shop_name , 'col_id' => $oc->id])}}" class="collection-card">
                                     <img class="card-img-top sop-image-w-h shop-collection-img sop-img" src="
                                        @if(isset($oc->default_photo) || !is_null($oc->default_photo) || !empty($oc->default_photo))
-                                          {{ asset('images/items/' . $oc->default_photo) }}
+                                          {{ filedopath('/items/' . $oc->default_photo) }}
                                        @else
                                           {{ asset('images/items/default-placeholder.png') }}
                                        @endif
@@ -133,7 +133,7 @@
                                  <div class="card-img-top sop-image-w-h collection-img sop-img">
                                  <img class="card-img-top sop-image-w-h collection-img sop-img" src="
                                     @if(isset($oc->default_photo) || !is_null($oc->default_photo) || !empty($oc->default_photo))
-                                       {{ asset('images/items/' . $oc->default_photo) }}
+                                       {{ filedopath('/items/' . $oc->default_photo) }}
                                     @else
                                        {{ asset('images/items/default-placeholder.png') }}
                                     @endif

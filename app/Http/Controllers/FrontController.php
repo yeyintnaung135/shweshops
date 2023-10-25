@@ -249,7 +249,7 @@ class FrontController extends Controller
 
         //forlogs
 
-        $popular_shops = frontuserlogs::leftJoin('shops', 'front_user_logs.shop_id', '=', 'shops.id')
+        $popular_shops = FrontUserLogs::leftJoin('shops', 'front_user_logs.shop_id', '=', 'shops.id')
             ->select('shops.id', 'shops.shop_logo', 'shops.shop_name', 'shops.shop_name_url')->selectRaw('count(*) as s_count')
             ->where('status', 'shopdetail')
             ->whereDate('front_user_logs.created_at', '>', Carbon::today()->subDay(30))

@@ -82,7 +82,7 @@
                         <div v-if="d.premium == 'yes'">
                             <a :href="'/' + d.shop_name_url">
                                 <img
-                                    class="kanok-frame"
+                                    class="kanok-frame" style="left:-4px !important"
                                     :src="
                                         host +
                                         '/images/directory/banner/Frame 925.png'
