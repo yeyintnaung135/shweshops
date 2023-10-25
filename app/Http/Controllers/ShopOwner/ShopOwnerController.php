@@ -487,11 +487,12 @@ class ShopOwnerController extends Controller
         $shopowner = Shops::where('id', $this->get_shopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.edit', ['shopowner' => $shopowner]);
     }
-    public function delete_all_banner_images($imagename){
+    public function delete_all_banner_images($imagename)
+    {
         if (dofile_exists('/shop_owner/banner/' . $imagename)) {
-            $this->delete_image('shop_owner/banner/' .$imagename);
+            $this->delete_image('shop_owner/banner/' . $imagename);
         }
-      
+
     }
 
     public function update(Request $request, $id)
@@ -554,7 +555,6 @@ class ShopOwnerController extends Controller
         if ($request->file('shop_logo')) {
             $this->delete_all_logo_images($shopowner->shop_logo);
 
-
             $shop_logo = time() . '1.' . $request->file('shop_logo')->getClientOriginalExtension();
             $this->save_image_shop_logo($request->file('shop_logo'), $shop_logo, 'shop_owner/logo/');
             // $this->setthumbslogo($get_path, $shop_logo);
@@ -567,7 +567,7 @@ class ShopOwnerController extends Controller
         if ($request->hasFile('banner')) {
             $shop_banner = ShopBanner::where('shop_owner_id', $id)->get();
             foreach ($shop_banner as $b) {
-               $this->delete_all_banner_images($b->location)
+                $this->delete_all_banner_images($b->location);
             }
             if (isset($shopowner->getPhotos)) {
                 $del = $shopowner->getPhotos->pluck("id");
@@ -594,9 +594,10 @@ class ShopOwnerController extends Controller
             return dd($input);
         }
     }
-    public function delete_all_logo_images($imagename){
+    public function delete_all_logo_images($imagename)
+    {
         if (dofile_exists('/shop_owner/logo/' . $imagename)) {
-            $this->delete_image('shop_owner/logo/' .$imagename);
+            $this->delete_image('shop_owner/logo/' . $imagename);
         }
         if (dofile_exists('/shop_owner/logo/mid/' . $imagename)) {
             $this->delete_image('shop_owner/logo/mid/' . $imagename);

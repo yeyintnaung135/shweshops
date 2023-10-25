@@ -70,6 +70,10 @@ class ShopController extends Controller
         $shopowner = Shops::findOrFail($id);
         //        return $shopowner;
 
+        if ($request->premium == 'no') {
+            $input['premium_template_id'] = null;
+        }
+
         $add_ph = json_decode($request->additional_phones);
         $add_ph_array = [];
 
@@ -104,7 +108,6 @@ class ShopController extends Controller
         $shopowner->premium_template_id = $request->premium_template_id;
         if ($request->file('shop_logo')) {
             $this->delete_all_logo_images($shopowner->shop_logo);
-
 
             $shop_logo = time() . '1.' . $request->file('shop_logo')->getClientOriginalExtension();
             $this->save_image_shop_logo($request->file('shop_logo'), $shop_logo, 'shop_owner/logo/');
@@ -180,6 +183,10 @@ class ShopController extends Controller
 
         $data = $request->except("_token");
 
+        if ($request->premium == 'no') {
+            $data['premium_template_id'] = null;
+        }
+        dd($data);
         $shop_logo = $data['shop_logo'];
         //   $shop_banner = $data['shop_banner'];
 
@@ -1136,9 +1143,10 @@ class ShopController extends Controller
 
         return redirect(url('backside/super_admin/shops/all'))->with(['status' => 'success', 'message' => 'Your SHOP was restore']);
     }
-    public function delete_all_logo_images($imagename){
+    public function delete_all_logo_images($imagename)
+    {
         if (dofile_exists('/shop_owner/logo/' . $imagename)) {
-            $this->delete_image('shop_owner/logo/' .$imagename);
+            $this->delete_image('shop_owner/logo/' . $imagename);
         }
         if (dofile_exists('/shop_owner/logo/mid/' . $imagename)) {
             $this->delete_image('shop_owner/logo/mid/' . $imagename);
@@ -1147,24 +1155,24 @@ class ShopController extends Controller
             $this->delete_image('shop_owner/logo/thumbs/' . $imagename);
         }
     }
-    public function delete_all_banner_images($imagename){
+    public function delete_all_banner_images($imagename)
+    {
         if (dofile_exists('/shop_owner/banner/' . $imagename)) {
-            $this->delete_image('shop_owner/banner/' .$imagename);
+            $this->delete_image('shop_owner/banner/' . $imagename);
         }
-      
+
     }
 
     public function force_delete($id): RedirectResponse
     {
         $shop_owner = Shops::onlyTrashed()->with('getPhotos')->findOrFail($id);
 
-       $this->delete_all_logo_images($shop_owner->shop_logo);
+        $this->delete_all_logo_images($shop_owner->shop_logo);
         if (isset($shop_owner->getPhotos)) {
             $re_id = ShopBanner::where('shop_owner_id', $id)->onlyTrashed()->get();
 
             foreach ($re_id as $i) {
-                    $this->delete_all_banner_images( $i->location);
-  
+                $this->delete_all_banner_images($i->location);
 
                 ShopBanner::onlyTrashed()->findOrFail($i->id)->forceDelete();
             }
@@ -1189,7 +1197,7 @@ class ShopController extends Controller
                 $re_id = ShopBanner::where('shop_owner_id', $id)->onlyTrashed()->get();
 
                 foreach ($re_id as $i) {
-                    $this->delete_all_banner_images( $i->location);
+                    $this->delete_all_banner_images($i->location);
 
                     ShopBanner::onlyTrashed()->findOrFail($i->id)->forceDelete();
                 }
