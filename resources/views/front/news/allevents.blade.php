@@ -1,3 +1,4 @@
+
 @extends('layouts.frontend.frontend')
 @section('content')
     @include('layouts.frontend.allpart.for_mobile')
@@ -23,7 +24,8 @@
             }
 
             .all-events-title{
-                font-size: 24px;
+                font-size: 20px;
+                line-height: 30px;
             }
 
             .all-events-title:hover{
@@ -66,22 +68,22 @@
                             <div class="all-events-image">
                                 <a href="{{route('events.detail',$e->id)}}">
                                     @if(dofile_exists('/news_&_events/event/' . $e->photo))
-                                     <img class="w-100" src="{{ filedopath('/news_&_events/event/' . $e->photo)}}" alt=""
-                                      style="height: 200px;">
+                                     <img  src="{{ filedopath('/news_&_events/event/' . $e->photo)}}" alt=""
+                                    >
                                       @else
                                       <img class="w-100" src="{{ url('/images/news_&_events/event/' . $e->photo)}}" alt=""
-                                      style="height: 200px;">
+                                      >
                                       @endif
                                 </a>
                             </div>
                             <div>
                                 <a class="mb-3" href="{{route('events.detail',$e->id)}}">
-                                    <h6 class="mt-3 text-black mb-2 all-events-title">{{ $e->title }}</h6>
+                                    <h6 class="mt-3 text-black mb-2 all-events-title"> {{ Str::limit($e->title, 50,'...')}}</h6>
                                 </a>
                                 <p class="mb-3 mt-2 d-none"><span><i
                                             class="fa-solid fa-calendar-days"></i></span> {{ $e->created_at->format('d M Y')}}
                                 </p>
-                                <p class="text-black-50 description"> {{ Str::words($e->description, 6)}}</p>
+                                <p class="text-black-50 description"> {{ Str::limit($e->description, 100,'...')}}</p>
                             </div>
                         </div>
                     @empty

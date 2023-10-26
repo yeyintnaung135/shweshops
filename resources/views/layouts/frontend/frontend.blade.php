@@ -3901,16 +3901,16 @@ header('X-Content-Type-Options: nosniff');
             }
         }
 
-        window.fbAsyncInit = function() {
-            FB.init({
-                appId: '995588534410291',
-                cookie: true,
-                xfbml: true,
-                version: 'v13.0'
-            });
+        // window.fbAsyncInit = function() {
+        //     FB.init({
+        //         appId: '995588534410291',
+        //         cookie: true,
+        //         xfbml: true,
+        //         version: 'v13.0'
+        //     });
 
 
-        };
+        // };
     </script>
 
 

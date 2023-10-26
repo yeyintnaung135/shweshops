@@ -28,7 +28,7 @@
 
             <a href="{{url('backside/shop_owner/shop')}}"  class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
                 <div class="image">
-                    <img src="{{url('/images/logo/'.$current_shop->shop_logo)}}" class="img-circle elevation-2" alt="User Image">
+                    <img src="{{filedopath('/shop_owner/logo/'.$current_shop->shop_logo)}}" class="img-circle elevation-2" alt="User Image">
                 </div>
                 <div class="info text-capitalize text-color">
                     {{\Illuminate\Support\Str::limit($current_shop->shop_name, 20, '...')}}

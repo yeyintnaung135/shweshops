@@ -487,6 +487,13 @@ class ShopOwnerController extends Controller
         $shopowner = Shops::where('id', $this->get_shopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.edit', ['shopowner' => $shopowner]);
     }
+    public function delete_all_banner_images($imagename)
+    {
+        if (dofile_exists('/shop_owner/banner/' . $imagename)) {
+            $this->delete_image('shop_owner/banner/' . $imagename);
+        }
+
+    }
 
     public function update(Request $request, $id)
     {
@@ -546,14 +553,11 @@ class ShopOwnerController extends Controller
         $shopowner->other_address = $request->other_address;
 
         if ($request->file('shop_logo')) {
-
-            if (File::exists(public_path($shopowner->shop_logo))) {
-                File::delete(public_path($shopowner->shop_logo));
-            }
+            $this->delete_all_logo_images($shopowner->shop_logo);
 
             $shop_logo = time() . '1.' . $request->file('shop_logo')->getClientOriginalExtension();
-            $get_path = $request->file('shop_logo')->move(public_path('images/logo'), $shop_logo);
-            $this->setthumbslogo($get_path, $shop_logo);
+            $this->save_image_shop_logo($request->file('shop_logo'), $shop_logo, 'shop_owner/logo/');
+            // $this->setthumbslogo($get_path, $shop_logo);
 
             $shopowner->shop_logo = $shop_logo;
         }
@@ -563,9 +567,7 @@ class ShopOwnerController extends Controller
         if ($request->hasFile('banner')) {
             $shop_banner = ShopBanner::where('shop_owner_id', $id)->get();
             foreach ($shop_banner as $b) {
-                if (File::exists(public_path($b->location))) {
-                    File::delete(public_path($b->location));
-                }
+                $this->delete_all_banner_images($b->location);
             }
             if (isset($shopowner->getPhotos)) {
                 $del = $shopowner->getPhotos->pluck("id");
@@ -576,7 +578,7 @@ class ShopOwnerController extends Controller
             foreach ($request->banner as $b) {
                 $newFileName = uniqid() . '_banner' . '.' . $b->getClientOriginalExtension();
                 array_push($fileNameArr, $newFileName);
-                $b->move(public_path('images/banner'), $newFileName);
+                $this->save_image($b, $newFileName, 'shop_owner/banner/');
             }
             foreach ($fileNameArr as $f) {
                 $banner = new ShopBanner();
@@ -590,6 +592,18 @@ class ShopOwnerController extends Controller
             return redirect()->route('backside.shop_owner.shop_detail')->with(['status' => 'success', 'message' => 'Your Shop was successfully Edited']);
         } else {
             return dd($input);
+        }
+    }
+    public function delete_all_logo_images($imagename)
+    {
+        if (dofile_exists('/shop_owner/logo/' . $imagename)) {
+            $this->delete_image('shop_owner/logo/' . $imagename);
+        }
+        if (dofile_exists('/shop_owner/logo/mid/' . $imagename)) {
+            $this->delete_image('shop_owner/logo/mid/' . $imagename);
+        }
+        if (dofile_exists('/shop_owner/logo/thumbs/' . $imagename)) {
+            $this->delete_image('shop_owner/logo/thumbs/' . $imagename);
         }
     }
 

@@ -1,3 +1,5 @@
+
+
 @extends('layouts.frontend.frontend')
 @section('content')
     @include('layouts.frontend.allpart.for_mobile')
@@ -22,18 +24,18 @@
                 <div class="baydin_card card" style="width: 26rem;">
                     @if (isset(Auth::guard('web')->user()->id))
                         <a href="{{ route('baydin_detail', $baydin->id) }}">
-                            <img class="card-img-top" src="{{ '/images/baydin/' . $baydin->photo }}" alt="Card image cap">
+                            <img class="card-img-top" src="{{ url('/images/baydin/' . $baydin->photo) }}" alt="Card image cap"/>
                         </a>
                     @else
                         <a data-toggle="modal" data-target="#orangeModalSubscription">
-                            <img class="card-img-top" src="{{ '/images/baydin/' . $baydin->photo }}" alt="Card image cap">
+                            <img class="card-img-top" src="{{ url('/images/baydin/' . $baydin->photo) }}" alt="Card image cap"/>
                         </a>
                     @endif
-                    <img class="sign_img" src="{{ '/images/baydin/sign/' . $baydin->sign_logo }}" alt="Card image cap">
+                    <img class="sign_img" src="{{url('/images/baydin/sign/' . $baydin->sign_logo) }}" alt="Card image cap">
                     <div class="card-body">
                         <h2 class="b-title">{{ $baydin->title }}</h2>
                         <h4 class="detail-subtitle card-subtitle mb-2 text-muted">Credit By::{{ $baydin->credit }}</h4>
-                        <p class="card-text">{!! Str::limit($baydin->description, 100) !!}</p>
+                        <p class="card-text">{!! Str::limit(nl2br(strip_tags($baydin->description)), 100,'...') !!}</p>
                     </div>
                 </div>
             @endforeach

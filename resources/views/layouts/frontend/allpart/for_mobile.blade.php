@@ -103,7 +103,7 @@
         <div class="menu-mobile">
             <div class="    ">
                 <div class="sop-sans">
-                    <a title="" href="{{ url('/myfav') }}" class="d-flex">
+                    <a title="" href="{{ url('/myfav/see_all') }}" class="d-flex">
                         <i class="fa-regular fa-heart col-2"></i>
                         wishlist
                     </a>
@@ -113,7 +113,7 @@
         <div class="menu-mobile">
             <div class="    ">
                 <div class="">
-                    <a title="" href="{{ url('addtocart') }}" class=" d-flex">
+                    <a title="" href="{{ url('mycart/see_all') }}" class=" d-flex">
                         {{-- <i class="fa-solid fa-bag-shopping  col-2"></i> --}}
                         <i class="fi fi-rs-shopping-cart-check col-2"></i>
                         ‌ရွေးထားတာလေးများ

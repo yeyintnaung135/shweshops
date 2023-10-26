@@ -30,7 +30,7 @@
                             @if(empty($shop->shop_logo))
                             <img src="test/test1.jpg"class="attachment-ftc_blog_shortcode_thumb size-ftc_blog_shortcode_thumb wp-post-image lazyloaded  sop-image-w-h"alt="">
                             @else
-                            <img src="{{url('images/logo/mid/'.$shop->shop_logo)}}"class="attachment-ftc_blog_shortcode_thumb size-ftc_blog_shortcode_thumb wp-post-image lazyloaded  sop-image-w-h p-1 px-2"
+                            <img src="{{filedopath('/shop_owner/logo/mid/'.$shop->shop_logo)}}"class="attachment-ftc_blog_shortcode_thumb size-ftc_blog_shortcode_thumb wp-post-image lazyloaded  sop-image-w-h p-1 px-2"
                             alt="">
                             <img src="{{url('/images/directory/banner/Frame 925.png')}}" alt="" srcset="" class="kanok-frame">
                             @endif

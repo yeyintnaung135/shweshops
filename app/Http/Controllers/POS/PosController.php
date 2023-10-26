@@ -2200,7 +2200,7 @@ class PosController extends Controller
         $purchase = PosPlatinumSale::find($id);
         $purchase->delete();
         Session::flash('message', 'Platinum Sale was successfully Deleted!');
-        return redirect()->route('backend.shop_owner.pos.ptm_sale_list');
+        return redirect('backside/shop_owner/ptm_sale_list');
     }
     public function edit_ptm_sale($id): View
     {
@@ -2382,7 +2382,7 @@ class PosController extends Controller
         $purchase = PosWhiteGoldSale::find($id);
         $purchase->delete();
         Session::flash('message', 'White Gold Sale was successfully Deleted!');
-        return redirect()->route('backend.shop_owner.pos.wg_sale_list');
+        return redirect('backside/shop_owner/wg_sale_list');
     }
 
     public function detail_whitegold_sale($id): View

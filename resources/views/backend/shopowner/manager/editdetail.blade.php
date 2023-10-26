@@ -12,15 +12,15 @@
               <div class="modal-body">
                   <table class="table">
                       <tbody>
-                          <tr>
+                          <tr id="userNameRow">
                               <th scope="row">Username</th>
                               <td id="userName"></td>
                           </tr>
-                          <tr>
+                          <tr id="userPhoneRow">>
                               <th scope="row">Phone</th>
                               <td id="userPhone"></td>
                           </tr>
-                          <tr>
+                          <tr id="userRoleRow">>
                               <th scope="row">User Role</th>
                               <td id="userRole"></td>
                           </tr>
@@ -62,25 +62,25 @@
                           document.getElementById("userName").textContent = "from " + data.old_name + " to " +
                               data.new_name;
                       } else if (data.new_name == null) {
-                          document.getElementById("userName").textContent = "-------";
+                          document.getElementById("userNameRow").style.display = "none";
                       } else if (data.new_name == "no") {
-                          document.getElementById("userName").textContent = "-------";
+                          document.getElementById("userNameRow").style.display = "none";
                       }
                       if (data.new_phone != null && data.new_phone != "no") {
                           document.getElementById("userPhone").textContent = "from " + data.old_phone + " to " +
                               data.new_phone;
                       } else if (data.new_phone == null) {
-                          document.getElementById("userPhone").textContent = "-------";
+                          document.getElementById("userPhoneRow").style.display = "none";
                       } else if (data.new_phone == "no") {
-                          document.getElementById("userName").textContent = "-------";
+                          document.getElementById("userPhoneRow").style.display = "none";
                       }
                       if (data.new_role_id != null && data.new_role_id != "no") {
                           document.getElementById("userRole").textContent = "from " + data.old_role_id + " to " +
                               data.new_role_id;
                       } else if (data.new_role_id == null) {
-                          document.getElementById("userRole").textContent = "-------";
+                          document.getElementById("userRoleRow").style.display = "none";
                       } else if (data.new_role_id == "no") {
-                          document.getElementById("userName").textContent = "-------";
+                          document.getElementById("userRoleRow").style.display = "none";
                       }
                       document.getElementById("action").textContent = action;
                   },

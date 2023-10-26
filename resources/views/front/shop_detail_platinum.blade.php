@@ -34,14 +34,14 @@
                     @if((count($shop_data->getPhotos) != 0))
                         @foreach ( $shop_data->getPhotos as $img)
                         <img class="item zh-main_slide"
-                        src="{{ url('images/banner/'.$img->location)}}"/>
+                        src="{{ filedopath('/shop_owner/banner/'.$img->location)}}"/>
                         @endforeach
                     @elseif(!empty($shop_data->shop_banner))
                         <img class="item zh-main_slide"
-                        src="{{ url('images/banner/'.$shop_data->shop_banner)}}"/>
+                        src="{{ filedopath('/shop_owner/banner/'.$shop_data->shop_banner)}}"/>
                     @else
                         <img class="item zh-main_slide"
-                        src="{{ url('images/banner/default.png')}}"/>
+                        src="{{ filedopath('/shop_owner/banner/default.png')}}"/>
                     @endif
                 </div>
             </div>
@@ -55,7 +55,7 @@
                     <div class="col-12 col-lg-6 d-flex p-0">
                         {{-- Shop Logo --}}
                         <div class="premium-logo-wrap">
-                            <img src="{{url('/images/logo/'.$shop_data->shop_logo)}}" class="premium-logo" alt="shop logo">
+                            <img src="{{ filedopath('/shop_owner/logo/' . $shop_data->shop_logo) }}" class="premium-logo" alt="shop logo">
                                 <div class="premium-logo">
                                     <img src="{{url('/images/directory/banner/Corner_1_Platinum.png')}}" alt="" srcset="" class="profile-kanote profile-kanote-1">
                                     <img src="{{url('/images/directory/banner/Corner_2_Platinum.png')}}" alt="" srcset="" class="profile-kanote profile-kanote-2">

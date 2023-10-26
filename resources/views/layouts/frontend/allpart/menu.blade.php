@@ -37,10 +37,10 @@
                 <i class=""></i>
                 <div class="ftc-tini-cart">
                     <div class="cart-item">
-                        <a href="{{ url('myfav') }}">
+                        <a href="{{ url('myfav/see_all') }}">
                             <div class="cart-total">
 
-                                <i id="windowFavNav" class="fa-regular fa-heart fa-xl"
+                                <i id="" class="fa-regular fa-heart fa-xl windowFavNav"
                                     style="color:rgb(167 6 6) !important"></i>
                                 {{-- <span id="favw-a2c-count" class="sop-cart-count">0</span> --}}
                             </div>

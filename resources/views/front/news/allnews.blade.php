@@ -11,6 +11,7 @@
                 color: black !important;
                 position: relative;
             }
+
             #borderBottom {
                 border-bottom: 2px solid black;
                 padding: 2px;
@@ -19,28 +20,32 @@
                 right: 35%;
                 left: 0;
             }
-            .description{
+
+            .description {
                 font-size: 13px;
             }
 
-            .all-news-title{
-                font-size: 24px;
+            .all-news-title {
+                font-size: 20px;
+                line-height: 30px;
             }
-            .all-news-title:hover{
+
+            .all-news-title:hover {
                 color: #780116;
             }
-            .all-news-image{
+
+            .all-news-image {
                 cursor: pointer;
                 overflow: hidden;
             }
-            .all-news-image img{
+
+            .all-news-image img {
                 transition: 0.5s ease-out;
             }
-            .all-news-image img:hover{
+
+            .all-news-image img:hover {
                 transform: scale(1.2);
             }
-
-
         </style>
     @endpush
 
@@ -54,7 +59,7 @@
                             News
                         </a>
                     </li>
-              
+
                     <li class="mb-2 mt-3 px-5">
                         <a href="events">Events</a>
                     </li>
@@ -65,25 +70,26 @@
                 <div class="row">
                     @forelse ($news as $n)
                         <div class="col-md-4 mb-3">
-                            <div class="all-news-image">
-                                <a href="{{ route('news.detail',$n->id)}}">
-                                    @if(dofile_exists('/news_&_events/news/' . $n->image))
-                                    <img class="w-100" src="{{ filedopath('/news_&_events/news/' . $n->image)}}" alt=""
-                                     style="height: 200px;">
-                                     @else
-                                     <img class="w-100" src="{{ url('/images/news_&_events/news/' . $n->image)}}" alt=""
-                                     style="height: 200px;">
-                                     @endif
+                            {{-- <div class="all-news-image"> --}}
+
+                            <div>
+                                <a href="{{ route('news.detail', $n->id) }}">
+                                    @if (dofile_exists('/news_&_events/news/' . $n->image))
+                                        <img src="{{ filedopath('/news_&_events/news/' . $n->image) }}" alt="">
+                                    @else
+                                        <img src="{{ url('/images/news_&_events/news/' . $n->image) }}" alt="">
+                                    @endif
                                 </a>
                             </div>
                             <div>
-                                <a href="{{ route('news.detail',$n->id)}}">
-                                    <h6 class="mt-3 text-black mb-2 all-news-title">{{ Str::words($n->title ,10) }}</h6>
+                                <a href="{{ route('news.detail', $n->id) }}">
+                                    <h6 class="mt-3 text-black mb-2 all-news-title">{{ Str::limit($n->title, 50, '...') }}
+                                    </h6>
                                 </a>
-                                <p class="mb-3 mt-2 d-none"><span><i
-                                            class="fa-solid fa-calendar-days"></i></span> {{ $n->created_at->format('d M Y')}}
+                                <p class="mb-3 mt-2 d-none"><span><i class="fa-solid fa-calendar-days"></i></span>
+                                    {{ $n->created_at->format('d M Y') }}
                                 </p>
-                                <p class="description text-black-50">{{ Str::words($n->description ,10)}}</p>
+                                <p class="description text-black-50"> {{ Str::limit($n->description, 100, '...') }}</p>
                             </div>
                         </div>
                     @empty
@@ -101,5 +107,4 @@
     </div>
     @include('layouts.frontend.allpart.footer')
     @include('layouts.frontend.allpart.mobile_footer')
-
 @endsection

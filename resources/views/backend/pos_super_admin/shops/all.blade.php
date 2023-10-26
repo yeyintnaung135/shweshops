@@ -80,12 +80,14 @@
                                                 <tr>
                                                 <td>{{$i++}}</td>
                                                 <td>{{$shop->shop_name_myan}}</td> 
-                                                 <td><img src="{{ url('/images/logo/'.$shop->shop_logo) }}"
-                                                    class="rounded-circle" width="50"
-                                                    height="45" alt="Logo" /></td>
-                                                 <td><img src="{{ url('/images/banner/'.$shop->shop_banner) }}"
-                                                    alt="cover" class="rounded-circle" width="50"
-                                                    height="45"/></td>
+                                                <td>
+                                                  <img src="{{ filedopath('/shop_owner/logo/' . ':img') }}"
+                                                  class="rounded-circle" width="50"
+                                                  height="45" alt="Logo" />
+                                                </td>
+                                                 <td><img src="{{ filedopath('/shop_owner/banner/' . ':img') }}"
+                                                  alt="cover" class="rounded-circle" width="50"
+                                                  height="45"/></td>
                                                   <td>{{$shop->type == 'yes' ? 'Premium' : 'Normal'}}</td>
                                                  <td>{{$shop->email}}</td>
                                                  <td>{{$shop->main_phone}}</td>

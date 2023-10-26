@@ -37,10 +37,10 @@
                         <div id='main_slide' class="text-center owl-carousel owl-theme w-100 ">
                             @if (count($shop_data->getPhotos) != 0)
                                 @foreach ($shop_data->getPhotos as $img)
-                                    <img class="item zh-main_slide" src="{{ url('images/banner/' . $img->location) }}" />
+                                    <img class="item zh-main_slide" src="{{ filedopath('shop_owner/banner/' . $img->location) }}" />
                                 @endforeach
                             @elseif(!empty($shop_data->shop_banner))
-                                <img class="item zh-main_slide" src="{{ url('images/banner/' . $shop_data->shop_banner) }}" />
+                                <img class="item zh-main_slide" src="{{ filedopath('shop_owner/banner/' . $shop_data->shop_banner) }}" />
                             @else
                                 <img class="item zh-main_slide" src="{{ url('images/banner/default.jpg') }}" />
                             @endif
@@ -54,7 +54,7 @@
                 <div class="px-4 text-left px-md-5 mx-md-3 my-4 my-md-5 pb-md-0 pb-3">
                     <div class=" d-flex">
                         <div class="">
-                            <img src="{{ url('/images/logo/' . $shop_data->shop_logo) }}" class="sop-logo" alt="shop logo">
+                            <img src="{{ filedopath('/shop_owner/logo/' . $shop_data->shop_logo) }}" class="sop-logo" alt="shop logo">
                         </div>
                         <div class="col-8 sop-font ">
                             <div class="pt-2 ps-4 col-lg-8">

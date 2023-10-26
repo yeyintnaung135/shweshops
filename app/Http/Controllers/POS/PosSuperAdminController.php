@@ -135,7 +135,7 @@ class PosSuperAdminController extends Controller
 
                 $newFileName = uniqid() . '_banner' . '.' . $b->getClientOriginalExtension();
                 array_push($fileNameArr, $newFileName);
-                $bpath = $b->move(public_path('images/banner/'), $newFileName);
+                $this->save_image($b, $newFileName, 'shop_owner/banner/');
             }
         }
 
@@ -146,8 +146,7 @@ class PosSuperAdminController extends Controller
 
         //file upload
         $imageNameone = time() . 'logo' . '.' . $shop_logo->getClientOriginalExtension();
-
-        $this->save_image($shop_logo, $imageNameone, 'shop_owner/logo/');
+        $this->save_image_shop_logo($shop_logo, $imageNameone, 'shop_owner/logo/');
         //   $this->setthumbslogo($lpath, $imageNameone);
 
         //store database

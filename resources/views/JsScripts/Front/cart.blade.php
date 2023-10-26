@@ -31,9 +31,11 @@
                 let tmpcartcount = JSON.parse(localStorage.getItem('cart')).length;
                 if (tmpcartcount > 10) {
                     $('#cart_count').html("10+");
+                    $('.sop-cart-count').html("10+");
 
                 } else {
                     $('#cart_count').html(JSON.parse(localStorage.getItem('cart')).length);
+                    $('.sop-cart-count').html(JSON.parse(localStorage.getItem('cart')).length);
 
                 }
 

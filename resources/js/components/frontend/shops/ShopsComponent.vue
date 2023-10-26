@@ -22,7 +22,7 @@
                         <a  :href="host+'/'+d.WithoutspaceShopname ">
                             <img
                                 :src="'images/logo/mid/' + d.shop_logo"
-                                class="sop-image-w-h sn-shop-image"
+                                class="sn-shop-image"
                             />
                         </a>
                     </div>
@@ -35,7 +35,7 @@
                                 class="sop-font-content mt-2"
                                 style="font-family: sans-serif !important"
                                 :href="host+'/'+d.WithoutspaceShopname"
-                                >{{ d.shop_name | strlimit(12, "...") }}</a
+                                >{{ d.shop_name | strlimit(3, "...") }}</a
                             >
                         </h3>
 
@@ -62,31 +62,7 @@
                     </div>
                 </div>
             </div>
-            <!-- <div class="d-flex justify-content-center fa-3x mb-3 sop-sans">
-                <button
-                    v-if="
-                        this.clickloadmorecount < 5 && this.emptyonserver == 0
-                    "
-                    id=""
-                    class="btn btn-danger zh-button"
-                    @click="loadmoreclick($event)"
-                >
-                    <span
-                        class="fa fa-spinner"
-                        v-bind:class="{ 'fa-spin': togglespin }"
-                    ></span>
-                    View More
-                </button> -->
-                <!--                <a-->
-                <!--                    style="color: white !important"-->
-                <!--                    :href="this.host + '/see_all_discount'"-->
-                <!--                    v-else-->
-                <!--                    class="btn btn-danger zh-button"-->
-                <!--                >-->
-                <!--                    <span class="fa fa-arrow-circle-right"></span>-->
-                <!--                    See All-->
-                <!--                </a>-->
-            <!-- </div> -->
+          
         </div>
     </div>
 </template>

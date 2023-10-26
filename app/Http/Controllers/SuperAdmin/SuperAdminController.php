@@ -18,10 +18,10 @@ use App\Models\Shops;
 use App\Models\SuperAdmin;
 use App\Models\User;
 use App\Models\WishlistClickLog;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -44,6 +44,7 @@ class SuperAdminController extends Controller
         $viewer = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
             ->groupBy('front_user_logs.userorguestid')
             ->groupBy(DB::raw('date(front_user_logs.created_at)'))
+            ->whereBetween('front_user_logs.created_at',[Carbon::now()->subMonths(3),Carbon::now()])
             ->get()
             ->count();
 
@@ -51,6 +52,8 @@ class SuperAdminController extends Controller
             ->where('status', 'adsclick')
             ->groupBy('front_user_logs.userorguestid')
             ->groupBy(DB::raw('date(front_user_logs.created_at)'))
+            ->whereBetween('front_user_logs.created_at',[Carbon::now()->subMonths(3),Carbon::now()])
+
             ->groupBy('front_user_logs.visited_link')
             ->get()
             ->count();
@@ -62,6 +65,8 @@ class SuperAdminController extends Controller
             ->groupBy('front_user_logs.userorguestid')
             ->groupBy(DB::raw('date(front_user_logs.created_at)'))
             ->groupBy('front_user_logs.visited_link')
+            ->whereBetween('front_user_logs.created_at',[Carbon::now()->subMonths(3),Carbon::now()])
+
             ->get()
             ->count();
 
@@ -69,15 +74,22 @@ class SuperAdminController extends Controller
             ->groupBy(DB::raw('case when guestoruserid.user_id = 0 then guestoruserid.guest_id else guestoruserid.user_id end'))
             ->groupBy(DB::raw('date(buy_now_click_logs.created_at)'))
             ->groupBy('buy_now_click_logs.item_id')
+            ->whereBetween('buy_now_click_logs.created_at',[Carbon::now()->subMonths(3),Carbon::now()])
+
             ->get()
+            
             ->count();
 
-        $addtocart = AddToCartClickLog::count();
+        $addtocart = AddToCartClickLog::whereBetween('created_at',[Carbon::now()->subMonths(3),Carbon::now()])->
+        count();
 
-        $whishlist = WishlistClickLog::count();
+        $whishlist = WishlistClickLog::whereBetween('created_at',[Carbon::now()->subMonths(3),Carbon::now()])->
+        count();
 
         $uqviewer = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
             ->groupBy('front_user_logs.userorguestid')
+            ->whereBetween('front_user_logs.created_at',[Carbon::now()->subMonths(3),Carbon::now()])
+
             ->get()
             ->count();
 
@@ -85,6 +97,8 @@ class SuperAdminController extends Controller
             ->where('status', 'adsclick')
             ->groupBy('front_user_logs.userorguestid')
             ->groupBy('front_user_logs.visited_link')
+            ->whereBetween('front_user_logs.created_at',[Carbon::now()->subMonths(3),Carbon::now()])
+
             ->get()
             ->count();
 
@@ -94,29 +108,38 @@ class SuperAdminController extends Controller
             ->where('status', 'shopdetail')
             ->groupBy('front_user_logs.userorguestid')
             ->groupBy('front_user_logs.visited_link')
+            ->whereBetween('front_user_logs.created_at',[Carbon::now()->subMonths(3),Carbon::now()])
+
             ->get()
             ->count();
 
         $uqbuynow = BuyNowClickLog::leftjoin('guestoruserid', 'buy_now_click_logs.userorguestid', '=', 'guestoruserid.id')
             ->groupBy(DB::raw('case when guestoruserid.user_id = 0 then guestoruserid.guest_id else guestoruserid.user_id end'))
             ->groupBy('buy_now_click_logs.item_id')
+            ->whereBetween('buy_now_click_logs.created_at',[Carbon::now()->subMonths(3),Carbon::now()])
+
             ->get()
             ->count();
 
         //all logs count
-        $allviewers = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->count();
+        $allviewers = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')->whereBetween('front_user_logs.created_at',[Carbon::now()->subMonths(3),Carbon::now()])
+        ->count();
 
         $alladsviewers = FrontUserLogs::leftjoin('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
             ->where('front_user_logs.status', 'adsclick')
             ->groupBy('guestoruserid.ip')
+            ->whereBetween('front_user_logs.created_at',[Carbon::now()->subMonths(3),Carbon::now()])
+
             ->get()
             ->count();
 
-        $allshopviewers = FrontUserLogs::where('status', 'shopdetail')->count();
+        $allshopviewers = FrontUserLogs::whereBetween('front_user_logs.created_at',[Carbon::now()->subMonths(3),Carbon::now()])->
+        where('status', 'shopdetail')->count();
 
         $allbuynow = BuyNowClickLog::count();
 
-        $newusers = GuestOrUserId::where('user_agent', '!=', 'bot')->whereDate('created_at', '=', Carbon::today()->toDateString())->groupBy('ip')->get();
+        $newusers = GuestOrUserId::where('user_agent', '!=', 'bot')->whereBetween('created_at',[Carbon::now()->subMonths(3),Carbon::now()])
+        ->whereDate('created_at', '=', Carbon::today()->toDateString())->groupBy('ip')->get();
 
         $countnu = 0;
         foreach ($newusers as $nu) {
@@ -543,7 +566,7 @@ class SuperAdminController extends Controller
 
         if (ContactUs::create($input)) {
 
-            return redirect()->route('superAdmin.contactus_get')->with(['status' => 'success', 'message' => 'Your Shop was successfully Edited']);
+            return redirect()->route('backside.super_admin.superAdmin.contactus_get')->with(['status' => 'success', 'message' => 'Your Shop was successfully Edited']);
         }
     }
 

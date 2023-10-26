@@ -1,6 +1,6 @@
 <template>
     <div class="w-100 h-100 d-flex justify-content-center align-items-center">
-        <a :href="host + '/addtocart/'">
+        <a :href="host + '/mycart/see_all'">
             <i
                 id="mobile-a2c-icon"
                 class="fa-solid fa-basket-shopping"
