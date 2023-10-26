@@ -75,9 +75,9 @@
               <div class="post-info px-2">
                   <header class="entry-header">
                       <!-- Blog Title -->
-                      <h3 class="yk-product-title multiline-truncate">
+                      <h3 class="yk-product-title">
                           <a
-                              class="sop-font-content mt-2"
+                              class="sop-font-content mt-2 text-container"
                               style="font-family: sans-serif !important"
                               :href="
                                   host +
@@ -453,12 +453,6 @@ textarea {
       object-fit: fill;
     }
 
-    .multiline-truncate{
-      white-space: nowrap;     
-      overflow: hidden;        
-      text-overflow: ellipsis; 
-      max-height: 400px;
-    }
 }
 @keyframes fade {
     0% {

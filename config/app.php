@@ -160,7 +160,7 @@ return [
          * Package Service Providers...
          */
         MongoDB\Laravel\MongodbServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class,
+        // Intervention\Image\ImageServiceProvider::class,
 
         /*
          * Application Service Providers...
