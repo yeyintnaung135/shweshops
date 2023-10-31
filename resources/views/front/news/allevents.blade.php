@@ -65,7 +65,7 @@
                 <div class="row">
                     @forelse ($events as $e)
                         <div class="col-md-4 mb-3">
-                            <div class="all-events-image">
+                            <div class="">
                                 <a href="{{route('events.detail',$e->id)}}">
                                     @if(dofile_exists('/news_&_events/event/' . $e->photo))
                                      <img  src="{{ filedopath('/news_&_events/event/' . $e->photo)}}" alt=""

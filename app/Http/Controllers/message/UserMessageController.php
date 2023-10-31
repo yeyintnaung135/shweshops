@@ -7,6 +7,7 @@ use App\Events\Shopownermessage;
 use App\Models\Events\Usermessage;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 use App\Models\Http\Controllers\traid\firebase;
 use App\Models\Messages;
@@ -14,6 +15,7 @@ use App\Models\Shops;
 use App\Models\Item;
 use App\Models\User;
 use App\Models\UsersOrShopsOnlineStatus;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -115,9 +117,16 @@ class UsermessageController extends Controller
             ->values()
             ->all();
         foreach ($getshopid as $key => $value) {
-            $alldata = Shops::select('shop_logo','id','shop_name')->where('id', $value->message_shop_id)->first();
+
+          
+            $alldata = Shops::select('shop_logo','id','shop_name')->where('id', $getshopid[$key]['message_shop_id'])->first();
+           if(!empty($alldata->shop_name)){
+            $alldata->shop_name=Str::limit($alldata->shop_name,'15','...');
+            $alldata['status']='offline';
+
             $getshopid[$key]['shopdata'] = $alldata;
-            $getshopid[$key]['shopdata']['status']='offline';
+           }
+           
         }
 
         return response()->json(['success' => true, 'data' => $getshopid]);

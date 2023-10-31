@@ -30,29 +30,41 @@
                 <div
                     class="row g-0 mt-2 d-flex list-container"
                     v-for="data in this.chatdata"
-                    @click="passchildtoparent(data.message_shop_id, data.read_by_user, '')"
+                    @click="
+                        passchildtoparent(
+                            data.message_shop_id,
+                            data.read_by_user,
+                            ''
+                        )
+                    "
                     :key="data.key"
                 >
-                    <div v-if="data.shopdata != null" class="col-2 g-0 d-flex align-items-center">
+                    <div
+                        v-if="data.shopdata != null"
+                        class="col-2 g-0 d-flex align-items-center"
+                    >
                         <img
                             class="chatlistimg"
                             :src="
-                                host +
-                                '/images/logo/thumbs/' +
+                                imgurl +
+                                '/shop_owner/logo/thumbs/' +
                                 data.shopdata.shop_logo
                             "
                         />
                     </div>
-                    <div class="active-now-user" v-if="data.shopdata != null && data.shopdata.status=='online'">
-                         <span
-
-                             v-if="data.shopdata.status == 'online'"
-                         ></span>
+                    <div
+                        class="active-now-user"
+                        v-if="
+                            data.shopdata != null &&
+                            data.shopdata.status == 'online'
+                        "
+                    >
+                        <span v-if="data.shopdata.status == 'online'"></span>
                     </div>
 
                     <div v-if="data.shopdata != null" class="col-10 g-0">
                         <div class="row chattitle g-0">
-                            {{ data.shopdata.shop_name | strlimit(15, "...") }}
+                            {{ data.shopdata.shop_name }}
                         </div>
                         <div
                             class="row chatbody g-0"
@@ -193,16 +205,23 @@ export default {
             showchatlist: false,
             showtotalbadge: true,
             chatdata: [],
+            imgurl:"",
         };
     },
     mounted() {
         this.host = this.$hostname;
-        localStorage.removeItem(window.userid+'gettotalchatcountforuser');
+        localStorage.removeItem(window.userid + "gettotalchatcountforuser");
         this.getTotalCount();
+        if (process.env.MIX_USE_DO == "true") {
+            this.imgurl = process.env.MIX_DO_URL;
+        } else {
+            this.imgurl = this.$hostname + "/images";
+        }
     },
     filters: {
         strlimit: function (str, limit, other) {
-            return allfromcommonservice.strcutout(str, limit, other);
+            let shortstring = str.substring(0, limit) + other;
+                return shortstring;
         },
         beautytime: function (timestamp) {
             return allfromcommonservice.beautytime(timestamp);
@@ -215,7 +234,13 @@ export default {
             this.showtotalbadge = true;
         },
         passchildtoparent(v, read_by_user, info) {
-            const d = { id: parseInt(v), limit: 20, info: info, user_id: this.userid, read_by_user };
+            const d = {
+                id: parseInt(v),
+                limit: 20,
+                info: info,
+                user_id: this.userid,
+                read_by_user,
+            };
             return this.$emit("getfromid", d);
         },
         onclickmsgicon: async function (info) {
@@ -224,15 +249,19 @@ export default {
             } else {
                 this.showchatlist = !this.showchatlist;
             }
-            if (localStorage.getItem(window.userid + "chatlist") === null || this.count > 0) {
+            if (
+                localStorage.getItem(window.userid + "chatlist") === null ||
+                this.count > 0
+            ) {
                 var gclfs = await this.getuserchatlistsfromserver();
             } else {
-                var gclfs = JSON.parse(localStorage.getItem(window.userid + "chatlist"));
+                var gclfs = JSON.parse(
+                    localStorage.getItem(window.userid + "chatlist")
+                );
             }
             this.getSpecificCount(gclfs.data.data);
 
             if (gclfs.data.success) {
-
                 app.$refs.chatref.showwrapper = false;
                 this.chatdata = gclfs.data.data;
             }
@@ -247,7 +276,10 @@ export default {
             }
 
             this.showtotalbadge = this.showchatlist ? false : true;
-            localStorage.setItem(window.userid + "chatlist", JSON.stringify(gclfs));
+            localStorage.setItem(
+                window.userid + "chatlist",
+                JSON.stringify(gclfs)
+            );
 
             console.log("user chat lists", gclfs);
         },
@@ -261,29 +293,56 @@ export default {
             });
         },
         getTotalCount: async function () {
-          let total_chat_count;
-          if(localStorage.getItem(this.userid+'gettotalchatcountforuser') === null) {
-            total_chat_count = await allfrommessagefunction.gettotalchatcountforuser();
-            localStorage.setItem(this.userid+'gettotalchatcountforuser', total_chat_count);
-          } else {
-            total_chat_count = localStorage.getItem(this.userid+'gettotalchatcountforuser');
-          }
-          this.count = total_chat_count < 10 ? total_chat_count : "9+";
+            let total_chat_count;
+            if (
+                localStorage.getItem(
+                    this.userid + "gettotalchatcountforuser"
+                ) === null
+            ) {
+                total_chat_count =
+                    await allfrommessagefunction.gettotalchatcountforuser();
+                localStorage.setItem(
+                    this.userid + "gettotalchatcountforuser",
+                    total_chat_count
+                );
+            } else {
+                total_chat_count = localStorage.getItem(
+                    this.userid + "gettotalchatcountforuser"
+                );
+            }
+            this.count = total_chat_count < 10 ? total_chat_count : "9+";
         },
         getSpecificCount: async function (datas) {
-          if(localStorage.getItem(this.userid+'getspecificcount') === null || this.count > 0) {
-            var count = {};
-            for (const data of datas) {
-              let speccount = await allfrommessagefunction.getspecificchatcountforuser(data.message_shop_id);
-              count[data.message_shop_id] = speccount < 10 ? speccount : "9+";
+            if (
+                localStorage.getItem(this.userid + "getspecificcount") ===
+                    null ||
+                this.count > 0
+            ) {
+                var count = {};
+                for (const data of datas) {
+                    let speccount =
+                        await allfrommessagefunction.getspecificchatcountforuser(
+                            data.message_shop_id
+                        );
+                    count[data.message_shop_id] =
+                        speccount < 10 ? speccount : "9+";
+                }
+                localStorage.setItem(
+                    this.userid + "getspecificcount",
+                    JSON.stringify(count)
+                );
             }
-            localStorage.setItem(this.userid+'getspecificcount', JSON.stringify(count));
-          }
-          this.setSpecificCount();
+            this.setSpecificCount();
         },
         setSpecificCount: function () {
-          this.specificcount = localStorage.getItem(this.userid+'getspecificcount') ? JSON.parse(localStorage.getItem(this.userid+'getspecificcount')) : {};
-        }
+            this.specificcount = localStorage.getItem(
+                this.userid + "getspecificcount"
+            )
+                ? JSON.parse(
+                      localStorage.getItem(this.userid + "getspecificcount")
+                  )
+                : {};
+        },
     },
 };
 </script>
@@ -334,8 +393,8 @@ export default {
             0 6px 20px 0 rgba(0, 0, 0, 0.19);
     }
     .main-chat-list .container {
-      height: 348px;
-      overflow-y: scroll;
+        height: 348px;
+        overflow-y: scroll;
     }
 }
 @media only screen and (max-width: 576px) {
@@ -353,11 +412,10 @@ export default {
         background: #fff;
     }
     .main-chat-list .container {
-      height: calc(var(--vh) * 100 - 56px);
-      overflow-y: scroll;
+        height: calc(var(--vh) * 100 - 56px);
+        overflow-y: scroll;
     }
 }
-
 
 .chatbody {
     font-size: 14px;

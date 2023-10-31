@@ -549,8 +549,9 @@ class SuperAdminController extends Controller
         return view('backend.super_admin.contactus.edit', ['contact' => $contact]);
     }
 
-    public function contact_us_update(SuperAdminContactUsUpdateRequest $request): RedirectResponse
+    public function contact_us_update(SuperAdminContactUsUpdateRequest $request):RedirectResponse
     {
+        $input= $request->except('_token','_method');
         $folderPath = 'images/contactus/';
         $contact = ContactUs::where('active', 1)->first();
 
@@ -562,9 +563,8 @@ class SuperAdminController extends Controller
         } else {
             $input['image'] = $contact->image;
         }
-        $contact = ContactUs::where('active', 1)->update(['active' => 0]);
 
-        if (ContactUs::create($input)) {
+        if (ContactUs::where('active', 1)->update($input)) {
 
             return redirect()->route('backside.super_admin.superAdmin.contactus_get')->with(['status' => 'success', 'message' => 'Your Shop was successfully Edited']);
         }

@@ -103,7 +103,7 @@
                         orderable: false,
                         searchable: false,
                         render: function(data, type, full, meta) {
-                            const image = `<img src= "{{ filedopath('/news_&_events/news/thumbs/' . '${data}') }}"/>`;
+                            const image = `<img src= "{{ filedopath('/news_&_events/news/' . '${data}') }}"/>`;
                             return image;
                         }
                     },
