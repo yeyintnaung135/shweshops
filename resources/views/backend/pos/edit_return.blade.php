@@ -92,9 +92,9 @@
                                                 <label for="quality">ရွှေအရည်အသွေး</label>
                                                 <select name="quality" class="form-control" onchange="calculate_quality_price(this.value)" required>
                                                     <!-- {{-- <option value="{{$return->quality_id}}">{{$return->quality->name}}</option> --}} -->
-                                                    <!-- @foreach ($quality as $q)
+                                                    @foreach ($quality as $q)
                                                     <option value="{{$q->id}}">{{$q->name}}</option>
-                                                    @endforeach -->
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <div class="col-12">
@@ -103,18 +103,18 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-3 form-group">
-                                                        <input type="number" step="0.01" name="product_weight" placeholder="Gram" id="product_weight" class="form-control" value="<?php echo explode('/',$return->product_weight)[0]; ?>" required>
+                                                        <input type="number" step="0.01" name="product_weight" placeholder="Gram" id="product_weight" class="form-control" value="<?php echo explode('/',$return->product_gram_kyat_pe_yway)[0]; ?>" required>
 
                                                     </div>
                                                     <div class="col-3 form-group">
-                                                        <input type="number" step="0.01" name="product_kyat"  id="product_kyat" class="form-control"  placeholder="ကျပ်" value="<?php echo explode('/',$return->product_weight)[1]; ?>">
+                                                        <input type="number" step="0.01" name="product_kyat"  id="product_kyat" class="form-control"  placeholder="ကျပ်" value="<?php echo explode('/',$return->product_gram_kyat_pe_yway)[1]; ?>">
 
                                                     </div>
                                                     <div class="col-3 form-group">
-                                                        <input type="number" step="0.01" name="product_pe" id="product_pe" class="form-control"  placeholder="ပဲ" value="<?php echo explode('/',$return->product_weight)[2]; ?>">
+                                                        <input type="number" step="0.01" name="product_pe" id="product_pe" class="form-control"  placeholder="ပဲ" value="<?php echo explode('/',$return->product_gram_kyat_pe_yway)[2]; ?>">
                                                     </div>
                                                     <div class="col-3 form-group">
-                                                        <input type="number" step="0.01" name="product_yway" id="product_yway" class="form-control"  placeholder="ရွေး" value="<?php echo explode('/',$return->product_weight)[3]; ?>">
+                                                        <input type="number" step="0.01" name="product_yway" id="product_yway" class="form-control"  placeholder="ရွေး" value="<?php echo explode('/',$return->product_gram_kyat_pe_yway)[3]; ?>">
                                                     </div>
                                                 </div>
                                             </div>

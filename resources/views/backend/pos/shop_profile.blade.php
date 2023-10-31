@@ -31,19 +31,20 @@
 
             <section class="content ">
                 <div class="container-fluid">
-                    <div class="card">
-                        <div class="card-body">
+                    <div class="">
+                        <div class="">
                             <!-- Profile Image -->
 
                             <div class="">
-                            @if($shopowner->premium == 'yes')
-                                @if(!empty($shopowner->shop_banner))
-                                    <!-- Swiper -->
+                                @if ($shopowner->premium == 'yes')
+                                    @if (!empty($shopowner->shop_banner))
+                                        <!-- Swiper -->
                                         <div class="swiper mySwiper">
                                             <div class="swiper-wrapper">
-                                                @foreach ($shopowner->getPhotos as $p )
+                                                @foreach ($shopowner->getPhotos as $p)
                                                     <div class="swiper-sliendforeachde">
-                                                        <img src="{{ asset('images/banner/'.$p->location)}}" alt="">
+                                                        <img src="{{ filedopath('/shop_owner/banner/' . $p->location) }}"
+                                                            alt="">
                                                     </div>
                                                 @endforeach
 
@@ -52,28 +53,26 @@
                                         </div>
                                     @else
                                         <?php
-                                        if (\App\Models\ShopBanner::where('shop_owner_id', $shopowner->id)->first()) {
-                                            $getbanner = \App\Models\ShopBanner::where('shop_owner_id', $shopowner->id)->first()->location;
+                                        if ($banner) {
+                                            $getbanner = $banner->location;
                                         } else {
-                                            $getbanner = "default.jpg";
+                                            $getbanner = 'default.jpg';
                                         }
                                         ?>
-                                        <img class="img-fluid"
-                                             src="{{url('images/banner/'.$getbanner)}}"
-                                             alt="Photo">
+                                        <img class="img-fluid" src="{{ filedopath('/shop_owner/banner/' . $getbanner) }}"
+                                            alt="Photo">
                                     @endif
                                 @endif
                             </div>
                             <div class="profile-content">
                                 <div class=" profile position-relative mb-4">
                                     <img class="profile-user-img img-fluid img-circle"
-                                         src="{{url('images/logo/'.$shopowner->shop_logo)}}"
-                                         alt="User profile picture">
+                                        src="{{ filedopath('/shop_owner/logo/' . $shopowner->shop_logo) }}" alt="User profile picture">
                                     <div class="shop_name">
                                         <h3>
-                                            {{$shopowner->shop_name}} <br>
+                                            {{ $shopowner->shop_name }} <br>
                                             @isset($shopowner->shop_name_myan)
-                                                <span class="mm-font">( {{$shopowner->shop_name_myan}} )</span>
+                                                <span class="mm-font">( {{ $shopowner->shop_name_myan }} )</span>
                                             @endisset
                                         </h3>
                                     </div>
@@ -82,7 +81,7 @@
                                 <div class="px-4 px-md-5 pt-4">
                                     @isset($shopowner->description)
                                         <p class="mm-font pt-3 col-lg-8"
-                                           style="padding-bottom:16px;font-size: 1rem; color:#737373">
+                                            style="padding-bottom:16px;font-size: 1rem; color:#737373">
                                             {!! $shopowner->description !!}
                                         </p>
                                     @endisset
@@ -92,74 +91,69 @@
                                     <div class="row px-1">
                                         <div class="col-12 col-lg-6">
                                             <div class="d-flex col-md-8 col-lg-8 py-3 px-0">
-                                                <div class="col-6 px-0"><a href="{{$shopowner->page_link}}">Facebook
+                                                <div class="col-6 px-0"><a href="{{ $shopowner->page_link }}">Facebook
                                                         Page Link</a></div>
-                                                <div class="col-6 px-0"><a href="{{$shopowner->messenger_link}}">Messenger
+                                                <div class="col-6 px-0"><a href="{{ $shopowner->messenger_link }}">Messenger
                                                         Link</a></div>
                                             </div>
-                                            <p>Main Phone : {{$shopowner->main_phone}}</p>
+                                            <p>Main Phone : {{ $shopowner->main_phone }}</p>
                                             <p class="mm-font">Address : {!! $shopowner->address !!}</p>
                                         </div>
                                         <div class="col-12 pl-lg-5 col-lg-6">
-                                            <p><span
-                                                    class="mm-font">အထည်မပျက် ပြန်သွင်း :</span>{{$shopowner->undamaged_product}}
-                                                <span style="font-size: 0.85rem">%</span></p>
-                                            <p><span
-                                                    class="mm-font">တန်ဖိုးမြင့်အထည် နှင့် အထည်မပျက်ပြန်လဲ : </span>{{$shopowner->valuable_product}}
-                                                <span style="font-size: 0.85rem">%</span></p>
-                                            <p><span
-                                                    class="mm-font">အထည်ပျက်စီး ချို့ယွင်း : </span>{{$shopowner->damaged_product}}
-                                                <span style="font-size: 0.85rem">%</span></p>
-                                            @if(\App\Models\sitesettings::where('id',1)->first()->action === 'on' && $shopowner->pos_only == 'no')
-
+                                            <p><span class="mm-font">အထည်မပျက် ပြန်သွင်း
+                                                    :</span>{{ $shopowner->undamaged_product }}
+                                                <span style="font-size: 0.85rem">%</span>
+                                            </p>
+                                            <p><span class="mm-font">တန်ဖိုးမြင့်အထည် နှင့် အထည်မပျက်ပြန်လဲ :
+                                                </span>{{ $shopowner->valuable_product }}
+                                                <span style="font-size: 0.85rem">%</span>
+                                            </p>
+                                            <p><span class="mm-font">အထည်ပျက်စီး ချို့ယွင်း :
+                                                </span>{{ $shopowner->damaged_product }}
+                                                <span style="font-size: 0.85rem">%</span>
+                                            </p>
+                                            @if ($siteSettingAction === 'on')
                                                 <p v-if="fbdata.showdv=='yes'">
                                                     <a href="javascript:void(0)" @click="fblogin"
-                                                       v-if="fbdata.connected == 'no'"
-                                                       class="btn btn-primary "><b>
-                                                                    <span
-                                                                        class="fab fa-facebook-f"></span>&nbsp;&nbsp;<span
-                                                                style="font-family: sans-serif!important">Connect to Facebook</span></b></a>
-                                                    <a href="javascript:void(0)" id="" v-if="fbdata.connected == 'yes'"
-
-                                                       class="btn btn-primary sop-btn-primary "><b>
-                                                                    <span
-                                                                        class="fab fa-facebook-f"></span>&nbsp;&nbsp;<span
-                                                                style="font-family: sans-serif!important">Connected with Facebook</span></b></a>
+                                                        v-if="fbdata.connected == 'no'" class="btn btn-color "><b>
+                                                            <span class="fab fa-facebook-f"></span>&nbsp;&nbsp;<span
+                                                                style="font-family: sans-serif!important">Connect to
+                                                                Facebook</span></b></a>
+                                                    <a href="javascript:void(0)" id=""
+                                                        v-if="fbdata.connected == 'yes'"
+                                                        class="btn btn-color sop-btn-primary "><b>
+                                                            <span class="fab fa-facebook-f"></span>&nbsp;&nbsp;<span
+                                                                style="font-family: sans-serif!important">Connected with
+                                                                Facebook</span></b></a>
                                                 </p>
-
                                             @endif
 
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mb-4 px-4 px-md-5 ">
+                                <div class="row mb-4 px-4 px-md-5">
                                     <div class="col-12 col-md-8 col-lg-8  col-xl-6 row">
                                         @isset(Auth::guard('shop_owners_and_staffs')->user()->id)
-                                            <div class="col-6">
-                                                <a href="{{route('backside.shop_owner.pos.change.password')}}"
-                                                   class="btn btn-color btn-block sop-btn-primary"><b><span
-                                                            class="fa fa-lock"></span>&nbsp;&nbsp;<span
-                                                            style="font-family: sans-serif!important">Change Password</span></b></a>
-                                            </div>
-                                        @endisset
-                                        @isset(Auth::guard('shop_owners_and_staffs')->user()->id)
-                                                @if(Auth::guard('shop_owners_and_staffs')->user()->role_id == 1 || Auth::guard('shop_owners_and_staffs')->user()->role_id == 2)
-                                                 <div class='col-6'>
-                                                    <a href="{{route('backside.shop_owner.pos.shop_edit')}}"
-                                                       class="btn btn-primary btn-block sop-btn-primary"><b>
-                                                            <span class="fa fa-edit"></span>&nbsp;&nbsp;<span
-                                                                style="font-family: sans-serif!important">Edit Shop</span></b></a>
-                                                 </div>
-                                                @endif
-                                        @endisset
-
-                                        @isset(Auth::guard('shop_owners_and_staffs')->user()->id)
-                                            <div class='col-6'>
-                                                <a href="{{route('backside.shop_owner.pos.shop_edit')}}"
-                                                   class="btn btn-color btn-block sop-btn-primary"><b><span
-                                                   class="fa fa-edit"></span>&nbsp;&nbsp;<span
-                                                   style="font-family: sans-serif!important">Edit Shop</span></b></a>
-                                            </div>
+                                            @if (Auth::guard('shop_owners_and_staffs')->user()->role_id == 4)
+                                                <div class="col-6">
+                                                    @if (Auth::guard('shop_owners_and_staffs')->user()->role_id == 1 ||
+                                                            Auth::guard('shop_owners_and_staffs')->user()->role_id == 2 ||
+                                                            Auth::guard('shop_owners_and_staffs')->user()->role_id == 4)
+                                                        <a href="{{route('backside.shop_owner.pos.shop_edit')}}"
+                                                            class="btn btn-color btn-block"><b>
+                                                                <span class="fa fa-edit"></span>&nbsp;&nbsp;<span
+                                                                    style="font-family: sans-serif!important">Edit
+                                                                    Shop</span></b></a>
+                                                    @endif
+                                                </div>
+                                                <div class="col-6">
+                                                    <a href="{{route('backside.shop_owner.pos.change.password')}}"
+                                                        class="btn btn-color btn-block sop-btn-color"><b><span
+                                                                class="fa fa-lock"></span>&nbsp;&nbsp;<span
+                                                                style="font-family: sans-serif!important">Change
+                                                                Password</span></b></a>
+                                                </div>
+                                            @endif
                                         @endisset
                                     </div>
                                 </div>

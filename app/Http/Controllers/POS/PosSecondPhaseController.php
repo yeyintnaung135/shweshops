@@ -47,6 +47,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
+use App\Models\SiteSettings;
 
 class PosSecondPhaseController extends Controller
 {
@@ -540,7 +541,7 @@ class PosSecondPhaseController extends Controller
             $purchase->date = $request->date;
             $purchase->quality_id = $request->quality;
             $purchase->category_id = $request->category_id;
-            $purchase->product_weight = $request->product_weight . '/' . $request->product_kyat . '/' . $request->product_pe . '/' . $request->product_yway;
+            $purchase->product_gram_kyat_pe_yway = $request->product_weight . '/' . $request->product_kyat . '/' . $request->product_pe . '/' . $request->product_yway;
             //  'gold_price = $request->gold_price;
             $purchase->gold_fee = $request->gold_fee;
             $purchase->remark = $request->remark;
@@ -1070,11 +1071,13 @@ class PosSecondPhaseController extends Controller
 
     //Shop Profile
     public function get_shop_profile(): View
-    {
+    {   
         $users_list = $this->getuserlistbyrolelevel();
         $result = Shops::where('id', $this->get_shopid())->with(['getPhotos'])->orderBy('created_at', 'desc')->get();
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
-        return view('backend.pos.shop_profile', ['shopowner' => $result, 'items' => $items, 'managers' => $users_list]);
+        $banner = ShopBanner::where('shop_owner_id', $this->get_shopid())->first();
+        $siteSettingAction = SiteSettings::where('id', 1)->first()->action;
+        return view('backend.pos.shop_profile', ['shopowner' => $result, 'items' => $items, 'managers' => $users_list, 'banner' => $banner, 'siteSettingAction' => $siteSettingAction]);
     }
     public function get_shop_edit()
     {
@@ -1205,7 +1208,8 @@ class PosSecondPhaseController extends Controller
             'new_confirm_password' => ['same:new_password'],
         ]);
 
-        Shops::where('id', Auth::guard('shop_owners_and_staffs')->user()->id)->update(['password' => Hash::make($request->new_password)]);
+        Shops::where('id', $this->get_shopid())->update(['password' => Hash::make($request->new_password)]);
+        ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->update(['password' => Hash::make($request->new_password)]);
 
         return redirect()->route('backside.shop_owner.pos.shop_profile')->with(['status' => 'success', 'message' => 'Your Shop Password was successfully Updated']);
     }
