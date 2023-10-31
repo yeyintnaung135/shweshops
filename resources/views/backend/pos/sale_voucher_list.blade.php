@@ -41,7 +41,7 @@
                             </div>
                             <div class="row d-flex mt-4">
                                 <div class="image">
-                                    <img src="{{url('/images/logo/'.$shopowner->shop_logo)}}" class="img-circle elevation-2" alt="User Image" width="100" height="100">
+                                    <img src="{{ filedopath('/shop_owner/logo/' . $shopowner->shop_logo) }}" class="img-circle elevation-2" alt="User Image" width="100" height="100">
                                 </div>
                                 <div class="info text-capitalize text-color ml-3 mt-4" style="font-size:20px;">
                                     {{\Illuminate\Support\Str::limit($shopowner->shop_name, 100, '...')}}

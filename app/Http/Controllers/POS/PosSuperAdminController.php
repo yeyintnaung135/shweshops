@@ -29,6 +29,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Trait\YKImage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class PosSuperAdminController extends Controller
 {
@@ -84,26 +86,48 @@ class PosSuperAdminController extends Controller
         $features = FeaturesForShops::all();
         return view('backend.pos_super_admin.shops.all', ['shopowner' => $shopowner, 'features' => $features]);
     }
-    public function get_all_shops(Request $request): JsonResponse
+    public function get_all_shops(Request $request)
     {
-        $searchByFromdate = $request->start;
-        $searchByTodate = $request->end;
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
 
-        if ($searchByFromdate == null) {
-            $searchByFromdate = '0-0-0 00:00:00';
-        }
-        if ($searchByTodate == null) {
-            $searchByTodate = Carbon::now();
-        }
-        $shopowner = Shops::whereDate('created_at', '<=', $searchByFromdate)
-            ->whereDate('created_at', '>=', $searchByTodate)
-            ->get();
+        $recordsQuery = Shops::select(
+            'id',
+            'shop_name_myan',
+            'shop_logo',
+            'shop_banner',
+            'premium',
+            'email',
+            'main_phone',
+            'state',
+            'pos_only',
+            'created_at',
+        )->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate))
+            ->where('pos_only','yes');
 
-        $features = FeaturesForShops::all();
-        return response()->json([
-            'shopowner' => $shopowner,
-            'features' => $features,
-        ]);
+        return DataTables::of($recordsQuery)
+            ->editColumn('shop_banner', function ($record) {
+                $checkbanner = ShopBanner::where('shop_owner_id', $record->id)->first();
+                return empty($checkbanner) ? '' : $checkbanner->location;
+            })
+            ->editColumn('shop_name_myan', function ($record) {
+                return $record->shop_name_myan ?: '-';
+            })
+            ->editColumn('state', function ($record) {
+                $state = State::where('id', $record->state)->value('name');
+                return $state;
+            })
+            ->editColumn('pos_only', function ($record) {
+                return Str::ucfirst($record->pos_only);
+            })
+            ->addColumn('action', function ($record) {
+                return $record->id;
+            })
+            ->editColumn('created_at', function ($record) {
+                return date('F d, Y ( h:i A )', strtotime($record->created_at));
+            })
+            ->make(true);
     }
     protected function shop_create(): View
     {
@@ -135,19 +159,21 @@ class PosSuperAdminController extends Controller
 
                 $newFileName = uniqid() . '_banner' . '.' . $b->getClientOriginalExtension();
                 array_push($fileNameArr, $newFileName);
-                $bpath = $b->move(public_path('images/banner/'), $newFileName);
+                $this->save_image($b, $newFileName, 'shop_owner/banner/');
             }
         }
 
         $data = $request->except("_token");
 
+        if ($request->premium == 'no') {
+            $data['premium_template_id'] = null;
+        }
         $shop_logo = $data['shop_logo'];
         //   $shop_banner = $data['shop_banner'];
 
         //file upload
         $imageNameone = time() . 'logo' . '.' . $shop_logo->getClientOriginalExtension();
-
-        $this->save_image($shop_logo, $imageNameone, 'shop_owner/logo/');
+        $this->save_image_shop_logo($shop_logo, $imageNameone, 'shop_owner/logo/');
         //   $this->setthumbslogo($lpath, $imageNameone);
 
         //store database

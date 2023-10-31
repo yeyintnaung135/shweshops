@@ -12,7 +12,8 @@
                         <div class="d-lg-flex align-items-center justify-content-between mb-5">
                             <div class="d-lg-flex d-md-flex align-items-center">
                                 <div class="detail_logo mx-auto">
-                                    <img src="{{url('images/logo/'.$shop->shop_logo)}}" alt="" class="rounded-circle">
+                                <img src="{{ filedopath('/shop_owner/logo/' . $shop->shop_logo) }}" alt=""
+                                        class="rounded-circle">
                                 </div>
                                 <div class="ml-md-3 mt-3 mt-lg-0 text-center">
                                     <p class="h5">{{ $shop->shop_name }}</p>

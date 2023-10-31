@@ -8,10 +8,6 @@
         <!-- Main Sidebar Container -->
     @include('layouts.backend.pos_sidebar')
 
-    
-        
-    
-
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -33,7 +29,7 @@
         </section>
 
         <!-- Main content -->
-        @extends('layouts.backend.backend')
+        
         @section('content')
             <div class="wrapper">
                 <!-- Navbar -->
@@ -152,19 +148,4 @@
         </aside>
         <!-- /.control-sidebar -->
     </div>
-    @endsection @push('scripts')
-    <script>
-        $(document).ready(function() {
-            $('.product-image-thumb').on('click', function() {
-                var $image_element = $(this).find('img')
-                $('.product-image').fadeOut('slow', function() {
-                    $('.product-image').prop('src', $image_element.attr('src')).fadeIn();
-
-                })
-
-                $('.product-image-thumb.active').removeClass('active')
-                $(this).addClass('active')
-            })
-        })
-    </script>
-    @endpush
+    @endsection 
