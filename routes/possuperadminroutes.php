@@ -19,8 +19,8 @@ Route::prefix('backside/pos_super_admin')->name('pos_super_admin_shops.')->group
 
     // All Shops
     Route::get('shops/all', [PosSuperAdminController::class, 'all'])->name('all');
-    Route::post('shops/get_all_shops', [PosSuperAdminController::class, 'get_all_shops'])->name('date_filter_shops');
-
+    Route::get('shops/get_all_shops', [PosSuperAdminController::class, 'get_all_shops'])->name('getAllShops');
+    
     // Create Shop
     Route::get('shops/create', [PosSuperAdminController::class, 'shop_create'])->name('create');
     Route::post('shops/register', [PosSuperAdminController::class, 'shop_store'])->name('store');

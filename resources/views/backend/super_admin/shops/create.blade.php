@@ -147,7 +147,6 @@
                                     <label for="exampleInputEmail1">ဆိုင် အမည် myanmar<span
                                             style="color: red;">*</span></label>
 
-
                                     <div class="input-group mb-3">
 
                                         <input id="shop_name_myan" type="text"
@@ -267,8 +266,6 @@
                                     @enderror
                                 </div>
                             </div>
-
-
 
 
 

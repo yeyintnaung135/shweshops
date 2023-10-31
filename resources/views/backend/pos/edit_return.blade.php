@@ -91,10 +91,10 @@
                                             <div class="col-6 form-group">
                                                 <label for="quality">ရွှေအရည်အသွေး</label>
                                                 <select name="quality" class="form-control" onchange="calculate_quality_price(this.value)" required>
-                                                    {{-- <option value="{{$return->quality_id}}">{{$return->quality->name}}</option> --}}
-                                                    @foreach ($quality as $q)
+                                                    <!-- {{-- <option value="{{$return->quality_id}}">{{$return->quality->name}}</option> --}} -->
+                                                    <!-- @foreach ($quality as $q)
                                                     <option value="{{$q->id}}">{{$q->name}}</option>
-                                                    @endforeach
+                                                    @endforeach -->
                                                 </select>
                                             </div>
                                             <div class="col-12">

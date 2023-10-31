@@ -47,7 +47,7 @@
                             </div>
                             <div class="row d-flex mt-4">
                                 <div class="image">
-                                    <img src="{{ url('/images/logo/' . $current_shop->shop_logo) }}"
+                                    <img src="{{ filedopath('/shop_owner/logo/' . $current_shop->shop_logo) }}"
                                         class="img-circle elevation-2" alt="User Image" width="100" height="100">
                                 </div>
                                 <div class="info text-capitalize text-color ml-3 mt-4" style="font-size:20px;">

@@ -186,7 +186,6 @@ class ShopController extends Controller
         if ($request->premium == 'no') {
             $data['premium_template_id'] = null;
         }
-        dd($data);
         $shop_logo = $data['shop_logo'];
         //   $shop_banner = $data['shop_banner'];
 
