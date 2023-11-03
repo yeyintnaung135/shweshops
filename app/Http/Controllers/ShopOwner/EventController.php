@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Illuminate\Support\Carbon;
 
 class EventController extends Controller
 {
@@ -44,25 +45,21 @@ class EventController extends Controller
 
     public function store(StoreEventRequest $request): RedirectResponse
     {
-        $baseDirectory = 'news_&_events';
-        $subDirectory = 'event';
-        if (env('USE_DO') != 'true') {
-            $fileName = $this->imageService->saveImage(
-                $request->file('photo'),
-                "{$baseDirectory}/{$subDirectory}"
-            );
-            $this->resizeImages($baseDirectory, $subDirectory, $fileName);
-        } else {
-            $directory = "prod/{$baseDirectory}/{$subDirectory}/";
-            $fileName = $this->imageService->saveImageDigitalOcean($request->file('photo'), $directory);
-            $this->resizeImagesDigitalOcean($baseDirectory, $subDirectory, $fileName);
-        }
+      
+        $file = $request->file('photo');
+        $dir = "news_&_events/event/";
+      
+        $statictimestamp = Carbon::now()->timestamp;
+
+        // $news->slug = Str::slug($request->title) . '-' . uniqid();
+        $imageName = strtolower($statictimestamp . '_' . Str::random(4) . '.' . $file->getClientOriginalExtension());
+        $this->save_image($file, $imageName,$dir);
 
         Event::create([
             'shop_id' => $this->get_shop_id(),
             'title' => $request->input('title'),
             'description' => $request->input('description'),
-            'photo' => $fileName,
+            'photo' => $imageName,
         ]);
 
         return redirect()->route('backside.shop_owner.events.index')
@@ -77,43 +74,26 @@ class EventController extends Controller
     public function update(UpdateEventRequest $request, Event $event): RedirectResponse
     {
         $image = $event->photo;
-        $baseDirectory = 'news_&_events';
-        $subDirectory = 'event';
+    
+        $dir = "news_&_events/event/";
 
-        if (env('USE_DO') != 'true' && $request->hasFile('photo')) {
-            $newImage = $this->imageService->saveImage(
-                $request->file('photo'),
-                "{$baseDirectory}/{$subDirectory}"
-            );
+        $file = $request->file('photo');
+     
+        if ($request->hasFile('photo')) {
+            $this->delete_image($dir . $event->photo);
 
-            if ($newImage !== $event->image) {
-                $this->imageService->deleteImage(
-                    "{$baseDirectory}/{$subDirectory}/{$event->photo}",
-                    "{$baseDirectory}/{$subDirectory}/thumbs/{$event->photo}"
-                );
-            }
+            $statictimestamp = Carbon::now()->timestamp;
 
-            $this->resizeImages($baseDirectory, $subDirectory, $newImage);
-            $image = $newImage;
-        } elseif (env('USE_DO') == 'true' && $request->hasFile('photo')) {
-            $directory = "prod/{$baseDirectory}/{$subDirectory}/";
-            $newImage = $this->imageService->saveImageDigitalOcean($request->file('photo'), $directory);
-
-            if ($newImage !== $event->photo) {
-                $this->imageService->deleteImageDigitalOcean(
-                    "{$directory}{$event->photo}",
-                    "{$directory}thumbs/{$event->photo}"
-                );
-                $this->resizeImagesDigitalOcean($baseDirectory, $subDirectory, $newImage);
-            }
-
-            $image = $newImage;
+            // $news->slug = Str::slug($request->title) . '-' . uniqid();
+            $imageName = strtolower($statictimestamp . '_' . Str::random(4) . '.' . $file->getClientOriginalExtension());
+    
+            $this->save_image($request->file('photo'), $imageName,$dir);
         }
 
         $event->update([
             'title' => $request->input('title'),
             'description' => $request->input('description'),
-            'photo' => $image,
+            'photo' => $imageName,
         ]);
 
         return redirect()->route('backside.shop_owner.events.index')
@@ -123,20 +103,8 @@ class EventController extends Controller
     public function destroy(Event $event): RedirectResponse
     {
         $event->delete();
-        $baseDirectory = 'news_&_events';
-        $subDirectory = 'event';
-
-        if (env('USE_DO') != 'true' && $event->photo) {
-            $this->imageService->deleteImage("{$baseDirectory}/{$subDirectory}/{$event->photo}", "{$baseDirectory}/{$subDirectory}/thumbs/{$event->photo}");
-        } elseif (env('USE_DO') == 'true' && $event->photo) {
-            $directory = "prod/{$baseDirectory}/{$subDirectory}/";
-
-            $this->imageService->deleteImageDigitalOcean(
-                "{$directory}{$event->photo}",
-                "{$directory}thumbs/{$event->photo}"
-            );
-        }
-
+        $dir = "news_&_events/event/";
+        $this->delete_image($dir . $event->photo);
         return redirect()->route('backside.shop_owner.events.index')->with('message', 'event deleted successfully.');
     }
 

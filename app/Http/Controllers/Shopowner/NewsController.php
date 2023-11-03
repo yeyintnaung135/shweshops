@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Illuminate\Support\Carbon;
 
 class NewsController extends Controller
 {
@@ -43,25 +44,26 @@ class NewsController extends Controller
 
     public function store(StoreNewsRequest $request): RedirectResponse
     {
-        $baseDirectory = 'news_&_events';
-        $subDirectory = 'news';
-        if (env('USE_DO') != 'true') {
-            $fileName = $this->imageService->saveImage(
-                $request->file('image'),
-                "{$baseDirectory}/{$subDirectory}"
-            );
-            $this->resizeImages($baseDirectory, $subDirectory, $fileName);
-        } else {
-            $directory = "prod/{$baseDirectory}/{$subDirectory}/";
-            $fileName = $this->imageService->saveImageDigitalOcean($request->file('image'), $directory);
-            $this->resizeImagesDigitalOcean($baseDirectory, $subDirectory, $fileName);
-        }
+     
+
+
+        $file = $request->file('image');
+        $dir = "news_&_events/news/";
+        $news = new News();
+        $news->title = $request->title;
+        $statictimestamp = Carbon::now()->timestamp;
+
+        // $news->slug = Str::slug($request->title) . '-' . uniqid();
+        $news->description = $request->description;
+        $imageName = strtolower($statictimestamp . '_' . Str::random(4) . '.' . $file->getClientOriginalExtension());
+        $this->save_image($file, $imageName,$dir);
+
 
         News::create([
             'shop_id' => $this->get_shop_id(),
             'title' => $request->input('title'),
             'description' => $request->input('description'),
-            'image' => $fileName,
+            'image' => $imageName,
         ]);
 
         return redirect()->route('backside.shop_owner.news.index')
@@ -75,44 +77,24 @@ class NewsController extends Controller
 
     public function update(UpdateNewsRequest $request, News $news): RedirectResponse
     {
-        $image = $news->image;
-        $baseDirectory = 'news_&_events';
-        $subDirectory = 'news';
+        $dir = "news_&_events/news/";
 
-        if (env('USE_DO') != 'true' && $request->hasFile('image')) {
-            $newImage = $this->imageService->saveImage(
-                $request->file('image'),
-                "{$baseDirectory}/{$subDirectory}"
-            );
+        $file = $request->file('image');
+     
+        if ($request->hasFile('image')) {
+            $this->delete_image($dir . $news->image);
 
-            if ($newImage !== $news->image) {
-                $this->imageService->deleteImage(
-                    "{$baseDirectory}/{$subDirectory}/{$news->image}",
-                    "{$baseDirectory}/{$subDirectory}/thumbs/{$news->image}"
-                );
-            }
+            $statictimestamp = Carbon::now()->timestamp;
 
-            $this->resizeImages($baseDirectory, $subDirectory, $newImage);
-            $image = $newImage;
-        } elseif (env('USE_DO') == 'true' && $request->hasFile('image')) {
-            $directory = "prod/{$baseDirectory}/{$subDirectory}/";
-            $newImage = $this->imageService->saveImageDigitalOcean($request->file('image'), $directory);
-
-            if ($newImage !== $news->image) {
-                $this->imageService->deleteImageDigitalOcean(
-                    "{$directory}{$news->image}",
-                    "{$directory}thumbs/{$news->image}"
-                );
-                $this->resizeImagesDigitalOcean($baseDirectory, $subDirectory, $newImage);
-            }
-
-            $image = $newImage;
+            // $news->slug = Str::slug($request->title) . '-' . uniqid();
+            $imageName = strtolower($statictimestamp . '_' . Str::random(4) . '.' . $file->getClientOriginalExtension());
+    
+            $this->save_image($request->file('image'), $imageName,$dir);
         }
-
         $news->update([
             'title' => $request->input('title'),
             'description' => $request->input('description'),
-            'image' => $image,
+            'image' => $imageName,
         ]);
 
         return redirect()->route('backside.shop_owner.news.index')
@@ -122,18 +104,9 @@ class NewsController extends Controller
     public function destroy(News $news): RedirectResponse
     {
         $news->delete();
-        $baseDirectory = 'news_&_events';
-        $subDirectory = 'news';
-        if (env('USE_DO') != 'true' && $news->image) {
-            $this->imageService->deleteImage("{$baseDirectory}/{$subDirectory}/{$news->image}", "{$baseDirectory}/{$subDirectory}/thumbs/{$news->image}");
-        } elseif (env('USE_DO') == 'true' && $news->image) {
-            $directory = "prod/{$baseDirectory}/{$subDirectory}/";
+        $dir = "news_&_events/news/";
+        $this->delete_image($dir . $news->image);
 
-            $this->imageService->deleteImageDigitalOcean(
-                "{$directory}{$news->image}",
-                "{$directory}thumbs/{$news->image}"
-            );
-        }
 
         return redirect()->route('backside.shop_owner.news.index')->with('message', 'News deleted successfully.');
     }

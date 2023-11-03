@@ -69,7 +69,7 @@
             <img
               class="sender-img"
               v-if="chatdata.showsendicon"
-              :src="host + '/images/logo/thumbs/' + shopdata.shop_logo"
+              :src="imgurl + '/shop_owner/logo/thumbs/' + shopdata.shop_logo"
             />
 
             <div
@@ -207,6 +207,7 @@ export default {
       stopscroll: false,
 
       chatImages: [],
+      imgurl:"",
     };
   },
   filters: {
@@ -222,6 +223,11 @@ export default {
   },
   mounted() {
     this.host = this.$hostname;
+    if (process.env.MIX_USE_DO == "true") {
+      this.imgurl = process.env.MIX_DO_URL;
+    } else {
+      this.imgurl = this.host+'/images';
+    }
   },
 
   updated() {

@@ -265,7 +265,7 @@ class ShopController extends Controller
 
     public function shop_owner_using_chat(): View
     {
-        $shopowner_only_count = Messages::where('from_role', 'shopowner')->groupBy('message_shop_id')->get();
+        $shopowner_only_count = Messages::where('from_role', 'shopowner')->groupBy('message_shop_id')->whereBetween('created_at',[Carbon::now()->subdays(60),Carbon::now()])->get();
         return view('backend.super_admin.shops.shopowner_chat_using', compact('shopowner_only_count'));
     }
 
