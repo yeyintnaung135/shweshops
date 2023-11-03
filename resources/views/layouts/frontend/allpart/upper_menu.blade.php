@@ -94,7 +94,13 @@
                     </div>
                     <div class="dropdown-content rounded">
                         <a class="text-color" href="{{ route('backside.user.user_profile') }}">Profile</a>
-                        <a class="text-color" href="{{ route('backside.user.logout') }}">Logout</a>
+                        <form method="POST" action="{{ route('backside.user.logout') }}" id="logout">
+                            @csrf
+                            <a href="{{ route('backside.user.logout') }}"
+                                onclick="event.preventDefault();document.getElementById('logout').submit();"
+                                class="dropdown-item d-flex align-items-center"><i class="bi bi-box-arrow-right"></i>
+                                <span>Logout</span></a>
+                        </form>
                     </div>
                 </div>
                 {{-- <div class="sop-upper-nav-text-l menu-profile rounded-circle ml-2">
