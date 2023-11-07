@@ -106,8 +106,16 @@ class ShopOwnerLoginController extends Controller
         // Check which guard to use based on the logged-in user
         if (Auth::guard('shop_owners_and_staffs')->check()) {
             Auth::guard('shop_owners_and_staffs')->logout();
+
+            $request->session()->invalidate();
+
+            $request->session()->regenerateToken();
         } else {
             Auth::guard('web')->logout();
+
+            $request->session()->invalidate();
+
+            $request->session()->regenerateToken();
         }
 
         // Restore guest session and redirect to home

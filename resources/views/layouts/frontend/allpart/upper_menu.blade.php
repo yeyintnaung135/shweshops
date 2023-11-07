@@ -96,10 +96,9 @@
                         <a class="text-color" href="{{ route('backside.user.user_profile') }}">Profile</a>
                         <form method="POST" action="{{ route('backside.user.logout') }}" id="logout">
                             @csrf
-                            <a href="{{ route('backside.user.logout') }}"
-                                onclick="event.preventDefault();document.getElementById('logout').submit();"
-                                class="dropdown-item d-flex align-items-center"><i class="bi bi-box-arrow-right"></i>
-                                <span>Logout</span></a>
+                            <button type="submit" class="dropdown-item d-flex align-items-center text-white">
+                                <i class="bi bi-box-arrow-right"></i><span>Logout</span>
+                            </button>
                         </form>
                     </div>
                 </div>
