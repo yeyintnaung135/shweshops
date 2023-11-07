@@ -4,13 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Role;
-use App\Models\Shops;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
@@ -86,60 +83,35 @@ class ShopOwnerLoginController extends Controller
 
         }
 
-        $roleCheck = Auth::guard('shop_owners_and_staffs')->attempt(['phone' => $request->value, 'password' => $request->password,'role_id'=>$request->role_id, 'deleted_at' => null]);
-        if ($roleCheck ) {
-            Session::put('staff_role',$request->role_id);
-                Session::flash('loginedSO','shopownerlogined');
-                if($request->from == 'fromhelpandsupport'){
-                    return redirect(url('backside/shop_owner/support'));
-                }
-                else{
-                    return redirect()->route('backside.shop_owner.pos.dashboard');
-                }
+        $roleCheck = Auth::guard('shop_owners_and_staffs')->attempt(['phone' => $request->value, 'password' => $request->password, 'role_id' => $request->role_id, 'deleted_at' => null]);
+        if ($roleCheck) {
+            Session::put('staff_role', $request->role_id);
+            Session::flash('loginedSO', 'shopownerlogined');
+            if ($request->from == 'fromhelpandsupport') {
+                return redirect(url('backside/shop_owner/support'));
+            } else {
+                return redirect()->route('backside.shop_owner.pos.dashboard');
             }
-            else {
-                 return redirect()->back()->with('error', 'Phone or password is invalid');
-            }
+        } else {
+            return redirect()->back()->with('error', 'Phone or password is invalid');
+        }
     }
 
     //logout function
     public function logout(Request $request)
     {
-
         //custom code by yk
         $guest = Session::get('guest_id');
-        //custom code by yk
 
-        $username = auth()->check() ? auth()->user()->username : 0;
-        if (isset(Auth::guard('shop_owners_and_staffs')->user()->id)) {
-
+        // Check which guard to use based on the logged-in user
+        if (Auth::guard('shop_owners_and_staffs')->check()) {
             Auth::guard('shop_owners_and_staffs')->logout();
-            return redirect(RouteServiceProvider::HOME);
-
-        }
-        //WARNING: this needs to be checked or fixed later. Minth
-        else {
+        } else {
             Auth::guard('web')->logout();
-            return redirect()->back();
         }
 
-        // } else if (isset(Auth::guard('web')->user()->id)) {
-
-        //     Auth::guard('web')->logout();
-
-        //     return redirect()->back();
-
-        // } else {
-        //     Auth::guard('shop_owners_and_staffs')->logout();
-        //     $request->session()->invalidate();
-
-        //     $request->session()->regenerateToken();
-
-        // }
-
-        //custom code by yk
+        // Restore guest session and redirect to home
         Session::put('guest_id', $guest);
-        //custom code by yk
         return redirect(RouteServiceProvider::HOME);
     }
 }
