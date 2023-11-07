@@ -78,7 +78,7 @@
                         <tbody>
                            <tr>
                               @if ($popup != null)
-                                 <td>{!! $popup->ad_title !!}</td>
+                                 <td>{{ $popup->ad_title }}</td>
                                  <td>{{ $popup->created_at }}</td>
                                  <td><a href="{{ route('backside.shop_owner.ads.main_popup_delete') }}" class="btn btn-danger">Delete</button></td>
                               @endif

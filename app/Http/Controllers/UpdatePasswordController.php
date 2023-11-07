@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Shopowner;
 use App\Http\Controllers\Controller;
+use App\Models\Shops;
 
 class UpdatePasswordController extends Controller
 {
@@ -18,7 +19,7 @@ class UpdatePasswordController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:shop_owner');
+        $this->middleware('auth:shop_owners_and_staffs');
     }
    
     /**
@@ -44,7 +45,7 @@ class UpdatePasswordController extends Controller
             'new_confirm_password' => ['same:new_password'],
         ]);
    
-        Shopowner::where('id', Auth::guard('shop_owner')->user()->id)->update(['password'=> Hash::make($request->new_password)]);
+        Shops::where('id', Auth::guard('shop_owners_and_staffs')->user()->id)->update(['password'=> Hash::make($request->new_password)]);
    
         return redirect()->route('backside.shop_owner.detail');
     }

@@ -11,7 +11,7 @@
         <div>
           <img
             class="chatheaderimg"
-            :src="this.host + '/images/logo/thumbs/' + this.shopdata.shop_logo"
+            :src="imgurl + '/shop_owner/logo/thumbs/' + this.shopdata.shop_logo"
           />
         </div>
         <span class="active-now" v-if="this.shopdata.status == 'online'"> </span>

@@ -80,10 +80,9 @@ class ItemsController extends Controller
         $searchByFromdate = $request->input('searchByFromdate');
         $searchByTodate = $request->input('searchByTodate');
 
-        $query = ItemLogActivity::select('id', 'user_name', 'item_code', 'name', 'user_id', 'created_at')
-            ->where('shop_id', $shop_id)
+        $query = ItemLogActivity::where('shop_id', $shop_id)
             ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
-            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
+            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate))->get();
 
         return DataTables::of($query)
             ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))

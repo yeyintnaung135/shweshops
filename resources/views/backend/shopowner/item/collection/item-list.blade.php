@@ -77,7 +77,7 @@
                         orderable: false,
                         searchable: false,
                         render: function(data, type, full, meta) {
-                            const image = `<img src= "{{ filedopath('/items/' . '${data}') }}"/>`;
+                            const image = `<img src= "{{ filedopath('${data}') }}"/>`;
                             return image;
                         }
                     },

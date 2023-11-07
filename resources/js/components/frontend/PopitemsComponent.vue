@@ -243,7 +243,11 @@ import axios from "axios";
 import VueLazyload from "vue-lazyload";
 import Vue from "vue";
 Vue.use(VueLazyload);
+Vue.use(VueLazyload, {
+    preLoad: 1.3,
 
+    attempt: 1,
+});
 export default {
     props: ["popitems", "poplimit", "poplatest", "isscrollon"],
     name: "PopitemsComponent",

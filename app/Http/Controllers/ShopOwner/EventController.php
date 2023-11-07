@@ -45,15 +45,15 @@ class EventController extends Controller
 
     public function store(StoreEventRequest $request): RedirectResponse
     {
-      
+
         $file = $request->file('photo');
         $dir = "news_&_events/event/";
-      
+
         $statictimestamp = Carbon::now()->timestamp;
 
         // $news->slug = Str::slug($request->title) . '-' . uniqid();
         $imageName = strtolower($statictimestamp . '_' . Str::random(4) . '.' . $file->getClientOriginalExtension());
-        $this->save_image($file, $imageName,$dir);
+        $this->save_image($file, $imageName, $dir);
 
         Event::create([
             'shop_id' => $this->get_shop_id(),
@@ -74,11 +74,11 @@ class EventController extends Controller
     public function update(UpdateEventRequest $request, Event $event): RedirectResponse
     {
         $image = $event->photo;
-    
+
         $dir = "news_&_events/event/";
 
         $file = $request->file('photo');
-     
+
         if ($request->hasFile('photo')) {
             $this->delete_image($dir . $event->photo);
 
@@ -86,15 +86,20 @@ class EventController extends Controller
 
             // $news->slug = Str::slug($request->title) . '-' . uniqid();
             $imageName = strtolower($statictimestamp . '_' . Str::random(4) . '.' . $file->getClientOriginalExtension());
-    
-            $this->save_image($request->file('photo'), $imageName,$dir);
+
+            $this->save_image($request->file('photo'), $imageName, $dir);
+            $event->update([
+                'title' => $request->input('title'),
+                'description' => $request->input('description'),
+                'photo' => $imageName,
+            ]);
+        } else {
+            $event->update([
+                'title' => $request->input('title'),
+                'description' => $request->input('description')
+            ]);
         }
 
-        $event->update([
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-            'photo' => $imageName,
-        ]);
 
         return redirect()->route('backside.shop_owner.events.index')
             ->with('message', 'Your event was successfully updated');
@@ -115,8 +120,8 @@ class EventController extends Controller
 
         $events = Event::where('shop_id', $this->get_shop_id())
             ->select('id', 'title', 'description', 'photo', 'created_at')
-            ->when($fromDate, fn($query) => $query->whereDate('created_at', '>=', $fromDate))
-            ->when($toDate, fn($query) => $query->whereDate('created_at', '<=', $toDate));
+            ->when($fromDate, fn ($query) => $query->whereDate('created_at', '>=', $fromDate))
+            ->when($toDate, fn ($query) => $query->whereDate('created_at', '<=', $toDate));
 
         return datatables($events)
             ->addColumn('description', function ($news) {
@@ -130,7 +135,7 @@ class EventController extends Controller
 
                 return $urls;
             })
-            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
+            ->editColumn('created_at', fn ($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->toJson();
     }
 }

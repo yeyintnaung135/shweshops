@@ -28,7 +28,7 @@
                             @if(empty($shop->shop_logo))
                             <img src="test/test1.jpg"class="sn-shop-image attachment-ftc_blog_shortcode_thumb size-ftc_blog_shortcode_thumb wp-post-image lazyloaded  sop-image-w-h"alt="">
                             @else
-                            <img src="{{filedopath('/logo/mid/'.$shop->shop_logo)}}"class="sn-shop-image attachment-ftc_blog_shortcode_thumb size-ftc_blog_shortcode_thumb wp-post-image lazyloaded  sop-image-w-h"
+                            <img src="{{filedopath('/shop_owner/logo/mid/'.$shop->shop_logo)}}"class="sn-shop-image attachment-ftc_blog_shortcode_thumb size-ftc_blog_shortcode_thumb wp-post-image lazyloaded  sop-image-w-h"
                             alt="">
                             @endif
                         </a>

@@ -72,7 +72,6 @@ class MessageController extends Controller
 
     public function sendmessagetoshopowner(Request $request)
     {
-        return response()->json(['success' => true, 'msg' => 'successfully send']);
 
         if (Messages::create($request->data)) {
             event(new Shopownermessage($request->data));

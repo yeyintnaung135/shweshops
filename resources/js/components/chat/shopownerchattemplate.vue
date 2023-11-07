@@ -150,7 +150,7 @@
               <li v-for="productcode in this.productcodelist" :key="productcode.key" 
                   class="list-group-item bg-transparent border-0 d-flex align-items-center"
               >
-                <img class="p-1" style="border-radius: 50%; max-width:60px !important;" :src="imgurl +'/'+productcode.CheckPhotothumbs">
+                <img class="p-1" style="border-radius: 50%; max-width:60px !important;" :src="host +'/'+productcode.CheckPhotothumbs">
                 <p class="mb-0 ml-1 p-1">{{productcode.product_code}}</p>
                 <button class="ml-auto p-1 send-product" v-on:click="selectProduct(productcode)">send</button>
               </li>
@@ -217,7 +217,6 @@ export default {
             chatdatabytyping: "",
             stopscroll: false,
             messagelimit: 20,
-            imgurl:"",
             chatImages: [],
             productcodelist: [],
         };
@@ -237,11 +236,6 @@ export default {
     mounted() {
         this.chatdata = this.chatdatafromparent;
         this.host = this.$hostname;
-        if (process.env.MIX_USE_DO == "true") {
-      this.imgurl = process.env.MIX_DO_URL;
-    } else {
-      this.imgurl = this.host+'/images';
-    }
     },
     updated() {
         //when chatdata change scroll to bottom for initial state

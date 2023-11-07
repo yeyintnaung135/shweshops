@@ -35,20 +35,7 @@
                     </li>
                 </ul>
             </div>
-            @if(isset(Auth::guard('web')->user()->id)|| isset(Auth::guard('shop_owner')->user()->id) || isset(Auth::guard('shop_role')->user()->id))
-                <div class="ftc-shop-cart">
-
-                    <div class="ftc-tini-cart">
-                        <div class="cart-item">
-                            <a href="" data-toggle="modal" data-target="#notiModal">
-                                <i class="fa-solid fa-bell fa-xl" style="color:#780116"></i>
-                            </a>
-
-                        </div>
-                    </div>
-                </div>
-
-            @endif
+           
         </div>
 
         
@@ -60,7 +47,7 @@
         <div class="text text-center">
             <img src="{{ url('test/img/maintain.png')}}" alt="" data-aos="zoom-in-up" class="mx-auto d-block" style="width: 8.5rem; height: auto;">
             <div class="h2">
-                <h2>Shwe Shop Website</h2>
+                <h2>Shwe Shops Website</h2>
                 <h2>သည်ပြုပြင်နေဆဲကာလဖြစ်ပါသည်</h2>
             </div>
             <div class="p">
@@ -113,46 +100,7 @@
             
     </div>
     
-    @if(isset(Auth::guard('web')->user()->id))
-    <form type="hidden" id="fav-server"  method="POST" style="display: none;">
-        @csrf
-    </form>
-    <form type="hidden" id="selection-server"  method="POST" style="display: none;">
-        @csrf
-    </form>
-        <div class="mobile-account">
-            <a href="{{route('backside.user.user_profile')}}">
-                <!--<i class="zh-icon fa-solid fa-arrow-right-from-bracket" style="color:#780116 !important;"></i>-->
-                <!--Logout-->
-                 <i class="zh-icon fa-solid fa-user-gear a-arrow-right-from-bracket" style="color:#780116 !important;"></i>
-                 Profile
-            </a>
-        </div>
 
-    @elseif(isset(Auth::guard('shop_owner')->user()->id))
-        <div class="mobile-account">
-            <a href="{{url('backside/shop_owner/detail')}}">
-                <i class="zh-icon fa-solid fa-user-gear" style="color:#780116 !important;"></i>
-                Shop Owner
-            </a>
-        </div>
-
-    @elseif(isset(Auth::guard('shop_role')->user()->id))
-        <div class="mobile-account">
-            <a href="{{url('backside/shop_owner/detail')}}" title="Logout">
-                <i class="zh-icon fa-solid fa-user-gear" style="color:#780116 !important;"></i>
-                Shop
-            </a>
-        </div>
-    @else
-    <div class="mobile-account">
-
-            <a href="" class="checkForm" title="checkForm" data-toggle="modal" data-target="#orangeModalSubscription">
-                <i class="zh-icon fa fa-user" style="color:#780116 !important;"></i>
-                Login</a>
-                
-        </div>
-    @endif
 
 
 </div>
