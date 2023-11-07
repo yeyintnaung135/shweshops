@@ -90,12 +90,18 @@ class NewsController extends Controller
             $imageName = strtolower($statictimestamp . '_' . Str::random(4) . '.' . $file->getClientOriginalExtension());
     
             $this->save_image($request->file('image'), $imageName,$dir);
+            $news->update([
+                'title' => $request->input('title'),
+                'description' => $request->input('description'),
+                'image' => $imageName,
+            ]);
+        }else{
+            $news->update([
+                'title' => $request->input('title'),
+                'description' => $request->input('description')
+            ]); 
         }
-        $news->update([
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-            'image' => $imageName,
-        ]);
+       
 
         return redirect()->route('backside.shop_owner.news.index')
             ->with('message', 'Your news was successfully updated');

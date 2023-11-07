@@ -88,13 +88,13 @@ trait UserRole
     public function getuserlistbyrolelevel()
     {
         if ($this->is_manager()) {
-            return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->whereIn('role_id', [3])->orderBy('created_at', 'desc')->get();
+            return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->whereIn('role_id', [3])->where('role_id','!=','4')->orderBy('created_at', 'desc')->get();
         }
         if ($this->is_admin()) {
-            return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->whereIn('role_id', [2, 3])->orderBy('created_at', 'desc')->get();
+            return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->where('role_id','!=','4')->whereIn('role_id', [2, 3])->orderBy('created_at', 'desc')->get();
         }
         if ($this->is_owner()) {
-            return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->get();
+            return ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->where('role_id','!=','4')->get();
         }
         if ($this->is_staff()) {
 

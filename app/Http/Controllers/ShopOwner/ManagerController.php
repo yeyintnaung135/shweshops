@@ -207,12 +207,12 @@ class ManagerController extends Controller
         }
     }
 
-    public function detail($id): View
+    public function detail($id)
     {
         $staffdata = ShopOwnersAndStaffs::where('shop_id', $this->get_shopid())->where('id', $id)->first();
         $role_id = $staffdata->role_id;
+        Gate::authorize('to_create_user', $role_id);
 
-        $this->authorize('to_create_user', $role_id);
         $role = Role::all();
         $url_id = $this->get_shopid();
 
@@ -224,8 +224,9 @@ class ManagerController extends Controller
         $role = $this->get_role_list();
         $shop_id = $this->get_shopid();
         $staffdata = ShopOwnersAndStaffs::where('shop_id', $shop_id)->where('id', $id)->first();
+        $role_id = $staffdata->role_id;
 
-        $this->authorize('to_create_user', $staffdata->role_id);
+        Gate::authorize('to_create_user', $role_id);
 
         return view('backend.shopowner.manager.edit', ['shopowner' => $this->current_shop_data(), 'role' => $role, 'manager' => $staffdata]);
     }

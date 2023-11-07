@@ -184,7 +184,7 @@ class CollectionController extends Controller
         $collectionItems = Item::where([
             ['shop_id', $this->get_shopid()],
             ['collection_id', $collectionId],
-        ])->select('id', 'name', 'product_code', 'price', 'min_price', 'max_price');
+        ])->get();
 
         return DataTables::of($collectionItems)
             ->addColumn('formatted_price', function ($item) {
@@ -206,7 +206,7 @@ class CollectionController extends Controller
         $collectionItems = Item::where([
             ['shop_id', $this->get_shopid()],
             ['collection_id', 0],
-        ])->select('id', 'name', 'product_code', 'price', 'min_price', 'max_price');
+        ])->get();
 
         return DataTables::of($collectionItems)
             ->addColumn('formatted_price', function ($item) {

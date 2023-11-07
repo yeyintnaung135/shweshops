@@ -156,7 +156,7 @@
                     data: 'item_photo',
                     render: function(data, type) {
                         const image =
-                            `<img style="width:150px;height:150px;" src= "{{ url('${data}') }}"/>`;
+                            `<img style="width:150px;height:150px;" src= "{{ filedopath('${data}') }}"/>`;
                         return image;
                     }
                 },

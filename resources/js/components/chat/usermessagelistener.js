@@ -27,11 +27,11 @@ window.onbeforeunload = function (event) {
     allfrommessagefunction.sendwhatuserisoffline(window.userid);
 };
 
-window.Echo.join("user.channel." + Number(window.userid))
+window.Echo.join("user.channel.342")
     .here((user) => {
         //if user join to channel send i am online to server
 
-        allfrommessagefunction.sendwhatuserisactive(window.userid);
+        // allfrommessagefunction.sendwhatuserisactive(window.userid);
 
         console.log("user is online");
     })
@@ -125,7 +125,7 @@ window.Echo.join("user.channel." + Number(window.userid))
 
 //for what shop is online
 window.Echo.channel("activeshops").listen("ActiveShops", (e) => {
-    console.log(e)
+    console.log('ACTIVE SHOPS'+e)
     //for chat template
     if (app.$refs.chatref.chatdata.length != 0) {
         //if top message from id equal to event shops_id
