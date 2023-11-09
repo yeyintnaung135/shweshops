@@ -40,7 +40,6 @@
                     <div class="row">
                         <div class="col-12">
 
-
                             <div class="sn-table-list-wrapper">
 
 
@@ -80,7 +79,6 @@
                                                     <th>ID</th>
                                                     <th>Product Code</th>
                                                     <th>Product Name</th>
-                                                    <th>User Id</th>
                                                     <th>User Name</th>
                                                     <th>Created Date</th>
                                                 </tr>
@@ -151,9 +149,7 @@
                     {
                         data: 'name'
                     },
-                    {
-                        data: 'user_id'
-                    },
+                   
                     {
                         data: 'user_name'
                     },
@@ -168,7 +164,7 @@
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
                 order: [
-                    [5, 'desc']
+                    [4, 'desc']
                 ],
             });
             $(".itemdatepicker").datepicker({

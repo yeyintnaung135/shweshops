@@ -22,6 +22,6 @@ class FrontUserLogs extends Model
 
     public function guest_or_user()
     {
-        return $this->belongsTo(GuestOrUserId::class, 'userorguestid');
+        return $this->belongsTo(GuestOrUserId::class,'userorguestid');
     }
 }

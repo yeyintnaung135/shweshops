@@ -3802,9 +3802,10 @@ header('X-Content-Type-Options: nosniff');
     class="archive post-type-archive post-type-archive-product wp-embed-responsive theme-karo1 woocommerce woocommerce-page woocommerce-no-js rtwpvs rtwpvs-rounded rtwpvs-attribute-behavior-blur rtwpvs-tooltip yith-wcan-free yith-wishlist ftc-theme-demo group-blog hfeed has-header-image colors-light wcfm-theme-karo wpb-js-composer js-comp-ver-6.5.0 vc_responsive elementor-default elementor-kit-9036 jewelry dokan-theme-karo1 mmm mega_main_menu-2-2-1">
     <div id="app">
         @if (session()->has('guest_id'))
-            <div class="d-none">
-                {{ session()->get('guest_id') }}
-            </div>
+        <div>
+           Guset ID {{ session()->get('guest_id') }}
+        </div>
+      
         @endif
 
         @if (\Illuminate\Support\Facades\Auth::guard('web')->check())
