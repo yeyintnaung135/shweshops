@@ -13,9 +13,9 @@
 
     <?php
     if (session()->has('guest_id')) {
-        $getid = \App\Guestoruserid::where('guest_id', session()->get('guest_id'));
+        $getid = \App\Models\GuestOrUserId::where('guest_id', session()->get('guest_id'));
         if(!empty($getid->first())){
-            \App\frontuserlogs::where('userorguestid', $getid->first()->id)->delete();
+            \App\Models\FrontUserLogs::where('userorguestid', $getid->first()->id)->delete();
             $getid->delete();
         }
 

@@ -65,7 +65,7 @@
                                     </a>
                                 @else
                                     <a href="{{ route('events.detail', $e->id) }}" target="_blank" rel="noopener noreferrer">
-                                        @if (dofile_exists('/news_&_events/events/' . $e->photo))
+                                        @if (dofile_exists('/news_&_events/event/' . $e->photo))
                                             <img class="w-100" src="{{ filedopath('/news_&_events/event/' . $e->photo) }}"
                                                 alt="">
                                         @else

@@ -563,11 +563,13 @@ class ShopController extends Controller
         $discountview_count_setting = CountSetting::where('shop_id', $shop->id)->where('name', 'discountview')->get();
         $adsview_count_setting = CountSetting::where('shop_id', $shop->id)->where('name', 'adsview')->get();
         $poson = FeaturesForShops::where([['shop_id', '=', $shop->id], ['feature', '=', 'pos']])->get();
+        $custompopular = FeaturesForShops::where([['shop_id', '=', $shop->id], ['feature', '=', 'custom_popular']])->get();
 
         $premium_template = PremiumTemplate::where('id', $shop->premium_template_id)->first();
         return view('backend.super_admin.shops.detail', [
             'all' => $all,
             'shop' => $shop,
+            'custompopular'=>$custompopular,
             'products_count_setting' => $products_count_setting,
             'users_count_setting' => $users_count_setting,
             'users_inquiry_setting' => $users_inquiry_setting,
@@ -706,6 +708,16 @@ class ShopController extends Controller
 
                 $count_setting->save();
             }
+        }elseif ($request->setting == 112) {
+            if ($request->action == 0) {
+                FeaturesForShops::where([['shop_id', '=', $request->id], ['feature', '=', 'custom_popular']])->forceDelete();
+            } else {
+                $count_setting = new FeaturesForShops();
+                $count_setting->shop_id = $request->id;
+                $count_setting->feature = "custom_popular";
+
+                $count_setting->save();
+            }
         }
 
         return response()->json(['status' => 'success']);
@@ -714,10 +726,12 @@ class ShopController extends Controller
     public function all_counts_setting(Request $request): JsonResponse
     {
 
-        $array = ["item", "users", "shop_view", "items_view", "item_unique_view", "buyNowClick", "addToCartClick", "whislistclick", "discountview", "adsview", "inquiry", "pos"];
+        $array = ["item", "users", "shop_view", "items_view", "item_unique_view", "buyNowClick", "addToCartClick", "whislistclick", "discountview", "adsview", "inquiry", "pos","custom_popular"];
         if ($request->action == 0) {
             CountSetting::where('shop_id', $request->id)->forceDelete();
             FeaturesForShops::where([['shop_id', '=', $request->id], ['feature', '=', 'pos']])->forceDelete();
+            FeaturesForShops::where([['shop_id', '=', $request->id], ['feature', '=', 'custom_popular']])->forceDelete();
+
         } else {
             $count_setting = new CountSetting();
             $count_setting->name = "all";
@@ -733,11 +747,20 @@ class ShopController extends Controller
 
                     $count_setting->save();
                 } else {
-                    $count_setting = new CountSetting();
-                    $count_setting->name = $value;
-                    $count_setting->setting = "on";
-                    $count_setting->shop_id = $request->id;
-                    $count_setting->save();
+                    if($value=='custom_popular'){
+                        $count_setting = new FeaturesForShops();
+                        $count_setting->shop_id = $request->id;
+                        $count_setting->feature = "custom_popular";
+    
+                        $count_setting->save();
+                    }else{
+                        $count_setting = new CountSetting();
+                        $count_setting->name = $value;
+                        $count_setting->setting = "on";
+                        $count_setting->shop_id = $request->id;
+                        $count_setting->save();
+                    }
+                  
                 }
             }
         }

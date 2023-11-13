@@ -55,7 +55,7 @@
                     <div class="col-12 col-lg-6 d-flex p-0">
                         {{-- Shop Logo --}}
                         <div class="premium-logo-wrap">
-                            <img src="{{ filedopath('/shop_owner/logo/' . $shop_data->shop_logo) }}" class="premium-logo" alt="shop logo">
+                            <img src="{{ filedopath('/shop_owner/logo/mid/' . $shop_data->shop_logo) }}" class="premium-logo" alt="shop logo">
                                 <div class="premium-logo">
                                     <img src="{{url('/images/directory/banner/Corner_1_Platinum.png')}}" alt="" srcset="" class="profile-kanote profile-kanote-1">
                                     <img src="{{url('/images/directory/banner/Corner_2_Platinum.png')}}" alt="" srcset="" class="profile-kanote profile-kanote-2">

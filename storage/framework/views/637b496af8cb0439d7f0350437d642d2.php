@@ -1,9 +1,8 @@
-@extends('backend.super_admin.layout')
-@section('title', 'MOE Admin Team | Shop Detail')
+<?php $__env->startSection('title', 'MOE Admin Team | Shop Detail'); ?>
 
-@section('content')
-    @include('backend.super_admin.navbar')
-    @include('backend.super_admin.sidebar')
+<?php $__env->startSection('content'); ?>
+    <?php echo $__env->make('backend.super_admin.navbar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+    <?php echo $__env->make('backend.super_admin.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     <div class="wrapper">
         <section class="content-wrapper">
             <div class="container">
@@ -13,31 +12,31 @@
                         <div class="d-lg-flex align-items-center justify-content-between mb-5">
                             <div class="d-lg-flex d-md-flex align-items-center">
                                 <div class="detail_logo mx-auto">
-                                    <img src="{{ filedopath('/shop_owner/logo/' . $shop->shop_logo) }}" alt=""
+                                    <img src="<?php echo e(filedopath('/shop_owner/logo/' . $shop->shop_logo)); ?>" alt=""
                                         class="rounded-circle">
                                 </div>
                                 <div class="ml-md-3 mt-3 mt-lg-0 text-center">
-                                    <p class="h5">{{ $shop->shop_name }}</p>
-                                    @isset($shop->shop_name_myan)
-                                        <span class="mm-font">( {{ $shop->shop_name_myan }} )</span>
-                                    @endisset
+                                    <p class="h5"><?php echo e($shop->shop_name); ?></p>
+                                    <?php if(isset($shop->shop_name_myan)): ?>
+                                        <span class="mm-font">( <?php echo e($shop->shop_name_myan); ?> )</span>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                             <div class="mt-3 mt-lg-0">
-                                @if ($shop->premium == 'yes')
+                                <?php if($shop->premium == 'yes'): ?>
                                     <div class="bg-gradient-orange px-2 py-1 text-white">
                                         <i class="fa fa-star"></i>
                                         <span class="">Premium</span>
                                     </div>
                                     <div class="bg-gradient-orange px-2 py-1 mt-3 text-white">
                                         <i class="fa fa-tag" aria-hidden="true"></i>
-                                        <span class="">{{ $premium_template->name }}</span>
+                                        <span class=""><?php echo e($premium_template->name); ?></span>
                                     </div>
-                                @else
+                                <?php else: ?>
                                     <div class="bg-gradient-orange px-2 py-1 text-white">
                                         <span>Normal</span>
                                     </div>
-                                @endif
+                                <?php endif; ?>
                             </div>
 
                         </div>
@@ -45,14 +44,14 @@
                         <div class="p-4 shadow-sm rounded-3 mb-4">
                             <div class=" " style="word-break: break-word">
                                 <h5 class="h5 font-weight-bold mb-2">Shop Description</h5>
-                                <p class="mb-2 content animation">{!! $shop->description !!}</p>
+                                <p class="mb-2 content animation"><?php echo $shop->description; ?></p>
                                 <div class="txtcol mb-4"><a>... See More</a></div>
 
                             </div>
                             <div class="pb-4">
                                 <h5 class="h5 font-weight-bold mb-2">Shop Address</h5>
                                 <div style="word-break: break-word">
-                                    <p class="content animation mb-2">{!! $shop->address !!}</p>
+                                    <p class="content animation mb-2"><?php echo $shop->address; ?></p>
                                     <div class="txtcol mb-4"><a>... See More</a></div>
                                 </div>
                             </div>
@@ -63,16 +62,17 @@
                             <div>
                                 <div class="mb-2 d-flex justify-content-between">
                                     <span class="mm-font">အထည်မပျက် ပြန်သွင်း : </span>
-                                    <span class="font-weight-bold">{{ $shop->undamaged_product }} %</span>
+                                    <span class="font-weight-bold"><?php echo e($shop->undamaged_product); ?> %</span>
                                 </div>
                                 <div class="mb-2 d-flex justify-content-between">
                                     <span class="mm-font">တန်ဖိုးမြင့်အထည် နှင့် အထည်မပျက်ပြန်လဲ : </span>
-                                    <span class="font-weight-bold">{{ $shop->valuable_product }}
+                                    <span class="font-weight-bold"><?php echo e($shop->valuable_product); ?>
+
                                         %</span>
                                 </div>
                                 <div class="mb-2 d-flex justify-content-between">
                                     <span class="mm-font">အထည်ပျက်စီး ချို့ယွင်း : </span>
-                                    <span class="font-weight-bold">{{ $shop->damaged_product }} %</span>
+                                    <span class="font-weight-bold"><?php echo e($shop->damaged_product); ?> %</span>
                                 </div>
                             </div>
                         </div>
@@ -81,23 +81,23 @@
                         <!--Shop Information-->
                         <div class="p-4 shadow-sm rounded-3 mb-4">
                             <h5 class="h5 font-weight-bold mb-2">Shop Information</h5>
-                            <p>{{ $shop->shop_name }}</p>
+                            <p><?php echo e($shop->shop_name); ?></p>
                             <hr>
                             <div class="mb-3">
                                 <p class="mb-1">Facebook Page Link : </p>
-                                <a href="{{ $shop->page_link }}"><u>
-                                        {{ $shop->shop_name }} Facebook</u>
+                                <a href="<?php echo e($shop->page_link); ?>"><u>
+                                        <?php echo e($shop->shop_name); ?> Facebook</u>
                                 </a>
                             </div>
                             <div class="mb-3">
                                 <p class="mb-1">Messenger Link : </p>
-                                <a href="{{ $shop->messenger_link }}"><u>
-                                        {{ $shop->shop_name }} Messenger</u>
+                                <a href="<?php echo e($shop->messenger_link); ?>"><u>
+                                        <?php echo e($shop->shop_name); ?> Messenger</u>
                                 </a>
                             </div>
                             <div class="main-phone mb-3">
                                 <p class="mb-1">Main Phone : </p>
-                                <span> {{ $shop->main_phone }}</span>
+                                <span> <?php echo e($shop->main_phone); ?></span>
                             </div>
 
                         </div>
@@ -110,7 +110,7 @@
                                         class="list-group-item d-flex justify-content-between align-items-center border-0 bg-transparent">
                                         <div>All</div>
                                         <div class="custom-control custom-switch">
-                                            <input type="hidden" id="{{ $shop->id }}">
+                                            <input type="hidden" id="<?php echo e($shop->id); ?>">
                                             <input type="checkbox" name="all" class="custom-control-input"
                                                 id="settingToggle">
                                             <label class="custom-control-label" id="statusText" for="settingToggle"></label>
@@ -123,7 +123,7 @@
                                         class="list-group-item d-flex justify-content-between align-items-center border-0 bg-transparent">
                                         <div> Products Counts</div>
                                         <div class="custom-control custom-switch">
-                                            <input type="hidden" id="{{ $shop->id }}">
+                                            <input type="hidden" id="<?php echo e($shop->id); ?>">
                                             <input type="checkbox" name="items" class="custom-control-input"
                                                 id="settingToggle1">
                                             <label class="custom-control-label" id="statusText"
@@ -138,7 +138,7 @@
                                         class="list-group-item d-flex justify-content-between align-items-center border-0 bg-transparent">
                                         <div> Custom Popular</div>
                                         <div class="custom-control custom-switch">
-                                            <input type="hidden" id="{{ $shop->id }}">
+                                            <input type="hidden" id="<?php echo e($shop->id); ?>">
                                             <input type="checkbox" name="custom_popular" class="custom-control-input"
                                                 id="settingToggle112">
                                             <label class="custom-control-label" id="statusText"
@@ -152,7 +152,7 @@
                                         class="list-group-item d-flex justify-content-between align-items-center border-0 bg-transparent">
                                         <div>Users Counts</div>
                                         <div class="custom-control custom-switch">
-                                            <input type="hidden" id="{{ $shop->id }}">
+                                            <input type="hidden" id="<?php echo e($shop->id); ?>">
                                             <input type="checkbox" name="user_counts" class="custom-control-input"
                                                 id="settingToggle2">
                                             <label class="custom-control-label" id="statusText"
@@ -166,7 +166,7 @@
                                         class="list-group-item d-flex justify-content-between align-items-center border-0 bg-transparent">
                                         <div>User Inquiry</div>
                                         <div class="custom-control custom-switch">
-                                            <input type="hidden" id="{{ $shop->id }}">
+                                            <input type="hidden" id="<?php echo e($shop->id); ?>">
                                             <input type="checkbox" name="user_inquiry" class="custom-control-input"
                                                 id="settingToggle11">
                                             <label class="custom-control-label" id="statusText"
@@ -180,7 +180,7 @@
                                         class="list-group-item d-flex justify-content-between align-items-center border-0 bg-transparent">
                                         <div> Shops View Counts</div>
                                         <div class="custom-control custom-switch">
-                                            <input type="hidden" id="{{ $shop->id }}">
+                                            <input type="hidden" id="<?php echo e($shop->id); ?>">
                                             <input type="checkbox" name="shop_view" class="custom-control-input"
                                                 id="settingToggle3">
                                             <label class="custom-control-label" id="statusText"
@@ -194,7 +194,7 @@
                                         class="list-group-item d-flex justify-content-between align-items-center border-0 bg-transparent">
                                         <div> Products View Counts</div>
                                         <div class="custom-control custom-switch">
-                                            <input type="hidden" id="{{ $shop->id }}">
+                                            <input type="hidden" id="<?php echo e($shop->id); ?>">
                                             <input type="checkbox" name="products_view" class="custom-control-input"
                                                 id="settingToggle4">
                                             <label class="custom-control-label" id="statusText"
@@ -208,7 +208,7 @@
                                         class="list-group-item d-flex justify-content-between align-items-center border-0 bg-transparent">
                                         <div> Unique Products View</div>
                                         <div class="custom-control custom-switch">
-                                            <input type="hidden" id="{{ $shop->id }}">
+                                            <input type="hidden" id="<?php echo e($shop->id); ?>">
                                             <input type="checkbox" name="unique_products_view"
                                                 class="custom-control-input" id="settingToggle5">
                                             <label class="custom-control-label" id="statusText"
@@ -222,7 +222,7 @@
                                         class="list-group-item d-flex justify-content-between align-items-center border-0 bg-transparent">
                                         <div> Buy Now Click Counts</div>
                                         <div class="custom-control custom-switch">
-                                            <input type="hidden" id="{{ $shop->id }}">
+                                            <input type="hidden" id="<?php echo e($shop->id); ?>">
                                             <input type="checkbox" name="buy_now_click" class="custom-control-input"
                                                 id="settingToggle6">
                                             <label class="custom-control-label" id="statusText"
@@ -235,7 +235,7 @@
                                         class="list-group-item d-flex justify-content-between align-items-center border-0 bg-transparent">
                                         <div> Add To Cart Click Counts</div>
                                         <div class="custom-control custom-switch">
-                                            <input type="hidden" id="{{ $shop->id }}">
+                                            <input type="hidden" id="<?php echo e($shop->id); ?>">
                                             <input type="checkbox" name="addToCartClickView" class="custom-control-input"
                                                 id="settingToggle7">
                                             <label class="custom-control-label" id="statusText"
@@ -248,7 +248,7 @@
                                         class="list-group-item d-flex justify-content-between align-items-center border-0 bg-transparent">
                                         <div> Unique Whishlist Click</div>
                                         <div class="custom-control custom-switch">
-                                            <input type="hidden" id="{{ $shop->id }}">
+                                            <input type="hidden" id="<?php echo e($shop->id); ?>">
                                             <input type="checkbox" name="UniqueWhishlistClick"
                                                 class="custom-control-input" id="settingToggle8">
                                             <label class="custom-control-label" id="statusText"
@@ -261,7 +261,7 @@
                                         class="list-group-item d-flex justify-content-between align-items-center border-0 bg-transparent">
                                         <div> Unique ads View</div>
                                         <div class="custom-control custom-switch">
-                                            <input type="hidden" id="{{ $shop->id }}">
+                                            <input type="hidden" id="<?php echo e($shop->id); ?>">
                                             <input type="checkbox" name="UniqueAdsView" class="custom-control-input"
                                                 id="settingToggle9">
                                             <label class="custom-control-label" id="statusText"
@@ -274,7 +274,7 @@
                                         class="list-group-item d-flex justify-content-between align-items-center border-0 bg-transparent">
                                         <div> Discount Products View</div>
                                         <div class="custom-control custom-switch">
-                                            <input type="hidden" id="{{ $shop->id }}">
+                                            <input type="hidden" id="<?php echo e($shop->id); ?>">
                                             <input type="checkbox" name="discount" class="custom-control-input"
                                                 id="settingToggle10">
                                             <label class="custom-control-label" id="statusText"
@@ -287,7 +287,7 @@
                                         class="list-group-item d-flex justify-content-between align-items-center border-0 bg-transparent">
                                         <div>POS ON</div>
                                         <div class="custom-control custom-switch">
-                                            <input type="hidden" id="{{ $shop->id }}">
+                                            <input type="hidden" id="<?php echo e($shop->id); ?>">
                                             <input type="checkbox" name="poson" class="custom-control-input"
                                                 id="settingToggle111">
                                             <label class="custom-control-label" id="statusText"
@@ -298,7 +298,7 @@
                             </form>
                         </div>
                         <div class="p-3">
-                            <a href="{{ route('backside.super_admin.shop.monthly_report', $shop->id) }}"> View Monthly
+                            <a href="<?php echo e(route('backside.super_admin.shop.monthly_report', $shop->id)); ?>"> View Monthly
                                 Report </a>
                         </div>
                     </div>
@@ -306,9 +306,9 @@
             </div>
         </section>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('css')
+<?php $__env->startPush('css'); ?>
     <style>
         .container {
             background-color: #fff;
@@ -374,24 +374,25 @@
             height: 50px;
         }
     </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script>
-        var all_count_setting = {!! json_encode($all) !!};
-        var products_count_setting = {!! json_encode($products_count_setting) !!};
-        var users_count_setting = {!! json_encode($users_count_setting) !!};
-        var users_inquiry_setting = {!! json_encode($users_inquiry_setting) !!};
-        var shops_view_count_setting = {!! json_encode($shops_view_count_setting) !!};
-        var items_view_count_setting = {!! json_encode($items_view_count_setting) !!}
-        var unique_product_click_count_setting = {!! json_encode($unique_product_click_count_setting) !!};
-        var buy_now_count_setting = {!! json_encode($buy_now_count_setting) !!};
-        var addtocartclick_count_setting = {!! json_encode($addtocartclick_count_setting) !!};
-        var whislistclick_count_setting = {!! json_encode($whislistclick_count_setting) !!};
-        var discountview_count_setting = {!! json_encode($discountview_count_setting) !!};
-        var adsview_count_setting = {!! json_encode($adsview_count_setting) !!};
-        var poson_ini = {!! json_encode($poson) !!};
-        var custom_popular = {!! json_encode($custompopular) !!};
+        var all_count_setting = <?php echo json_encode($all); ?>;
+        var products_count_setting = <?php echo json_encode($products_count_setting); ?>;
+        var users_count_setting = <?php echo json_encode($users_count_setting); ?>;
+        var users_inquiry_setting = <?php echo json_encode($users_inquiry_setting); ?>;
+        var shops_view_count_setting = <?php echo json_encode($shops_view_count_setting); ?>;
+        var items_view_count_setting = <?php echo json_encode($items_view_count_setting); ?>
+
+        var unique_product_click_count_setting = <?php echo json_encode($unique_product_click_count_setting); ?>;
+        var buy_now_count_setting = <?php echo json_encode($buy_now_count_setting); ?>;
+        var addtocartclick_count_setting = <?php echo json_encode($addtocartclick_count_setting); ?>;
+        var whislistclick_count_setting = <?php echo json_encode($whislistclick_count_setting); ?>;
+        var discountview_count_setting = <?php echo json_encode($discountview_count_setting); ?>;
+        var adsview_count_setting = <?php echo json_encode($adsview_count_setting); ?>;
+        var poson_ini = <?php echo json_encode($poson); ?>;
+        var custom_popular = <?php echo json_encode($custompopular); ?>;
 
         var all = $('[name="all"]');
         var items = $('[name="items"]');
@@ -422,7 +423,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('backside.super_admin.shops.update_action_all') }}",
+                url: " <?php echo e(route('backside.super_admin.shops.update_action_all')); ?>",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -444,7 +445,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('backside.super_admin.shops.update_action') }}",
+                url: " <?php echo e(route('backside.super_admin.shops.update_action')); ?>",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -467,7 +468,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('backside.super_admin.shops.update_action') }}",
+                url: " <?php echo e(route('backside.super_admin.shops.update_action')); ?>",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -490,7 +491,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('backside.super_admin.shops.update_action') }}",
+                url: " <?php echo e(route('backside.super_admin.shops.update_action')); ?>",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -514,7 +515,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('backside.super_admin.shops.update_action') }}",
+                url: " <?php echo e(route('backside.super_admin.shops.update_action')); ?>",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -536,7 +537,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('backside.super_admin.shops.update_action') }}",
+                url: " <?php echo e(route('backside.super_admin.shops.update_action')); ?>",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -558,7 +559,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('backside.super_admin.shops.update_action') }}",
+                url: " <?php echo e(route('backside.super_admin.shops.update_action')); ?>",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -580,7 +581,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('backside.super_admin.shops.update_action') }}",
+                url: " <?php echo e(route('backside.super_admin.shops.update_action')); ?>",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -602,7 +603,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('backside.super_admin.shops.update_action') }}",
+                url: " <?php echo e(route('backside.super_admin.shops.update_action')); ?>",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -624,7 +625,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('backside.super_admin.shops.update_action') }}",
+                url: " <?php echo e(route('backside.super_admin.shops.update_action')); ?>",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -646,7 +647,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('backside.super_admin.shops.update_action') }}",
+                url: " <?php echo e(route('backside.super_admin.shops.update_action')); ?>",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -668,7 +669,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('backside.super_admin.shops.update_action') }}",
+                url: " <?php echo e(route('backside.super_admin.shops.update_action')); ?>",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -690,7 +691,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('backside.super_admin.shops.update_action') }}",
+                url: " <?php echo e(route('backside.super_admin.shops.update_action')); ?>",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -713,7 +714,7 @@
             }
             $.ajax({
                 method: "GET",
-                url: " {{ route('backside.super_admin.shops.update_action') }}",
+                url: " <?php echo e(route('backside.super_admin.shops.update_action')); ?>",
                 cache: false,
                 dataType: "json",
                 data: {
@@ -846,4 +847,6 @@
             });
         });
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('backend.super_admin.layout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH P:\xampp\htdocs\shweshops\resources\views/backend/super_admin/shops/detail.blade.php ENDPATH**/ ?>
