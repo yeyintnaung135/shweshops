@@ -18,6 +18,7 @@ use App\Models\ContactUs;
 use App\Models\discount;
 use App\Models\Event;
 use App\Models\FavouriteItem;
+use App\Models\FeaturesForShops;
 use App\Models\foraddtohome;
 use App\Models\FrontUserLogs;
 use App\Models\Item;
@@ -26,12 +27,14 @@ use App\Models\News;
 use App\Models\OpeningTimes;
 use App\Models\ShopDirectory;
 use App\Models\Shops;
+use App\Models\SiteSettings;
 use App\Models\State;
 use App\Models\Township;
 use App\Models\Usernoti;
 use App\Models\WishlistClickLog;
 use App\Services\AppDownloadService;
 use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -41,8 +44,12 @@ use Illuminate\View\View;
 
 class FrontController extends Controller
 {
-    use ForYouLogic, AllShops, SimilarLogic,
-    Category, Logs, ShopLogActivityTrait;
+    use ForYouLogic,
+        AllShops,
+        SimilarLogic,
+        Category,
+        Logs,
+        ShopLogActivityTrait;
 
     protected $appDownloadService;
 
@@ -84,9 +91,9 @@ class FrontController extends Controller
         )->leftjoin('shops', 'shop_directory.shop_id', '=', 'shops.id')
             ->where('shops.deleted_at', null)
             ->orderBy('shop_directory.created_at', 'DESC')
-            ->where('pos_only','!=','yes')
+            ->where('pos_only', '!=', 'yes')
             ->limit(20)->get()
-            ->map(fn($data) => [
+            ->map(fn ($data) => [
                 'shweshops_premium_status' => $data->premium ? $data->premium : null,
                 'id' => $data->id ? $data->id : $data->dir_id,
                 'shop_name' => $data->dir_shop_name ? $data->dir_shop_name : $data->shop_name,
@@ -165,14 +172,14 @@ class FrontController extends Controller
                 $query->whereRaw($township)
                     ->orWhereRaw($dir_township);
             })
-            ->where(function ($query) use ($shopname, ) {
+            ->where(function ($query) use ($shopname,) {
                 $query->where('shop_directory.shop_name', 'like', $shopname)
                     ->orWhere('shop_directory.shop_name_myan', 'like', $shopname)
                     ->orWhere('shops.shop_name', 'like', $shopname)
                     ->orWhere('shops.shop_name_myan', 'like', $shopname);
             })
             ->skip($request->filtertype['shoplimit'])->take('20')->get()
-            ->map(fn($data) => [
+            ->map(fn ($data) => [
                 'shweshops_premium_status' => $data->premium ? $data->premium : null,
                 'id' => $data->id ? $data->id : $data->dir_id,
                 'shop_name' => $data->dir_shop_name ? $data->dir_shop_name : $data->shop_name,
@@ -227,7 +234,6 @@ class FrontController extends Controller
                 $count += count($tmpgbsid);
                 $current_shop_count += 1;
             }
-
         }
 
         //randomize result
@@ -242,34 +248,39 @@ class FrontController extends Controller
 
         $catlist = Cache::get('cat');
 
-        $premiumshops = Shops::orderBy('created_at', 'desc')->where('premium', 'yes')->where('pos_only','!=','yes')
-        ->limit(20)->get();
+        $premiumshops = Shops::orderBy('created_at', 'desc')->where('premium', 'yes')->where('pos_only', '!=', 'yes')
+            ->limit(20)->get();
 
         $this->addlog(url()->current(), 'all', 'all', 'homepage', '0');
 
         //forlogs
-
-        $popular_shops = FrontUserLogs::leftJoin('shops', 'front_user_logs.shop_id', '=', 'shops.id')
+        if (SiteSettings::where('name', 'custom popular')->first()->action == 'on') {
+            $popular_shops = Shops::whereHas('features',function ($query){
+                $query->where('feature','custom_popular');
+            })->get();
+        }else{
+            $popular_shops = FrontUserLogs::leftJoin('shops', 'front_user_logs.shop_id', '=', 'shops.id')
             ->select('shops.id', 'shops.shop_logo', 'shops.shop_name', 'shops.shop_name_url')->selectRaw('count(*) as s_count')
             ->where('status', 'shopdetail')
-            ->whereDate('front_user_logs.created_at', '>', Carbon::today()->subDay(30))
+            ->whereDate('front_user_logs.created_at', '>', Carbon::today()->subDay(130))
             ->groupBy('shop_id')
             ->orderBy('s_count', 'desc')
             ->limit(20)
             ->get();
+        }
+
+       
 
         return view('front.index', ['ads' => $ads, 'catlist' => $catlist, 'new_items' => $remove_discount_new, 'current_shop_count' => $current_shop_count, 'premium' => $premiumshops, 'popular_shops' => $popular_shops, 'recommendedProducts' => $this->caculateforyouforcurrentuser()[0]]);
-
     }
     public function initial_pop_items(Request $request)
     {
         $pop = Item::whereDate('created_at', '>', Carbon::today()->subDay(60))->orderBy('view_count', 'DESC')->limit(10)->get();
 
-//        $remove_discount_pop = collect($pop)->filter(function ($value, $key) {
-//            return $value->check_discount == 0;
-//        })->values();
+        //        $remove_discount_pop = collect($pop)->filter(function ($value, $key) {
+        //            return $value->check_discount == 0;
+        //        })->values();
         return response()->json([$pop]);
-
     }
 
     public function get_newitems_ajax(Request $request)
@@ -302,7 +313,6 @@ class FrontController extends Controller
                 $count += count($tmpgbsid);
                 $current_shop_count += 1;
             }
-
         }
 
         //randomize result
@@ -357,7 +367,6 @@ class FrontController extends Controller
         //  for seeall button
 
         return response()->json([$remove_discount_pop, 20, $emptyonserver]);
-
     }
 
     public function search()
@@ -380,7 +389,6 @@ class FrontController extends Controller
         // }
         if (empty($request['data'])) {
             return response()->json(['resultdatashops' => []]);
-
         }
 
         // $checkcat = \App\Category::whereRaw("mm_name REGEXP '(" . $request['data'] . ")'");
@@ -401,7 +409,6 @@ class FrontController extends Controller
 
         // return response()->json(['resultdataitems' => $search_result, 'resultdatashops' => $search_result_shops]);
         return response()->json(['resultdatashops' => $search_result_shops]);
-
     }
 
     public function ajax_search_result($searchtext = null)
@@ -413,7 +420,6 @@ class FrontController extends Controller
         // $all_shop_id = Shops::where('id', '!=', 1)->orderBy('created_at', 'desc')->get();
 
         return view('front.searchresult', ['searchtext' => $searchtext, 'catlist' => $catlist, 'shop_ids' => $all_shop_id]);
-
     }
 
     public function product_detail($shop_name, $product_id): View
@@ -453,7 +459,6 @@ class FrontController extends Controller
         // for account
 
         return view('front.product_detail', ['item' => $item, 'category' => $item->category_id, 'sim_items' => $similar_minimum_products, 'sim_items_othershops' => $similar_minimum_products_other_shops, 'fav_total_count' => 0]);
-
     }
 
     public function buynow(Request $request)
@@ -476,7 +481,6 @@ class FrontController extends Controller
             AddToCartClickLog::where([['item_id', '=', $request->id], ['userorguestid', '=', $getuserorguestid]])->delete();
         } else {
             AddToCartClickLog::create(['item_id' => $request->id, 'userorguestid' => $getuserorguestid]);
-
         }
 
         echo json_encode($item);
@@ -492,7 +496,6 @@ class FrontController extends Controller
             WishlistClickLog::where([['item_id', '=', $request->id], ['userorguestid', '=', $getuserorguestid]])->delete();
         } else {
             WishlistClickLog::create(['item_id' => $request->id, 'userorguestid' => $getuserorguestid]);
-
         }
         echo json_encode($item);
     }
@@ -514,7 +517,6 @@ class FrontController extends Controller
         //for log
         if (!Str::contains(url()->previous(), 'adsclick')) {
             $this->addlog(url()->current(), 'all', $id, 'shopdetail', '0');
-
         }
         //for log
 
@@ -617,7 +619,6 @@ class FrontController extends Controller
             //'%' mean any brand name
             $input['price_from'] = 0;
             $input['price_to'] = 10000000000000;
-
         } else {
 
             $str_toarray = explode(" ", str_replace("-", ' ', $request->price_range));
@@ -629,10 +630,8 @@ class FrontController extends Controller
         }
 
         if (empty($request->shops)) {
-
         } else {
             foreach ($request->shops as $shop) {
-
             }
         }
 
@@ -643,7 +642,6 @@ class FrontController extends Controller
                     $query->where([['min_price', '>', intval($input['price_from'])], ['max_price', '<', intval($input['price_to'])]]);
                 });
             })->get();
-
         } else {
             $search_result = [];
             foreach ($request->shops as $shop) {
@@ -659,7 +657,7 @@ class FrontController extends Controller
             }
         }
 
-//        return $search_result;
+        //        return $search_result;
         return view('front.searchresult', ['search_result' => $search_result]);
     }
 
@@ -670,7 +668,6 @@ class FrontController extends Controller
             $catname = '';
         } else {
             $catname = Item::where([['shop_id', '=', $shopid], ['category_id', '=', $cat]])->first()->ykbeauty_cat;
-
         }
 
         $allitems = Item::where('shop_id', $shopid)->orderBy('created_at', 'desc');
@@ -692,7 +689,6 @@ class FrontController extends Controller
         $allcatcount = collect($allitems->get())->countBy('category_id')->all();
 
         return view('front.getitembyshocat', ['forcheck_count' => $forcheck_count, 'discount' => $discount, 'items' => $items, 'shops' => $shops, 'shop_data' => $shop, 'catname' => $catname, 'allcatcount' => $allcatcount]);
-
     }
 
     public function gold_calculator()
@@ -705,7 +701,7 @@ class FrontController extends Controller
 
         $shop_ids = DB::table('items')->select('shop_id')->distinct()->get();
         $get_by_shopid = [];
-//loop and retrive data by shop id greater than last 10 day
+        //loop and retrive data by shop id greater than last 10 day
         $count = 0;
         foreach ($shop_ids as $ni) {
             if ($count > 19) {
@@ -717,7 +713,6 @@ class FrontController extends Controller
                 }
                 $count += count($tmpgbsid);
             }
-
         }
 
         //randomize result
@@ -726,11 +721,11 @@ class FrontController extends Controller
 
         //
 
-//        Cache::remember($tmp_key, now()->addMinutes(60),function () use ($tmp_cache_data,$get_by_shopid){
-//            return ['ini_data'=>[$get_by_shopid,0]];
-//        });
+        //        Cache::remember($tmp_key, now()->addMinutes(60),function () use ($tmp_cache_data,$get_by_shopid){
+        //            return ['ini_data'=>[$get_by_shopid,0]];
+        //        });
 
-//        return Cache::get($tmp_key);
+        //        return Cache::get($tmp_key);
 
         $all_shop_id = Shops::where('id', '!=', 1)->orderBy('shop_name', 'asc')->get();
         // $all_shop_id = Shops::where('id', '!=', 1)->orderBy('created_at', 'desc')->get();
@@ -745,10 +740,8 @@ class FrontController extends Controller
     {
         if ($neworpop == 'latest') {
             $new_items = Item::where('shop_id', $shop_id)->orderBy('created_at', 'desc')->limit(20)->get();
-
         } else {
             $new_items = Item::where('shop_id', $shop_id)->orderBy('view_count', 'desc')->limit(20)->get();
-
         }
 
         $temp_shop_name = Shops::where('id', $shop_id)->first()->id;
@@ -757,7 +750,6 @@ class FrontController extends Controller
         //values function is beacause filter retrun {{}} but i need [{}]
 
         return view('front.seeall_for_shop', ['neworpop' => $neworpop, 'shop_ids' => $this->getallshops(), 'selected_shop' => $forselected, 'new_items' => $new_items, 'shop_id' => $shop_id]);
-
     }
 
     public function see_all_pop()
@@ -765,14 +757,13 @@ class FrontController extends Controller
 
         $pop = Item::orderBy('view_count', 'desc')->limit(20)->get();
         //values function is beacause filter retrun {{}} but i need [{}]
-//        $remove_discount_pop = collect($pop)->filter(function ($value, $key) {
-//            return $value->check_discount == 0;
-//        })->values();
+        //        $remove_discount_pop = collect($pop)->filter(function ($value, $key) {
+        //            return $value->check_discount == 0;
+        //        })->values();
         $all_shop_id = Shops::where('id', '!=', 1)->orderBy('shop_name', 'asc')->get();
         // $all_shop_id = Shops::where('id', '!=', 1)->orderBy('created_at', 'desc')->get();
 
         return view('front.seeall_pop', ['pop_items' => $pop, 'shop_ids' => $all_shop_id]);
-
     }
 
     public function contact_us()
@@ -825,7 +816,6 @@ class FrontController extends Controller
         } else {
             return response('Fav update is null');
         }
-
     }
 
     public function getNoti()
@@ -844,7 +834,7 @@ class FrontController extends Controller
         return redirect()->back();
     }
 
-  
+
     public function app_download(AppFile $appFile)
     {
         return $this->appDownloadService->download($appFile);
@@ -873,7 +863,7 @@ class FrontController extends Controller
         return view('front.shops', ['shops' => $shops, 'active' => 'popular']);
     }
 
-   
+
 
     // public function getNewsandEvents() {
     //   return view('font.newsandevents');
@@ -883,5 +873,4 @@ class FrontController extends Controller
     {
         return view('front.baydins.baydin');
     }
-
 }
