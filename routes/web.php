@@ -115,6 +115,7 @@ Route::group(
         Route::get('/gold_calculator', [FrontController::class, 'gold_calculator']);
         // zh
         Route::get('/{shop_name}/product_detail/{product_id}', [FrontController::class, 'product_detail'])->name('front_productdetail');
+        Route::get('/orderform', [FrontController::class, 'orderform'])->name('orderform');
         Route::get('/buynow', [FrontController::class, 'buynow'])->name('buynow');
         Route::get('/addtocartclick', [FrontController::class, 'addtocartclick'])->name('addtocartclick');
         Route::post('/whislistclick', [FrontController::class, 'whislistclick'])->name('whislistclick');

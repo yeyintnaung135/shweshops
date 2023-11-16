@@ -456,6 +456,13 @@ class FrontController extends Controller
 
     }
 
+    //maymyat
+    public function orderform(): View
+    {
+        return view('front.orderform');
+    }
+    //end maymyat
+
     public function buynow(Request $request)
     {
         $item = Item::where('id', $request->id)->first();
