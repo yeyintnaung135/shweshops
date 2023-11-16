@@ -911,6 +911,80 @@
                                                 @click="buynowbuttonclick('{{ \Illuminate\Support\Facades\Auth::guard('web')->check() }}','{{ $item->shop->id }}',{{ $item }},'post','{{ \Illuminate\Support\Facades\Auth::guard('web')->check() == 1 ? \Illuminate\Support\Facades\Auth::guard('web')->user()->username : '' }}',{{ $item->shop }},'{{ \Carbon\Carbon::now() }}')"
                                                 target="_blank"><span class="buy-font">ဝယ်မယ်</span></a>
                                         </div>
+                                    <!-- maymyat -->
+                                    <div class="col-5 pe-2">
+                                        <a id="buynowbutton"
+                                            class="btn btn-primary zh-addtocart-button sop-font reg py-3"
+                                            data-toggle="modal" data-target="#myModal"
+                                            ><span class="buy-font">test</span></a>
+                                    </div>
+                                    <div id="myModal" class="modal fade" role="dialog">
+                                    <div class="modal-dialog modal-lg">
+
+                                            <!-- Modal content-->
+                                            <div class="modal-content" width="1000px">
+                                            
+                                            <div class="modal-body">
+                                                <h4 class="modal-title text-center">Order Create</h4><br><br>
+                                                <h5>Personal Details</h5>
+                                                <br>
+                                                <div class="row">
+                                                    <div class="form-group col-6">
+                                                        <label for="name" class="col-form-label">Name</label>
+                                                        <input type="text" class="form-control rounded" name="name">
+                                                    </div>
+                                                    <div class="form-group col-6">
+                                                        <label for="phone" class="col-form-label">Phone</label>
+                                                        <input type="text" class="form-control rounded" name="phone">
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label for="name" class="col-form-label">Address</label>
+                                                        <textarea name="address" class="rounded" id="" cols="30" rows="3"></textarea>
+                                                    </div>
+                                                </div>
+                                                <br><br>
+                                                <h5>Product Infomation</h5>
+                                                <br>
+                                                <div class="row">
+                                                    <div class="form-group col-6">
+                                                        <label for="quality" class="col-form-label">Gold Quality</label>
+                                                        <input type="text" class="form-control rounded" name="quality">
+                                                    </div>
+                                                    <div class="form-group col-6">
+                                                        <label for="size" class="col-form-label">Product Size</label>
+                                                        <input type="text" class="form-control rounded" name="size">
+                                                    </div>
+                                                    <div class="col-4 mt-4 mb-4">
+                                                        <img src="https://test.shweshops.com/test/img/logo-m.png"  alt="">
+                                                    </div>
+                                                    <div class="col-8 mt-4 mb-4">
+                                                        <h5>Lucky Diamond Ring</h5><br>
+                                                        <span>Code: &nbsp;&nbsp;&nbsp;&nbsp;FCCEFG</span><br>
+                                                        <span>Shop Name: &nbsp;&nbsp;&nbsp;&nbsp;Take Sein</span><br>
+                                                        <span>Gold quality: &nbsp;&nbsp;&nbsp;&nbsp;23K</span><br>
+                                                        <span>Product weight: &nbsp;&nbsp;&nbsp;&nbsp;6.59 g</span><br>
+                                                        <span>Price: &nbsp;&nbsp;&nbsp;&nbsp;2000,000 MMK</span>
+                                                    </div>
+                                                    <div class="col-12 mt-3 form-group">
+                                                    <label for="remark">မှတ်ချက်</label>
+                                                    <input type="checkbox" id="remark">
+                                                  
+                                                    </div>
+                                                    <div class="col-12 form-group mt-2">
+                                                    <textarea name="remark" id="" cols="30" rows="2"></textarea>
+                                                    </div>
+                                                    <div class="col-12 flex mt-4" style="justify-content: space-between;">
+                                                    <button type="button" class="btn" data-dismiss="modal">Cancel</button>
+                                                    <button type="button" class="btn text-center" style="background: #780116;color: white;padding: 5px 25px;">Next</button>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <!-- maymyat -->
                                     @endif
 
 
@@ -1436,6 +1510,8 @@
 @endpush
 @push('css')
     <style>
+        
+
         .remove_wrapp {
             height: 822px !important;
             position: relative !important;
@@ -1675,5 +1751,6 @@
                 font-size: 14px !important;
             }
         }
+
     </style>
 @endpush
