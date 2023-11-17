@@ -203,8 +203,8 @@
                                                         shop.dir_shop_logo
                                                     "
                                                     :src="
-                                                        imgurl +
-                                                        '/directory/' +
+                                                        host +
+                                                        '/images/directory/' +
                                                         shop.dir_shop_logo
                                                     "
                                                     class="sn-image-w-h sn-shop-image"

@@ -36,15 +36,7 @@ Route::group(
     ['middleware' => ['web', 'foratc']],
     function () {
         //move datas from shops to shop_owner_and_staff(16/10/2023)
-        Route::get('/test/movedatas',[SupportFrontController::class, 'movedatas']);
-        //testQueryAddress
-        Route::get('/updateOtherAddress', function () {
-            $test = Shops::where('other_address', 'not like','[%')->select('id','other_address')->get();
-            foreach($test as $address){
-                Shops::where('id', $address->id)->update(['other_address'=> '[{"value":"'.$address->other_address.'"}]']);
-            }
-            return response()->json(["success"=>true,"message"=>"Successfully Updated!"]);
-        });
+   
 
         // for frontend user
         Route::get('/adsclick/{name}/{id}', [LogController::class, 'storeadsclicklog']);
