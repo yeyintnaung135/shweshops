@@ -912,14 +912,13 @@
                                                 target="_blank"><span class="buy-font">ဝယ်မယ်</span></a>
                                         </div>
                                     <!-- maymyat -->
-                                    <div class="col-5 pe-2">
-                                        <!-- <a id="buynowbutton"
-                                            class="btn btn-primary zh-addtocart-button sop-font reg py-3"
-                                            data-toggle="modal" data-target="#myModal"
-                                            ><span class="buy-font">test</span></a> -->
-                                            <a href="{{ route('orderform') }}"
-                                            class="btn btn-primary zh-addtocart-button sop-font reg py-3"
-                                            ><span class="buy-font">test</span></a>
+                                    <div class="col-5 px-1">
+                                        <div onclick="cartclick('{{ $item->id }}','{{ Auth::check() }}')"
+                                            id="selection-div" class="btn btn-primary sn-buynow-button py-3">
+                                            <i id="selection-icon" class="fa-solid d-none fa-check"></i>
+                                            <span id="selection" class="sop-font buy-font">ရွေးထားမယ်</span>
+                                        </div>
+
                                     </div>
                                     <!-- maymyat -->
                                     @endif
@@ -949,15 +948,16 @@
                                             Session::forget('clickpayment');
                                         @endphp
                                     @endif
-
-                                    <div class="col-5 px-1">
-                                        <div onclick="cartclick('{{ $item->id }}','{{ Auth::check() }}')"
-                                            id="selection-div" class="btn btn-primary sn-buynow-button py-3">
-                                            <i id="selection-icon" class="fa-solid d-none fa-check"></i>
-                                            <span id="selection" class="sop-font buy-font">ရွေးထားမယ်</span>
-                                        </div>
-
+                                    <div class="col-5 pe-2">
+                                        <!-- <a id="buynowbutton"
+                                            class="btn btn-primary zh-addtocart-button sop-font reg py-3"
+                                            data-toggle="modal" data-target="#myModal"
+                                            ><span class="buy-font">test</span></a> -->
+                                            <a href="{{ route('orderform') }}"
+                                            class="btn btn-primary zh-addtocart-button sop-font reg py-3"
+                                            ><span class="buy-font">test</span></a>
                                     </div>
+                               
                                 </div>
 
                                 <div class="row g-3 mt-3">
