@@ -133,6 +133,7 @@
             regdata.frombuynow = $('#loginbeforebuynow').val();
             regdata.frommessenger = $('#loginbeforemessenger').val();
             regdata.frompayment = $('#loginbeforepayment').val();
+            regdata.fromorder = $('#orderlogin').val();
             //if user not enter code in input box
             if (regdata.code == '') {
                 $("#regerrorcode").html("<strong style='color:red'>Code Require<strong>");
@@ -150,7 +151,12 @@
                             $(".request-name-header").fadeIn();
                             $(".request-name-body").fadeIn();
                         } else {
-                            location.assign(window.location.href);
+                            if (response.data == 'order') {
+                                location.assign("{{url('orderform')}}");
+                            } else {
+                                location.assign(window.location.href);
+
+                            }
                         }
 
                     }
@@ -366,7 +372,7 @@
         });
     });
 
-    function  waitingSecond() {
+    function waitingSecond() {
         $(".sop-resend-otp").hide();
 
         const timeS = document.querySelector("#time");
@@ -379,14 +385,14 @@
             if (timeSecond <= 0 || timeSecond < 1) {
                 clearInterval(countDown);
             }
-            if(timeSecond == 0){
+            if (timeSecond == 0) {
                 $(".sop-resend-otp").fadeIn();
 
             }
 
         }, 1000);
         $(".sop-resend-otp").removeClass('disabled')
-     
+
     }
 
     // for Help & Support shop Owner Login
@@ -412,6 +418,4 @@
             "bottom": "0%"
         });
     });
-
-   
 </script>

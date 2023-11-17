@@ -23,6 +23,8 @@
                         <h1 id="time" class="text-center mb-3">0</h1>
                         <input id='phoneforresendcode' name='phoneforresendcode' value='' type='hidden'>
                         <input id="loginbeforebuynow" name="frombuynow" type="hidden" value="">
+                        <input id="orderlogin" name="fromorder" type="hidden" value="">
+
                         <input type="text" id="regotpcode" name="code" class="form-control "
                             placeholder="Put Your Code Here" required autocomplete="" autofocus
                             style="

@@ -18,6 +18,7 @@
             <input id="loginbeforebuynow" name="frombuynow" type="hidden" value="">
             <input id="loginbeforemessenger" name="frommessenger" type="hidden" value="">
             <input id="loginbeforepayment" name="frompayment" type="hidden" value="">
+
             <div class="md-form mb-3">
                 <label data-error="wrong" data-success="right" for="phoneNumber" class="sop-lr-l">Phone</label>
                 <input type="text" value="" name="phone" class="form-control sop-lr-in"

@@ -196,6 +196,7 @@ class UserLoginandRegisterController extends Controller
         $isBuynow = $request->frombuynow;
         $ismessenger = $request->frommessenger;
         $ispayment = $request->frompayment;
+        $isorder = $request->fromorder;
 
         if ($isBuynow == 'clickbuynow') {
             $clickbuynow =  Session::get('clickbuynow');
@@ -236,8 +237,13 @@ class UserLoginandRegisterController extends Controller
             //$this->check_login_or_register_point(); //insert point , You can look LoginPoint Trait
 
             if (Auth::guard('web')->check()) {
-                Session::flash('logined', 'User start login');
-                return response()->json('success');
+                if($isorder == 'yes'){
+                    return response()->json('order');
+                }else{
+                    Session::flash('logined', 'User start login');
+                    return response()->json($isorder);
+                }
+                
             } else {
                 return response()->json('fail');
             }
