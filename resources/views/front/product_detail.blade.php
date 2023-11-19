@@ -949,7 +949,7 @@
                                     @endif
                                     <div class="col-5 pe-2">
                                         @if (Auth::guard('web')->check())
-                                        <a href="{{url('orderform')}}" class="btn btn-primary zh-addtocart-button sop-font reg py-3"
+                                        <a href="{{url('orderform/'.$item->id)}}" class="btn btn-primary zh-addtocart-button sop-font reg py-3"
                                         ><span class="buy-font">Order Now</span></a>
                                         @else
                                             <!-- <a id="buynowbutton"

@@ -40,6 +40,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
     protected $appends = ['favIds', 'selectionIds', 'notification'];
+    public function orders(){
+        $this->hasMany(Orders::class,'user_id');
+    }
 
     public function getFavIdsAttribute()
     {

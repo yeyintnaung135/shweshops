@@ -244,7 +244,7 @@ class UserLoginandRegisterController extends Controller
                 } else {
                     Session::flash('logined', 'User start login');
                     return response()->json([
-                        "data" => true
+                        "data" => 'success'
                     ]);
                 }
             } else {

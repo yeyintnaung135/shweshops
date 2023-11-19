@@ -42,7 +42,9 @@ class Item extends Model
         }
         return $maincatdata;
     }
-
+    public function orders(){
+        $this->hasMany(Orders::class,'product_id');
+    }
     public function getWithoutspaceShopnameAttribute()
     {
         $shop_name_for_space = Shops::select('id', 'shop_name', 'shop_name_url')->where('id', $this->shop_id)->first();
