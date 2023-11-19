@@ -140,8 +140,7 @@ class UserLoginandRegisterController extends Controller
                 if ($request->phone != '09425472782') {
 
                     $sendresponse = $this->sendresetcode($request->phone, $generate_code);
-                    $sendresponse ='done';
-
+                    $sendresponse = 'done';
                 }
 
                 if ($sendresponse == 'done') {
@@ -237,13 +236,17 @@ class UserLoginandRegisterController extends Controller
             //$this->check_login_or_register_point(); //insert point , You can look LoginPoint Trait
 
             if (Auth::guard('web')->check()) {
-                if($isorder == 'yes'){
-                    return response()->json('order');
-                }else{
+                if (!empty($isorder)) {
+                    return response()->json([
+                        "data" => 'order',
+                        "id"=>$isorder
+                    ]);
+                } else {
                     Session::flash('logined', 'User start login');
-                    return response()->json($isorder);
+                    return response()->json([
+                        "data" => true
+                    ]);
                 }
-                
             } else {
                 return response()->json('fail');
             }
@@ -260,7 +263,7 @@ class UserLoginandRegisterController extends Controller
      * @param array $data
      * @return \App\User
      */
-    protected function create(array $data):User
+    protected function create(array $data): User
     {
         $password = 'thantzaw123!@#';
         return User::create([
@@ -271,7 +274,7 @@ class UserLoginandRegisterController extends Controller
         ]);
     }
 
-    protected function update_name(Request $request):JsonResponse
+    protected function update_name(Request $request): JsonResponse
     {
         $request->validate([
             'name' => 'required|max:100'

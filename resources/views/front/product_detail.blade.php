@@ -948,12 +948,17 @@
                                         @endphp
                                     @endif
                                     <div class="col-5 pe-2">
-                                        <!-- <a id="buynowbutton"
-                                                            class="btn btn-primary zh-addtocart-button sop-font reg py-3"
-                                                            data-toggle="modal" data-target="#myModal"
-                                                            ><span class="buy-font">test</span></a> -->
-                                        <a class="btn btn-primary zh-addtocart-button sop-font reg py-3"
-                                            id='orderform'><span class="buy-font">Order Now</span></a>
+                                        @if (Auth::guard('web')->check())
+                                        <a href="{{url('orderform')}}" class="btn btn-primary zh-addtocart-button sop-font reg py-3"
+                                        ><span class="buy-font">Order Now</span></a>
+                                        @else
+                                            <!-- <a id="buynowbutton"
+                                                                class="btn btn-primary zh-addtocart-button sop-font reg py-3"
+                                                                data-toggle="modal" data-target="#myModal"
+                                                                ><span class="buy-font">test</span></a> -->
+                                            <a class="btn btn-primary zh-addtocart-button sop-font reg py-3"
+                                                id='orderform'><span class="buy-font">Order Now</span></a>
+                                        @endif
                                     </div>
 
                                 </div>
@@ -1373,7 +1378,7 @@
             $("#orangeModalSubscription").modal("show");
             $(".userLogin").show();
             document.getElementById("orderlogin").value =
-                "yes";
+               "{{$item->id}}";
         });
         $('#orangeModalSubscription').on('hidden.bs.modal', function(e) {
             // do something...

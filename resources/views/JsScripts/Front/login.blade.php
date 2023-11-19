@@ -151,8 +151,8 @@
                             $(".request-name-header").fadeIn();
                             $(".request-name-body").fadeIn();
                         } else {
-                            if (response.data == 'order') {
-                                location.assign("{{url('orderform')}}");
+                            if (response.data.data == 'order') {
+                                location.assign("{{url('orderform')}}"+'/'+response.data.id);
                             } else {
                                 location.assign(window.location.href);
 

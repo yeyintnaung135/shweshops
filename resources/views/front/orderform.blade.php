@@ -9,12 +9,12 @@
         <br>
         <div class="row">
             <div class="form-group col-6">
-                <label for="name" class="col-form-label">Name</label>
-                <input type="text" class="form-control rounded" name="name">
+                <label for="name" class="col-form-label" >Name</label>
+                <input type="text" class="form-control rounded" required name="name" value="{{Auth::user()->username}}">
             </div>
             <div class="form-group col-6">
                 <label for="phone" class="col-form-label">Phone</label>
-                <input type="text" class="form-control rounded" name="phone">
+                <input type="text" class="form-control rounded" required name="phone" value="{{Auth::user()->phone}}">
             </div>
             <div class="form-group col-12">
                 <label for="name" class="col-form-label">Address</label>
@@ -25,23 +25,29 @@
         <h5>Product Infomation</h5>
         <br>
         <div class="row">
-            <div class="form-group col-6">
+            {{-- <div class="form-group col-6">
                 <label for="quality" class="col-form-label">Gold Quality</label>
                 <input type="text" class="form-control rounded" name="quality">
             </div>
             <div class="form-group col-6">
                 <label for="size" class="col-form-label">Product Size</label>
                 <input type="text" class="form-control rounded" name="size">
-            </div>
+            </div> --}}
             <div class="col-4 mt-4 mb-4">
                 <img src="https://test.shweshops.com/test/img/logo-m.png"  alt="">
             </div>
             <div class="col-8 mt-4 mb-4">
                 <h5>Lucky Diamond Ring</h5><br>
-                <span>Code: &nbsp;&nbsp;&nbsp;&nbsp;FCCEFG</span><br>
-                <span>Shop Name: &nbsp;&nbsp;&nbsp;&nbsp;Take Sein</span><br>
-                <span>Gold quality: &nbsp;&nbsp;&nbsp;&nbsp;23K</span><br>
-                <span>Product weight: &nbsp;&nbsp;&nbsp;&nbsp;6.59 g</span><br>
+                <span>Code: &nbsp;&nbsp;&nbsp;&nbsp;{{$product_data->product_code}}</span><br>
+                <span>Shop Name: &nbsp;&nbsp;&nbsp;&nbsp;{{$product_data->shop->shop_name}}</span><br>
+                <span>Gold quality: &nbsp;&nbsp;&nbsp;&nbsp;{{$product_data->gold_quality}}</span><br>
+                <?php
+                $weight = json_decode($product_data->weight, true);
+                ?>
+                @if(!empty($weight))
+                <span>Product weight: &nbsp;&nbsp;&nbsp;&nbsp;{{ $weight[0]['value'] }}
+                    {{ $weight[0]['name'] }}</span><br>
+                @endif
                 <span>Price: &nbsp;&nbsp;&nbsp;&nbsp;2000,000 MMK</span>
             </div>
             <div class="col-12 mt-3 form-group">
