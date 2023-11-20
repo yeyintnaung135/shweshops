@@ -461,6 +461,14 @@ class FrontController extends Controller
     {
         return view('front.orderform');
     }
+    public function reviewform(): View
+    {
+        return view('front.reviewform');
+    }
+    public function successform(): View
+    {
+        return view('front.successform');
+    }
     //end maymyat
 
     public function buynow(Request $request)

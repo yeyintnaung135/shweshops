@@ -116,6 +116,8 @@ Route::group(
         // zh
         Route::get('/{shop_name}/product_detail/{product_id}', [FrontController::class, 'product_detail'])->name('front_productdetail');
         Route::get('/orderform', [FrontController::class, 'orderform'])->name('orderform');
+        Route::get('/reviewform', [FrontController::class, 'reviewform'])->name('reviewform');
+        Route::get('/successform', [FrontController::class, 'successform'])->name('successform');
         Route::get('/buynow', [FrontController::class, 'buynow'])->name('buynow');
         Route::get('/addtocartclick', [FrontController::class, 'addtocartclick'])->name('addtocartclick');
         Route::post('/whislistclick', [FrontController::class, 'whislistclick'])->name('whislistclick');
