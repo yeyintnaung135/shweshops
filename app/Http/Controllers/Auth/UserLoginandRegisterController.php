@@ -140,8 +140,7 @@ class UserLoginandRegisterController extends Controller
                 if ($request->phone != '09425472782') {
 
                     $sendresponse = $this->sendresetcode($request->phone, $generate_code);
-                    $sendresponse ='done';
-
+                    $sendresponse = 'done';
                 }
 
                 if ($sendresponse == 'done') {
@@ -196,6 +195,7 @@ class UserLoginandRegisterController extends Controller
         $isBuynow = $request->frombuynow;
         $ismessenger = $request->frommessenger;
         $ispayment = $request->frompayment;
+        $isorder = $request->fromorder;
 
         if ($isBuynow == 'clickbuynow') {
             $clickbuynow =  Session::get('clickbuynow');
@@ -236,8 +236,17 @@ class UserLoginandRegisterController extends Controller
             //$this->check_login_or_register_point(); //insert point , You can look LoginPoint Trait
 
             if (Auth::guard('web')->check()) {
-                Session::flash('logined', 'User start login');
-                return response()->json('success');
+                if (!empty($isorder)) {
+                    return response()->json([
+                        "data" => 'order',
+                        "id"=>$isorder
+                    ]);
+                } else {
+                    Session::flash('logined', 'User start login');
+                    return response()->json([
+                        "data" => 'success'
+                    ]);
+                }
             } else {
                 return response()->json('fail');
             }
@@ -254,7 +263,7 @@ class UserLoginandRegisterController extends Controller
      * @param array $data
      * @return \App\User
      */
-    protected function create(array $data):User
+    protected function create(array $data): User
     {
         $password = 'thantzaw123!@#';
         return User::create([
@@ -265,7 +274,7 @@ class UserLoginandRegisterController extends Controller
         ]);
     }
 
-    protected function update_name(Request $request):JsonResponse
+    protected function update_name(Request $request): JsonResponse
     {
         $request->validate([
             'name' => 'required|max:100'

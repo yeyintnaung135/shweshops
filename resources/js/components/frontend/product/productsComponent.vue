@@ -40,8 +40,8 @@
                                 >
                                     <img
                                         :src="
-                                            host +
-                                            '/images/logo/thumbs/' +
+                                        imgurl +
+                                            '/shop_owner/logo/mid/' +
                                             item.ShopName.shop_logo
                                         "
                                         class="yk-hover-logo float-left"
@@ -150,8 +150,8 @@
                                 >
                                     <img
                                         :src="
-                                            host +
-                                            '/images/logo/thumbs/' +
+                                            imgurl +
+                                            '/shop_owner/logo/mid/' +
                                             item.ShopName.shop_logo
                                         "
                                         class="yk-hover-logo float-left"

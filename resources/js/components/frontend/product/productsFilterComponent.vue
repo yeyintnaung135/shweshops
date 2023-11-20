@@ -117,8 +117,8 @@
                                     >
                                         <img
                                             :src="
-                                                host +
-                                                '/images/logo/mid/' +
+                                                imgurl +
+                                                '/shop_owner/logo/mid/' +
                                                 f.shop_logo
                                             "
                                             class="attachment-ftc_blog_shortcode_thumb size-ftc_blog_shortcode_thumb wp-post-image lazyloaded sop-image"
@@ -796,6 +796,7 @@ export default {
             host: "", // get base url
 
             busy: false,
+            imgurl:'',
 
             shoplist: [],
             byshop: [],
@@ -970,6 +971,11 @@ export default {
     },
     mounted() {
         this.host = this.$hostname;
+        if (process.env.MIX_USE_DO == "true") {
+            this.imgurl = process.env.MIX_DO_URL;
+        } else {
+            this.imgurl = this.$hostname + "/images";
+        }
         console.log("maincat",this.maincat_id);
         this.main_product_type = this.maincat_id;
         this.discountonly = this.discount;

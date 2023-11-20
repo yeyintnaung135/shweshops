@@ -67,8 +67,7 @@
 
                                     @if ($item->photo_one != '' && $item->photo_one != $item->default_photo)
                                         <div class="carousel__slide "
-                                            data-src="{{ filedopath('/items/' . $item->photo_one) }}"
-                                            data-fancybox="group">
+                                            data-src="{{ filedopath('/items/' . $item->photo_one) }}" data-fancybox="group">
                                             @if ($item->check_discount != '0')
                                                 <div class="sop-ribbon-pd ">
                                                     <span>-{{ $get_dis->percent }}%</span>
@@ -842,7 +841,7 @@
                                                 <ul class="list-group">
                                                     <li class="list-group-item list-group-item-action border-0 px-4 my-2">
                                                         <a id="buynowbutton" class="d-flex align-items-center chat-width"
-                                                          @click="buynowbuttonclick('{{ \Illuminate\Support\Facades\Auth::guard('web')->check() }}','{{ $item->shop->id }}',{{ $item }},'post','{{ \Illuminate\Support\Facades\Auth::guard('web')->check() == 1 ? \Illuminate\Support\Facades\Auth::guard('web')->user()->username : '' }}',{{ $item->shop }},'{{ \Carbon\Carbon::now() }}')">
+                                                            @click="buynowbuttonclick('{{ \Illuminate\Support\Facades\Auth::guard('web')->check() }}','{{ $item->shop->id }}',{{ $item }},'post','{{ \Illuminate\Support\Facades\Auth::guard('web')->check() == 1 ? \Illuminate\Support\Facades\Auth::guard('web')->user()->username : '' }}',{{ $item->shop }},'{{ \Carbon\Carbon::now() }}')">
                                                             <div class="btn shweshops-chat-btn d-flex align-items-center">
                                                                 <div class="ss-chat-wrapper d-inline-block m-2"
                                                                     style="width: 40px; height: 40px;">
@@ -852,7 +851,7 @@
                                                                 </div>
                                                                 <div class="mx-3">Shweshops Chat</div>
                                                             </div>
-                                                        </a> 
+                                                        </a>
                                                     </li>
                                                     <li class="list-group-item list-group-item-action border-0 px-4">
                                                         @if ($is_fb_on == 'on')
@@ -861,7 +860,7 @@
                                                                 ->where('shop_id', $item->shop->id)
                                                                 ->first();
                                                             ?>
-                                                          
+
                                                             @if (!empty($check_connect))
                                                                 <a class="d-flex align-items-center chat-width"
                                                                     id="fbbutton"
@@ -911,17 +910,16 @@
                                                 @click="buynowbuttonclick('{{ \Illuminate\Support\Facades\Auth::guard('web')->check() }}','{{ $item->shop->id }}',{{ $item }},'post','{{ \Illuminate\Support\Facades\Auth::guard('web')->check() == 1 ? \Illuminate\Support\Facades\Auth::guard('web')->user()->username : '' }}',{{ $item->shop }},'{{ \Carbon\Carbon::now() }}')"
                                                 target="_blank"><span class="buy-font">ဝယ်မယ်</span></a>
                                         </div>
-                                    <!-- maymyat -->
-                                    <div class="col-5 pe-2">
-                                        <!-- <a id="buynowbutton"
-                                            class="btn btn-primary zh-addtocart-button sop-font reg py-3"
-                                            data-toggle="modal" data-target="#myModal"
-                                            ><span class="buy-font">test</span></a> -->
-                                            <a href="{{ route('orderform') }}"
-                                            class="btn btn-primary zh-addtocart-button sop-font reg py-3"
-                                            ><span class="buy-font">test</span></a>
-                                    </div>
-                                    <!-- maymyat -->
+                                        <!-- maymyat -->
+                                        <div class="col-5 px-1">
+                                            <div onclick="cartclick('{{ $item->id }}','{{ Auth::check() }}')"
+                                                id="selection-div" class="btn btn-primary sn-buynow-button py-3">
+                                                <i id="selection-icon" class="fa-solid d-none fa-check"></i>
+                                                <span id="selection" class="sop-font buy-font">ရွေးထားမယ်</span>
+                                            </div>
+
+                                        </div>
+                                        <!-- maymyat -->
                                     @endif
 
 
@@ -949,15 +947,20 @@
                                             Session::forget('clickpayment');
                                         @endphp
                                     @endif
-
-                                    <div class="col-5 px-1">
-                                        <div onclick="cartclick('{{ $item->id }}','{{ Auth::check() }}')"
-                                            id="selection-div" class="btn btn-primary sn-buynow-button py-3">
-                                            <i id="selection-icon" class="fa-solid d-none fa-check"></i>
-                                            <span id="selection" class="sop-font buy-font">ရွေးထားမယ်</span>
-                                        </div>
-
+                                    <div class="col-5 pe-2">
+                                        @if (Auth::guard('web')->check())
+                                        <a href="{{url('orderform/'.$item->id)}}" class="btn btn-primary zh-addtocart-button sop-font reg py-3"
+                                        ><span class="buy-font">Order Now</span></a>
+                                        @else
+                                            <!-- <a id="buynowbutton"
+                                                                class="btn btn-primary zh-addtocart-button sop-font reg py-3"
+                                                                data-toggle="modal" data-target="#myModal"
+                                                                ><span class="buy-font">test</span></a> -->
+                                            <a class="btn btn-primary zh-addtocart-button sop-font reg py-3"
+                                                id='orderform'><span class="buy-font">Order Now</span></a>
+                                        @endif
                                     </div>
+
                                 </div>
 
                                 <div class="row g-3 mt-3">
@@ -1371,8 +1374,17 @@
 
 
 
-
-
+        $('#orderform').click(function() {
+            $("#orangeModalSubscription").modal("show");
+            $(".userLogin").show();
+            document.getElementById("orderlogin").value =
+               "{{$item->id}}";
+        });
+        $('#orangeModalSubscription').on('hidden.bs.modal', function(e) {
+            // do something...
+            document.getElementById("orderlogin").value =
+                "";
+        })
         // Initialise Carousel
         const mainCarousel = new Carousel(document.querySelector("#mainCarousel"), {
             Dots: false,
@@ -1447,8 +1459,6 @@
 @endpush
 @push('css')
     <style>
-        
-
         .remove_wrapp {
             height: 822px !important;
             position: relative !important;
@@ -1688,6 +1698,5 @@
                 font-size: 14px !important;
             }
         }
-
     </style>
 @endpush

@@ -17,6 +17,7 @@ use App\Http\Controllers\FrontForDiscountController;
 use App\Http\Controllers\FrontShopController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\message\UserMessageController;
+use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\ShopOwner\DiscountController;
 use App\Http\Controllers\ShopOwner\PosController;
 use App\Http\Controllers\Shwe_News\NewsFrontController;
@@ -36,15 +37,7 @@ Route::group(
     ['middleware' => ['web', 'foratc']],
     function () {
         //move datas from shops to shop_owner_and_staff(16/10/2023)
-        Route::get('/test/movedatas',[SupportFrontController::class, 'movedatas']);
-        //testQueryAddress
-        Route::get('/updateOtherAddress', function () {
-            $test = Shops::where('other_address', 'not like','[%')->select('id','other_address')->get();
-            foreach($test as $address){
-                Shops::where('id', $address->id)->update(['other_address'=> '[{"value":"'.$address->other_address.'"}]']);
-            }
-            return response()->json(["success"=>true,"message"=>"Successfully Updated!"]);
-        });
+   
 
         // for frontend user
         Route::get('/adsclick/{name}/{id}', [LogController::class, 'storeadsclicklog']);
@@ -118,6 +111,8 @@ Route::group(
         Route::get('/orderform', [FrontController::class, 'orderform'])->name('orderform');
         Route::get('/reviewform', [FrontController::class, 'reviewform'])->name('reviewform');
         Route::get('/successform', [FrontController::class, 'successform'])->name('successform');
+        Route::get('/orderform/{id}', [OrdersController::class, 'index']);
+        Route::post('/createorder', [OrdersController::class, 'create']);
         Route::get('/buynow', [FrontController::class, 'buynow'])->name('buynow');
         Route::get('/addtocartclick', [FrontController::class, 'addtocartclick'])->name('addtocartclick');
         Route::post('/whislistclick', [FrontController::class, 'whislistclick'])->name('whislistclick');

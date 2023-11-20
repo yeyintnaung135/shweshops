@@ -31,7 +31,11 @@ class Shops extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
-
+    
+    public function features()
+    {
+        return $this->hasMany(FeaturesForShops::class,'shop_id');
+    }
     public function items()
     {
         return $this->hasMany(Item::class, 'shop_id');

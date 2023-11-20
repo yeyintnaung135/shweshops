@@ -66,6 +66,7 @@ class ShopController extends Controller
 
     public function update(ShopUpdateRequest $request, $id)
     {
+        
         $input = $request->except('_token', '_method');
         $shopowner = Shops::findOrFail($id);
         //        return $shopowner;
