@@ -108,11 +108,14 @@ Route::group(
         Route::get('/gold_calculator', [FrontController::class, 'gold_calculator']);
         // zh
         Route::get('/{shop_name}/product_detail/{product_id}', [FrontController::class, 'product_detail'])->name('front_productdetail');
-        Route::get('/orderform', [FrontController::class, 'orderform'])->name('orderform');
-        Route::get('/reviewform', [FrontController::class, 'reviewform'])->name('reviewform');
-        Route::get('/successform', [FrontController::class, 'successform'])->name('successform');
+        // Route::get('/orderform', [FrontController::class, 'orderform'])->name('orderform');
+        // Route::get('/reviewform', [FrontController::class, 'reviewform'])->name('reviewform');
+        // Route::get('/successform', [FrontController::class, 'successform'])->name('successform');
         Route::get('/orderform/{id}', [OrdersController::class, 'index']);
-        Route::post('/createorder', [OrdersController::class, 'create']);
+        Route::post('/orderform/{id}', [OrdersController::class, 'create']);
+
+        Route::put('/orderform/{id}', [OrdersController::class, 'confirm']);
+
         Route::get('/buynow', [FrontController::class, 'buynow'])->name('buynow');
         Route::get('/addtocartclick', [FrontController::class, 'addtocartclick'])->name('addtocartclick');
         Route::post('/whislistclick', [FrontController::class, 'whislistclick'])->name('whislistclick');

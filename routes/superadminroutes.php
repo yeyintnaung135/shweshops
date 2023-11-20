@@ -14,6 +14,7 @@ use App\Http\Controllers\SuperAdmin\EventsController;
 use App\Http\Controllers\SuperAdmin\FacebookDataController;
 use App\Http\Controllers\SuperAdmin\ItemsController;
 use App\Http\Controllers\SuperAdmin\NewsController;
+use App\Http\Controllers\SuperAdmin\OrdersController;
 use App\Http\Controllers\SuperAdmin\PromotionController;
 use App\Http\Controllers\SuperAdmin\ShopController;
 use App\Http\Controllers\SuperAdmin\SignController;
@@ -47,6 +48,10 @@ Route::prefix('backside/super_admin')->name('backside.super_admin.')->group(func
 
     Route::get('showdeletelogs', [DangerZoneController::class, 'show_delete_logs']);
     Route::post('deletelogs', [DangerZoneController::class, 'delete_logs']);
+    Route::get('orders', [OrdersController::class, 'index']);
+    Route::get('orders/detail/{id}', [OrdersController::class, 'detail']);
+
+    Route::get('get_orders', [OrdersController::class, 'get_orders']);
 
     Route::get('support/cat/create', [CatController::class, 'create_form']);
     Route::post('support/cat/create', [CatController::class, 'store']);

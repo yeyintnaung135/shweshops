@@ -297,7 +297,36 @@
                 </li>
 
 
+                <li class="nav-item">
+                    <a href="" class="mobile-nav nav-link">
+                      <!-- <i class="fas fa-coins ml-3 coin-font-size "></i> -->
+                      <img id="logo" class="logo rounded-5" src="{{'/images/logo/super_admin_logo/Points.svg'}}" alt=""/>
+                      <img id="mobile" class="logo mobile d-none rounded-5" src="{{'/images/logo/super_admin_mobile_logo/Points.svg'}}" alt=""/>
+                        <p>
+                            Orders
+                            <i class="right fas fa-angle-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{url('backside/super_admin/orders')}}" class="nav-link border-0">
 
+                                <i class="fa fa-circle pl-5"></i>
+                                <p class="ml-3">Orders</p>
+
+                            </a>
+                        </li>
+                    {{--    <li class="nav-item">
+                            <a href="{{url('backside/super_admin/gold_points')}}" class="nav-link border-0">
+
+                                <i class="fa fa-circle pl-5"></i>
+                                <p class="ml-3">Gold Points</p>
+                            </a>
+                        </li> --}}
+
+
+                    </ul>
+                </li>
 
 
 

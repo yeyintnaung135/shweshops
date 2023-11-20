@@ -461,19 +461,9 @@ class FrontController extends Controller
         return view('front.product_detail', ['item' => $item, 'category' => $item->category_id, 'sim_items' => $similar_minimum_products, 'sim_items_othershops' => $similar_minimum_products_other_shops, 'fav_total_count' => 0]);
     }
 
-    //maymyat
-    public function orderform(): View
-    {
-        return view('front.orderform');
-    }
-    public function reviewform(): View
-    {
-        return view('front.reviewform');
-    }
-    public function successform(): View
-    {
-        return view('front.successform');
-    }
+  
+   
+ 
     //end maymyat
 
     public function buynow(Request $request)

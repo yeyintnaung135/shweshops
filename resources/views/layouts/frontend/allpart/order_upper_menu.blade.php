@@ -19,7 +19,7 @@
                     </ul>
                 </div>
                 <div class="pe-3">
-                    <a href="#">​<i class="fa fa-chevron-left" aria-hidden="true" onclick="back()"></i> &nbsp;&nbsp;​Back</a>
+                    <a href="{{url()->previous()}}">​<i class="fa fa-chevron-left" aria-hidden="true" ></i> &nbsp;&nbsp;​Back</a>
                 </div>
             </div>
         </div>
