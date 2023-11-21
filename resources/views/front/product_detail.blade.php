@@ -826,6 +826,26 @@
 
                                 <div class="row g-1 g-md-2 position-relative mt-3">
 
+                                    <div class="col-2 pe-2">
+                                        @if (Auth::guard('web')->check())
+                                        <a href="{{url('orderform/'.$item->id)}}"
+                                            class="mt-1 mt-md-2 chat-with-us d-flex flex-column align-items-center">
+                                            <img src="{{ url('test/img/ordericon.svg') }}" 
+                                                width="50px" class=>
+                                            <p class="text-center" style="font-size:14px; color: #780116;">အော်ဒါအပ်ရန်</p>
+                                        </a>
+                                        @else
+                                            <!-- <a id="buynowbutton"
+                                                                class="btn btn-primary zh-addtocart-button sop-font reg py-3"
+                                                                data-toggle="modal" data-target="#myModal"
+                                                                ><span class="buy-font">test</span></a> -->
+                                            <a id='orderform' class="mt-1 mt-md-2 chat-with-us d-flex flex-column align-items-center">
+                                                <img src="{{ url('test/img/ordericon.svg') }}" class="" alt="">
+                                                <span class="buy-font">​​အော်ဒါအပ်ရန်</span>
+                                            </a>
+                                        @endif
+                                    </div>
+
                                     @if ($is_chat_on == 'on')
                                         <div id="chatWithUs"
                                             class="col-2 mt-1 mt-md-2 chat-with-us d-flex flex-column align-items-center">
@@ -903,7 +923,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-5 pe-2">
+                                        <div class="col-4 pe-2">
 
                                             <a id="buynowbutton"
                                                 class="btn btn-primary zh-addtocart-button sop-font reg py-3"
@@ -911,7 +931,7 @@
                                                 target="_blank"><span class="buy-font">ဝယ်မယ်</span></a>
                                         </div>
                                         <!-- maymyat -->
-                                        <div class="col-5 px-1">
+                                        <div class="col-4 px-1">
                                             <div onclick="cartclick('{{ $item->id }}','{{ Auth::check() }}')"
                                                 id="selection-div" class="btn btn-primary sn-buynow-button py-3">
                                                 <i id="selection-icon" class="fa-solid d-none fa-check"></i>
@@ -947,19 +967,7 @@
                                             Session::forget('clickpayment');
                                         @endphp
                                     @endif
-                                    <div class="col-5 pe-2">
-                                        @if (Auth::guard('web')->check())
-                                        <a href="{{url('orderform/'.$item->id)}}" class="btn btn-primary zh-addtocart-button sop-font reg py-3"
-                                        ><span class="buy-font">Order Now</span></a>
-                                        @else
-                                            <!-- <a id="buynowbutton"
-                                                                class="btn btn-primary zh-addtocart-button sop-font reg py-3"
-                                                                data-toggle="modal" data-target="#myModal"
-                                                                ><span class="buy-font">test</span></a> -->
-                                            <a class="btn btn-primary zh-addtocart-button sop-font reg py-3"
-                                                id='orderform'><span class="buy-font">Order Now</span></a>
-                                        @endif
-                                    </div>
+                                    
 
                                 </div>
 
