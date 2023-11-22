@@ -42,7 +42,7 @@
                         <img src="{{ filedopath($product_data->check_photo) }}" alt="">
                     </div>
                     <div class="col-8 mt-4 mb-4">
-                        <h5>{{ $product_data->name }}</h5><br>
+                        <h6>{{ $product_data->name }}</h6><br>
                         <span>Code: &nbsp;&nbsp;&nbsp;&nbsp;{{ $product_data->product_code }}</span><br>
                         <span>Shop Name: &nbsp;&nbsp;&nbsp;&nbsp;{{ $product_data->shop->shop_name }}</span><br>
                         <span>Gold quality: &nbsp;&nbsp;&nbsp;&nbsp;{{ $product_data->gold_quality }}</span><br>
@@ -101,7 +101,6 @@
                     </div>
                     <div class="col-12 mt-3 form-group">
                         <label for="note">မှတ်ချက်</label>
-
                     </div>
                     <div class="col-12 form-group mt-2">
                         <textarea name="note" id="" cols="30" rows="4">{{ empty($order_data->note) ? '' : $order_data->note }}</textarea>

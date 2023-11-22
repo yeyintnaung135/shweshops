@@ -39,7 +39,7 @@
 
                 </div>
                 <div class="col-8 mt-4 mb-4">
-                    <h5>{{ $product_data->name }}</h5><br>
+                    <h6>{{ $product_data->name }}</h6><br>
                     <span>Code: &nbsp;&nbsp;&nbsp;&nbsp;{{ $product_data->product_code }}</span><br>
                     <span>Shop Name: &nbsp;&nbsp;&nbsp;&nbsp;{{ $product_data->shop->shop_name }}</span><br>
                     <span>Gold quality: &nbsp;&nbsp;&nbsp;&nbsp;{{ $product_data->gold_quality }}</span><br>
