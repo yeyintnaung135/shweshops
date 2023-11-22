@@ -99,7 +99,7 @@
                     @csrf
                     @method('PUT')
                 <div class="col-4 d-flex justify-content-between mt-2">
-                    <button type="button" style="padding: 5px 25px;">Cancel</button>
+                    <a href='{{url()->previous()}}' type="button" style="padding: 5px 25px;">Cancel</a>
                  
 
                         <input type="hidden" name="order_id" value="{{ $order_data->id }}">

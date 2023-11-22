@@ -28,7 +28,7 @@ class EventsController extends Controller
      */
     public function create(): View
     {
-        $events = Event::where('shop_id', 0)->latest()->paginate(5);
+        $events = Event::latest()->paginate(5);
         return view('backend.super_admin.news_&_events.events.create', compact('events'));
     }
 

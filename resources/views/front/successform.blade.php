@@ -8,7 +8,7 @@
         <h4 class="text-center fontweight-bold mt-4">Thank You !</h4><br>
         <h6 class="text-center">Your Order #100024 has been placed.</h6><br><br>
         <div class="center">
-        <button type="button" class="btn" style="background: #780116;color: white;padding: 5px 25px;margin-top:340px;">Back</button>
+        <a href="{{url('/')}}" type="button" class="btn" style="background: #780116;color: white;padding: 5px 25px;margin-top:340px;">Back</a>
         </div>
   </div>
 </div>

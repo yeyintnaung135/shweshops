@@ -24,7 +24,7 @@ class NewsController extends Controller
 
     public function create(): View
     {
-        $news_all = News::where('shop_id', 0)->latest()->paginate(5);
+        $news_all = News::latest()->paginate(5);
         return view('backend.super_admin.news_&_events.news.create', compact('news_all'));
     }
 
