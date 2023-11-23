@@ -30,7 +30,7 @@
                                   <div>
                                     @if ($item->shop_logo)
                                       <img
-                                        src="{{url('/images/directory/'.$item->shop_logo)}}"
+                                        src="{{filedopath('/directory/'.$item->shop_logo)}}"
                                         class="sn-dir-detail-img"
                                       />
                                     @endif

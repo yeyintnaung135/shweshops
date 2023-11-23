@@ -830,7 +830,7 @@
                                         @if (Auth::guard('web')->check())
                                         <a href="{{url('orderform/'.$item->id)}}"
                                             class="mt-1 mt-md-2 chat-with-us d-flex flex-column align-items-center">
-                                            <img src="{{ url('test/img/ordericon.svg') }}" 
+                                            <img src="{{ url('images/icons/ordericon.png') }}" 
                                                 width="50px" class=>
                                             <p class="text-center" style="font-size:14px; color: #780116;">အော်ဒါအပ်ရန်</p>
                                         </a>

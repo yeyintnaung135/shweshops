@@ -40,7 +40,7 @@
                                     <div class="card-body p-lg-5">
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Logo</label>
-                                            <div><img src="{{ url('images/directory/' . $ttdata->shop_logo) }}"
+                                            <div><img src="{{ filedopath('/directory/mid/' . $ttdata->shop_logo) }}"
                                                     style="width: 222px;"></div>
                                         </div>
                                         <div class="form-group">

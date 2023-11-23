@@ -2,7 +2,7 @@
 @section('content')
     @include('layouts.frontend.allpart.order_upper_menu')
 
-    <div class="d-flex aligns-items-center justify-content-center card mx-auto mt-3" style="width: 50rem;height: 53rem;">
+    <div class="container d-flex aligns-items-center justify-content-center card mx-auto mt-3">
         <div class="card-body">
             <h4 class="text-center">Review Order</h4><br><br>
             <div class="d-flex justify-content-between">
@@ -33,12 +33,12 @@
                     {{-- <h3 class="product_title entry-title yk-jello-horizontal sn-discount-badge">
                             {{$get_dis->percent}}% <span class="sn-off-text">OFF</span></h3> --}}
                 @endif
-                <div class="col-4 mt-4 mb-4">
+                <div class="col-12 col-sm-4 mt-4 mb-4">
 
                     <img src="{{ filedopath($product_data->check_photo) }}" alt="">
 
                 </div>
-                <div class="col-8 mt-4 mb-4">
+                <div class="col-12 col-sm-8 mt-4 mb-4">
                     <h6>{{ $product_data->name }}</h6><br>
                     <span>Code: &nbsp;&nbsp;&nbsp;&nbsp;{{ $product_data->product_code }}</span><br>
                     <span>Shop Name: &nbsp;&nbsp;&nbsp;&nbsp;{{ $product_data->shop->shop_name }}</span><br>
@@ -62,25 +62,29 @@
                             </span>
                         @endif
                         @if ($get_dis->discount_price != 0)
-                            <span>
-                                {{ number_format($get_dis->discount_price) }}MMK
+                            <span class="woocommerce-Price-amount amount yk-amount"
+                                style="margin-left:0px !important;"><bdi><span
+                                        class="woocommerce-Price-currencySymbol"></span>
+                                    {{ number_format($get_dis->discount_price) }}MMK
                             </span>
                         @else
-                            <span>
-                                {{ number_format($get_dis->discount_min) }}-{{ number_format($get_dis->discount_max) }}
-                                MMK
+                            <span class="woocommerce-Price-amount amount yk-amount"
+                                style="margin-left:0px !important;"><bdi><span
+                                        class="woocommerce-Price-currencySymbol"></span>
+                                    {{ number_format($get_dis->discount_min) }}-{{ number_format($get_dis->discount_max) }}MMK
 
                             </span>
                         @endif
                         (Discount)
                     @else
                         @if ($product_data->price != 0)
-                            <span class="woocommerce-Price-amount amount yk-amount"><bdi class=""><span
-                                        class="woocommerce-Price-currencySymbol"></span>
+                            <span class="woocommerce-Price-amount amount yk-amount" style="margin-left:0px !important;"><bdi
+                                    class=""><span class="woocommerce-Price-currencySymbol"></span>
                                     Price: {{ number_format($product_data->price) }}MMK
                             </span>
                         @else
-                            <span class="woocommerce-Price-amount amount yk-amount"><bdi><span
+                            <span class="woocommerce-Price-amount amount yk-amount"
+                                style="margin-left:0px !important;"><bdi><span
                                         class="woocommerce-Price-currencySymbol"></span>
                                     Price:
                                     {{ number_format($product_data->min_price) }}-{{ number_format($product_data->max_price) }}MMK
@@ -95,20 +99,20 @@
                 <div class="col-12 form-group mt-2">
                     {{ $order_data->note }}
                 </div>
-                <form action="{{ url('orderform/'.$product_data->id) }}" method="post">
+                <form action="{{ url('orderform/' . $product_data->id) }}" method="post">
                     @csrf
                     @method('PUT')
-                <div class="col-4 d-flex justify-content-between mt-2">
-                    <a href='{{url()->previous()}}' type="button" style="padding: 5px 25px;">Cancel</a>
-                 
+                    <div class="col-4 d-flex justify-content-between mt-2">
+                        <a href='{{ url()->previous() }}' type="button" style="padding: 5px 25px;">Cancel</a>
+
 
                         <input type="hidden" name="order_id" value="{{ $order_data->id }}">
 
                         <input type="submit" class="btn text-center" value="place order"
-                            style="background: #780116;color: white;padding: 5px 25px;"/>
+                            style="background: #780116;color: white;padding: 5px 25px;" />
 
-                </div>
-            </form>
+                    </div>
+                </form>
 
             </div>
         </div>

@@ -154,7 +154,7 @@
                     data: 'shop_logo',
                     render: function(data, type) {
                         if (data) {
-                            var image = `<img src="{{ url('/images/directory/' . ':img') }}"
+                            var image = `<img src="{{ filedopath('/directory/mid/' . ':img') }}"
                           class="rounded-circle" width="50"
                           height="45" alt="Logo" />`;
                             image = image.replace(':img', data);

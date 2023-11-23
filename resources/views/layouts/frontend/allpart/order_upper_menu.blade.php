@@ -1,4 +1,4 @@
-<div class="sop-upper d-none d-lg-block px-lg-5">
+<div class="sop-upper px-lg-5">
     <div class="h-100 d-flex justify-content-between align-items-center">
         <div class="d-flex justify-content-between  col-4">
             <div class="d-flex justify-content-between align-items-center">

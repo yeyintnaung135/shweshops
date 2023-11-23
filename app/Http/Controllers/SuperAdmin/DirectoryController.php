@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Trait\YKImage;
 use App\Http\Requests\SuperAdmin\Directory\StoreDirectoryRequest;
 use App\Http\Requests\SuperAdmin\Directory\UpdateDirectoryRequest;
 use App\Models\ShopDirectory;
@@ -19,6 +20,8 @@ use Yajra\DataTables\DataTables;
 
 class DirectoryController extends Controller
 {
+    use YKImage;
+
     public function __construct()
     {
         $this->middleware(['auth:super_admin']);
@@ -85,8 +88,10 @@ class DirectoryController extends Controller
             //file upload
             $imageNameone = time() . 'logo' . '.' . $shop_logo->getClientOriginalExtension();
 
-            $lpath = $shop_logo->move(public_path('images/directory/'), $imageNameone);
+            $this->save_image_shop_logo($shop_logo, $imageNameone, 'directory/');
+
             $data['shop_logo'] = $imageNameone;
+
         }
         $add_ph = json_decode($request->additional_phones);
         $add_ph_array = [];
@@ -145,7 +150,7 @@ class DirectoryController extends Controller
             }
 
             $shop_logo = time() . '1.' . $request->file('shop_logo')->getClientOriginalExtension();
-            $get_path = $request->file('shop_logo')->move(public_path('images/directory'), $shop_logo);
+            $this->save_image_shop_logo($request->file('shop_logo'), $shop_logo, 'directory/');
 
             $data['shop_logo'] = $shop_logo;
 

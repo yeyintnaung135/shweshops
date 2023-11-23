@@ -196,18 +196,18 @@
                                                         '/shop_owner/logo/mid/' +
                                                         shop.shop_logo
                                                     "
-                                                    class="sn-image-w-h sn-shop-image"
+                                                    class=" sn-shop-image" style="height:214px !important;object-fit:inherit !important"
                                                 />
                                                 <img
                                                     v-else-if="
                                                         shop.dir_shop_logo
                                                     "
                                                     :src="
-                                                        host +
-                                                        '/images/directory/' +
+                                                        imgurl +
+                                                        '/directory/mid/' +
                                                         shop.dir_shop_logo
                                                     "
-                                                    class="sn-image-w-h sn-shop-image"
+                                                    class=" sn-shop-image" style="height:214px !important;object-fit:inherit !important"
                                                 />
                                                 <div v-else>
                                                     <i

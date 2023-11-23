@@ -2,7 +2,7 @@
 @section('content')
     @include('layouts.frontend.allpart.order_upper_menu')
 
-<div class="d-flex aligns-items-center justify-content-center card mx-auto mt-3" style="width: 50rem;height: 25rem;">
+<div class="container d-flex aligns-items-center justify-content-center card mx-auto mt-3" >
   <div class="card-body">
         <img src="{{ url('test/img/success.png') }}" style="display: block;margin-left: auto;margin-right: auto;" alt="">
         <h4 class="text-center fontweight-bold mt-4">Thank You !</h4><br>

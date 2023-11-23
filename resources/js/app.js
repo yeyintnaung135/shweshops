@@ -146,10 +146,10 @@ Vue.component(
     "checkout",
     require("./components/frontend/checkout.vue").default
 );
-// Vue.prototype.$hostname = "https://" + window.location.hostname;
+Vue.prototype.$hostname = "https://" + window.location.hostname;
 
 // Vue.prototype.$hostname =
-    "http://" + window.location.hostname + "/shweshops/public";
+    // "http://" + window.location.hostname + "/shweshops/public";
 
 //HostName for Laragon or Valet Virtual Host
 // Vue.prototype.$hostname = "http://shweshops.test";
