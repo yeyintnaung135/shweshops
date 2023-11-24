@@ -7,7 +7,6 @@ use App\Http\Controllers\Trait\CalculateCat;
 use App\Http\Requests\SuperAdmin\SuperAdminContactUsUpdateRequest;
 use App\Models\AddToCartClickLog;
 use App\Models\BuyNowClickLog;
-use App\Models\Category;
 use App\Models\ContactUs;
 use App\Models\FrontUserLogs;
 use App\Models\GoldPrice;

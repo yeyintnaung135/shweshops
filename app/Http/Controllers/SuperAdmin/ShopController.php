@@ -28,6 +28,7 @@ use App\Models\State;
 use App\Models\SuperAdminLogActivity;
 use App\Models\User;
 use App\Models\WishlistClickLog;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -368,19 +369,43 @@ class ShopController extends Controller
         //     ->toJson();
     }
 
-    public function shop_owner_using_chat_detail($id): View
+    public function shop_owner_using_chat_detail($id)
     {
+        
+        
+                if(empty($_GET['from'])){
+            $_GET['from']=Carbon::now()->toDateString();
+        }
+        if(empty($_GET['to'])){
+            $_GET['to']=Carbon::now()->toDateString();
+        }
+        $validator = Validator::make(['id'=>$id,'from'=>$_GET['from'],'to'=>$_GET['to']], [
+            'id' => 'required|numeric',
+            'from' => 'string|max:20',
+            'to' => 'string|max:20',
+
+        ]);
+        if($validator->fails()){
+            return 'fail';
+        }
+        $from=Carbon::createFromDate($_GET['from']);
+        $to=Carbon::createFromDate($_GET['to']);
         $get_message_shops = Messages::where('message_shop_id', (int) $id)
             ->groupBy('message_user_id')
+            ->whereBetween('created_at', [$from, $to])
             ->get();
+            $tmparray=[];
+            foreach($get_message_shops as $gms){
+                array_push($tmparray,$gms->message_user_id);
+            }
 
         $messages_all_users = $this->paginate($get_message_shops);
 
-        $messages = Messages::where('message_shop_id', (int) $id)->get();
+        $messages = Messages::whereIn('message_user_id',$tmparray)->where('message_shop_id', (int) $id)->get();
         $shop_owner = Messages::where('message_shop_id', (int) $id)->first();
         $shop_id = Shops::where('id', $id)->first();
 
-        $chat_count = Messages::where('message_shop_id', (int) $id)->groupBy('message_user_id')->get();
+        $chat_count =$get_message_shops;
 
         return view('backend.super_admin.shops.shopowner_chat_using_detail', [
             'messages_all_users' => $messages_all_users,
@@ -388,6 +413,8 @@ class ShopController extends Controller
             'shop_owner' => $shop_owner,
             'shop_id' => $shop_id,
             'counts' => $chat_count,
+            'from'=>$_GET['from'],
+            'to'=>$_GET['to']
         ]);
     }
 

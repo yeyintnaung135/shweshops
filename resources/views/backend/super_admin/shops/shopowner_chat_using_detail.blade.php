@@ -16,7 +16,27 @@
                         <span class="badge badge-primary">Total</span> -
                         <span class="font-weight-bolder">{{ $counts->count() }}</span>
                     </div>
-
+                    <form action="{{url('backside/super_admin/shopowner_using_chat_detail/87')}}" method="GET">
+                        <div class="d-flex justify-content-end my-3">
+                            <div class="form-group mr-md-2">
+                                <fieldset>
+                                    <legend>From Date</legend>
+                                    <input type="text" name="from" value="{{$from}}" id='search_fromdate_shop' class="shopdatepicker form-control"
+                                        placeholder='Choose date' autocomplete="off" />
+                                </fieldset>
+                            </div>
+                            <div class="form-group mr-md-2">
+                                <fieldset>
+                                    <legend>To Date</legend>
+                                    <input type="text" name="to" value="{{$to}}" id='search_todate_shop' class="shopdatepicker form-control"
+                                        placeholder='Choose date' autocomplete="off" />
+                                </fieldset>
+                            </div>
+                            <div class="pr-md-4 mt-4">
+                                <input type='submit' id="shop_search_button" value="Search" class="btn bg-info">
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <div class="row justify-content-center  mt-5">
                     <div class="col-12 col-lg-8 p-lg-5 ">
