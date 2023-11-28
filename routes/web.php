@@ -150,6 +150,7 @@ Route::group(
         Route::post('/catfilter', [FrontForCatController::class, 'catfilter']);
 
         Route::get('/seeallforyou', [FrontForCatController::class, 'seeall_foryou']);
+        Route::get('/ger_rec_foryou', [FrontController::class, 'ger_rec_foryou']);
 
         Route::get('/tags/{name}', [TagsController::class, 'index']);
         Route::post('/tags_items', [TagsController::class, 'get_tags_items']);

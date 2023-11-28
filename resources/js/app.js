@@ -139,6 +139,10 @@ Vue.component(
     require("./components/frontend/directory/seeallshopdirectory.vue").default
 );
 Vue.component(
+    "rec-for-you",
+    require("./components/frontend/RecforyouComponent.vue").default
+);
+Vue.component(
     "support-help",
     require("./components/frontend/SupportComponent.vue").default
 );
@@ -146,10 +150,10 @@ Vue.component(
     "checkout",
     require("./components/frontend/checkout.vue").default
 );
-Vue.prototype.$hostname = "https://" + window.location.hostname;
+// Vue.prototype.$hostname = "https://" + window.location.hostname;
 
-// Vue.prototype.$hostname =
-    // "http://" + window.location.hostname + "/shweshops/public";
+Vue.prototype.$hostname =
+    "http://" + window.location.hostname + "/shweshops/public";
 
 //HostName for Laragon or Valet Virtual Host
 // Vue.prototype.$hostname = "http://shweshops.test";

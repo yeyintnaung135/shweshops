@@ -3,10 +3,47 @@
 use App\frontuserlogs;
 use App\Guestoruserid;
 use App\Models\ForFirebase;
-use Illuminate\Support\Facades\Http;
+use App\Models\Item;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Http;
 
+Route::get('refimage/{limit}', function ($limit) {
 
+    $getitems = Item::whereDate('created_at', '>=', '2023-10-15')->whereDate('created_at', '<=', '2023-11-28')->orderBy('id', 'desc')->get();
+    $all_image_fields = ['default_photo', 'photo_one', 'photo_two', 'photo_three', 'photo_four', 'photo_five', 'photo_six', 'photo_seven', 'photo_eight', 'photo_nine', 'photo_ten'];
+
+    foreach ($getitems as $gi) {
+        foreach ($all_image_fields as $ain) {
+            $file = $gi[$ain];
+            if (!empty($file) and $file != NULL) {
+
+                $imageDirectory = "prod/items/";
+                $imagePath = $imageDirectory . $file;
+                if (Storage::disk('digitalocean')->exists('/' . $imagePath)) {
+                    if (!Storage::disk('digitalocean')->exists('/' . $imageDirectory . 'mid/' . $file)) {
+
+                        $image = Image::make(Storage::disk('digitalocean')->get($imagePath))
+                            ->fit(300, 300)
+                            ->stream()
+                            ->__toString();
+                        Storage::disk('digitalocean')->put($imageDirectory . 'mid/' . $file, $image);
+                    }
+                    if (!Storage::disk('digitalocean')->exists('/' . $imageDirectory . 'thumbs/' . $file)) {
+
+                        $thumbImage = Image::make($image)
+                            ->fit(100, 100)
+                            ->stream()
+                            ->__toString();
+                        Storage::disk('digitalocean')->put($imageDirectory . 'thumbs/' . $file, $thumbImage);
+                    }
+                }
+            }
+        }
+    }
+
+    return $getitems;
+});
 Route::get('testdigitalocean', function () {
     return Storage::disk('digitalocean')->get('shweshops/images/items/1680587196328_1672231655663_1669198955202_73.jpg');
 });
@@ -17,7 +54,8 @@ Route::get('push', function () {
     $res = \Illuminate\Support\Facades\Http::withHeaders([
         'Authorization' => 'key=AAAAh_UhvDE:APA91bHwGqI5w4cFSYGjp1tCdJoshLNS58u8NFv5tMJBbV4X5rDp6K_WqP_CxyitkG4i_95OIhMzCgWaJK_AhiErPiE2V-tE4u7J77naN78B-t-BAAQ4hzCjFaJ_Fz3iSCZFIx_ZD18j',
         'Content-Type' => 'application/json',
-    ])->post("https://fcm.googleapis.com/fcm/send", ['to' => $gettoken->token,
+    ])->post("https://fcm.googleapis.com/fcm/send", [
+        'to' => $gettoken->token,
 
         'data' => ['title' => 'yeee ha', 'body' => 'ya hooo'],
         //'notification'  => $msg, (this caused the notification to deliver twice)
@@ -53,30 +91,26 @@ Route::get('unittest/ccc', function () {
 });
 Route::get('xx', function () {
     return view('backend.super_admin.test');
-
 });
 
 Route::get('eventtest', function () {
     event(new \App\Events\Shopownermessage(['userid' => 'afefa', 'msg' => 'Hey want to buy this product']));
     return 'done';
-
 });
 
 Route::get('unit/deletebot', function () {
     $getbotf = frontuserlogs::all();
     $getbot = Guestoruserid::get();
 
-//$getbotf=frontuserlogs::leftjoin('guestoruserid','guestoruserid.id','=','front_user_logs.userorguestid')->where('guestoruserid.user_agent','=','bot')->delete();
-//    $getbot=Guestoruserid::where('user_agent','=','bot')->delete();
+    //$getbotf=frontuserlogs::leftjoin('guestoruserid','guestoruserid.id','=','front_user_logs.userorguestid')->where('guestoruserid.user_agent','=','bot')->delete();
+    //    $getbot=Guestoruserid::where('user_agent','=','bot')->delete();
 
     return count($getbotf) . 'and guest' . count($getbot);
-
 });
 
 Route::get('unit/redistestget/{id}/ff', function ($id) {
 
     return \Illuminate\Support\Facades\Redis::get($id);
-
 });
 Route::get('unit/mongo/{id}/ff', function ($id) {
 
@@ -91,12 +125,9 @@ Route::get('unittest/checkuseragent', function () {
 
         if (!empty($check)) {
             echo $check->software_type . '<br>';
-
         } else {
             echo $v->id . '<br>';
-
         }
-
     }
 });
 Route::get('unittest/delete', function () {
@@ -114,5 +145,3 @@ Route::get('unittest/delete', function () {
 
 //Index static design (Arkar)
 Route::get('unittest/index', 'IndexTest@index')->name('frontTest');
-
-

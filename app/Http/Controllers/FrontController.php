@@ -271,7 +271,7 @@ class FrontController extends Controller
 
        
 
-        return view('front.index', ['ads' => $ads, 'catlist' => $catlist, 'new_items' => $remove_discount_new, 'current_shop_count' => $current_shop_count, 'premium' => $premiumshops, 'popular_shops' => $popular_shops, 'recommendedProducts' => $this->caculateforyouforcurrentuser()[0]]);
+        return view('front.index', ['ads' => $ads, 'catlist' => $catlist, 'new_items' => $remove_discount_new, 'current_shop_count' => $current_shop_count, 'premium' => $premiumshops, 'popular_shops' => $popular_shops]);
     }
     public function initial_pop_items(Request $request)
     {
@@ -281,6 +281,9 @@ class FrontController extends Controller
         //            return $value->check_discount == 0;
         //        })->values();
         return response()->json([$pop]);
+    }
+    public function ger_rec_foryou(){
+        return response()->json($this->caculateforyouforcurrentuser()[0]);
     }
 
     public function get_newitems_ajax(Request $request)

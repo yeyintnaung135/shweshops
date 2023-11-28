@@ -196,7 +196,7 @@
                                                         '/shop_owner/logo/mid/' +
                                                         shop.shop_logo
                                                     "
-                                                    class=" sn-shop-image" style="height:214px !important;object-fit:inherit !important"
+                                                    class=" sn-shop-image" style="height:244px !important;object-fit:inherit !important"
                                                 />
                                                 <img
                                                     v-else-if="
@@ -207,7 +207,7 @@
                                                         '/directory/mid/' +
                                                         shop.dir_shop_logo
                                                     "
-                                                    class=" sn-shop-image" style="height:214px !important;object-fit:inherit !important"
+                                                    class=" sn-shop-image" style="height:244px !important;object-fit:inherit !important"
                                                 />
                                                 <div v-else>
                                                     <i

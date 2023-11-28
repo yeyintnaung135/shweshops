@@ -114,7 +114,7 @@ class Item extends Model
         } else {
             if (dofile_exists('/items/mid/' . $this->default_photo)) {
 
-                return '/items/' . $this->default_photo;
+                return '/items/mid/' . $this->default_photo;
             } else {
                 return '/items/' . $this->default_photo;
             }

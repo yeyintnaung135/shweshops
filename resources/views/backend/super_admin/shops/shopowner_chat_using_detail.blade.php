@@ -16,7 +16,7 @@
                         <span class="badge badge-primary">Total</span> -
                         <span class="font-weight-bolder">{{ $counts->count() }}</span>
                     </div>
-                    <form action="{{url('backside/super_admin/shopowner_using_chat_detail/87')}}" method="GET">
+                    <form action="{{url('backside/super_admin/shopowner_using_chat_detail/'.$shop_id->id)}}" method="GET">
                         <div class="d-flex justify-content-end my-3">
                             <div class="form-group mr-md-2">
                                 <fieldset>
