@@ -280,31 +280,95 @@
                                         $carrats = explode(',',$purchase->carrats);
                                         $counts = explode(',',$purchase->counts);
                                         $yaties = explode(',',$purchase->yaties);
-                                        $bes = explode(',',$purchase->bes); ?>
-
+                                        $bes = explode(',',$purchase->bes); 
+                                        $dprice = explode(',',$purchase->diamond_price); ?>
                                     <div class="row" >
-                                        <div class="col-6" id="add_diamond">
+                                        <div class="col-12" id="add_diamond">
                                             @for ($i = 0; $i < count($diamonds)-1; $i++)
                                             <div class="row form-group mt-2">
                                             <div class="col-12">
-                                                <label for="">Name</label>
-                                                <input type="text" class="form-control" name="diamond_name[]" value="{{$diamonds[$i]}}">
+                                                <h6 for="" name="diamond_name[]"><i class="fa fa-diamond" aria-hidden="true"></i> &nbsp;{{$diamonds[$i]}}</h6>
                                             </div>
-                                            <div class="col-6">
-                                                <label for="" class="text-danger">Count*</label>
-                                                <input type="text" class="form-control" name="counts[]"  value="{{$counts[$i]}}">
+                                            <div class="row  border border-1 mt-2 p-2">
+                                            <div class="col-3">
+                                                <label for="">Count</label>
+                                                <input type="text" id="count{{$i}}" class="form-control" value="{{$counts[$i]}}">
                                             </div>
-                                            <div class="col-6">
-                                                <label for="">ကာရက်</label>
-                                                <input type="text" class="form-control" name="carrats[]" value="{{$carrats[$i]}}" >
+                                           @if($carrats[$i] != 0)
+                                            <div class="col-3"  id="car{{$i}}">
+                                                <label for="">Weight</label>
+                                                <input type="text" class="form-control" id="car_val{{$i}}" value="{{$carrats[$i]}}">
                                             </div>
-                                            <div class="col-6">
-                                                <label for="">ရတီ</label>
-                                                <input type="text" class="form-control" name="yaties[]"  value="{{$yaties[$i]}}">
+                                            <div class="col-3"  id="yt{{$i}}" hidden>
+                                                <label for="">Weight</label>
+                                                <input type="text" class="form-control" id="yt_val{{$i}}" value="{{$yaties[$i]}}">
                                             </div>
-                                            <div class="col-6">
-                                                <label for="">ဘီ</label>
-                                                <input type="text" class="form-control" name="bes[]" value="{{$bes[$i]}}">
+                                            <div class="col-3" id="be{{$i}}" hidden>
+                                                <label for="">Weight</label>
+                                                <input type="text" class="form-control" id="be_val{{$i}}" value="{{$bes[$i]}}">
+                                            </div>
+                                            @elseif($yaties[$i] != 0)
+                                            <div class="col-3"  id="yt{{$i}}">
+                                                <label for="">Weight</label>
+                                                <input type="text" class="form-control" id="yt_val{{$i}}" value="{{$yaties[$i]}}">
+                                            </div>
+                                            <div class="col-3"  id="car{{$i}}" hidden>
+                                                <label for="">Weight</label>
+                                                <input type="text" class="form-control" id="car_val{{$i}}" value="{{$carrats[$i]}}">
+                                            </div>
+                                            <div class="col-3" id="be{{$i}}" hidden>
+                                                <label for="">Weight</label>
+                                                <input type="text" class="form-control" id="be_val{{$i}}" value="{{$bes[$i]}}">
+                                            </div>
+                                            @else
+                                            <div class="col-3" id="be{{$i}}">
+                                                <label for="">Weight</label>
+                                                <input type="text" class="form-control" id="be_val{{$i}}" value="{{$bes[$i]}}">
+                                            </div>
+                                            <div class="col-3"  id="yt{{$i}}" hidden>
+                                                <label for="">Weight</label>
+                                                <input type="text" class="form-control" id="yt_val{{$i}}" value="{{$yaties[$i]}}">
+                                            </div>
+                                            <div class="col-3"  id="car{{$i}}" hidden>
+                                                <label for="">Weight</label>
+                                                <input type="text" class="form-control" id="car_val{{$i}}" value="{{$carrats[$i]}}">
+                                            </div>
+                                            @endif
+                                            <div class="col-3 mt-2">
+                                                <label for=""> </label>
+                                                <select id="kyb{{$i}}" name="kyb" class="form-control text-primary" onchange="chgkyb(this.value,{{$i}})">
+                                                @if($carrats[$i] != 0 )
+                                                    <option value="1">ကာရက်</option>
+                                                    <option value="2">ရတီ</option>
+                                                    <option value="3">ဘီ</option>
+                                                    <input type="hidden" id="dtype{{$i}}" value="1">
+                                                @elseif($yaties[$i] != 0)
+                                                    <option value="2">ရတီ</option>
+                                                    <option value="1">ကာရက်</option>
+                                                    <option value="3">ဘီ</option>
+                                                    <input type="hidden" id="dtype{{$i}}" value="2">
+                                                @else
+                                                    <option value="3">ဘီ</option>
+                                                    <option value="1">ကာရက်</option>
+                                                    <option value="2">ရတီ</option>
+                                                    <input type="hidden" id="dtype{{$i}}" value="3">
+                                                @endif
+                                                </select>
+                                            </div>
+                                           
+                                            <div class="col-3">
+                                                <label for="">Price</label>
+                                                <input type="text" id="dprice{{$i}}" class="form-control" name="dprice[]" value="{{$dprice[$i]}}" onchange="chgPrice(this.value,{{$i}})">
+                                            </div>
+                                            <h6 class="text-primary mt-2">Total Amount - 
+                                                @if($carrats[$i] != 0)
+                                                <span id="dtotAmount{{$i}}">{{$carrats[$i]*$dprice[$i]}}</span>
+                                                @elseif($yaties[$i] != 0)
+                                                <span id="dtotAmount{{$i}}">{{$yaties[$i]*$dprice[$i]}}</span>
+                                                @else
+                                                <span id="dtotAmount{{$i}}">{{$bes[$i]*$dprice[$i]}}</span>
+                                                @endif
+                                            </h6>
                                             </div>
                                         </div>
                                         @endfor
@@ -615,6 +679,44 @@
             var oldfee = $('#gold_fee').val();
             $('#old_fee').html(`(${oldfee})`);
         }
+        
+    function chgkyb(val,id){
+        $('#dtype'+id).val(val);
+        if(val == 2){
+            // 
+            $('#be'+id).attr('hidden','true');
+            $('#yt'+id).removeAttr('hidden');
+            $('#car'+id).attr('hidden', 'true');
+        }
+        if(val == 3){
+            $('#car'+id).attr('hidden','true');
+            $('#yt'+id).attr('hidden','true');
+            $('#be'+id).removeAttr('hidden');
+        }
+        if(val == 1){
+            $('#yt'+id).attr('hidden','true');
+            $('#be'+id).attr('hidden','true');
+            $('#car'+id).removeAttr('hidden');
+        }
+    }
+
+    function chgPrice(val,id){
+        var type = $('#dtype'+id).val();
+        if(type == 2){
+            var tot_amt = $('#yt_val'+id).val()*val;
+            $('#dtotAmount'+id).text(tot_amt);
+        }
+        if(type == 3){
+            var tot_amt = $('#be_val'+id).val()*val;
+            $('#dtotAmount'+id).text(tot_amt);
+        }
+        if(type == 1){
+            var tot_amt = $('#car_val'+id).val()*val;
+            $('#dtotAmount'+id).text(tot_amt);
+        }
+        var sell_price = parseInt($('#diamond_selling_price').val())+tot_amt;
+        $('#diamond_selling_price').val(sell_price);
+    }
     </script>
 @endpush
 @push('css')

@@ -171,28 +171,7 @@
                                             </div>
                                             <div class="row" >
                                                 <div class="col-12" id="add_diamond">
-                                                    <div class="row form-group mt-1">
-                                                        <div class="col-12">
-                                                            <label for="">Name</label>
-                                                            <input type="text" class="form-control" name="diamond_name[]" value="">
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <label for="" class="text-danger">Count*</label>
-                                                            <input type="text" class="form-control" name="counts[]" value="0">
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <label for="">ကာရက်</label>
-                                                            <input type="text" class="form-control" name="carrats[]" value="0">
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <label for="">ရတီ</label>
-                                                            <input type="text" class="form-control" name="yaties[]" value="0">
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <label for="">ဘီ</label>
-                                                            <input type="text" class="form-control" name="bes[]" value="0">
-                                                        </div>
-                                                    </div>
+                                                   
                                                 </div>
                                             </div>
 
@@ -432,7 +411,7 @@
             }
 
         }
-        function fillValues(val){
+       function fillValues(val){
             $.ajax({
 
                 type:'POST',
@@ -475,35 +454,94 @@
                     var counts = data.purchase.counts.split(',');
                     var yaties = data.purchase.yaties.split(',');
                     var bes = data.purchase.bes.split(',');
+                     var dprice = data.purchase.diamond_price.split(',');
                     var html = '';
                     // alert(counts[0]);
-                    // alert(carrats[1]);
+                    
             for(var i=0;i<diamonds.length-1;i++){
-            html += `
-            <div class="row form-group mt-2">
-                <div class="col-12">
-                    <label for="">Name</label>
-                    <input type="text" class="form-control" name="diamond_name[]" value="${diamonds[i]}">
+             html += `
+                <div class="row form-group mt-2">
+                    <div class="col-12">
+                        <h6 for="" name="diamond_name[]"><i class="fa fa-diamond" aria-hidden="true"></i> &nbsp;${diamonds[i]}</h6>
+                    </div>
+                    <div class="row  border border-1 mt-2 p-2">
+                    <div class="col-3">
+                        <label for="">Count</label>
+                        <input type="text"  class="form-control" value="${counts[i]}">
+                    </div>`;
+                if(carrats[i] != 0){
+                    html += `
+                    <div class="col-3">
+                        <label for="">Weight</label>
+                        <input type="text" class="form-control" value="${carrats[i]}">
+                    </div>
+                    `;
+                }
+                else if(yaties[i] != 0){
+                    html += `
+                    <div class="col-3">
+                        <label for="">Weight</label>
+                        <input type="text" class="form-control" value="${yaties[i]}">
+                    </div>
+                    `;
+                }
+                else{
+                    html += `
+                    <div class="col-3">
+                        <label for="">Weight</label>
+                        <input type="text" class="form-control" value="${bes[i]}">
+                    </div>
+                    `;
+                }
+                
+                    html += `
+                    <div class="col-3 mt-2">
+                        <label for=""> </label>
+                        <select name="kyb" class="form-control text-primary">
+                    `;
+                    
+                if(carrats[i] != 0 ){
+                    html += `<option value="1">ကာရက်</option>`;
+                }
+                else if(yaties[i] != 0){
+                    html += `<option value="2">ရတီ</option>`;
+                }
+                else{
+                    html += `<option value="3">ဘီ</option>`;
+                }
+               
+                    html += `
+                    </select>
+                    </div>
+                    
+                    <div class="col-3">
+                        <label for="">Price</label>
+                        <input type="text" class="form-control" name="dprice[]" value="${dprice[i]}">
+                    </div>
+                    <h6 class="text-primary mt-2">Total Amount - 
+                    `;
+                       
+                if(carrats[i] != 0){
+                    var tot = carrats[i]*dprice[i];
+                    html += `<span>${tot}</span>`;
+                }
+                else if(yaties[i] != 0){
+                    var tot = yaties[i]*dprice[i];
+                    html += `<span>${tot}</span>`;
+                }
+                else{
+                    var tot = bes[i]*dprice[i];
+                    html += `<span>${tot}</span>`;
+                }
+                
+                html += `
+                </h6>
+                    </div>
                 </div>
-                <div class="col-6">
-                    <label for="" class="text-danger">Count*</label>
-                    <input type="text" class="form-control" name="counts[]"  value="${counts[i]}">
-                </div>
-                <div class="col-6">
-                    <label for="">ကာရက်</label>
-                    <input type="text" class="form-control" name="carrats[]" value="${carrats[i]}" >
-                </div>
-                <div class="col-6">
-                    <label for="">ရတီ</label>
-                    <input type="text" class="form-control" name="yaties[]"  value="${yaties[i]}">
-                </div>
-                <div class="col-6">
-                    <label for="">ဘီ</label>
-                    <input type="text" class="form-control" name="bes[]" value="${bes[i]}">
-                </div>
-            </div>
-            `;
+                `;
+           
         }
+  
         $('#add_diamond').html(html);
                     calculate_quality_price(data.purchase.quality_id);
                 }

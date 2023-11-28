@@ -14,7 +14,7 @@ class PosKyoutPurchase extends Model
         'type', 'product_weight', 'diamond_gram_kyat_pe_yway', 'decrease_pe_yway', 'qty',
         'profit_pe_yway', 'service_pe_yway', 'gold_price', 'decrease_price', 'profit', 'service_fee',
         'gold_fee', 'selling_price', 'diamond_selling_price', 'capital', 'stock_qty',
-        'remark', 'barcode_text', 'barcode', 'sell_flag',
+        'remark', 'barcode_text', 'barcode', 'sell_flag','diamond_price'
     ];
     protected $table = 'pos_kyout_purchases';
     protected $with = ['supplier', 'category', 'quality', 'diamond'];

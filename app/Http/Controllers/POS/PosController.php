@@ -944,6 +944,14 @@ class PosController extends Controller
                 $purchase->bes = $bes;
                 $purchase->save();
             }
+            if ($request->dprice) {
+                $dprice = '';
+                foreach ($request->dprice as $dp) {
+                    $dprice .= $dp . ',';
+                }
+                $purchase->diamond_price = $dprice;
+                $purchase->save();
+            }
 
             $count = PosSupplier::find($request->supplier_id);
             $count->count += 1;
@@ -998,7 +1006,7 @@ class PosController extends Controller
             return redirect()->route('backside.shop_owner.pos.kyout_purchase_list');
         } catch (\Exception $e) {
 
-            Session::flash('alert-class', 'Something Wrong!');
+            dd($e);
             return redirect()->back();
 
         }
@@ -1068,6 +1076,7 @@ class PosController extends Controller
             $purchase->barcode = $request->code_number . '-' . $request->gold_gram;
             $purchase->type = $request->inlineCheckbox;
             $purchase->save();
+           
             if ($request->diamond_name) {
                 $diamonds = '';
                 foreach ($request->diamond_name as $diamond) {
@@ -1106,6 +1115,14 @@ class PosController extends Controller
                     $bes .= $be . ',';
                 }
                 $purchase->bes = $bes;
+                $purchase->save();
+            }
+            if ($request->dprice) {
+                $dprice = '';
+                foreach ($request->dprice as $dp) {
+                    $dprice .= $dp . ',';
+                }
+                $purchase->diamond_price = $dprice;
                 $purchase->save();
             }
             if ($request->shwe_item == 1) {

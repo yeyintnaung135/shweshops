@@ -572,7 +572,13 @@
             var diamond = ((((dyway/8)+dpe)/16)+dkyat)*gold_price;
             var gold_fee =  parseInt(gold-diamond);
             var capital = parseInt(gold);
-            $('#capital').val(capital);
+            var diamond_price = parseInt($('#diamond_selling_price').val());
+            if(diamond_price != 0){
+                $('#capital').val(gold_fee+diamond_price);
+            }else{
+                $('#capital').val(capital); 
+            }
+           
             $('#gold_fee').val(gold_fee);
             // $('#selling_price').val(gold_fee);
         }
@@ -593,6 +599,7 @@
             var oldfee = $('#gold_fee').val();
             $('#old_fee').html(`(${oldfee})`);
         }
+    
     function add_diamond(val){
         var count = $('#include_diamonds').val();
         var html = '';
@@ -631,7 +638,7 @@
                 <input type="hidden" id="dtype${i}" value="1">
                 <div class="col-3">
                     <label for="">Price</label>
-                    <input type="text" id="dprice${i}" class="form-control" name="dprice" value="0" onchange="chgPrice(this.value,${i})">
+                    <input type="text" id="dprice${i}" class="form-control" name="dprice[]" value="0" onchange="chgPrice(this.value,${i})">
                 </div>
                 <h6 class="text-primary mt-2">Total Amount - <span id="dtotAmount${i}">0</span></h6>
                 </div>
@@ -666,15 +673,15 @@
     function chgPrice(val,id){
         var type = $('#dtype'+id).val();
         if(type == 2){
-            var tot_amt = $('#count'+id).val()*$('#yt_val'+id).val()*val;
+            var tot_amt = $('#yt_val'+id).val()*val;
             $('#dtotAmount'+id).text(tot_amt);
         }
         if(type == 3){
-            var tot_amt = $('#count'+id).val()*$('#be_val'+id).val()*val;
+            var tot_amt = $('#be_val'+id).val()*val;
             $('#dtotAmount'+id).text(tot_amt);
         }
         if(type == 1){
-            var tot_amt = $('#count'+id).val()*$('#car_val'+id).val()*val;
+            var tot_amt = $('#car_val'+id).val()*val;
             $('#dtotAmount'+id).text(tot_amt);
         }
         var sell_price = parseInt($('#diamond_selling_price').val())+tot_amt;
