@@ -286,7 +286,7 @@
                                         </div>
                                     </div>
                                     <div class="row" >
-                                        <div class="col-6" id="add_diamond">
+                                        <div class="col-12" id="add_diamond">
                                         </div>
                                     </div>
                                 </div>
@@ -340,7 +340,7 @@
                                     </div>
                                     <div class="col-6 form-group">
                                         <label for="diamond_selling_price">စိန်​ကျောက်ဖိုးအ​ရောင်း</label>
-                                        <input type="number" name="diamond_selling_price" class="form-control" id="diamond_selling_price">
+                                        <input type="number" name="diamond_selling_price" class="form-control" id="diamond_selling_price" value="0">
                                     </div>
                                     <div class="col-6 form-group">
                                         <label for="selling_price">ရောင်းဈေး</label>
@@ -601,31 +601,84 @@
             html += `
             <div class="row form-group mt-2">
                 <div class="col-12">
-                    <label for="">Name</label>
-                    <input type="text" class="form-control" name="diamond_name[]" value="${v}">
+                    <h6 for="" name="diamond_name[]"><i class="fa fa-diamond" aria-hidden="true"></i> &nbsp;${v}</h6>
                 </div>
-                <div class="col-6">
-                    <label for="" class="text-danger">Count*</label>
-                    <input type="text" class="form-control" name="counts[]" value="0">
+                <div class="row  border border-1 mt-2 p-2">
+                <div class="col-3">
+                    <label for="">Count</label>
+                    <input type="text" id="count${i}" class="form-control" name="counts[]" value="0">
                 </div>
-                <div class="col-6">
-                    <label for="">ကာရက်</label>
-                    <input type="text" class="form-control" name="carrats[]" value="0">
+                <div class="col-3"  id="car${i}">
+                    <label for="">Weight</label>
+                    <input type="text" class="form-control" id="car_val${i}" name="carrats[]" value="0">
                 </div>
-                <div class="col-6">
-                    <label for="">ရတီ</label>
-                    <input type="text" class="form-control" name="yaties[]" value="0">
+                <div class="col-3"  id="yt${i}" hidden>
+                    <label for="">Weight</label>
+                    <input type="text" class="form-control" id="yt_val${i}" name="yaties[]" value="0">
                 </div>
-                <div class="col-6">
-                    <label for="">ဘီ</label>
-                    <input type="text" class="form-control" name="bes[]" value="0">
+                <div class="col-3" id="be${i}" hidden>
+                    <label for="">Weight</label>
+                    <input type="text" class="form-control" id="be_val${i}" name="bes[]" value="0">
+                </div>
+                <div class="col-3 mt-2">
+                    <label for=""> </label>
+                    <select id="kyb${i}" name="kyb" class="form-control text-primary" onchange="chgkyb(this.value,${i})">
+                        <option value="1">ကာရက်</option>
+                        <option value="2">ရတီ</option>
+                        <option value="3">ဘီ</option>
+                    </select>
+                </div>
+                <input type="hidden" id="dtype${i}" value="1">
+                <div class="col-3">
+                    <label for="">Price</label>
+                    <input type="text" id="dprice${i}" class="form-control" name="dprice" value="0" onchange="chgPrice(this.value,${i})">
+                </div>
+                <h6 class="text-primary mt-2">Total Amount - <span id="dtotAmount${i}">0</span></h6>
                 </div>
             </div>
             `;
         })
-    }
+     }
         $('#add_diamond').html(html);
         // alert($('#count').val());
+    }
+
+    function chgkyb(val,id){
+        $('#dtype'+id).val(val);
+        if(val == 2){
+            // 
+            $('#be'+id).attr('hidden','true');
+            $('#yt'+id).removeAttr('hidden');
+            $('#car'+id).attr('hidden', 'true');
+        }
+        if(val == 3){
+            $('#car'+id).attr('hidden','true');
+            $('#yt'+id).attr('hidden','true');
+            $('#be'+id).removeAttr('hidden');
+        }
+        if(val == 1){
+            $('#yt'+id).attr('hidden','true');
+            $('#be'+id).attr('hidden','true');
+            $('#car'+id).removeAttr('hidden');
+        }
+    }
+
+    function chgPrice(val,id){
+        var type = $('#dtype'+id).val();
+        if(type == 2){
+            var tot_amt = $('#count'+id).val()*$('#yt_val'+id).val()*val;
+            $('#dtotAmount'+id).text(tot_amt);
+        }
+        if(type == 3){
+            var tot_amt = $('#count'+id).val()*$('#be_val'+id).val()*val;
+            $('#dtotAmount'+id).text(tot_amt);
+        }
+        if(type == 1){
+            var tot_amt = $('#count'+id).val()*$('#car_val'+id).val()*val;
+            $('#dtotAmount'+id).text(tot_amt);
+        }
+        var sell_price = parseInt($('#diamond_selling_price').val())+tot_amt;
+        $('#diamond_selling_price').val(sell_price);
     }
     </script>
 @endpush
