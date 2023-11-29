@@ -73,9 +73,10 @@ class ShopOwnerController extends Controller
         $shopOwner = Auth::guard('shop_owners_and_staffs')->user();
         $shop_id = $shopOwner->shop_id;
 
-        $recordsQuery = Orders::with(['items' => function ($query) use ($shop_id) {
+        $recordsQuery = Orders::with('items')
+            ->whereHas('items', function ($query) use ($shop_id) {
                 $query->where('shop_id', $shop_id);
-            }])
+            })
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
             ->get();
 
