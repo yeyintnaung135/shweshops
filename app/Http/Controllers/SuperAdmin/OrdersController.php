@@ -22,7 +22,6 @@ class OrdersController extends Controller
     }
     public function get_orders(Request $request)
     {
-
         $searchByFromdate = $request->input('searchByFromdate');
         $searchByTodate = $request->input('searchByTodate');
         if(empty($searchByFromdate)){
@@ -34,6 +33,7 @@ class OrdersController extends Controller
 
         $recordsQuery = Orders::with('items')->where('status','pending')->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
             ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate))->get();
+
         return DataTables::of($recordsQuery)
             ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->editColumn('product_name', fn($record) => $record->items->name)

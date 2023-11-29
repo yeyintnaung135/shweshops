@@ -325,6 +325,17 @@
                     </a>
                 </li> --}}
 
+                {{-- wlk --}}
+                <li class="nav-item py-1">
+                    <a href="{{ route('backside.shop_owner.orders') }}" class="nav-link">
+                        <i class="fas fa-coins ml-3"></i>
+                        <span>
+                            Orders
+                        </span>
+                    </a>
+                </li>
+                {{-- wlk --}}
+
                 {{-- maymyat --}}
                 @can('can_use_pos')
                     <li class="nav-item py-1">
