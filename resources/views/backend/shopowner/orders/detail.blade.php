@@ -32,7 +32,7 @@
                                 <div class="card shadow-none card-outline card-primary rounded-5 pb-2 mt-5">
                                     <div class="card-header">
                                         <div class="d-flex justify-content-between align-items-center">
-                                            <h2><i class="fas fa-user"></i> Shop Directory detail </h2>
+                                            <h2><i class="fas fa-user"></i> Order Detail </h2>
                                             <a href="{{ url('backside/super_admin/directory/all') }}"> <i
                                                     class="fas fa-list"></i></a>
                                         </div>
