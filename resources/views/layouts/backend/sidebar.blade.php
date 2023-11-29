@@ -326,11 +326,20 @@
                 </li> --}}
 
                 {{-- wlk --}}
+                @php
+                    $shopOwner = Auth::guard('shop_owners_and_staffs')->user();
+                    $shop_id = $shopOwner->shop_id;
+
+                    $orders = App\Models\Orders::whereHas('items', function ($query) use ($shop_id) {
+                            $query->where('shop_id', $shop_id);
+                        })
+                        ->get();
+                @endphp
                 <li class="nav-item py-1">
                     <a href="{{ route('backside.shop_owner.orders') }}" class="nav-link">
                         <i class="fas fa-coins ml-3"></i>
                         <span>
-                            Orders
+                            Orders <span class="badge badge-danger">{{ $orders->count() }}</span>
                         </span>
                     </a>
                 </li>
