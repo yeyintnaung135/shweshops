@@ -49,7 +49,7 @@
                         </ul>
                     </div> --}}
                     </div>
-                    <div class="d-flex justify-content-start align-items-center mt-3">
+                    <!-- <div class="d-flex justify-content-start align-items-center mt-3">
                         <div class="form-group">
                             <label for="fromDate" class="form-label">Choose Date</label>
                             <input type="text" id="fromDate" class="form-control" placeholder="From Date"
@@ -63,7 +63,7 @@
                         <div>
                             <button id="searchButton" class="btn btn-color btn-m mt-3">Filter</button>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="card mt-2">
                         <div class="card-body">
                             <table class="table table-striped" id="staffsTable">
@@ -101,10 +101,10 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
-            $('#fromDate, #toDate').datepicker({
-                "dateFormat": "yy-mm-dd",
-                changeYear: true
-            });
+            // $('#fromDate, #toDate').datepicker({
+            //     "dateFormat": "yy-mm-dd",
+            //     changeYear: true
+            // });
 
             var staffsTable = $('#staffsTable').DataTable({
                 processing: true,
@@ -140,10 +140,7 @@
                         data: 'counter_shop',
                         name: 'counter_shop'
                     },
-                    {
-                        data: 'date',
-                        name: 'date'
-                    },
+                    
                     {
                         data: 'actions',
                         orderable: false,
@@ -179,9 +176,9 @@
             });
 
             //Date Filter
-            $('#searchButton').click(function() {
-                staffsTable.draw();
-            });
+            // $('#searchButton').click(function() {
+            //     staffsTable.draw();
+            // });
         });
 
         function Delete(deleteUrl) {

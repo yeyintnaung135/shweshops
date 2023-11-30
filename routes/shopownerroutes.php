@@ -30,6 +30,12 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     Route::get('/login/{from?}', [ShopownerLoginController::class, 'loginform'])->name('login');
     Route::post('login', [ShopownerLoginController::class, 'login'])->name('login.post');
 
+    //shop owner order lists routes by wlk
+    Route::get('orders', [ShopOwnerController::class, 'orderList'])->name('orders');
+    Route::get('orders/detail/{id}', [ShopOwnerController::class, 'orderDetail'])->name('orderDetail');
+    Route::get('get_orders', [ShopOwnerController::class, 'get_orders']);
+    //shop owner routes
+
     // POS login & register form
     // Route::get('/pos/login', [ShopownerLoginController::class, 'pos_login_form'])->name('pos.login');
     // Route::post('/pos/login', [ShopownerLoginController::class, 'pos_login'])->name('pos_logined');

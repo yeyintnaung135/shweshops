@@ -28,9 +28,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
+use App\Models\Orders;
 
 class ShopOwnerController extends Controller
 {
@@ -48,6 +50,58 @@ class ShopOwnerController extends Controller
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.list', ['items' => $items]);
     }
+
+    //order list for shop owner
+    public function orderList()
+    {
+        return view('backend.shopowner.orders.index');
+    }
+
+    public function get_orders(Request $request)
+    {
+        $searchByFromdate = $request->input('searchByFromdate');
+        $searchByTodate = $request->input('searchByTodate');
+
+        $searchByFromdate = empty($searchByFromdate)
+            ? Carbon::now()->startOfDay()
+            : Carbon::parse($searchByFromdate)->startOfDay();
+
+        $searchByTodate = empty($searchByTodate)
+            ? Carbon::now()->endOfDay()
+            : Carbon::parse($searchByTodate)->endOfDay();
+
+        $shopOwner = Auth::guard('shop_owners_and_staffs')->user();
+        $shop_id = $shopOwner->shop_id;
+
+        $recordsQuery = Orders::with('items')
+            ->whereHas('items', function ($query) use ($shop_id) {
+                $query->where('shop_id', $shop_id);
+            })
+            ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
+            ->get();
+
+        return DataTables::of($recordsQuery)
+            ->editColumn('created_at', fn ($record) => $record->created_at->format('F d, Y (h:i A)'))
+            ->editColumn('product_name', function ($record) {
+                return $record->items->name ?? '';
+            })
+            ->editColumn('action', fn ($record) => $record->id)
+            ->editColumn('product_code', function ($record) {
+                return $record->items->product_code ?? '';
+            })
+            ->editColumn('shop_name', function ($record) use ($shop_id) {
+                $shop = Shops::find($shop_id);
+                return $shop ? $shop->shop_name : '';
+            })
+            ->make(true);
+    }
+
+    public function orderDetail($id)
+    {
+        $order= Orders::with('items')->where('id',$id)->first();
+        return view('backend.shopowner.orders.detail',['order'=>$order]);
+    }
+    //order list for shop owner
 
     public function detail(): View
     {

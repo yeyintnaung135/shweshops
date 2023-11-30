@@ -81,7 +81,7 @@
                             <input type="hidden" value="1" id="type">
                         </ul>
                         <br />
-                        {{-- <div class="d-flex justify-content-start align-items-center mt-3">
+                         <div class="d-flex justify-content-start align-items-center mt-3">
                             <div class="form-group">
                                 <label for="fromDate" class="form-label">Choose Date</label>
                                 <input type="text" id="fromDate" class="form-control" placeholder="From Date"
@@ -93,9 +93,9 @@
                                     autocomplete="off">
                             </div>
                             <div>
-                                <button id="searchButton" class="btn btn-color btn-m mt-3">Filter</button>
+                                <button id="searchButton" class="btn btn-color btn-m mt-3" onclick="stockfilter()">Filter</button>
                             </div>
-                        </div> --}}
+                        </div> 
                         <div class="tab-content br-n pn">
                             <div id="navpills-1" class="tab-pane active">
                                 <div class=" table-responsive text-black">
@@ -108,7 +108,9 @@
                                             <th>ဝယ်​​စျေးနှုန်း</th>
                                             <th>Product အ​လေးချိန်<br>(in MM units)</th>
                                         </thead>
+                                        <tbody id="date_filter">
 
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -227,9 +229,9 @@
     });
 
     //Date Filter
-    $('#searchButton').click(function() {
-        purchaseTable.draw();
-    });
+    // $('#searchButton').click(function() {
+    //     purchaseTable.draw();
+    // });
 
     $('.nav-link').click(function() {
         purchaseTable.draw();
@@ -241,6 +243,124 @@
         $('#type').val(val);
     }
 
+    function stockfilter(){
+        var fromDate = $('#fromDate').val();
+        var toDate = $('#toDate').val();
+        $.ajax({
+            type:'POST',
+            url:'{{route("backside.shop_owner.pos.datefilter_stock")}}',
+            data:{
+            "_token":"{{csrf_token()}}",
+            "fromDate":fromDate,
+            "toDate":toDate,
+            },
+
+                success: function(data){
+                    var html = '';
+                    $.each(data.gold, function(i, v) {
+                        var arr1 = v.product_weight.toString().split('/');
+                        var displayText1 = '';
+                        if (arr1[1]) {
+                            displayText1 += arr1[1] + 'ကျပ်';
+                        }else{
+                            displayText1 += arr1[0] + 'g'
+                        }
+                        if (arr1[2]) {
+                            displayText1 += arr1[2] + 'ပဲ';
+                        }
+                        if (arr1[3]) {
+                            displayText1 += arr1[3] + 'ရွေး';
+                        }
+                        html += `
+                            <tr>
+                            <td>${v.id}</td>
+                            <td>${v.code_number}</td>
+                            <td>${v.name}</td>
+                            <td>${v.stock_qty}</td>
+                            <td>${v.capital}</td>
+                            <td>${displayText1}</td>
+                            </tr>
+                            `;
+                    })
+                    $.each(data.kyout, function(j, b) {
+                        var arr2 = b.product_weight.toString().split('/');
+                        var displayText2 = '';
+                        if (arr2[1]) {
+                            displayText1 += arr2[1] + 'ကျပ်';
+                        }else{
+                            displayText2 += arr2[0] + 'g'
+                        }
+                        if (arr2[2]) {
+                            displayText2 += arr2[2] + 'ပဲ';
+                        }
+                        if (arr2[3]) {
+                            displayText2 += arr2[3] + 'ရွေး';
+                        }
+                        html += `
+                            <tr>
+                            <td>${b.id}</td>
+                            <td>${b.code_number}</td>
+                            <td>${b.name}</td>
+                            <td>${b.stock_qty}</td>
+                            <td>${b.capital}</td>
+                            <td>${displayText2}</td>
+                            </tr>
+                            `;
+                    })
+                    $.each(data.platinum, function(k, p) {
+                        var arr3 = p.product_weight.toString().split('/');
+                        var displayText3 = '';
+                        if (arr3[1]) {
+                            displayText3 += arr3[1] + 'ကျပ်';
+                        }else{
+                            displayText3 += arr3[0] + 'g'
+                        }
+                        if (arr3[2]) {
+                            displayText3 += arr3[2] + 'ပဲ';
+                        }
+                        if (arr3[3]) {
+                            displayText3 += arr3[3] + 'ရွေး';
+                        }
+                        html += `
+                            <tr>
+                            <td>${p.id}</td>
+                            <td>${p.code_number}</td>
+                            <td>${p.name}</td>
+                            <td>${p.stock_qty}</td>
+                            <td>${p.capital}</td>
+                            <td>${displayText3}</td>
+                            </tr>
+                            `;
+                    })
+                    $.each(data.whitegold, function(m, w) {
+                        var arr4 = w.product_weight.toString().split('/');
+                        var displayText4 = '';
+                        if (arr4[1]) {
+                            displayText4 += arr4[1] + 'ကျပ်';
+                        }else{
+                            displayText4 += arr4[0] + 'g'
+                        }
+                        if (arr4[2]) {
+                            displayText4 += arr4[2] + 'ပဲ';
+                        }
+                        if (arr4[3]) {
+                            displayText4 += arr4[3] + 'ရွေး';
+                        }
+                        html += `
+                            <tr>
+                            <td>${w.id}</td>
+                            <td>${w.code_number}</td>
+                            <td>${w.name}</td>
+                            <td>${w.stock_qty}</td>
+                            <td>${w.capital}</td>
+                            <td>${displayText4}</td>
+                            </tr>
+                            `;
+                    })
+                    $('#date_filter').html(html);
+                },            
+            });
+    }
 
     </script>
 @endpush

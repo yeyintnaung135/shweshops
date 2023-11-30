@@ -109,6 +109,22 @@
                             </li>
                             @endforeach
                         </ul>
+                        <br>
+                        <div class="d-flex justify-content-start align-items-center mt-3">
+                            <div class="form-group">
+                                <label for="fromDate" class="form-label">Choose Date</label>
+                                <input type="text" id="fromDate" class="form-control" placeholder="From Date"
+                                    autocomplete="off">
+                            </div>
+                            <div class="form-group mx-3">
+                                <label for="toDate" class="form-label">Choose Date</label>
+                                <input type="text" id="toDate" class="form-control" placeholder="To Date"
+                                    autocomplete="off">
+                            </div>
+                            <div>
+                                <button id="searchButton" class="btn btn-color btn-m mt-3" onclick="incomefilter()">Filter</button>
+                            </div>
+                        </div>
                         <div class="tab-content br-n pn">
                             <div id="navpills-1" class="tab-pane active">
                                 <div class=" table-responsive text-black mt-3">
@@ -120,6 +136,9 @@
                                             <th>လက်ကျန်</th>
                                             {{-- <th></th> --}}
                                         </thead>
+                                        <tbody id="date_filter">
+
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -192,9 +211,9 @@
         });
 
         //Date Filter
-        $('#searchButton').click(function() {
-            purchaseTable.draw();
-        });
+        // $('#searchButton').click(function() {
+        //     purchaseTable.draw();
+        // });
 
         $('.nav-link').click(function() {
             purchaseTable.draw();
@@ -205,6 +224,65 @@
         function changeTab(val){
             $('#type').val(val);
         }
+
+        function incomefilter(){
+        var fromDate = $('#fromDate').val();
+        var toDate = $('#toDate').val();
+        $.ajax({
+            type:'POST',
+            url:'{{route("backside.shop_owner.pos.datefilter_income")}}',
+            data:{
+            "_token":"{{csrf_token()}}",
+            "fromDate":fromDate,
+            "toDate":toDate,
+            },
+
+                success: function(data){
+                    var html = '';
+                    $.each(data.gold, function(i, v) {
+                        html += `
+                            <tr>
+                            <td>${v.id}</td>
+                            <td>${v.name}</td>
+                            <td>${v.qty}</td>
+                            <td>${v.stock_qty}</td>
+                            </tr>
+                            `;
+                    })
+                    $.each(data.kyout, function(j, b) {
+                        html += `
+                            <tr>
+                            <td>${b.id}</td>
+                            <td>${b.name}</td>
+                            <td>${b.qty}</td>
+                            <td>${b.stock_qty}</td>
+                            </tr>
+                            `;
+                    })
+                    $.each(data.platinum, function(k, p) {
+                        html += `
+                            <tr>
+                            <td>${p.id}</td>
+                            <td>${p.name}</td>
+                            <td>${p.qty}</td>
+                            <td>${p.stock_qty}</td>
+                            </tr>
+                            `;
+                    })
+                    $.each(data.whitegold, function(m, w) {
+                        html += `
+                            <tr>
+                            <td>${w.id}</td>
+                            <td>${w.name}</td>
+                            <td>${w.qty}</td>
+                            <td>${w.stock_qty}</td>
+                            </tr>
+                            `;
+                    })
+                    $('#date_filter').html(html);
+                },            
+            });
+    }
     </script>
 @endpush
 @push('css')

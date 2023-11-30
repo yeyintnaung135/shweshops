@@ -100,7 +100,7 @@ class ShopController extends Controller
         $shopowner->valuable_product = $request->undamaged_product;
         $shopowner->undamaged_product = $request->valuable_product;
         $shopowner->damaged_product = $request->damaged_product;
-        $shopowner->messenger_link = $request->messenger_linkt;
+        $shopowner->messenger_link = $request->messenger_link;
         $shopowner->page_link = $request->page_link;
         $shopowner->map = $request->map;
         $shopowner->additional_phones = json_encode($add_ph_array);
