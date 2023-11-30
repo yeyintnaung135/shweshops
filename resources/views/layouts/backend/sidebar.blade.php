@@ -337,7 +337,7 @@
                 @endphp
                 <li class="nav-item py-1">
                     <a href="{{ route('backside.shop_owner.orders') }}" class="nav-link">
-                        <i class="fas fa-coins ml-3"></i>
+                        <i class="fas fa-coins" style="margin-left: 10px;"></i>
                         <span>
                             Orders <span class="badge badge-danger">{{ $orders->count() }}</span>
                         </span>
