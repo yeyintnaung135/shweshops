@@ -88,7 +88,7 @@
                             <input type="hidden" value="1" id="type">
                         </ul>
                         <br>
-                       {{-- <div class="d-flex justify-content-start align-items-center mt-3">
+                       <div class="d-flex justify-content-start align-items-center mt-3">
                             <div class="form-group">
                                 <label for="fromDate" class="form-label">Choose Date</label>
                                 <input type="text" id="fromDate" class="form-control" placeholder="From Date"
@@ -102,7 +102,7 @@
                             <div>
                                 <button id="searchButton" class="btn btn-color btn-m mt-3">Filter</button>
                             </div>
-                        </div> --}}
+                        </div> 
                         <div class="tab-content br-n pn">
                             <div id="navpills-1" class="tab-pane active">
                                 <div class=" table-responsive text-black mt-3">
@@ -114,7 +114,7 @@
                                             <th>အ​ရေအတွက်</th>
                                             <th>အမြတ်</th>
                                             <th>Product အ​လေးချိန်<br>(in MM units)</th>
-                                            {{-- <th>Date</th> --}}
+                                            <th>Date</th> 
 
                                         </thead>
 
@@ -144,7 +144,7 @@
 @endsection
 @push('scripts')
     <script type="text/javascript">
-         $(document).ready(function() {
+    $(document).ready(function() {
 
     $('#fromDate, #toDate').datepicker({
         "dateFormat": "yy-mm-dd",
@@ -214,7 +214,11 @@
 
                     return displayText1;
                 },
-            },
+        },
+        {
+            data: 'created_at',
+            name: 'created_at'
+        },
 
     ],
     drawCallback: function(settings) {
@@ -246,6 +250,7 @@
 
     //Date Filter
     $('#searchButton').click(function() {
+        alert('hi');
         purchaseTable.draw();
     });
 

@@ -115,13 +115,15 @@ class PosItemFilterService
 
     public function filter_incomes($request){
         $shopId = $this->get_shopid();
+        $fromDate = $request->input('fromDate');
+        $toDate = $request->input('toDate');
         $type = $request->input('type');
 
         $query1 = PosPurchase::join('pos_purchase_sales', 'pos_purchase_sales.purchase_id', '=', 'pos_purchases.id')
                 ->select('pos_purchases.id', 'pos_purchases.name','pos_purchase_sales.qty','pos_purchases.stock_qty',
                 'pos_purchases.code_number', 'pos_purchases.product_weight','pos_purchases.profit')
                 ->where('pos_purchases.shop_owner_id', $shopId);
-
+         
         $query2 = PosKyoutPurchase::join('pos_purchase_sales', 'pos_purchase_sales.purchase_id', '=', 'pos_kyout_purchases.id')
                 ->select('pos_kyout_purchases.id', 'pos_kyout_purchases.name','pos_purchase_sales.qty','pos_kyout_purchases.stock_qty',
                 'pos_kyout_purchases.code_number', 'pos_kyout_purchases.product_weight','pos_kyout_purchases.profit')
