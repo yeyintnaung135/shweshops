@@ -56,17 +56,16 @@ header('X-Content-Type-Options: nosniff');
     <link rel="icon" type="image/png" sizes="18x18" href="{{ url('images/logo/favicon.gif') }}">
     <link rel='stylesheet' href="{{ url('test/css/normalize.css') }}" type='text/css' />
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="{{ url('plugins/google/fortestgoogle.js') }}"></script>
+    <script async src="{{url('plugins/google/formaingoogle.js')}}"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
         function gtag() {
             dataLayer.push(arguments);
         }
-
         gtag('js', new Date());
 
-        gtag('config', 'G-3NXVMQ8VZ6');
+        gtag('config', 'G-JYC8KYZNMZ');
     </script>
     <script>
         if (window.userid == undefined) {
