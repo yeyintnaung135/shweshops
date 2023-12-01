@@ -304,7 +304,7 @@
                         var arr2 = b.product_weight.toString().split('/');
                         var displayText2 = '';
                         if (arr2[1]) {
-                            displayText1 += arr2[1] + 'ကျပ်';
+                            displayText2 += arr2[1] + 'ကျပ်';
                         }else{
                             displayText2 += arr2[0] + 'g'
                         }
