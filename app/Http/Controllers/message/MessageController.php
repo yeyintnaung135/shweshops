@@ -99,9 +99,15 @@ class MessageController extends Controller
 
         foreach ($getuserid as $key => $value) {
             $alldata = User::where('id', $value->message_user_id)->first();
+            if(!empty($alldata)){
+                $getuserid[$key]['userdata'] = $alldata;
+                $getuserid[$key]['userdata']['status'] = 'offline';
+            }else{
+                unset($getuserid[$key]);
 
-            $getuserid[$key]['userdata'] = $alldata;
-            $getuserid[$key]['userdata']['status'] = 'offline';
+            }
+
+           
 
         }
         return response()->json(['success' => true, 'data' => $getuserid]);
