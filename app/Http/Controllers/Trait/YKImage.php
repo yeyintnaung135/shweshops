@@ -36,14 +36,14 @@ trait YKImage
 
     public function save_image($file, $fileName, $directory): string
     {
-        if (env('USE_DO') != 'true') {
-            $file->storeAs($directory, $fileName, 'public_image');
+        // if (env('USE_DO') != 'true') {
+        //     $file->storeAs($directory, $fileName, 'public_image');
 
-            return 'done';
-        } else {
+        //     return 'done';
+        // } else {
             
             return $this->save_image_digitalocean($file, $fileName, $directory);
-        }
+        // }
     }
     public function save_image_digitalocean($file, $fileName, $directory)
     {
@@ -75,26 +75,26 @@ trait YKImage
 
     public function base64_to_image($base64_string, $output_file)
     {
-        if (env('USE_DO') != 'true') {
+        // if (env('USE_DO') != 'true') {
 
-            // open the output file for writing
-            $ifp = fopen(public_path('/images/' . $output_file), 'wb');
+        //     // open the output file for writing
+        //     $ifp = fopen(public_path('/images/' . $output_file), 'wb');
 
-            // split the string on commas
-            // $data[ 0 ] == "data:image/png;base64"
-            // $data[ 1 ] == <actual base64 string>
-            $data = explode(',', $base64_string);
+        //     // split the string on commas
+        //     // $data[ 0 ] == "data:image/png;base64"
+        //     // $data[ 1 ] == <actual base64 string>
+        //     $data = explode(',', $base64_string);
 
-            // we could add validation here with ensuring count( $data ) > 1
-            fwrite($ifp, base64_decode($data[1]));
+        //     // we could add validation here with ensuring count( $data ) > 1
+        //     fwrite($ifp, base64_decode($data[1]));
 
-            // clean up the file resource
-            fclose($ifp);
-        } else {
+        //     // clean up the file resource
+        //     fclose($ifp);
+        // } else {
             $data = explode(',', $base64_string);
             $image = base64_decode($data[1]);
             Storage::disk('digitalocean')->put('prod/' . $output_file, $image);
-        }
+        // }
 
         return 'done';
     }
