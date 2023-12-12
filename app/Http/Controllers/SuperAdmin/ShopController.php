@@ -289,9 +289,18 @@ class ShopController extends Controller
         $columnName = $columnName_arr[$columnIndex]['data']; // Column name
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
+        if(empty($request->get('searchByFromdate'))){
+            $searchByFromdate=Carbon::now()->toDateString();
+        }else{
+            $searchByFromdate = $request->get('searchByFromdate');
 
-        $searchByFromdate = $request->get('searchByFromdate');
-        $searchByTodate = $request->get('searchByTodate');
+        }
+        if(empty($request->get('searchByTodate'))){
+            $searchByTodate=Carbon::now()->toDateString();
+        }else{
+            $searchByTodate = $request->get('searchByTodate');
+
+        }
 
         if (!empty($searchByFromdate) || !empty($searchByTodate)) {
             $totalRecords = Messages::groupBy('message_shop_id')
@@ -389,7 +398,7 @@ class ShopController extends Controller
             return 'fail';
         }
         $from=Carbon::createFromDate($_GET['from']);
-        $to=Carbon::createFromDate($_GET['to']);
+        $to=Carbon::createFromDate($_GET['to'])->addDays(1);
         $get_message_shops = Messages::where('message_shop_id', (int) $id)
             ->groupBy('message_user_id')
             ->whereBetween('created_at', [$from, $to])

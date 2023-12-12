@@ -32,7 +32,7 @@
                                         <div class="form-group mr-md-2">
                                             <fieldset>
                                                 <legend>From Date</legend>
-                                                <input type="text" id='search_fromdate_shop'
+                                                <input type="text" id='search_fromdate_shop' value="{{Carbon\Carbon::now()->toDateString()}}"
                                                     class="shopdatepicker form-control" placeholder='Choose date'
                                                     autocomplete="off" />
                                             </fieldset>
@@ -40,7 +40,7 @@
                                         <div class="form-group mr-md-2">
                                             <fieldset>
                                                 <legend>To Date</legend>
-                                                <input type="text" id='search_todate_shop'
+                                                <input type="text" id='search_todate_shop' value="{{Carbon\Carbon::now()->toDateString()}}"
                                                     class="shopdatepicker form-control" placeholder='Choose date'
                                                     autocomplete="off" />
                                             </fieldset>
@@ -205,12 +205,19 @@
                 {
                     data: 'action',
                     render: function(data, type) {
+                        var from=$('#search_fromdate_shop').val();
+                        var to=$('#search_todate_shop').val();
+
                         var detail = `
-                      <a href="{{ route('backside.super_admin.shopowner_using_chat_detail', ':action') }}" role="button" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Detail">
+                      <a href="{{ url('backside/super_admin/shopowner_using_chat_detail/:action?from=:from&to=:to') }}" role="button" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Detail">
                         <i class="fa fa-eye"></i>
                       </a>
           `;
                         var detail = detail.replace(':action', data);
+                        var detail = detail.replace(':from', from);
+                        var detail = detail.replace(':to', to);
+
+
 
                         return detail;
                     }
@@ -283,6 +290,9 @@
             $('#shopact_search_button').click(function() {
                 if ($('#search_fromdate_shopact').val() != null && $('#search_todate_shopact').val() !=
                     null) {
+                    localStorage.setItem('chatfromdate',$('#search_fromdate_shopact').val());
+                    localStorage.setItem('chattodate',$('#search_todate_shopact').val());
+
                     shopActivityTable.draw();
                 }
             });

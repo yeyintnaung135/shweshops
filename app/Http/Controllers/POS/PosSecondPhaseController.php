@@ -805,12 +805,12 @@ class PosSecondPhaseController extends Controller
     {
         return view('backend.pos.sale_lists');
     }
-    public function income_lists(Request $request): JsonResponse
+    public function income_lists(Request $request)
     {
         $purchases = $this->itemsFilterService->filter_incomes($request);
         // dd($purchases);
         $dataTable = DataTables::of($purchases)
-            ->toJson();
+            ->make(true);
         return $dataTable;
     }
 
@@ -1013,12 +1013,12 @@ class PosSecondPhaseController extends Controller
         return view('backend.pos.stock_lists');
     }
 
-    public function stock_lists(Request $request): JsonResponse
+    public function stock_lists(Request $request)
     {
         $purchases = $this->itemsFilterService->filter_stocks($request);
         // dd($purchases);
         $dataTable = DataTables::of($purchases)
-            ->toJson();
+            ->make(true);
 
         return $dataTable;
     }

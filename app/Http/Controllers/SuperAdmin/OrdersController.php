@@ -31,12 +31,14 @@ class OrdersController extends Controller
             $searchByTodate=Carbon::now()->toDateString()." 23:59:59";
         }
 
-        $recordsQuery = Orders::with('items')->where('status','pending')->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+        $recordsQuery = Orders::with('items')->whereHas('items', function ($query) {
+            return $query->where('deleted_at', '=', null);
+        })->where('status','pending')->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
             ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate))->get();
 
         return DataTables::of($recordsQuery)
             ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
-            ->editColumn('product_name', fn($record) => $record->items->name)
+            ->editColumn('product_name', fn($record) =>  $record->items->name)
             ->editColumn('action', fn($record) => $record->id)
 
             ->editColumn('product_code', fn($record) => $record->items->product_code)

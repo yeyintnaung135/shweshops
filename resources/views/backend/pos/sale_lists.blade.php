@@ -100,7 +100,7 @@
                                     autocomplete="off">
                             </div>
                             <div>
-                                <button id="searchButton" class="btn btn-color btn-m mt-3" onclick="incomefilter()">Filter</button>
+                                <button id="searchButton" class="btn btn-color btn-m mt-3" >Filter</button>
                             </div>
                         </div> 
                         <div class="tab-content br-n pn">
@@ -247,9 +247,9 @@
     });
 
     //Date Filter
-    // $('#searchButton').click(function() {
-    //     purchaseTable.draw();
-    // });
+    $('#searchButton').click(function() {
+        purchaseTable.draw();
+    });
 
     $('.nav-link').click(function() {
         purchaseTable.draw();
