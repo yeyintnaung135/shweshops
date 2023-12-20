@@ -62,23 +62,31 @@ class ShopOwnerController extends Controller
         $searchByFromdate = $request->input('searchByFromdate');
         $searchByTodate = $request->input('searchByTodate');
 
-        $searchByFromdate = empty($searchByFromdate)
-            ? Carbon::now()->startOfDay()
-            : Carbon::parse($searchByFromdate)->startOfDay();
+        // $searchByFromdate = empty($searchByFromdate)
+        //     ? Carbon::now()->startOfDay()
+        //     : Carbon::parse($searchByFromdate)->startOfDay();
 
-        $searchByTodate = empty($searchByTodate)
-            ? Carbon::now()->endOfDay()
-            : Carbon::parse($searchByTodate)->endOfDay();
+        // $searchByTodate = empty($searchByTodate)
+        //     ? Carbon::now()->endOfDay()
+        //     : Carbon::parse($searchByTodate)->endOfDay();
 
         $shopOwner = Auth::guard('shop_owners_and_staffs')->user();
         $shop_id = $shopOwner->shop_id;
 
-        $recordsQuery = Orders::with('items')
+        if(empty($searchByFromdate) && empty($searchByTodate)){
+            $recordsQuery = Orders::with('items')
+            ->whereHas('items', function($query) use ($shop_id){
+                $query->where('shop_id', $shop_id);
+            })
+            ->latest()->take(30)->get();
+        }else{
+            $recordsQuery = Orders::with('items')
             ->whereHas('items', function ($query) use ($shop_id) {
                 $query->where('shop_id', $shop_id);
             })
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
             ->get();
+        }
 
         return DataTables::of($recordsQuery)
             ->editColumn('created_at', fn ($record) => $record->created_at->format('F d, Y (h:i A)'))
