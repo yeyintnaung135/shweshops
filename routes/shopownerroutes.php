@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Auth\ShopownerLoginController;
+use App\Http\Controllers\Auth\ShopOwnerLoginController;
 use App\Http\Controllers\Auth\ShopownerRegisterController;
 use App\Http\Controllers\Auth\YkforgotpasswordController;
 use App\Http\Controllers\ChangePasswordController;
@@ -27,8 +27,8 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     // Route::middleware(['guest:shop_owners_and_staffs'])->group(function () {
     Route::post('register', [ShopownerRegisterController::class, 'store'])->name('registered');
 
-    Route::get('/login/{from?}', [ShopownerLoginController::class, 'loginform'])->name('login');
-    Route::post('login', [ShopownerLoginController::class, 'login'])->name('login.post');
+    Route::get('/login/{from?}', [ShopOwnerLoginController::class, 'loginform'])->name('login');
+    Route::post('login', [ShopOwnerLoginController::class, 'login'])->name('login.post');
 
     //shop owner order lists routes by wlk
     Route::get('orders', [ShopOwnerController::class, 'orderList'])->name('orders');
@@ -37,8 +37,8 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
     //shop owner routes
 
     // POS login & register form
-    // Route::get('/pos/login', [ShopownerLoginController::class, 'pos_login_form'])->name('pos.login');
-    // Route::post('/pos/login', [ShopownerLoginController::class, 'pos_login'])->name('pos_logined');
+    // Route::get('/pos/login', [ShopOwnerLoginController::class, 'pos_login_form'])->name('pos.login');
+    // Route::post('/pos/login', [ShopOwnerLoginController::class, 'pos_login'])->name('pos_logined');
     // });
 
     Route::middleware(['auth:shop_owners_and_staffs'])->group(function () {
@@ -214,7 +214,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
         Route::post('/user_points/add_price/', [ShopOwnerController::class, 'add_price_create'])->name('add_price.create');
 
         // Logout
-        Route::post('logout', [ShopownerLoginController::class, 'logout'])->name('logout');
+        Route::post('logout', [ShopOwnerLoginController::class, 'logout'])->name('logout');
 
         // App File Download
         //INFO currently disabled because the application is not available yet

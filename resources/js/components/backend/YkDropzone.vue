@@ -1,6 +1,5 @@
 <template>
     <div class="col-md-12 pt-3">
-
         <vue-dropzone
             :include-styling="false"
             :useCustomSlot="true"
@@ -20,15 +19,16 @@
                 class="dropzone-custom-content yk-mt-lg mb-2"
                 style="text-align: center"
             >
-             <div>
-            <label
-                style="font-size: 15px"
-                v-bind:class="{
-                    'sn-required-asterick': validatedz_css(),
-                }"
-                >Choose Your Product Photos <span class=' text-primary'>*</span></label
-            >
-            </div>
+                <div>
+                    <label
+                        style="font-size: 15px"
+                        v-bind:class="{
+                            'sn-required-asterick': validatedz_css(),
+                        }"
+                        >Choose You Product Photos
+                        <span class="text-primary">*</span></label
+                    >
+                </div>
                 <i
                     class="fa fa-plus-circle"
                     aria-hidden="true"
@@ -36,8 +36,8 @@
                 ></i>
             </div>
         </vue-dropzone>
-        
-        <hr class="mt-4">
+
+        <hr class="mt-4" />
     </div>
 </template>
 <script>
@@ -67,7 +67,6 @@ export default {
             thumb_photos: [],
             gold_colour: "",
             gold_quality: "",
-
             //for default icon
             displaynone: false,
             //for default icon
@@ -97,7 +96,6 @@ export default {
                 parallelUploads: 100,
                 timeout: 3000000000,
                 maxThumbnailFilesize: 111,
-                maxFilesize: 2097152000000, //20mb
 
                 headers: {
                     "My-Awesome-Header": "header value",
@@ -159,9 +157,176 @@ export default {
             }
         },
 
+       
+
+        template: function () {
+            return `<div class="dz-preview dz-file-preview">
+              <div class="dz-image" style="width:145px !important;height:145px !important;margin:0px !important;">
+                  <div data-dz-thumbnail-bg></div>
+              </div>
+              <div class="dz-details">
+                  <div class="dz-size"><span data-dz-size></span></div>
+                  <div class="dz-filename"><span data-dz-name></span></div>
+              </div>
+             <a class="dz-profile-pic yk-opa" yk-dz-default-pic style="display:none;"><span class="fas fa-check-circle"></span></a>
+  
+              <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+              <div class="dz-remove yk-opa" href="javascript:undefined;" data-dz-remove><span class="fas fa-times-circle"></span></div>
+              <div class="dz-error-message"><span data-dz-errormessage></span></div>
+  <!--                // <div class="dz-success-mark"><i class="fa fa-check"></i></div>-->
+  <!--                <div class="dz-error-mark"><i class="fa fa-close"></i></div>-->
+          </div>
+      `;
+        },
+
+        thumbnail: function (file, dataUrl) {
+            console.log("THUMB", file);
+            //resize image
+            if (file.size < 999999 && file.status != 'error' ) {
+                console.log('RESIZE');
+                ykresizer(file, 300, 300).then((res) => {
+                    this.mid_photos.push({
+                        name: file.upload.filename,
+                        data: res,
+                        type: file.type,
+                    });
+                });
+                ykresizer(file, 100, 100).then((res) => {
+                    this.thumb_photos.push({
+                        name: file.upload.filename,
+                        data: res,
+                        type: file.type,
+                    });
+                });
+                //resize image
+                var self = this;
+                var j, len, ref, thumbnailElement, refp;
+                if (file.previewElement) {
+                    console.log('DEFAULT')
+                    file.previewElement.classList.remove("dz-file-preview");
+                    ref = file.previewElement.querySelectorAll(
+                        "[data-dz-thumbnail-bg]"
+                    );
+                    refp = file.previewElement.querySelectorAll(
+                        "[yk-dz-default-pic]"
+                    );
+
+                    for (j = 0, len = ref.length; j < len; j++) {
+                        thumbnailElement = ref[j];
+                        thumbnailElement.alt = file.upload.filename;
+                        thumbnailElement.style.backgroundImage =
+                            'url("' + dataUrl + '")';
+                        refp[j].id = file.upload.filename;
+                        if (
+                            this.$refs.myVueDropzone.getAcceptedFiles()
+                                .length === 1
+                        ) {
+                            //when user start add one photo auto add setdefault icon
+
+                            if (this.checkhasdefaultimage()) {
+                            } else {
+                                this.setdefaultphoto(file.upload.filename);
+                            }
+                        } else {
+                            if (this.checkhasdefaultimage()) {
+                            } else {
+                                //when user start add multiple photo auto add setdefault icon
+                                this.setdefaultphoto(
+                                    this.$refs.myVueDropzone.getAcceptedFiles()[0]
+                                        .upload.filename
+                                );
+                            }
+                        }
+
+                        //for dz upload icon
+                        $(".dz-preview").removeClass("last");
+                        for (
+                            var cf = 0;
+                            cf <
+                            this.$refs.myVueDropzone.getAcceptedFiles().length;
+                            cf++
+                        ) {
+                            //in here i used jquery because cannot effect v-on click in dropzome template and thumbnail
+                            $(document).ready(function () {
+                                $(".dz-preview").click(function (e) {
+                                    //this is only click one class not all dz-preview classess
+                                    e.stopPropagation();
+                                    e.stopImmediatePropagation();
+                                    self.setdefaultphoto(e.target.alt);
+                                });
+                            });
+                        }
+                        $(".dz-preview:last").addClass("last");
+
+                        $(".dz-message").insertAfter(".last");
+                        $(".dz-message").removeClass("yk-width-full");
+                    }
+                    return setTimeout(
+                        (function (_this) {
+                            return function () {
+                                return file.previewElement.classList.add(
+                                    "dz-image-preview"
+                                );
+                            };
+                        })(this),
+                        1
+                    );
+                }
+
+                if (this.tempphotonames.length == 0) {
+                    this.setdefaultphoto(file.upload.filename);
+                }
+                this.tempphotonames.push(file.upload.filename);
+                this.requireerroryk.photo = false;
+            }
+        },
+
+        //when user added multiple file
+        multiplefilesadded(files) {
+            this.photoerror += files.length;
+            //this is for default message
+
+            //this is only click one class not all dz-preview classess
+
+            for (var f = 0; f < files.length; f++) {
+                this.custom_max_file_size(files[f]);
+            }
+            console.log("add multi");
+        },
+        custom_max_file_size(file) {
+            if (file.size > 999999) {
+                console.log("eeeeeee", file.size);
+                this.$refs.myVueDropzone.removeFile(file);
+                alert('You Can upload maximum 1MB for each photo .Pleas choose another photo');
+
+            } else {
+                this.tempphotonames.push(file.upload.filename);
+
+                console.log("max file size", file);
+            }
+        },
+        //custom setdefault photo function
+
+        setdefaultphoto: function (id) {
+            //hide set default icon in all dz profile pic
+            var myElements = document.getElementsByClassName("dz-profile-pic");
+            for (var i = 0; i < myElements.length; i++) {
+                myElements[i].style.display = "none";
+            }
+            this.defaultphotoname = id;
+
+            document.getElementById(id).style.display = "inline";
+            console.log("f");
+        },
+
+        //if user added file excceed than 10
+        maxfilesEvent: function (file) {
+            this.$refs.myVueDropzone.removeFile(file);
+            alert('You Can upload maximum 10 photos');
+        },
         removefilefromdz: function (file, error, xhr) {
             //remove thumbs photo and mid photo
-
+            console.log("REMOVE",file);
             const tkey = this.thumb_photos.findIndex(
                 (tp) => tp.name === file.upload.filename
             );
@@ -241,159 +406,6 @@ export default {
 
             //to get image before deleted image
         },
-
-        template: function () {
-            return `<div class="dz-preview dz-file-preview">
-              <div class="dz-image" style="width:145px !important;height:145px !important;margin:0px !important;">
-                  <div data-dz-thumbnail-bg></div>
-              </div>
-              <div class="dz-details">
-                  <div class="dz-size"><span data-dz-size></span></div>
-                  <div class="dz-filename"><span data-dz-name></span></div>
-              </div>
-             <a class="dz-profile-pic yk-opa" yk-dz-default-pic style="display:none;"><span class="fas fa-check-circle"></span></a>
-
-              <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
-              <div class="dz-remove yk-opa" href="javascript:undefined;" data-dz-remove><span class="fas fa-times-circle"></span></div>
-              <div class="dz-error-message"><span data-dz-errormessage></span></div>
-<!--                // <div class="dz-success-mark"><i class="fa fa-check"></i></div>-->
-<!--                <div class="dz-error-mark"><i class="fa fa-close"></i></div>-->
-          </div>
-      `;
-        },
-
-        thumbnail: function (file, dataUrl) {
-            //resize image
-            ykresizer(file, 300, 300).then((res) => {
-                this.mid_photos.push({
-                    name: file.upload.filename,
-                    data: res,
-                    type: file.type,
-                });
-            });
-            ykresizer(file, 100, 100).then((res) => {
-                this.thumb_photos.push({
-                    name: file.upload.filename,
-                    data: res,
-                    type: file.type,
-                });
-            });
-            //resize image
-            var self = this;
-            var j, len, ref, thumbnailElement, refp;
-            if (file.previewElement) {
-                file.previewElement.classList.remove("dz-file-preview");
-                ref = file.previewElement.querySelectorAll(
-                    "[data-dz-thumbnail-bg]"
-                );
-                refp = file.previewElement.querySelectorAll(
-                    "[yk-dz-default-pic]"
-                );
-
-                for (j = 0, len = ref.length; j < len; j++) {
-                    thumbnailElement = ref[j];
-                    thumbnailElement.alt = file.upload.filename;
-                    thumbnailElement.style.backgroundImage =
-                        'url("' + dataUrl + '")';
-                    refp[j].id = file.upload.filename;
-                    if (
-                        this.$refs.myVueDropzone.getAcceptedFiles().length === 1
-                    ) {
-                        //when user start add one photo auto add setdefault icon
-
-                        if (this.checkhasdefaultimage()) {
-                        } else {
-                            this.setdefaultphoto(file.upload.filename);
-                        }
-                    } else {
-                        if (this.checkhasdefaultimage()) {
-                        } else {
-                            //when user start add multiple photo auto add setdefault icon
-                            this.setdefaultphoto(
-                                this.$refs.myVueDropzone.getAcceptedFiles()[0]
-                                    .upload.filename
-                            );
-                        }
-                    }
-
-                    //for dz upload icon
-                    $(".dz-preview").removeClass("last");
-                    for (
-                        var cf = 0;
-                        cf < this.$refs.myVueDropzone.getAcceptedFiles().length;
-                        cf++
-                    ) {
-                        //in here i used jquery because cannot effect v-on click in dropzome template and thumbnail
-                        $(document).ready(function () {
-                            $(".dz-preview").click(function (e) {
-                                //this is only click one class not all dz-preview classess
-                                e.stopPropagation();
-                                e.stopImmediatePropagation();
-                                self.setdefaultphoto(e.target.alt);
-                            });
-                        });
-                    }
-                    $(".dz-preview:last").addClass("last");
-
-                    $(".dz-message").insertAfter(".last");
-                    $(".dz-message").removeClass("yk-width-full");
-                }
-                return setTimeout(
-                    (function (_this) {
-                        return function () {
-                            return file.previewElement.classList.add(
-                                "dz-image-preview"
-                            );
-                        };
-                    })(this),
-                    1
-                );
-            }
-
-            if (this.tempphotonames.length == 0) {
-                this.setdefaultphoto(file.upload.filename);
-            }
-            this.tempphotonames.push(file.upload.filename);
-            this.requireerroryk.photo = false;
-        },
-
-        //when user added multiple file
-        multiplefilesadded(files) {
-            this.photoerror += files.length;
-            //this is for default message
-
-            //this is only click one class not all dz-preview classess
-
-            for (var f = 0; f < files.length; f++) {
-                this.tempphotonames.push(files[f].upload.filename);
-            }
-            console.log("add multi");
-        },
-
-        //custom setdefault photo function
-
-        setdefaultphoto: function (id) {
-            //hide set default icon in all dz profile pic
-            var myElements = document.getElementsByClassName("dz-profile-pic");
-            for (var i = 0; i < myElements.length; i++) {
-                myElements[i].style.display = "none";
-            }
-            this.defaultphotoname = id;
-
-            document.getElementById(id).style.display = "inline";
-            console.log("f");
-        },
-
-        //if user added file excceed than 10
-        maxfilesEvent: function (file) {
-            this.$refs.myVueDropzone.removeFile(file);
-            this.requireerroryk.push({
-                errormsg: "Your Can upload maximum 10 photos",
-            });
-
-            this.showerrorwithmodel("Your Can upload maximum 10 photos");
-        },
-
         // sendevent is prepare to send before real send
 
         sendingEvent(files, xhr, formData) {
@@ -470,11 +482,10 @@ export default {
 
         //if some errors appear while uploading to server
         errorEvent(file, message, xhr) {
-            console.log("dz error =====");
-            this.$refs.myVueDropzone.removeFile(file);
-            $(".dz-error").remove();
+            // console.log("dz error =====");
+            // this.$refs.myVueDropzone.removeFile(file);
+            // $(".dz-error").remove();
 
-            this.showerrorwithmodel(message);
         },
     },
     computed: {},

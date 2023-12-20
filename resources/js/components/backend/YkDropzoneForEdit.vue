@@ -178,20 +178,22 @@ export default {
         thumbnail: function (file, dataUrl) {
             if (typeof file.upload != "undefined") {
                 //resize image
-                ykresizer(file, 300, 300).then((res) => {
-                    this.mid_photos.push({
-                        name: file.upload.filename,
-                        data: res,
-                        type: file.type,
+                if (file.size < 999999 && file.status != "error") {
+                    ykresizer(file, 300, 300).then((res) => {
+                        this.mid_photos.push({
+                            name: file.upload.filename,
+                            data: res,
+                            type: file.type,
+                        });
                     });
-                });
-                ykresizer(file, 100, 100).then((res) => {
-                    this.thumb_photos.push({
-                        name: file.upload.filename,
-                        data: res,
-                        type: file.type,
+                    ykresizer(file, 100, 100).then((res) => {
+                        this.thumb_photos.push({
+                            name: file.upload.filename,
+                            data: res,
+                            type: file.type,
+                        });
                     });
-                });
+                }
                 //resize image
             }
 
@@ -404,12 +406,24 @@ export default {
         multiplefilesadded(files) {
             for (var key in files) {
                 if (files.hasOwnProperty(key)) {
-                    this.tempphotonames.push(files[key].upload.filename);
+                    this.custom_max_file_size(files[key]);
                 }
             }
             console.log(files);
         },
+        custom_max_file_size(file) {
+            if (file.size > 999999) {
+                console.log("eeeeeee", file);
+                this.$refs.myVueDropzone.removeFile(file);
+                alert(
+                    "You Can upload maximum 1MB for each photo .Pleas choose another photo"
+                );
+            } else {
+                this.tempphotonames.push(file.upload.filename);
 
+                console.log("max file size", file);
+            }
+        },
         checkhasdefaultimage: function () {
             for (
                 var s = 0;
@@ -428,74 +442,76 @@ export default {
 
         //when user click remove button call this function
         whenuserremoveimage: function (file, error, xhr, data = "") {
-            var filename = "test";
-            if (typeof file.upload != "undefined") {
-                filename = file.upload.filename;
-            } else {
-                filename = file.name;
-            }
-
-            if (typeof file.upload !== "undefined") {
-                //remove thumbs photo and mid photo
-                const tkey = this.thumb_photos.findIndex(
-                    (tp) => tp.name === filename
-                );
-                this.thumb_photos.splice(tkey, 1);
-                //mid
-                const mkey = this.mid_photos.findIndex(
-                    (mp) => mp.name === filename
-                );
-                this.mid_photos.splice(mkey, 1);
-                //remove thumbs photo and mid photo
-                //for default message
-            }
-            var get_photo_key = Object.keys(this.editdata).find(
-                (key) => this.editdata[key] === file.name
-            );
-            this.removeimgqueue.push({
-                column_name: get_photo_key,
-                name: this.editdata[get_photo_key],
-            });
-
-            //if tempphotoname has delete image name
-            var get_file_key = 0;
-            get_file_key = this.tempphotonames.findIndex(
-                (re) => re === filename
-            );
-            this.tempphotonames.splice(get_file_key, 1);
-            console.log(this.tempphotonames);
-            //check other photo has set default icon
-            if (this.checkhasdefaultimage()) {
-                //only delete from deleted photo name from temphotoname array
-                console.log("has");
-            } else {
-                //if dz-profile-pic class length not equal to 1
-                if (this.tempphotonames.length != 1) {
-                    console.log("aa");
-                    //when user delete top photo
-                    if (get_file_key == 0) {
-                        console.log("bb");
-
-                        this.setdefaultphoto(this.tempphotonames[0]);
-                    } else {
-                        //remove deleted image name from tempphotonames array
-
-                        //show default icon on image before deleted image
-                        this.setdefaultphoto(
-                            this.tempphotonames[get_file_key - 1]
-                        );
-                    }
-
-                    //if images has grater than one
+            if (file.size < 999999) {
+                var filename = "test";
+                if (typeof file.upload != "undefined") {
+                    filename = file.upload.filename;
                 } else {
-                    console.log("xx");
-                    //if one only image is remain just set default photo for it
-                    this.setdefaultphoto(this.tempphotonames[0]);
-
-                    console.log("sec");
+                    filename = file.name;
                 }
+
+                if (typeof file.upload !== "undefined") {
+                    //remove thumbs photo and mid photo
+                    const tkey = this.thumb_photos.findIndex(
+                        (tp) => tp.name === filename
+                    );
+                    this.thumb_photos.splice(tkey, 1);
+                    //mid
+                    const mkey = this.mid_photos.findIndex(
+                        (mp) => mp.name === filename
+                    );
+                    this.mid_photos.splice(mkey, 1);
+                    //remove thumbs photo and mid photo
+                    //for default message
+                }
+                var get_photo_key = Object.keys(this.editdata).find(
+                    (key) => this.editdata[key] === file.name
+                );
+                this.removeimgqueue.push({
+                    column_name: get_photo_key,
+                    name: this.editdata[get_photo_key],
+                });
+
+                //if tempphotoname has delete image name
+                var get_file_key = 0;
+                get_file_key = this.tempphotonames.findIndex(
+                    (re) => re === filename
+                );
+                this.tempphotonames.splice(get_file_key, 1);
+                console.log(this.tempphotonames);
+                //check other photo has set default icon
+                if (this.checkhasdefaultimage()) {
+                    //only delete from deleted photo name from temphotoname array
+                    console.log("has");
+                } else {
+                    //if dz-profile-pic class length not equal to 1
+                    if (this.tempphotonames.length != 1) {
+                        console.log("aa");
+                        //when user delete top photo
+                        if (get_file_key == 0) {
+                            console.log("bb");
+
+                            this.setdefaultphoto(this.tempphotonames[0]);
+                        } else {
+                            //remove deleted image name from tempphotonames array
+
+                            //show default icon on image before deleted image
+                            this.setdefaultphoto(
+                                this.tempphotonames[get_file_key - 1]
+                            );
+                        }
+
+                        //if images has grater than one
+                    } else {
+                        console.log("xx");
+                        //if one only image is remain just set default photo for it
+                        this.setdefaultphoto(this.tempphotonames[0]);
+
+                        console.log("sec");
+                    }
+                }
+                //to get image before deleted image
             }
-            //to get image before deleted image
         },
         removeimagefromserver: function () {
             if (this.removeimgqueue.length > 0) {
@@ -537,7 +553,7 @@ export default {
         //if user added file excceed than 10
         maxfilesEvent: function (file) {
             this.$refs.myVueDropzone.removeFile(file);
-            this.showerrorwithmodel("Your Can upload maximum 10 photos");
+            alert("You Can upload maximum 10 photos");
         },
 
         queueComplete: function () {},

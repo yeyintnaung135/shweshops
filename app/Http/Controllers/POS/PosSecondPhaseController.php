@@ -805,13 +805,47 @@ class PosSecondPhaseController extends Controller
     {
         return view('backend.pos.sale_lists');
     }
-    public function income_lists(Request $request): JsonResponse
+    public function income_lists(Request $request)
     {
         $purchases = $this->itemsFilterService->filter_incomes($request);
         // dd($purchases);
         $dataTable = DataTables::of($purchases)
-            ->toJson();
+            ->make(true);
         return $dataTable;
+    }
+
+    public function datefilter_income(Request $request): JsonResponse
+    {
+        $query1 = PosPurchase::join('pos_purchase_sales', 'pos_purchase_sales.purchase_id', '=', 'pos_purchases.id')
+                ->select('pos_purchases.id', 'pos_purchases.name','pos_purchase_sales.qty','pos_purchases.stock_qty',
+                'pos_purchases.code_number', 'pos_purchases.product_weight','pos_purchases.profit')
+                ->where('pos_purchases.shop_owner_id', $this->get_shopid())
+                ->whereBetween('pos_purchase_sales.created_at', [$request->fromDate, $request->toDate])->get();
+
+        $query2 = PosKyoutPurchase::join('pos_purchase_sales', 'pos_purchase_sales.purchase_id', '=', 'pos_kyout_purchases.id')
+                ->select('pos_kyout_purchases.id', 'pos_kyout_purchases.name','pos_purchase_sales.qty','pos_kyout_purchases.stock_qty',
+                'pos_kyout_purchases.code_number', 'pos_kyout_purchases.product_weight','pos_kyout_purchases.profit')
+                ->where('pos_kyout_purchases.shop_owner_id', $this->get_shopid())
+                ->whereBetween('pos_purchase_sales.created_at', [$request->fromDate, $request->toDate])->get();
+
+        $query3 = PosPlatinumPurchase::join('pos_purchase_sales', 'pos_purchase_sales.purchase_id', '=', 'pos_platinum_purchases.id')
+                ->select('pos_platinum_purchases.id', 'pos_platinum_purchases.name','pos_purchase_sales.qty','pos_platinum_purchases.stock_qty',
+                'pos_platinum_purchases.code_number', 'pos_platinum_purchases.product_weight','pos_platinum_purchases.profit')
+                ->where('pos_platinum_purchases.shop_owner_id', $this->get_shopid())
+                ->whereBetween('pos_purchase_sales.created_at', [$request->fromDate, $request->toDate])->get();
+
+        $query4 = PosWhiteGoldPurchase::join('pos_purchase_sales', 'pos_purchase_sales.purchase_id', '=', 'pos_white_gold_purchases.id')
+                ->select('pos_white_gold_purchases.id', 'pos_white_gold_purchases.name','pos_purchase_sales.qty','pos_white_gold_purchases.stock_qty',
+                'pos_white_gold_purchases.code_number', 'pos_white_gold_purchases.product_weight','pos_white_gold_purchases.profit')
+                ->where('pos_white_gold_purchases.shop_owner_id', $this->get_shopid())
+                ->whereBetween('pos_purchase_sales.created_at', [$request->fromDate, $request->toDate])->get();
+
+        return response()->json([
+            "gold" => $query1,
+            "kyout" => $query2,
+            "platinum" => $query3,
+            "whitegold" => $query4,
+        ]);
     }
 
     public function tab_sale_lists(Request $request): JsonResponse
@@ -979,15 +1013,42 @@ class PosSecondPhaseController extends Controller
         return view('backend.pos.stock_lists');
     }
 
-    public function stock_lists(Request $request): JsonResponse
+    public function stock_lists(Request $request)
     {
         $purchases = $this->itemsFilterService->filter_stocks($request);
         // dd($purchases);
         $dataTable = DataTables::of($purchases)
-            ->toJson();
+            ->make(true);
 
         return $dataTable;
     }
+
+    public function datefilter_stock(Request $request): JsonResponse
+    {
+        $query1 = PosPurchase::select('id', 'code_number', 'name', 'stock_qty','capital','product_weight', 'date')
+        ->where('shop_owner_id', $this->get_shopid())
+        ->whereBetween('date', [$request->fromDate, $request->toDate])->get();
+
+        $query2 = PosKyoutPurchase::select('id', 'code_number', 'name', 'stock_qty','capital','product_weight', 'date')
+        ->where('shop_owner_id', $this->get_shopid())
+        ->whereBetween('date', [$request->fromDate, $request->toDate])->get();
+
+        $query3 = PosPlatinumPurchase::select('id', 'code_number', 'name', 'stock_qty','capital','product_weight', 'date')
+        ->where('shop_owner_id', $this->get_shopid())
+        ->whereBetween('date', [$request->fromDate, $request->toDate])->get();
+
+        $query4 = PosWhiteGoldPurchase::select('id', 'code_number', 'name', 'stock_qty','capital','product_weight', 'date')
+        ->where('shop_owner_id', $this->get_shopid())
+        ->whereBetween('date', [$request->fromDate, $request->toDate])->get();
+
+        return response()->json([
+            "gold" => $query1,
+            "kyout" => $query2,
+            "platinum" => $query3,
+            "whitegold" => $query4,
+        ]);
+    }
+
     public function tab_stock_lists(Request $request): JsonResponse
     {
         $qty = 0;

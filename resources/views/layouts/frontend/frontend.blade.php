@@ -56,17 +56,16 @@ header('X-Content-Type-Options: nosniff');
     <link rel="icon" type="image/png" sizes="18x18" href="{{ url('images/logo/favicon.gif') }}">
     <link rel='stylesheet' href="{{ url('test/css/normalize.css') }}" type='text/css' />
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="{{ url('plugins/google/fortestgoogle.js') }}"></script>
+    <script async src="{{url('plugins/google/formaingoogle.js')}}"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
         function gtag() {
             dataLayer.push(arguments);
         }
-
         gtag('js', new Date());
 
-        gtag('config', 'G-3NXVMQ8VZ6');
+        gtag('config', 'G-JYC8KYZNMZ');
     </script>
     <script>
         if (window.userid == undefined) {
@@ -3801,12 +3800,7 @@ header('X-Content-Type-Options: nosniff');
 <body onbeforeunload="useroffline()"
     class="archive post-type-archive post-type-archive-product wp-embed-responsive theme-karo1 woocommerce woocommerce-page woocommerce-no-js rtwpvs rtwpvs-rounded rtwpvs-attribute-behavior-blur rtwpvs-tooltip yith-wcan-free yith-wishlist ftc-theme-demo group-blog hfeed has-header-image colors-light wcfm-theme-karo wpb-js-composer js-comp-ver-6.5.0 vc_responsive elementor-default elementor-kit-9036 jewelry dokan-theme-karo1 mmm mega_main_menu-2-2-1">
     <div id="app">
-        @if (session()->has('guest_id'))
-        <div>
-           Guset ID {{ session()->get('guest_id') }}
-        </div>
       
-        @endif
 
         @if (\Illuminate\Support\Facades\Auth::guard('web')->check())
             @if ($is_chat_on == 'on')

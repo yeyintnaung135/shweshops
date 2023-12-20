@@ -4,45 +4,23 @@ use App\frontuserlogs;
 use App\Guestoruserid;
 use App\Models\ForFirebase;
 use App\Models\Item;
+use App\Models\Messages;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Http;
 
-Route::get('refimage/{limit}', function ($limit) {
+Route::get('getmessages', function () {
 
-    $getitems = Item::whereDate('created_at', '>=', '2023-10-15')->whereDate('created_at', '<=', '2023-11-28')->orderBy('id', 'desc')->get();
-    $all_image_fields = ['default_photo', 'photo_one', 'photo_two', 'photo_three', 'photo_four', 'photo_five', 'photo_six', 'photo_seven', 'photo_eight', 'photo_nine', 'photo_ten'];
-
-    foreach ($getitems as $gi) {
-        foreach ($all_image_fields as $ain) {
-            $file = $gi[$ain];
-            if (!empty($file) and $file != NULL) {
-
-                $imageDirectory = "prod/items/";
-                $imagePath = $imageDirectory . $file;
-                if (Storage::disk('digitalocean')->exists('/' . $imagePath)) {
-                    if (!Storage::disk('digitalocean')->exists('/' . $imageDirectory . 'mid/' . $file)) {
-
-                        $image = Image::make(Storage::disk('digitalocean')->get($imagePath))
-                            ->fit(300, 300)
-                            ->stream()
-                            ->__toString();
-                        Storage::disk('digitalocean')->put($imageDirectory . 'mid/' . $file, $image);
-                    }
-                    if (!Storage::disk('digitalocean')->exists('/' . $imageDirectory . 'thumbs/' . $file)) {
-
-                        $thumbImage = Image::make($image)
-                            ->fit(100, 100)
-                            ->stream()
-                            ->__toString();
-                        Storage::disk('digitalocean')->put($imageDirectory . 'thumbs/' . $file, $thumbImage);
-                    }
-                }
-            }
-        }
-    }
-
-    return $getitems;
+    $messages=Messages::where(function ($query) {
+        $query->where([['from_id', '=', intval(61)], ['to_id', '=', intval(Auth::guard('web')->user()->id)]])
+            ->orWhere([['from_id', '=', strval(61)], ['to_id', '=', intval(Auth::guard('web')->user()->id)]]);
+    })
+        ->orWhere(function ($query)  {
+            $query->where([['from_id', '=', intval(Auth::guard('web')->user()->id)], ['to_id', '=', intval(61)]])
+                ->orWhere([['from_id', '=', strval(Auth::guard('web')->user()->id)], ['to_id', '=', intval(61)]]);
+        })->get();
+    return $messages;
 });
 Route::get('testdigitalocean', function () {
     return Storage::disk('digitalocean')->get('shweshops/images/items/1680587196328_1672231655663_1669198955202_73.jpg');

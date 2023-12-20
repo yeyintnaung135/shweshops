@@ -74,7 +74,7 @@
 <script>
 $(document).ready(function () {
     $('#pshop_slide').owlCarousel({
-        loop: true,
+        loop: false,
         margin: 20,
         responsiveClass: true,
         autoplay: true,

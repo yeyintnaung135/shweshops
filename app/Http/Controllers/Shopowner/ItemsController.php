@@ -603,7 +603,7 @@ class ItemsController extends Controller
         if (!empty($checkimagehasintable) && !empty($request->column_name)) {
 
             if (dofile_exists('/items/' . $request->name)) {
-                if (env('USE_DO') == 'true') {
+                // if (env('USE_DO') == 'true') {
                     Storage::disk('digitalocean')->delete('/prod/items/' . $request->name);
                     if (Storage::disk('digitalocean')->exists('/prod/items/thumbs/' . $request->name)) {
                         Storage::disk('digitalocean')->delete('/prod/items/thumbs/' . $request->name);
@@ -611,15 +611,15 @@ class ItemsController extends Controller
                     if (Storage::disk('digitalocean')->exists('/prod/items/mid/' . $request->name)) {
                         Storage::disk('digitalocean')->delete('/prod/items/mid/' . $request->name);
                     }
-                } else {
-                    Storage::disk('public_image')->delete('/items/' . $request->name);
-                    if (Storage::disk('public_image')->exists('/items/thumbs/' . $request->name)) {
-                        Storage::disk('public_image')->delete('/items/thumbs/' . $request->name);
-                    }
-                    if (Storage::disk('public_image')->exists('/items/mid/' . $request->name)) {
-                        Storage::disk('public_image')->delete('/items/mid/' . $request->name);
-                    }
-                }
+                // } else {
+                    // Storage::disk('public_image')->delete('/items/' . $request->name);
+                    // if (Storage::disk('public_image')->exists('/items/thumbs/' . $request->name)) {
+                    //     Storage::disk('public_image')->delete('/items/thumbs/' . $request->name);
+                    // }
+                    // if (Storage::disk('public_image')->exists('/items/mid/' . $request->name)) {
+                    //     Storage::disk('public_image')->delete('/items/mid/' . $request->name);
+                    // }
+                // }
 
                 $itemquery->update(array($request->column_name => ''));
                 return response()->json('success');

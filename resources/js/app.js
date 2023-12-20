@@ -138,10 +138,7 @@ Vue.component(
     "see-all-shop-directory",
     require("./components/frontend/directory/seeallshopdirectory.vue").default
 );
-Vue.component(
-    "rec-for-you",
-    require("./components/frontend/RecforyouComponent.vue").default
-);
+
 Vue.component(
     "support-help",
     require("./components/frontend/SupportComponent.vue").default
@@ -150,10 +147,10 @@ Vue.component(
     "checkout",
     require("./components/frontend/checkout.vue").default
 );
-// Vue.prototype.$hostname = "https://" + window.location.hostname;
+Vue.prototype.$hostname = "https://" + window.location.hostname;
 
-Vue.prototype.$hostname =
-    "http://" + window.location.hostname + "/shweshops/public";
+// Vue.prototype.$hostname =
+//     "http://" + window.location.hostname + "/shweshops/public";
 
 //HostName for Laragon or Valet Virtual Host
 // Vue.prototype.$hostname = "http://shweshops.test";
@@ -250,6 +247,7 @@ const app = new Vue({
             }
 
             const temrevarray = currentuserdata.data.data.messages.reverse();
+            console.log('HERE',temrevarray);
             //loop array to show message sender icon
             temrevarray.map((d, index) => {
                 if (typeof temrevarray[index + 1] !== "undefined") {

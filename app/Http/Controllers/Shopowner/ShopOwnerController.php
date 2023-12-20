@@ -50,7 +50,7 @@ class ShopOwnerController extends Controller
         $items = Item::where('shop_id', $this->get_shopid())->orderBy('created_at', 'desc')->get();
         return view('backend.shopowner.list', ['items' => $items]);
     }
-
+    
     //order list for shop owner
     public function orderList()
     {
@@ -72,7 +72,7 @@ class ShopOwnerController extends Controller
 
         $shopOwner = Auth::guard('shop_owners_and_staffs')->user();
         $shop_id = $shopOwner->shop_id;
-
+        
         if(empty($searchByFromdate) && empty($searchByTodate)){
             $recordsQuery = Orders::with('items')
             ->whereHas('items', function($query) use ($shop_id){
@@ -87,6 +87,13 @@ class ShopOwnerController extends Controller
             ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
             ->get();
         }
+
+        // $recordsQuery = Orders::with('items')
+        //     ->whereHas('items', function ($query) use ($shop_id) {
+        //         $query->where('shop_id', $shop_id);
+        //     })
+        //     ->whereBetween('created_at', [$searchByFromdate, $searchByTodate])
+        //     ->get();
 
         return DataTables::of($recordsQuery)
             ->editColumn('created_at', fn ($record) => $record->created_at->format('F d, Y (h:i A)'))

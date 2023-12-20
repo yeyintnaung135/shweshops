@@ -303,10 +303,7 @@ $(document).ready(function () {
             background-repeat: no-repeat;
             background-size: cover;
         }
-        .owl-carousel .owl-item img {
-            display: inline !important;
-            width: 100%;
-        }
+
         .shops-guide-icon {
             color:#fff8db;
             background-color: #780116;
