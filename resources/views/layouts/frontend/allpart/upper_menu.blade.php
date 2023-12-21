@@ -15,18 +15,55 @@
 
 @php
     $gold_price = App\Models\GoldPrice::first();
+    $gold_price_15 = App\Models\GoldPrice::latest()->first();
 @endphp
 
-<div class="sn-marquee">
+<div class="sn-marquee d-none d-lg-block">
     <div class="sn-marquee-item-container">
         <span class="sn-marquee-item">
-            <span class="sell-price"><img
-                    src="{{ asset('images/icons/Gold-Price.png') }}" />ရောင်းစျေး({{ isset($gold_price->sell_price) ? $gold_price->sell_price : '' }})</span>
-            <span class="buy-price"><img
-                    src="{{ asset('images/icons/Gold-Price.png') }}" />ဝယ်စျေး({{ isset($gold_price->buy_price) ? $gold_price->buy_price : '' }})</span>
+            <span class="sell-price">
+                <img src="{{ asset('images/icons/Gold-Price.png') }}" />
+                ၁၆ပဲရည် ရောင်းစျေး({{ isset($gold_price->sell_price) ? number_format((float)$gold_price->sell_price) : '' }})
+            </span>
+            <span class="buy-price">
+                <img src="{{ asset('images/icons/Gold-Price.png') }}" />
+                ၁၆ပဲရည် ဝယ်စျေး({{ isset($gold_price->buy_price) ? number_format((float)$gold_price->buy_price) : '' }})
+            </span>
+            <span class="sell-price ms-4">
+                <img src="{{ asset('images/icons/Gold-Price.png') }}" />
+                ၁၅ပဲရည် ရောင်းစျေး({{ isset($gold_price_15->sell_price) ? number_format((float)$gold_price_15->sell_price) : '' }})
+            </span>
+            <span class="buy-price">
+                <img src="{{ asset('images/icons/Gold-Price.png') }}" />
+                ၁၅ပဲရည် ဝယ်စျေး({{ isset($gold_price_15->buy_price) ? number_format((float)$gold_price_15->buy_price) : '' }})
+            </span>
         </span>
     </div>
 </div>
+<marquee class="text-white py-1 my-0 d-lg-none d-md-block" behavior="" direction="" style="background-image: linear-gradient(to right, rgb(166 124 0 / 82%), rgb(166 124 0 / 82%), #392800);">
+    <div class="sn-marquee-item-container">
+        <span class="sn-marquee-item">
+            <span class="sell-price">
+                <img width="22px" class="me-2" src="{{ asset('images/icons/Gold-Price.png') }}" />
+                ၁၆ပဲရည် ရောင်းစျေး({{ isset($gold_price->sell_price) ? number_format((float)$gold_price->sell_price) : '' }})
+            </span>
+            <span class="buy-price mx-4">
+                <img width="22px" class="me-2" src="{{ asset('images/icons/Gold-Price.png') }}" />
+                ၁၆ပဲရည် ဝယ်စျေး({{ isset($gold_price->buy_price) ? number_format((float)$gold_price->buy_price) : '' }})
+            </span>
+            <span class="sell-price mx-4">
+                <img width="22px" src="{{ asset('images/icons/Gold-Price.png') }}" />
+                ၁၅ပဲရည် ရောင်းစျေး({{ isset($gold_price_15->sell_price) ? number_format((float)$gold_price_15->sell_price) : '' }})
+            </span>
+            <span class="buy-price">
+                <img width="22px" src="{{ asset('images/icons/Gold-Price.png') }}" />
+                ၁၅ပဲရည် ဝယ်စျေး({{ isset($gold_price_15->buy_price) ? number_format((float)$gold_price_15->buy_price) : '' }})
+            </span>
+        </span>
+    </div>
+</marquee>
+
+
 <div class="sop-upper d-none d-lg-block px-lg-5">
     <div class="h-100 d-flex justify-content-between align-items-center">
         <div class="d-flex justify-content-between align-items-center col-4">
@@ -236,6 +273,7 @@
 
         @media only screen and (min-width: 768px) {
             .sn-marquee .sn-marquee-item-container {
+               
                 animation: sn-marquee-lg 20s linear infinite;
             }
         }

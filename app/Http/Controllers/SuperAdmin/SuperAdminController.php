@@ -572,7 +572,8 @@ class SuperAdminController extends Controller
     public function gold_price_get(): View
     {
         $gold_price = GoldPrice::first();
-        return view('backend.super_admin.gold_price.edit', ['gold_price' => $gold_price]);
+        $gold_price_15 = GoldPrice::latest()->first();
+        return view('backend.super_admin.gold_price.edit', compact('gold_price', 'gold_price_15'));
     }
 
     public function gold_price_update(Request $request): RedirectResponse
@@ -580,17 +581,31 @@ class SuperAdminController extends Controller
         $validatedData = $request->validate([
             'sell_price' => ['required', 'max:30'],
             'buy_price' => ['required', 'max:30'],
+            'sell_price15' => ['required', 'max:30'],
+            'buy_price15' => ['required', 'max:30'],
         ]);
 
         $gold_price = GoldPrice::first();
         if ($gold_price) {
-            $result = GoldPrice::find($gold_price['id'])->update($validatedData);
+            $result = GoldPrice::find($gold_price['id'])->update([
+                'sell_price' => $request->sell_price,
+                'buy_price' => $request->buy_price
+            ]);
         } else {
-            $result = GoldPrice::create($validatedData);
+            $result = GoldPrice::create([
+                'sell_price' => $request->sell_price,
+                'buy_price' => $request->buy_price
+            ]);
         }
 
-        if ($result) {
+        // note that require to setup in database gold_price table manually
+        $gold_price_15 = GoldPrice::latest()->first();
+        $result = GoldPrice::find($gold_price_15['id'])->update([
+            'sell_price' => $request->sell_price15,
+            'buy_price' => $request->buy_price15
+        ]);
 
+        if ($result) {
             return redirect()->route('backside.super_admin.superAdmin.gold_price_get')->with(['status' => 'success', 'message' => 'Gold price was successfully Edited']);
         }
     }
