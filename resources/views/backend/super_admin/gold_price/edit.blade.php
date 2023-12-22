@@ -17,6 +17,7 @@
                     @method('PUT')
 
                     <div class="row pt-3">
+                        <h5 class="text-center mb-3">၁၆ပဲရည် Price</h5>
                         <div class="col-12 col-md-6">
                             <label for="sell_price">Sell Price</label>
                             <div class="form-group">
@@ -37,6 +38,36 @@
                                 <input onFocus="this.select()" class="form-control @error('buy_price') is-invalid @enderror"
                                     type="text" name="buy_price" id=""
                                     value="@isset($gold_price->buy_price){!! $gold_price->buy_price !!}@endisset">
+                                @error('buy_price')
+                                    <x-error>
+                                        {{ $message }}
+                                    </x-error>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pt-3">
+                        <h5 class="text-center mb-3">၁၅ပဲရည် Price</h5>
+                        <div class="col-12 col-md-6">
+                            <label for="sell_price">Sell Price</label>
+                            <div class="form-group">
+                                <input onFocus="this.select()"
+                                    class="form-control @error('sell_price') is-invalid @enderror" type="text"
+                                    name="sell_price15" id=""
+                                    value="@isset($gold_price_15->sell_price){!! $gold_price_15->sell_price !!}@endisset">
+                                @error('sell_price')
+                                    <x-error>
+                                        {{ $message }}
+                                    </x-error>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="buy_price">Buy Price</label>
+                            <div class="form-group">
+                                <input onFocus="this.select()" class="form-control @error('buy_price') is-invalid @enderror"
+                                    type="text" name="buy_price15" id=""
+                                    value="@isset($gold_price_15->buy_price){!! $gold_price_15->buy_price !!}@endisset">
                                 @error('buy_price')
                                     <x-error>
                                         {{ $message }}

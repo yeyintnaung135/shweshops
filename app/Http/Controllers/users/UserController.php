@@ -98,8 +98,10 @@ class UserController extends Controller
         }
 
         if ($request->file('photo')) {
+            $request->validate([
+                'photo' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048'
+            ]);
             if ($profile_point_id === 0) {
-
                 $user_point = new UserPoint();
                 $user_point->user_id = Auth::guard('web')->id();
                 $user_point->point_id = 6;

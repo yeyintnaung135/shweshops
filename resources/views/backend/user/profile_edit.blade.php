@@ -157,7 +157,10 @@
                         <span>Claimed</span>
                    @endif
                 </div>
-                <input type="file" name="photo" class="form-control-file" id="exampleFormControlFile1">
+                <input type="file" name="photo" class="form-control-file" id="exampleFormControlFile1" accept="image/jpeg, image/png, image/gif">
+                @error('photo')
+                  <span class="text-danger">*{{ $message }}</span>
+                @enderror
               </div>
               <div class="d-flex align-items-center mb-2">
                    <div class="icons">
