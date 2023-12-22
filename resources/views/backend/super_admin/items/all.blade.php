@@ -140,13 +140,13 @@
                     data: 'id'
                 },
                 {
-                    data: 'shop_name'
+                    data: 'shop_name_url'
                 },
                 {
                     data: 'shop_logo',
                     render: function(data, type) {
                         console.log(data);
-                        var image = `<img src="{{ url('/images/logo/' . ':img') }}"
+                        var image = `<img src="{{ filedopath('/shop_owner/logo/' . ':img') }}"
                           class="rounded-circle" width="50"
                           height="45" alt="Logo" />`;
                         image = image.replace(':img', data);
@@ -158,7 +158,7 @@
                 {
                     data: 'shop_banner',
                     render: function(data, type) {
-                        var image = `<img src="{{ url('/images/banner/' . ':img') }}"
+                        var image = `<img src="{{ filedopath('/shop_owner/banner/' . ':img') }}"
                           alt="cover" class="rounded-circle" width="50"
                           height="45"/>`;
                         image = image.replace(':img', data);

@@ -10,6 +10,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ItemsController extends Controller
 {
@@ -21,7 +23,7 @@ class ItemsController extends Controller
     public function total_create_count(Request $request): JsonResponse
     {
         $allcount = Item::count();
-        $allcountbydate = Item::whereBetween('created_at', [$request->from, $request->to])->count();
+        $allcountbydate = Item::leftjoin('shops', 'items.shop_id', '=', 'shops.id')->where('items.deleted_at', null)->where('shops.deleted_at', null)->whereBetween('items.created_at', [Carbon::createFromDate($request->from), Carbon::createFromDate($request->to)])->count();
         return response()->json(['all' => $allcount, 'alld' => $allcountbydate]);
     }
 
@@ -30,16 +32,14 @@ class ItemsController extends Controller
         return view('backend.super_admin.items.all');
     }
 
-    public function get_items_ajax(Request $request): JsonResponse
+    public function get_items_ajax(Request $request)
     {
-        $searchByFromdate = $request->input('searchByFromdate');
-        $searchByTodate = $request->input('searchByTodate');
+        $searchByFromdate = Carbon::createFromDate($request->input('searchByFromdate'));
+        $searchByTodate = Carbon::createFromDate($request->input('searchByTodate'))->addDay();
 
-        $shopsQuery = Shops::select('id', 'shop_name', 'shop_logo', 'shop_banner', 'premium', 'main_phone', 'created_at')
-            ->withCount('items')
-            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
-            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
-
+        $shopsQuery = Item::leftjoin('shops', 'items.shop_id', '=', 'shops.id')->select(array('shops.*', DB::raw('COUNT(items.shop_id) as items_count')))
+            ->groupBy('items.shop_id')
+            ->whereBetween('items.created_at', [$searchByFromdate, $searchByTodate]);
         return DataTables::eloquent($shopsQuery)
             ->editColumn('shop_banner', function ($shop) {
                 $checkbanner = ShopBanner::where('shop_owner_id', $shop->id)->first();

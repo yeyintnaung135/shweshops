@@ -27,13 +27,13 @@ window.onbeforeunload = function (event) {
     allfrommessagefunction.sendwhatuserisoffline(window.userid);
 };
 
-window.Echo.join("user.channel.342")
+window.Echo.join("user.channel."+window.userid)
     .here((user) => {
         //if user join to channel send i am online to server
 
         // allfrommessagefunction.sendwhatuserisactive(window.userid);
 
-        console.log("user is online");
+        console.log("user is online"+window.userid);
     })
     .joining((user) => {
 

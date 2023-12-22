@@ -205,7 +205,7 @@
                         data: 'id'
                     },
                     {
-                        data: 'shop_name'
+                        data: 'shop_name_url'
                     },
                     {
                         data: 'product_count'

@@ -18,12 +18,14 @@
                 <div id="main-content" class="mt-2 col-sm-12 col-xs-12 ">
                     <products_filter
                       :initialitems="{{$data}}"
-                      :discount="'no'"
+                      :discount=false
                       :cat_list="{{$cat_list}}"
                       :cat_id="['{{$cat_id}}']"
                       :shop_ids="{{$shop_ids}}"
                       :selected_shop="'{{$shop_data->id}}'"
                       :sort="'all'"
+                      :maincat_id="'all'"
+
                       :selected_gems="[]"
                       :gender="'all'"
                       :additional="'{{$shop_data->id}}'"

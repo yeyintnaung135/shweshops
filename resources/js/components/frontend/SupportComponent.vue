@@ -163,8 +163,9 @@ export default {
                     }
                 )
                 .then((response) => {
-                    console.log('feres');
+                    console.log('get support videos');
                     this.showdata = response.data['shops'];
+                    this.shoplimit=6;
 
                     if (response.data['empty_on_server'] == 1) {
                         this.emptyonserver = 1;
