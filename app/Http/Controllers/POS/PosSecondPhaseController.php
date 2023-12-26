@@ -73,12 +73,20 @@ class PosSecondPhaseController extends Controller
     public function get_staff_list(Request $request): JsonResponse
     {
         $staffs = $this->shopFilterService->filter_staffs($request);
+        $data=$staffs->orderBy('id','desc')->get();
+        $arrleng=count($data);
+        $tmpcount = $arrleng+1;
+        foreach ($data as $key => $value) {
+            $tmpcount=$tmpcount-1;
+            $data[$key]['dtid'] = $tmpcount;
+        }
+        return DataTables::of($data)
+        ->editColumn('id', fn ($data) => $data->dtid)
 
-        return DataTables::of($staffs)
-            ->addColumn('actions', function ($staff) {
+            ->addColumn('actions', function ($data) {
                 $urls = [
-                    'edit_url' => route('backside.shop_owner.pos.edit_staff', $staff->id),
-                    'delete_url' => route('backside.shop_owner.pos.delete_staff', $staff->id),
+                    'edit_url' => route('backside.shop_owner.pos.edit_staff', $data->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_staff', $data->id),
                 ];
 
                 return $urls;
@@ -246,12 +254,20 @@ class PosSecondPhaseController extends Controller
     public function get_supplier_list(Request $request): JsonResponse
     {
         $suppliers = $this->shopFilterService->filter_suppliers($request);
+        $data=$suppliers->orderBy('id','desc')->get();
+        $arrleng=count($data);
+        $tmpcount = $arrleng+1;
+        foreach ($data as $key => $value) {
+            $tmpcount=$tmpcount-1;
+            $data[$key]['dtid'] = $tmpcount;
+        }
+        return DataTables::of($data)   
+             ->editColumn('id', fn ($data) => $data->dtid)
 
-        return DataTables::of($suppliers)
-            ->addColumn('actions', function ($supplier) {
+            ->addColumn('actions', function ($data) {
                 $urls = [
-                    'edit_url' => route('backside.shop_owner.pos.edit_supplier', $supplier->id),
-                    'delete_url' => route('backside.shop_owner.pos.delete_supplier', $supplier->id),
+                    'edit_url' => route('backside.shop_owner.pos.edit_supplier', $data->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_supplier', $data->id),
                 ];
                 return $urls;
             })
@@ -388,15 +404,22 @@ class PosSecondPhaseController extends Controller
     public function get_return_list(Request $request): JsonResponse
     {
         $returns = $this->itemsFilterService->filter_returns($request);
+        $data=$returns;
+        $arrleng=count($data);
+        $tmpcount = $arrleng+1;
+        foreach ($data as $key => $value) {
+            $tmpcount=$tmpcount-1;
+            $data[$key]['dtid'] = $tmpcount;
+        }
 
-        return DataTables::of($returns)
-            ->addColumn('category', function ($return) {
-                return $return->category->mm_name;
+        return DataTables::of($data)
+            ->addColumn('category', function ($data) {
+                return $data->category->mm_name;
             })
-            ->addColumn('actions', function ($return) {
+            ->addColumn('actions', function ($data) {
                 $urls = [
-                    'edit_url' => route('backside.shop_owner.pos.edit_return', $return->id),
-                    'delete_url' => route('backside.shop_owner.pos.delete_return', $return->id),
+                    'edit_url' => route('backside.shop_owner.pos.edit_return', $data->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_return', $data->id),
                 ];
 
                 return $urls;
@@ -683,11 +706,19 @@ class PosSecondPhaseController extends Controller
     public function get_credit_list(Request $request): JsonResponse
     {
         $credits = $this->itemsFilterService->filter_credits($request);
+        $data=$credits->orderBy('id','desc')->get();
+        $arrleng=count($data);
+        $tmpcount = $arrleng+1;
+        foreach ($data as $key => $value) {
+            $tmpcount=$tmpcount-1;
+            $data[$key]['dtid'] = $tmpcount;
+        }
+        return DataTables::of($data)
+        ->editColumn('id', fn ($data) => $data->dtid)
 
-        return DataTables::of($credits)
-            ->addColumn('actions', function ($credit) {
+            ->addColumn('actions', function ($data) {
                 $urls = [
-                    'delete_url' => route('backside.shop_owner.pos.delete_credit', $credit->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_credit', $data->id),
                 ];
 
                 return $urls;
@@ -796,7 +827,16 @@ class PosSecondPhaseController extends Controller
     public function famous_sale_lists(Request $request): JsonResponse
     {
         $purchases = $this->itemsFilterService->filter_incomes($request);
-        $dataTable = DataTables::of($purchases)
+        $data=$purchases->orderBy('id','desc')->get();
+        $arrleng=count($data);
+        $tmpcount = $arrleng+1;
+        foreach ($data as $key => $value) {
+            $tmpcount=$tmpcount-1;
+            $data[$key]['dtid'] = $tmpcount;
+        }
+        $dataTable = DataTables::of($data)
+        ->editColumn('id', fn ($data) => $data->dtid)
+
             ->toJson();
         return $dataTable;
     }
@@ -808,8 +848,17 @@ class PosSecondPhaseController extends Controller
     public function income_lists(Request $request)
     {
         $purchases = $this->itemsFilterService->filter_incomes($request);
+        $data=$purchases->orderBy('id','desc')->get();
+        $arrleng=count($data);
+        $tmpcount = $arrleng+1;
+        foreach ($data as $key => $value) {
+            $tmpcount=$tmpcount-1;
+            $data[$key]['dtid'] = $tmpcount;
+        }
         // dd($purchases);
         $dataTable = DataTables::of($purchases)
+        ->editColumn('id', fn ($data) => $data->dtid)
+
             ->make(true);
         return $dataTable;
     }
@@ -1016,8 +1065,17 @@ class PosSecondPhaseController extends Controller
     public function stock_lists(Request $request)
     {
         $purchases = $this->itemsFilterService->filter_stocks($request);
+        $data=$purchases->orderBy('id','desc')->get();
+        $arrleng=count($data);
+        $tmpcount = $arrleng+1;
+        foreach ($data as $key => $value) {
+            $tmpcount=$tmpcount-1;
+            $data[$key]['dtid'] = $tmpcount;
+        }
         // dd($purchases);
-        $dataTable = DataTables::of($purchases)
+        $dataTable = DataTables::of($data)
+        ->editColumn('id', fn ($data) => $data->dtid)
+
             ->make(true);
 
         return $dataTable;

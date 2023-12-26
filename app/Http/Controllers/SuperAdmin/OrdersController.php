@@ -16,41 +16,48 @@ class OrdersController extends Controller
     {
         $this->middleware(['auth:super_admin']);
     }
-    public function index(){
+    public function index()
+    {
         return view('backend.super_admin.orders.index');
-
     }
     public function get_orders(Request $request)
     {
         $searchByFromdate = $request->input('searchByFromdate');
         $searchByTodate = $request->input('searchByTodate');
-        if(empty($searchByFromdate)){
-            $searchByFromdate=Carbon::now()->toDateString()." 00:00:00";
+        if (empty($searchByFromdate)) {
+            $searchByFromdate = Carbon::now()->toDateString() . " 00:00:00";
         }
-        if(empty($searchByTodate)){
-            $searchByTodate=Carbon::now()->toDateString()." 23:59:59";
+        if (empty($searchByTodate)) {
+            $searchByTodate = Carbon::now()->toDateString() . " 23:59:59";
         }
 
         $recordsQuery = Orders::with('items')->whereHas('items', function ($query) {
             return $query->where('deleted_at', '=', null);
-        })->where('status','pending')->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
-            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate))->get();
+        })->where('status', 'pending')->when($searchByFromdate, fn ($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn ($query) => $query->whereDate('created_at', '<=', $searchByTodate))->get();
+        $tmpcount = 0;
 
+        foreach ($recordsQuery as $key => $value) {
+            $tmpcount=$tmpcount+1;
+            $recordsQuery[$key]['dtid'] = $tmpcount;
+        }
         return DataTables::of($recordsQuery)
-            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
-            ->editColumn('product_name', fn($record) =>  $record->items->name)
-            ->editColumn('action', fn($record) => $record->id)
+            ->editColumn('created_at', fn ($record) => $record->created_at->format('F d, Y ( h:i A )'))
+            ->editColumn('product_name', fn ($record) =>  $record->items->name)
+            ->editColumn('action', fn ($record) => $record->id)
+            ->editColumn('id', fn ($record) => $record->dtid)
 
-            ->editColumn('product_code', fn($record) => $record->items->product_code)
-            ->editColumn('shop_name', function($record){
-            return Shops::select()->where('id',$record->items->shop_id)->first()->shop_name;
+            ->editColumn('product_code', fn ($record) => $record->items->product_code)
+            ->editColumn('shop_name', function ($record) {
+                return Shops::select()->where('id', $record->items->shop_id)->first()->shop_name;
             })
 
 
             ->make(true);
     }
-    public function detail($id){
-        $order= Orders::with('items')->where('id',$id)->first();
-        return view('backend.super_admin.orders.detail',['order'=>$order]);
+    public function detail($id)
+    {
+        $order = Orders::with('items')->where('id', $id)->first();
+        return view('backend.super_admin.orders.detail', ['order' => $order]);
     }
 }

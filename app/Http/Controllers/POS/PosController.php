@@ -433,29 +433,38 @@ class PosController extends Controller
 
     }
 
-    public function get_purchase_list(Request $request): JsonResponse
+    public function get_purchase_list(Request $request)
     {
         $purchases = $this->purchaseFilterService->filter_purchases($request);
+        $data=$purchases->orderBy('date','desc')->get();
+        $arrleng=count($data);
+        $tmpcount = $arrleng+1;
+        foreach ($data as $key => $value) {
+            $tmpcount=$tmpcount-1;
+            $data[$key]['dtid'] = $tmpcount;
+        }
 
-        return DataTables::of($purchases)
-            ->addColumn('product_weight_in_gram', function ($purchase) {
+        return DataTables::of($data)
+            ->addColumn('product_weight_in_gram', function ($data) {
                 // Split the 'product_weight' by "/" and return the first part which is gram
-                $parts = explode("/", $purchase->product_weight);
+                $parts = explode("/", $data->product_weight);
                 return isset($parts[0]) ? $parts[0] : '';
             })
-            ->addColumn('supplier', function ($purchase) {
-                return $purchase->supplier->name;
+            ->editColumn('id', fn ($data) => $data->dtid)
+
+            ->addColumn('supplier', function ($data) {
+                return $data->supplier->name;
             })
-            ->addColumn('actions', function ($purchase) {
+            ->addColumn('actions', function ($data) {
                 $urls = [
-                    'edit_url' => route('backside.shop_owner.pos.edit_purchase', $purchase->id),
-                    'delete_url' => route('backside.shop_owner.pos.delete_purchase', $purchase->id),
-                    'detail_url' => route('backside.shop_owner.pos.detail_purchase', $purchase->id),
+                    'edit_url' => route('backside.shop_owner.pos.edit_purchase', $data->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_purchase', $data->id),
+                    'detail_url' => route('backside.shop_owner.pos.detail_purchase', $data->id),
                 ];
 
                 return $urls;
             })
-            ->toJson();
+            ->make(true);
     }
 
     public function create_purchase(): View
@@ -798,18 +807,28 @@ class PosController extends Controller
     public function get_kyout_purchase_list(Request $request): JsonResponse
     {
         $purchases = $this->purchaseFilterService->filter_kyout_purchases($request);
-        return DataTables::of($purchases)
-            ->addColumn('supplier', function ($purchase) {
-                return $purchase->supplier->name;
+        $data=$purchases->orderBy('id','desc')->get();
+        $arrleng=count($data);
+        $tmpcount = $arrleng+1;
+
+        foreach ($data as $key => $value) {
+            $tmpcount=$tmpcount-1;
+            $data[$key]['dtid'] = $tmpcount;
+        }
+        return DataTables::of($data)
+            ->addColumn('supplier', function ($data) {
+                return $data->supplier->name;
             })
-            ->addColumn('quality', function ($purchase) {
-                return $purchase->quality->name;
+            ->editColumn('id', fn ($data) => $data->dtid)
+
+            ->addColumn('quality', function ($data) {
+                return $data->quality->name;
             })
-            ->addColumn('actions', function ($purchase) {
+            ->addColumn('actions', function ($data) {
                 $urls = [
-                    'edit_url' => route('backside.shop_owner.pos.edit_kyout_purchase', $purchase->id),
-                    'delete_url' => route('backside.shop_owner.pos.delete_kyout_purchase', $purchase->id),
-                    'detail_url' => route('backside.shop_owner.pos.detail_kyout_purchase', $purchase->id),
+                    'edit_url' => route('backside.shop_owner.pos.edit_kyout_purchase', $data->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_kyout_purchase', $data->id),
+                    'detail_url' => route('backside.shop_owner.pos.detail_kyout_purchase', $data->id),
                 ];
 
                 return $urls;
@@ -1210,13 +1229,21 @@ class PosController extends Controller
     public function get_ptm_purchase_list(Request $request): JsonResponse
     {
         $purchases = $this->purchaseFilterService->filter_platinum_purchases($request);
+        $data=$purchases->orderBy('created_at','desc')->get();
+        $arrleng=count($data);
+        $tmpcount = $arrleng+1;
+        foreach ($data as $key => $value) {
+            $tmpcount=$tmpcount-1;
+            $data[$key]['dtid'] = $tmpcount;
+        }
+        return DataTables::of($data)
+        ->editColumn('id', fn ($data) => $data->dtid)
 
-        return DataTables::of($purchases)
-            ->addColumn('actions', function ($purchase) {
+            ->addColumn('actions', function ($data) {
                 $urls = [
-                    'edit_url' => route('backside.shop_owner.pos.edit_ptm_purchase', $purchase->id),
-                    'delete_url' => route('backside.shop_owner.pos.delete_ptm_purchase', $purchase->id),
-                    'detail_url' => route('backside.shop_owner.pos.detail_ptm_purchase', $purchase->id),
+                    'edit_url' => route('backside.shop_owner.pos.edit_ptm_purchase', $data->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_ptm_purchase', $data->id),
+                    'detail_url' => route('backside.shop_owner.pos.detail_ptm_purchase', $data->id),
                 ];
 
                 return $urls;
@@ -1489,13 +1516,21 @@ class PosController extends Controller
     public function get_wg_purchase_list(Request $request): JsonResponse
     {
         $purchases = $this->purchaseFilterService->filter_white_gold_purchases($request);
+        $data=$purchases->orderBy('created_at','desc')->get();
+        $arrleng=count($data);
+        $tmpcount = $arrleng+1;
+        foreach ($data as $key => $value) {
+            $tmpcount=$tmpcount-1;
+            $data[$key]['dtid'] = $tmpcount;
+        }
+        return DataTables::of($data)
+        ->editColumn('id', fn ($data) => $data->dtid)
 
-        return DataTables::of($purchases)
-            ->addColumn('actions', function ($purchase) {
+            ->addColumn('actions', function ($data) {
                 $urls = [
-                    'edit_url' => route('backside.shop_owner.pos.edit_wg_purchase', $purchase->id),
-                    'delete_url' => route('backside.shop_owner.pos.delete_wg_purchase', $purchase->id),
-                    'detail_url' => route('backside.shop_owner.pos.detail_wg_purchase', $purchase->id),
+                    'edit_url' => route('backside.shop_owner.pos.edit_wg_purchase', $data->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_wg_purchase', $data->id),
+                    'detail_url' => route('backside.shop_owner.pos.detail_wg_purchase', $data->id),
                 ];
                 return $urls;
             })
@@ -1759,15 +1794,24 @@ class PosController extends Controller
     public function get_sale_gold_list(Request $request): JsonResponse
     {
         $purchases = $this->saleFilterService->filterGoldSales($request);
-        $dataTable = DataTables::of($purchases)
-            ->addColumn('stock_qty', function ($purchase) {
+        $data=$purchases->orderBy('id','desc')->get();
+        $arrleng=count($data);
+        $tmpcount = $arrleng+1;
+        foreach ($data as $key => $value) {
+            $tmpcount=$tmpcount-1;
+            $data[$key]['dtid'] = $tmpcount;
+        }
+        $dataTable = DataTables::of($data)
+        ->editColumn('id', fn ($data) => $data->dtid)
+
+            ->addColumn('stock_qty', function ($data) {
                 return 1;
             })
-            ->addColumn('actions', function ($purchase) {
+            ->addColumn('actions', function ($data) {
                 $urls = [
-                    'edit_url' => route('backside.shop_owner.pos.edit_goldsale', $purchase->id),
-                    'delete_url' => route('backside.shop_owner.pos.delete_goldsale', $purchase->id),
-                    'detail_url' => route('backside.shop_owner.pos.detail_goldsale', $purchase->id),
+                    'edit_url' => route('backside.shop_owner.pos.edit_goldsale', $data->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_goldsale', $data->id),
+                    'detail_url' => route('backside.shop_owner.pos.detail_goldsale', $data->id),
                 ];
                 return $urls;
             })
@@ -1974,15 +2018,24 @@ class PosController extends Controller
     public function get_sale_kyout_list(Request $request): JsonResponse
     {
         $purchases = $this->saleFilterService->filterKyoutSales($request);
-        $dataTable = DataTables::of($purchases)
-            ->addColumn('stock_qty', function ($purchase) {
+        $data=$purchases->orderBy('id','desc')->get();
+        $arrleng=count($data);
+        $tmpcount = $arrleng+1;
+        foreach ($data as $key => $value) {
+            $tmpcount=$tmpcount-1;
+            $data[$key]['dtid'] = $tmpcount;
+        }
+        $dataTable = DataTables::of($data)
+        ->editColumn('id', fn ($data) => $data->dtid)
+
+            ->addColumn('stock_qty', function ($data) {
                 return 1;
             })
-            ->addColumn('actions', function ($purchase) {
+            ->addColumn('actions', function ($data) {
                 $urls = [
-                    'edit_url' => route('backside.shop_owner.pos.edit_kyoutsale', $purchase->id),
-                    'delete_url' => route('backside.shop_owner.pos.delete_kyoutsale', $purchase->id),
-                    'detail_url' => route('backside.shop_owner.pos.detail_kyoutsale', $purchase->id),
+                    'edit_url' => route('backside.shop_owner.pos.edit_kyoutsale', $data->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_kyoutsale', $data->id),
+                    'detail_url' => route('backside.shop_owner.pos.detail_kyoutsale', $data->id),
                 ];
                 return $urls;
             })
@@ -2197,10 +2250,17 @@ class PosController extends Controller
     public function get_sale_ptm_list(Request $request): JsonResponse
     {
         $purchases = $this->saleFilterService->filterPlatinumSales($request);
+        $tmpcount = 0;
+
+        foreach ($purchases as $key => $value) {
+            $tmpcount=$tmpcount+1;
+            $purchases[$key]['dtid'] = $tmpcount;
+        }
         $dataTable = DataTables::of($purchases)
             ->addColumn('stock_qty', function ($purchase) {
                 return 1;
-            })
+            })            ->editColumn('id', fn ($purchase) => $purchase->dtid)
+
             ->addColumn('actions', function ($purchase) {
                 $urls = [
                     'edit_url' => route('backside.shop_owner.pos.edit_ptmsale', $purchase->id),
@@ -2379,15 +2439,25 @@ class PosController extends Controller
     public function get_sale_wg_list(Request $request): JsonResponse
     {
         $purchases = $this->saleFilterService->filterWhiteGoldSales($request);
-        $dataTable = DataTables::of($purchases)
-            ->addColumn('stock_qty', function ($purchase) {
+        $data=$purchases->orderBy('id','desc')->get();
+        $arrleng=count($data);
+        $tmpcount = $arrleng+1;
+        foreach ($data as $key => $value) {
+            $tmpcount=$tmpcount-1;
+            $data[$key]['dtid'] = $tmpcount;
+        }
+
+        $dataTable = DataTables::of($data)
+            ->addColumn('stock_qty', function ($data) {
                 return 1;
             })
-            ->addColumn('actions', function ($purchase) {
+            ->editColumn('id', fn ($data) => $data->dtid)
+
+            ->addColumn('actions', function ($data) {
                 $urls = [
-                    'edit_url' => route('backside.shop_owner.pos.edit_wgsale', $purchase->id),
-                    'delete_url' => route('backside.shop_owner.pos.delete_wg_sale', $purchase->id),
-                    'detail_url' => route('backside.shop_owner.pos.detail_wg_sale', $purchase->id),
+                    'edit_url' => route('backside.shop_owner.pos.edit_wgsale', $data->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_wg_sale', $data->id),
+                    'detail_url' => route('backside.shop_owner.pos.detail_wg_sale', $data->id),
                 ];
                 return $urls;
             })
@@ -2559,12 +2629,20 @@ class PosController extends Controller
     public function get_diamond_list(Request $request): JsonResponse
     {
         $diamonds = $this->itemFilterService->filter_diamonds($request);
+        $data=$diamonds->orderBy('id','desc')->get();
+        $arrleng=count($data);
+        $tmpcount = $arrleng+1;
+        foreach ($data as $key => $value) {
+            $tmpcount=$tmpcount-1;
+            $data[$key]['dtid'] = $tmpcount;
+        }
+        return DataTables::of($data)
+        ->editColumn('id', fn ($data) => $data->dtid)
 
-        return DataTables::of($diamonds)
-            ->addColumn('actions', function ($diamond) {
+            ->addColumn('actions', function ($data) {
                 $urls = [
-                    'edit_url' => route('backside.shop_owner.pos.edit_diamond', $diamond->id),
-                    'delete_url' => route('backside.shop_owner.pos.delete_diamond', $diamond->id),
+                    'edit_url' => route('backside.shop_owner.pos.edit_diamond', $data->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_diamond', $data->id),
                 ];
 
                 return $urls;
@@ -2649,12 +2727,20 @@ class PosController extends Controller
     public function get_counter_list(Request $request): JsonResponse
     {
         $counters = $this->shopFilterService->filter_counter_shops($request);
+        $data=$counters->orderBy('id','desc')->get();
+        $arrleng=count($data);
+        $tmpcount = $arrleng+1;
+        foreach ($data as $key => $value) {
+            $tmpcount=$tmpcount-1;
+            $data[$key]['dtid'] = $tmpcount;
+        }
+        return DataTables::of($data)
+        ->editColumn('id', fn ($data) => $data->dtid)
 
-        return DataTables::of($counters)
-            ->addColumn('actions', function ($counter) {
+            ->addColumn('actions', function ($data) {
                 $urls = [
-                    'edit_url' => route('backside.shop_owner.pos.edit_counter', $counter->id),
-                    'delete_url' => route('backside.shop_owner.pos.delete_counter', $counter->id),
+                    'edit_url' => route('backside.shop_owner.pos.edit_counter', $data->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_counter', $data->id),
                 ];
 
                 return $urls;

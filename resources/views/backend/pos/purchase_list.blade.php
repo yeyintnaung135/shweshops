@@ -203,7 +203,7 @@
                 },
                 columns: [{
                         data: 'id',
-                        name: 'id'
+                  
                     },
                     {
                         data: 'name',

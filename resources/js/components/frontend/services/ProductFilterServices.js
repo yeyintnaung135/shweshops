@@ -159,7 +159,7 @@ const createcachekey = (parmsdata) => {
         "-" +
         parmsdata.byspecificgems +
         "-" +
-        parmsdata.gold_colour +
+        parmsdata.main_product_type +
         "-" +
         +parmsdata.additional +
         "-" +
