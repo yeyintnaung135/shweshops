@@ -415,7 +415,7 @@ class PosSecondPhaseController extends Controller
         return DataTables::of($data)
             ->addColumn('category', function ($data) {
                 return $data->category->mm_name;
-            })
+            }) ->editColumn('id', fn ($data) => $data->dtid)
             ->addColumn('actions', function ($data) {
                 $urls = [
                     'edit_url' => route('backside.shop_owner.pos.edit_return', $data->id),
@@ -827,7 +827,7 @@ class PosSecondPhaseController extends Controller
     public function famous_sale_lists(Request $request): JsonResponse
     {
         $purchases = $this->itemsFilterService->filter_incomes($request);
-        $data=$purchases->orderBy('id','desc')->get();
+        $data=$purchases->get();
         $arrleng=count($data);
         $tmpcount = $arrleng+1;
         foreach ($data as $key => $value) {
@@ -837,7 +837,7 @@ class PosSecondPhaseController extends Controller
         $dataTable = DataTables::of($data)
         ->editColumn('id', fn ($data) => $data->dtid)
 
-            ->toJson();
+            ->make(true);
         return $dataTable;
     }
 
@@ -856,7 +856,7 @@ class PosSecondPhaseController extends Controller
             $data[$key]['dtid'] = $tmpcount;
         }
         // dd($purchases);
-        $dataTable = DataTables::of($purchases)
+        $dataTable = DataTables::of($data)
         ->editColumn('id', fn ($data) => $data->dtid)
 
             ->make(true);

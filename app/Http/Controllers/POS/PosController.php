@@ -2250,22 +2250,23 @@ class PosController extends Controller
     public function get_sale_ptm_list(Request $request): JsonResponse
     {
         $purchases = $this->saleFilterService->filterPlatinumSales($request);
-        $tmpcount = 0;
-
-        foreach ($purchases as $key => $value) {
-            $tmpcount=$tmpcount+1;
-            $purchases[$key]['dtid'] = $tmpcount;
+        $data=$purchases->orderBy('id','desc')->get();
+        $arrleng=count($data);
+        $tmpcount = $arrleng+1;
+        foreach ($data as $key => $value) {
+            $tmpcount=$tmpcount-1;
+            $data[$key]['dtid'] = $tmpcount;
         }
-        $dataTable = DataTables::of($purchases)
-            ->addColumn('stock_qty', function ($purchase) {
+        $dataTable = DataTables::of($data)
+            ->addColumn('stock_qty', function ($data) {
                 return 1;
-            })            ->editColumn('id', fn ($purchase) => $purchase->dtid)
+            })            ->editColumn('id', fn ($data) => $data->dtid)
 
-            ->addColumn('actions', function ($purchase) {
+            ->addColumn('actions', function ($data) {
                 $urls = [
-                    'edit_url' => route('backside.shop_owner.pos.edit_ptmsale', $purchase->id),
-                    'delete_url' => route('backside.shop_owner.pos.delete_ptm_sale', $purchase->id),
-                    'detail_url' => route('backside.shop_owner.pos.detail_ptmsale', $purchase->id),
+                    'edit_url' => route('backside.shop_owner.pos.edit_ptmsale', $data->id),
+                    'delete_url' => route('backside.shop_owner.pos.delete_ptm_sale', $data->id),
+                    'detail_url' => route('backside.shop_owner.pos.detail_ptmsale', $data->id),
                 ];
                 return $urls;
             })

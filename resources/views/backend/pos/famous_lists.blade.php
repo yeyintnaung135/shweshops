@@ -217,7 +217,7 @@
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
                 order: [
-                    [2, 'desc']
+                    [0, 'desc']
                 ],
             });
 

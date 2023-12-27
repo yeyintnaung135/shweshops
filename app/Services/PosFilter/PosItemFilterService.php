@@ -174,7 +174,7 @@ class PosItemFilterService
                 'pos_purchases.product_weight',
                 'pos_purchases.profit',
                 'pos_purchase_sales.created_at'
-            )
+            )->orderBy('pos_purchase_sales.created_at','desc')
             ->where('pos_purchases.shop_owner_id', $shopId)->whereBetween('pos_purchase_sales.created_at', array(
                 $fromDate,
                $toDate,
@@ -190,7 +190,7 @@ class PosItemFilterService
                 'pos_kyout_purchases.product_weight',
                 'pos_kyout_purchases.profit',
                 'pos_purchase_sales.created_at'
-            )
+            )->orderBy('pos_purchase_sales.created_at','desc')
             ->where('pos_kyout_purchases.shop_owner_id', $shopId)->whereBetween('pos_purchase_sales.created_at', array(
                 $fromDate,
                $toDate,
@@ -206,7 +206,7 @@ class PosItemFilterService
                 'pos_platinum_purchases.product_weight',
                 'pos_platinum_purchases.profit',
                 'pos_purchase_sales.created_at'
-            )
+            )->orderBy('pos_purchase_sales.created_at','desc')
             ->where('pos_platinum_purchases.shop_owner_id', $shopId)->whereBetween('pos_purchase_sales.created_at', array(
                 $fromDate,
                $toDate,
@@ -222,7 +222,7 @@ class PosItemFilterService
                 'pos_white_gold_purchases.product_weight',
                 'pos_white_gold_purchases.profit',
                 'pos_purchase_sales.created_at'
-            )
+            )->orderBy('pos_purchase_sales.created_at','desc')
             ->where('pos_white_gold_purchases.shop_owner_id', $shopId)->whereBetween('pos_purchase_sales.created_at', array(
                 $fromDate,
                $toDate,
