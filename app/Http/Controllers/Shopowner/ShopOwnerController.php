@@ -33,6 +33,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 use App\Models\Orders;
+use App\Models\ShopOwnersAndStaffs;
 
 class ShopOwnerController extends Controller
 {
@@ -640,6 +641,7 @@ class ShopOwnerController extends Controller
         }
 
         $updateSuccess = $shopowner->update();
+        $shopownerandstaff = ShopOwnersAndStaffs::where('shop_id',$id)->where('role_id','4')->update(['phone'=>$request->main_phone]);
 
         if ($request->hasFile('banner')) {
             $shop_banner = ShopBanner::where('shop_owner_id', $id)->get();

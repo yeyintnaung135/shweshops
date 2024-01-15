@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\Trait;
 
-use App\Models\discount;
+use App\Models\Discount;
 use App\Models\FrontUserLogs;
 use App\Models\GuestOrUserId;
 use App\Models\Item;
@@ -59,7 +59,7 @@ trait ForYouLogic
     public function getminprice($itemid)
     {
         $getitem = Item::where('id', $itemid)->first();
-        $to_check_dis_first = discount::where('item_id', $itemid);
+        $to_check_dis_first = Discount::where('item_id', $itemid);
         if ($to_check_dis_first->count() == 0) {
             if ($getitem->price == 0) {
                 $min = $getitem->min_price;
@@ -83,7 +83,7 @@ trait ForYouLogic
     public function getmaxprice($itemid)
     {
         $getitem = Item::where('id', $itemid)->first();
-        $to_check_dis_first = discount::where('item_id', $itemid);
+        $to_check_dis_first = Discount::where('item_id', $itemid);
         if ($to_check_dis_first->count() == 0) {
             if ($getitem->price == 0) {
                 $max = $getitem->max_price;

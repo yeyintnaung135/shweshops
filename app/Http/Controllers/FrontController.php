@@ -842,7 +842,8 @@ class FrontController extends Controller
 
     public function getPremiumShops()
     {
-        $shops = Shops::orderBy('created_at', 'desc')->where('premium', 'yes')->limit(20)->get();
+        $shops = Shops::orderBy('created_at', 'desc')->where('premium', 'yes')->where('deleted_at',null)
+        ->where('pos_only','!=','yes')->limit(20)->get();
         return view('front.shops', ['shops' => $shops, 'active' => 'premium']);
     }
 
@@ -853,6 +854,8 @@ class FrontController extends Controller
         $shops = frontuserlogs::join('guestoruserid', 'front_user_logs.userorguestid', '=', 'guestoruserid.id')
             ->join('shops', 'front_user_logs.shop_id', '=', 'shops.id')
             ->where('guestoruserid.user_agent', '!=', 'bot')
+            ->where('shops.deleted_at',null)
+            ->where('shops.pos_only','!=','yes')
             ->where('front_user_logs.status', 'shopdetail')
             ->whereBetween('front_user_logs.created_at', [$dateS, $dateE])
             ->select('front_user_logs.shop_id', 'shops.*', DB::raw('count(*) as total'))

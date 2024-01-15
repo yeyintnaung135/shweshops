@@ -177,7 +177,7 @@
                                 <tr class="text-color">
                                     <td rowspan="6" colspan="2" class="text-color">
                                         <h6>​ရောင်းသူ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- {{$sale->staff_id}}</h6>
-                                        <h6 class="mt-2">​ဘောက်ချာဖွင့်သူ - {{$sale->counter_shop}}</h6>
+                                        <h6 class="mt-2">​ဆိုင်ခွဲ - {{$sale->counter_shop}}</h6>
                                         <h4>အာမခံ​ဘောက်ချာ</h4>
                                         <h6>ပစ္စည်းနှင့်​စျေးနှုန်းမှန်ကန်​ကြောင်း အာမခံပါသည်</h6>
                                     </td>

@@ -14,7 +14,7 @@ const initialfacebook = function (thisfromparent) {
             appId: process.env.MIX_FACEBOOK_APP_ID,
             autoLogAppEvents: true,
             xfbml: true,
-            version: 'v13.0'
+            version: 'v14.0'
         });
 
         wehavetokenshowconnected(thisfromparent)

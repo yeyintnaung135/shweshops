@@ -16,7 +16,7 @@
                     @if($is_foryou_random == 'no')
                     <products_filter
                         :initialitems="{{$data}}"
-                        :discount="'no'"
+                        :discount=false
                         :cat_list="{{$cat_list}}" 
                         :maincat_list="'{{$maincat_list}}'"
                         :cat_id="{{$fscatlist}}"
@@ -33,7 +33,7 @@
                     @else
                     <products_filter
                     :initialitems="{{$data}}"
-                    :discount="'no'"
+                    :discount=false
                     :cat_list="{{$cat_list}}" 
                     :maincat_list="'{{$maincat_list}}'"
                     :cat_id="['all']"

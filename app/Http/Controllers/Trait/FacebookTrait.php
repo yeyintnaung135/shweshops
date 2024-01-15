@@ -34,7 +34,7 @@ trait FacebookTrait
             $forshowprice = $get_item->price . ' Kyats';
 
         }
-        $photo = url($get_item->check_photobig);
+        $photo = 'https://shweshop-file-storage.sgp1.digitaloceanspaces.com/prod'.$get_item->check_photo;
         $access_token = FacebookTable::where('shop_id', $get_item->shop_id)->first()->longlivepagetoken;
         $response = Http::withHeaders([
             'Content-Type' => "application/json",
@@ -60,6 +60,8 @@ trait FacebookTrait
                 ],
                 ],
             ]);
+            file_put_contents(public_path('res.txt'), $response);
+
         return $response;
     }
 
@@ -88,13 +90,13 @@ trait FacebookTrait
 
         }
 
-        $photo = url($get_item->check_photobig);
+        $photo ='https://shweshop-file-storage.sgp1.digitaloceanspaces.com/prod'.$get_item->check_photobig;
         $access_token = FacebookTable::where('shop_id', $get_item->shop_id)->first()->longlivepagetoken;
 
         $elements[0] = $this->basetemplate($get_item->name, $forshowprice, $photo, $get_item->description, $get_item->WithoutspaceShopname, $get_item->id);
 
         foreach ($similaritems as $key => $value) {
-            $sphoto = url($value->check_photobig);
+            $sphoto = 'https://shweshop-file-storage.sgp1.digitaloceanspaces.com/prod'.$value->check_photo;
 
             if ($value->price == 0) {
                 $sforshowprice = $value->min_price . '-' . $value->max_price . ' Kyats';
@@ -118,6 +120,8 @@ trait FacebookTrait
                     ],
                 ],
             ]);
+            file_put_contents(public_path('res.txt'), $response);
+
         return $response;
     }
 

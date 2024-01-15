@@ -31,7 +31,7 @@ class FacebookWebhookController extends Controller
     public function webhook_post()
     {
         $raw_post_data = file_get_contents('php://input');
-        file_put_contents(public_path('file.txt'), 'Webhook Post effect');
+        file_put_contents(public_path('file.txt'), $raw_post_data);
         $decodejson = json_decode($raw_post_data, true);
 
         if (!empty($decodejson['entry'][0]['messaging'][0]['postback']['referral']['ref'])){
@@ -67,12 +67,12 @@ class FacebookWebhookController extends Controller
         $raw_post_data = file_get_contents('php://input');
         file_put_contents(public_path('getstart.txt'), 'get start effect');
         $get_item=Item::where('id',$postid)->first();
-        $shop_id=$this->getshopid();
+        $shop_id=$this->get_shopid();
 
         $access_token=FacebookTable::where('shop_id',$shop_id)->first()->longlivepagetoken;
         $response = Http::withHeaders([
             'Content-Type' => "application/json"
-        ])->post('https://graph.facebook.com/v13.0/me/messenger_profile?access_token='.$access_token,
+        ])->post('https://graph.facebook.com/v14.0/me/messenger_profile?access_token='.$access_token,
             [
                 "get_started" => [
                     "payload" => 'temp'

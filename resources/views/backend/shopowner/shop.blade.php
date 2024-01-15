@@ -68,7 +68,8 @@
                             <div class="profile-content">
                                 <div class=" profile position-relative mb-4">
                                     <img class="profile-user-img img-fluid img-circle"
-                                        src="{{ filedopath('/shop_owner/logo/' . $shopowner->shop_logo) }}" alt="User profile picture">
+                                        src="{{ filedopath('/shop_owner/logo/' . $shopowner->shop_logo) }}"
+                                        alt="User profile picture">
                                     <div class="shop_name">
                                         <h3>
                                             {{ $shopowner->shop_name }} <br>
@@ -118,14 +119,34 @@
                                                     <a href="javascript:void(0)" @click="fblogin"
                                                         v-if="fbdata.connected == 'no'" class="btn btn-primary "><b>
                                                             <span class="fab fa-facebook-f"></span>&nbsp;&nbsp;<span
-                                                                style="font-family: sans-serif!important">Connect to
+                                                                style="font-family: sans-serif!important;font-size:13px;">Connect to
                                                                 Facebook</span></b></a>
-                                                    <a href="javascript:void(0)" id=""
-                                                        v-if="fbdata.connected == 'yes'"
-                                                        class="btn btn-primary sop-btn-primary "><b>
-                                                            <span class="fab fa-facebook-f"></span>&nbsp;&nbsp;<span
-                                                                style="font-family: sans-serif!important">Connected with
-                                                                Facebook</span></b></a>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <a href="javascript:void(0)" id=""
+                                                            v-if="fbdata.connected == 'yes'"
+                                                            class="btn btn-primary sop-btn-primary "><b>
+                                                                <span class="fab fa-facebook-f"></span>&nbsp;&nbsp;<span
+                                                                    style="font-family: sans-serif!important;font-size:13px;">Connected with
+                                                                    Facebook</span></b></a>
+                                                    </div>
+                                                    <div class="col-6">
+
+                                                        <a v-if="fbdata.connected == 'yes'" class="btn btn-danger "
+                                                            onclick="disfb()"><b>
+                                                                <span class="fab fa-facebook-f"
+                                                                    id="fb_dis"></span>&nbsp;&nbsp;<span
+                                                                    style="font-family: sans-serif!important;font-size:13px;">Disconnect
+                                                                    From
+                                                                    Facebook</span></b></a>
+                                                        <form id="fb_dis_form"
+                                                            action="{{ url('backside/shop_owner/disconnect_fb') }}"
+                                                            method="POST" style="display: none;">
+                                                            @csrf
+                                                        </form>
+                                                    </div>
+                                                </div>
+
                                                 </p>
                                             @endif
 
@@ -153,6 +174,7 @@
                                                                 class="fa fa-lock"></span>&nbsp;&nbsp;<span
                                                                 style="font-family: sans-serif!important">Change
                                                                 Password</span></b></a>
+
                                                 </div>
                                             @endif
                                         @endisset
@@ -320,10 +342,10 @@
         }
 
         /* .profile img{
-                          position: absolute;
-                          top: -5em;
-                          z-index: 100;
-                        } */
+                                                  position: absolute;
+                                                  top: -5em;
+                                                  z-index: 100;
+                                                } */
 
         .shop_name {
             position: absolute;
@@ -358,10 +380,10 @@
             }
 
             /* .profile img{
-                                position: absolute;
-                                top: -3.5em;
+                                                        position: absolute;
+                                                        top: -3.5em;
 
-                            } */
+                                                    } */
             .shop_name {
                 position: absolute;
                 left: 8em;
@@ -392,16 +414,25 @@
 
 
             /* .sop-profile-back {
-                                margin-top: -75px !important;
-                                margin-left: 25px;
-                            } */
+                                                        margin-top: -75px !important;
+                                                        margin-left: 25px;
+                                                    } */
         }
     </style>
 @endpush
 
 @push('scripts')
     <script>
+        function disfb() {
+            console.log('ffff')
+            event.preventDefault();
+            var check = confirm("Do you really want to Disconnect from Facebook?");
+            if (check) {
+                document.getElementById('fb_dis_form').submit();
+            }
+        }
         $(document).ready(function() {
+
 
             $('.product-image-thumb').on('click', function() {
                 var $image_element = $(this).find('img')

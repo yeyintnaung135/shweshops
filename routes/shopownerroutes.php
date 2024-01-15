@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\ShopOwnerLoginController;
 use App\Http\Controllers\Auth\ShopownerRegisterController;
 use App\Http\Controllers\Auth\YkforgotpasswordController;
 use App\Http\Controllers\ChangePasswordController;
+use App\Http\Controllers\forfacebook\FacebookController;
 use App\Http\Controllers\message\MessageController;
 use App\Http\Controllers\message\UsermessageController;
 use App\Http\Controllers\ShopOwner\CollectionController;
@@ -29,6 +30,7 @@ Route::group(['prefix' => 'backside/shop_owner', 'as' => 'backside.shop_owner.']
 
     Route::get('/login/{from?}', [ShopOwnerLoginController::class, 'loginform'])->name('login');
     Route::post('login', [ShopOwnerLoginController::class, 'login'])->name('login.post');
+    Route::post('disconnect_fb', [FacebookController::class, 'dis_fb']);
 
     //shop owner order lists routes by wlk
     Route::get('orders', [ShopOwnerController::class, 'orderList'])->name('orders');

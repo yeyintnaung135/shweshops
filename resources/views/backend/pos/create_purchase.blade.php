@@ -264,7 +264,7 @@
                                   </div>
 
                                   <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" id="inlineCheckbox" name='inlineCheckbox' value="option3"/>
+                                    <input class="form-check-input" type="radio" checked id="inlineCheckbox" name='inlineCheckbox' value="option3"/>
                                     <label class="form-check-label" for="inlineCheckbox">unisex</label>
                                 </div>
                                 <div class="form-check form-check-inline">
@@ -286,7 +286,7 @@
                             </div>
 
 
-                            @if ($shopowner->pos_only == 'no')
+                            @if ($shopowner->pos_only != 'yes')
                                  <!-- ShweShop Item -->
                             <div class="col-12 mt-3" >
                                 <label for="shwe_item">Shwe Shop Item သွင်းမည်</label>

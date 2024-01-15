@@ -218,7 +218,7 @@
                                   </div>
 
                                   <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" id="inlineCheckbox" name='inlineCheckbox' value="option3"/>
+                                    <input class="form-check-input" type="radio" checked id="inlineCheckbox" name='inlineCheckbox' value="option3"/>
                                     <label class="form-check-label" for="inlineCheckbox">unisex</label>
                                 </div>
                                 <div class="form-check form-check-inline">

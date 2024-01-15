@@ -1143,7 +1143,7 @@
                                         <div class="images sop-font sop-img">
                                             <div class="yk-hover-title sop-rounded-top text-capitalize text-left g-0"
                                                 style="width:100% !important;">
-                                                <img src="{{ url('images/logo/thumbs/' . $new_item->shop_name->shop_logo) }}"
+                                                <img src="{{ filedopath('/shop_owner/logo/thumbs/' . $new_item->shop_name->shop_logo) }}"
                                                     class="yk-hover-logo float-left" />
                                                 <span>
                                                     {{ \Illuminate\Support\Str::limit($new_item->shop_name->shop_name, 15, '...') }}
@@ -1183,7 +1183,7 @@
                                         <div class="images sop-font sop-img">
                                             <div class="yk-hover-title sop-rounded-top text-capitalize text-left g-0"
                                                 style="width:100% !important;">
-                                                <img src="{{ url('images/logo/thumbs/' . $new_item->shop_name->shop_logo) }}"
+                                                <img src="{{ filedopath('/shop_owner/logo/thumbs/' . $new_item->shop_name->shop_logo) }}"
                                                     class="yk-hover-logo float-left" />
                                                 <span>
                                                     {{ \Illuminate\Support\Str::limit($new_item->shop_name->shop_name, 15, '...') }}

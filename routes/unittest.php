@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Http;
 
+Route::get('dis',function(){
+    $response = Http::withHeaders([
+        'Content-Type' => "application/json"
+    ])->get('https://graph.facebook.com/v13.0/111287773718491/subscribed_apps?access_token=EAAVZCxoJxgvMBO6LuP7VIJYrfVcsLd50zrYWZAiLjusmbIbI5YjvTVla6Nvx1sqT5dyYXGfA48aUvVrNZAZC8ZBZAoB6eibjA8iPkzm89iInrzVQTrXUv7rZBZCZAKz9FxVDrFkr5an9jowjO0SJCepJHufqjzjcCPDy42jL3IAW6dYPS25j1pNQeaWVonFC2Cuygw4JZAzZB470EgsZBvMZD');
+    return $response;
+});
+
 Route::get('getmessages', function () {
 
     $messages=Messages::where(function ($query) {

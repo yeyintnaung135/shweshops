@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Storage;
 function filedopath($uri)
 {
     if (env('USE_DO') == 'true') {
-        return env('DIGITALOCEAN_SPACES_ENDPOINT') . '/prod' . $uri;
+        return  'https://shweshop-file-storage.sgp1.cdn.digitaloceanspaces.com/prod' . $uri;
 
     } else {
         return url('/images' . $uri);

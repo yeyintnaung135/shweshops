@@ -119,6 +119,7 @@ class ShopController extends Controller
         }
 
         $updateSuccess = $shopowner->update();
+        $shopownerandstaff = ShopOwnersAndStaffs::where('shop_id',$id)->where('role_id','4')->update(['phone'=>$request->main_phone]);
 
         $shop_dir['shop_id'] = $id;
         ShopDirectory::updateOrCreate($shop_dir);

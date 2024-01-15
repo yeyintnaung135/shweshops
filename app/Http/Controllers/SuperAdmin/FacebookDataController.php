@@ -34,14 +34,14 @@ class FacebookDataController extends Controller
 
         $recordsQuery = FacebookTable::with('shop')
             ->select('id', 'pagename', 'shop_id', 'created_at')
-            ->when($searchByFromdate, fn($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
-            ->when($searchByTodate, fn($query) => $query->whereDate('created_at', '<=', $searchByTodate));
+            ->when($searchByFromdate, fn ($query) => $query->whereDate('created_at', '>=', $searchByFromdate))
+            ->when($searchByTodate, fn ($query) => $query->whereDate('created_at', '<=', $searchByTodate));
 
         return DataTables::eloquent($recordsQuery)
             ->addColumn('shop_name', function ($record) {
                 return $record->shop->shop_name;
             })
-            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
+            ->editColumn('created_at', fn ($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->toJson();
     }
 
@@ -73,21 +73,37 @@ class FacebookDataController extends Controller
 
         $recordsQuery = FacebookMessage::where('shop_id', $shop_id)
             ->select('id', 'user_fb_id', 'user_id', 'item_id', 'created_at')
-            ->when($fromDate, fn($query) => $query->whereDate('created_at', '>=', $fromDate))
-            ->when($toDate, fn($query) => $query->whereDate('created_at', '<=', $toDate));
+            ->when($fromDate, fn ($query) => $query->whereDate('created_at', '>=', $fromDate))
+            ->when($toDate, fn ($query) => $query->whereDate('created_at', '<=', $toDate));
 
         return DataTables::of($recordsQuery)
             ->addColumn('user_name', function ($record) {
-                return $record->user->username;
+                if (!empty($record->user->username)) {
+                    return $record->user->username;
+                } else {
+                    return 'Deleted User';
+                }
             })
             ->addColumn('user_phone', function ($record) {
-                return $record->user->phone;
+                if (!empty($record->user->phone)) {
+                    return $record->user->phone;
+                } else {
+                    return 'Deleted User';
+                }
             })
             ->addColumn('item_name', function ($record) {
-                return $record->item->name;
+                if (!empty($record->item->name)) {
+                    return $record->item->name;
+                } else {
+                    return 'Deleted Item';
+                }
             })
             ->addColumn('item_code', function ($record) {
-                return $record->item->product_code;
+                if (!empty($record->item->product_code)) {
+                    return $record->item->product_code;
+                } else {
+                    return 'Deleted Item';
+                }
             })
             ->addColumn('item_photo', function ($record) {
                 if ($record->item) {
@@ -95,7 +111,7 @@ class FacebookDataController extends Controller
                 }
                 return '';
             })
-            ->editColumn('created_at', fn($record) => $record->created_at->format('F d, Y ( h:i A )'))
+            ->editColumn('created_at', fn ($record) => $record->created_at->format('F d, Y ( h:i A )'))
             ->make(true);
     }
 
@@ -106,8 +122,8 @@ class FacebookDataController extends Controller
 
         $recordsQuery = Shops::select('id', 'shop_name', 'created_at')
             ->withCount('facebook_message_clicks')
-            ->when($fromDate, fn($query) => $query->whereDate('created_at', '>=', $fromDate))
-            ->when($toDate, fn($query) => $query->whereDate('created_at', '<=', $toDate));
+            ->when($fromDate, fn ($query) => $query->whereDate('created_at', '>=', $fromDate))
+            ->when($toDate, fn ($query) => $query->whereDate('created_at', '<=', $toDate));
 
         return DataTables::of($recordsQuery)
             ->editColumn('created_at', function ($record) {

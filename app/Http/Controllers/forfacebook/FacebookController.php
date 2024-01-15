@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Trait\UserRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class FacebookController extends Controller
 {
@@ -40,6 +41,17 @@ class FacebookController extends Controller
             return response()->json(['status'=>'no']);
 
         }
+    }
+    public function dis_fb(Request $request){
+        $shop_id=$this->get_shopid();
+        $getfbdata=FacebookTable::where('shop_owner_id',$shop_id)->first();
+
+        $response = Http::withHeaders([
+            'Content-Type' => "application/json"
+        ])->get('https://graph.facebook.com/v13.0/'.$getfbdata->page_id.'/subscribed_apps?access_token='.$getfbdata->longlivepagetoken);
+        FacebookTable::where('shop_owner_id',$shop_id)->forceDelete();
+
+        return redirect(url('backside/shop_owner/shop'));
     }
 
     public function storetoken(Request $request){
