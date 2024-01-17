@@ -28,13 +28,13 @@ class FrontShopController extends Controller
             abort(404);
         }
 
-        $all_shop_id = Shops::where('id', '!=', 1)->orderBy('shop_name', 'asc')->get();
+        $all_shop_id = Shops::where('id', '!=', 1)->where('deleted_at',NULL)->orderBy('shop_name', 'asc')->get();
         // $all_shop_id = Shops::where('id', '!=', 1)->orderBy('created_at', 'desc')->get();
 
         // for account
         if (isset(Auth::guard('shop_owners_and_staffs')->user()->id)) {
             $shop_user = ShopOwnersAndStaffs::where('id', Auth::guard('shop_owners_and_staffs')->user()->id)->pluck('shop_id');
-            $shop = Shops::where('id', $shop_user)->orderBy('created_at', 'desc')->get();
+            $shop = Shops::where('id', $shop_user)->where('deleted_at',NULL)->orderBy('created_at', 'desc')->get();
         }
 
         return view('front.forcat_shop', ['data' => $data, 'cat_id' => $cat_name, 'shop_data' => $this->getshopbyid($shop_id), 'shop_ids' => $all_shop_id]);
@@ -44,7 +44,7 @@ class FrontShopController extends Controller
     }
     public function getShops()
     {
-        $shops = Shops::orderBy('created_at', 'desc')->where('pos_only','!=', 'yes')->limit(20)->get();
+        $shops = Shops::orderBy('created_at', 'desc')->where('deleted_at',NULL)->where('pos_only','!=', 'yes')->limit(20)->get();
         return view('front.shops', ['shops' => $shops, 'active' => 'all']);
     }
     public function get_shops_byfilter(Request $request)
@@ -70,7 +70,7 @@ class FrontShopController extends Controller
                 ->where(function ($query) use ($shopname) {
                      $query->where('shops.shop_name', 'like', $shopname)
                         ->orWhere('shops.shop_name_myan', 'like', $shopname);
-                })
+                })->where('shops.deleted_at',NULL)
                 ->whereBetween('front_user_logs.created_at', [$dateS, $dateE])
                 ->select('front_user_logs.shop_id', 'shops.*', DB::raw('count(*) as total'))
                 ->groupBy('front_user_logs.shop_id')
@@ -80,7 +80,7 @@ class FrontShopController extends Controller
 
         } else {
             $shops = Shops::orderBy('created_at', 'desc')
-                ->where('pos_only','!=','yes')
+                ->where('pos_only','!=','yes')->where('deleted_at',NULL)
                 ->where(function ($query) use ($shopname) {
                     $query->where('shop_name', 'like', $shopname)
                         ->orWhere('shop_name_myan', 'like', $shopname);

@@ -223,7 +223,7 @@
                                     <label class="form-check-label" for="inlineCheckbox">က​လေးဝတ်</label>
                                   </div>
                             </div>
-                            @if ($shopowner->pos_only != 'yes')
+                            @if ($shopowner->pos_only != 'yes' or empty($shopowner->pos_only))
                             <!-- ShweShop Item -->
                             <div class="col-12 mt-3" >
                                 <label for="shwe_item">Shwe Shop Item သွင်းမည်</label>

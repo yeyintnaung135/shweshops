@@ -744,7 +744,7 @@ class FrontController extends Controller
             $new_items = Item::where('shop_id', $shop_id)->orderBy('view_count', 'desc')->limit(20)->get();
         }
 
-        $temp_shop_name = Shops::where('id', $shop_id)->first()->id;
+        $temp_shop_name = Shops::where('id', $shop_id)->where('deleted_at',NULL)->first()->id;
 
         $forselected = $temp_shop_name;
         //values function is beacause filter retrun {{}} but i need [{}]
