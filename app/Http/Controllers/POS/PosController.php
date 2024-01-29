@@ -453,7 +453,12 @@ class PosController extends Controller
             ->editColumn('id', fn ($data) => $data->dtid)
 
             ->addColumn('supplier', function ($data) {
-                return $data->supplier->name;
+                if(!empty($data->supplier->name)){
+                    return $data->supplier->name;
+
+                }else{
+                    return "deleted";
+                }
             })
             ->addColumn('actions', function ($data) {
                 $urls = [

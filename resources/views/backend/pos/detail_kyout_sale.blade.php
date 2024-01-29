@@ -48,7 +48,7 @@
                                     <div class="col-7">
                                         <div class="row">
                                             <div class="col-4">​
-                                              <h6 class="">စျေးနှုန်း</h6>
+                                              <h6 class="mt-4">စျေးနှုန်း</h6>
                                               <h6 class="mt-4">စိန်​​ကျောက်ဖိုး</h6>
                                               <h6 class="mt-4">ရောင်းဈေး</h6>
                                               <h6 class="mt-4">ကျသင့်​ငွေ</h6>
@@ -81,7 +81,7 @@
                                               @endif
 
                                             </div>
-                                            <div class="col-1">
+                                            <div class="col-1 mt-4">
                                                 <h6 class="mt-4">-</h6>
                                               <h6 class="mt-4">-</h6>
                                               <h6 class="mt-4">-</h6>
@@ -122,7 +122,7 @@
                                             $profit = explode('/',$purchase->purchase->profit);
                                             $service = explode('/',$purchase->purchase->service_fee);
                                             ?>
-                                            <div class="col-7">
+                                            <div class="col-5 mt-4">
                                             <h6 class="text-color mt-4">{{$purchase->price}} ကျပ်</h6>
                                             <h6 class="text-color mt-4">{{$purchase->purchase->diamond_selling_price}} ကျပ်</h6>
                                               <h6 class="text-color mt-4">{{$purchase->amount}} ကျပ်</h6>

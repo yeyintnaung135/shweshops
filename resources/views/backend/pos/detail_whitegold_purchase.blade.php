@@ -65,7 +65,7 @@
                                               <h6 class="mt-4">ပစ္စည်းအမျိုးအစား</h6>
                                               <h6 class="mt-4">အ​ရောင်</h6>
                                             </div>
-                                            <div class="col-1">
+                                            <div class="col-1 ">
                                               <h6 class="mt-4">-</h6>
                                               <h6 class="mt-4">-</h6>
                                               <h6 class="mt-4">-</h6>
@@ -86,7 +86,7 @@
                                             <?php
                                             $profit = explode('/',$purchase->profit);
                                             ?>
-                                            <div class="col-7">
+                                            <div class="col-7 ">
                                             <h6 class="text-color mt-4">{{$purchase->selling_price}} ကျပ်</h6>
                                             <h6 class="text-color mt-4">{{$purchase->capital}} ကျပ်</h6>
                                             <h6 class="text-color mt-4">{{$profit[0]}} {{$profit[1]}}</h6>
@@ -137,21 +137,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="mt-3">
-                                    <?php $ischeck = $purchase->type;?>
-                                    @if ($ischeck == 'option1')
-                                    <span class="badge badge-color ml-2">​​မိန်းမဝတ်</span>
-                                    @endif
-                                    @if ($ischeck == 'option2')
-                                    <span class="badge badge-color ml-2">​ယောကျားဝတ်</span>
-                                    @endif
-                                    @if ($ischeck == 'option3')
-                                    <span class="badge badge-color ml-2">unisex</span>
-                                    @endif
-                                    @if ($ischeck == 'option4')
-                                    <span class="badge badge-color ml-2">​က​လေးဝတ်</span>
-                                    @endif
-                                </div>
+                               
                             </div>
                         </div>
                         <br>

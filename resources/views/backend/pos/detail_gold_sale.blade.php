@@ -117,7 +117,7 @@
                                             $profit = explode('/',$purchase->purchase->profit);
                                             $service = explode('/',$purchase->purchase->service_fee);
                                             ?>
-                                            <div class="col-7">
+                                            <div class="col-7 ">
                                             <h6 class="text-color mt-4">{{$purchase->price}} ကျပ်</h6>
                                               <h6 class="text-color mt-4">{{$purchase->amount}} ကျပ်</h6>
                                               <h6 class="text-color mt-4">{{$purchase->amount}} ကျပ်</h6>
@@ -151,7 +151,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-5">
+                                    <div class="col-5 ">
                                         <img src="{{asset('main/images/pos/goldpurchase_photo/'.$purchase->purchase->photo)}}" alt="">
                                         <div class="mt-5">
                                             <input type="hidden" id="text" value="{{$purchase->purchase->barcode}}"/>

@@ -71,7 +71,7 @@
                                                     <h6 class="mt-4">ပစ္စည်းအမျိုးအစား</h6>
                                                     <h6 class="mt-4">အ​ရောင်</h6>
                                                 </div>
-                                                <div class="col-1">
+                                                <div class="col-1 mt-4">
                                                     <h6 class="mt-4">-</h6>
                                                     <h6 class="mt-4">-</h6>
                                                     <h6 class="mt-4">-</h6>
@@ -103,7 +103,7 @@
                                                 $profit = explode('/', $purchase->profit);
                                                 $service = explode('/', $purchase->service_fee);
                                                 ?>
-                                                <div class="col-6">
+                                                <div class="col-5 mt-4">
                                                     <h6 class="text-color mt-4">{{ $purchase->gold_fee }} ကျပ်</h6>
                                                     <h6 class="text-color mt-4">{{ $purchase->capital }} ကျပ်</h6>
                                                     <h6 class="text-color mt-4">{{ $purchase->selling_price }} ကျပ်</h6>

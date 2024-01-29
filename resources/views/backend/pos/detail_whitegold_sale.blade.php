@@ -70,7 +70,7 @@
                                               <h6 class="mt-4">ပစ္စည်းအမျိုးအစား</h6>
                                               <h6 class="mt-4">အ​ရောင်</h6>
                                             </div>
-                                            <div class="col-1">
+                                            <div class="col-1 ">
                                                 <h6 class="mt-4">-</h6>
                                                 <h6 class="mt-4">-</h6>
                                               <h6 class="mt-4">-</h6>
