@@ -39,6 +39,9 @@
                                     aria-hidden="true"></i>{{ $purchase->date }}</h6>
                         </div>
                     </div>
+                    <?php
+                    $profit = explode('/', $purchase->profit);
+                    ?>
                     <div class="row mt-3">
                         <div class="col-11">
                             <div class="card">
@@ -47,77 +50,162 @@
                                     <div class="row mt-3">
                                         <div class="col-7">
                                             <div class="row">
-                                                <div class="col-4">
-                                                    <h6 class="mt-4">ရောင်းဈေး</h6>
-                                                    <h6 class="mt-4">အရင်း​</h6>
-                                                    <h6 class="mt-4">အမြတ်</h6>
-                                                    <h6 class="mt-4">Product အလေးချိန်</h6>
-                                                    <h6 class="mt-4">Code Number</h6>
-                                                    <h6 class="mt-4">​ပလက်တီနမ်အမည်</h6>
-                                                    <h6 class="mt-4">​ပလက်တီနမ်အရည်အသွေး</h6>
-                                                    <h6 class="mt-4">​ပလက်တီနမ်အမျိုးအစား</h6>
-                                                    <h6 class="mt-4">Product အမျိုးအစား</h6>
-                                                    <h6 class="mt-4">ဝယ်ယူသည့်​စျေးနှုန်း</h6>
-                                                    <h6 class="mt-4">စစ်​ဆေးမည့် ဝန်ထမ်း</h6>
-                                                    @if ($purchase->remark)
-                                                        <h6 class="mt-4">မှတ်ချက်</h6>
-                                                    @endif
-                                                    <h6 class="mt-4">ပစ္စည်းအမျိုးအစား</h6>
-                                                    <h6 class="mt-4">အ​ရောင်</h6>
-                                                </div>
-                                                <div class="col-1 ">
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    @if ($purchase->remark)
-                                                        <h6 class="mt-4">-</h6>
-                                                    @endif
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                </div>
-                                                <?php
-                                                $profit = explode('/', $purchase->profit);
-                                                ?>
-                                                <div class="col-7 ">
-                                                    <h6 class="text-color mt-4">{{ $purchase->selling_price }} ကျပ်</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->capital }} ကျပ်</h6>
-                                                    <h6 class="text-color mt-4">{{ $profit[0] }} {{ $profit[1] }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->product_weight }} gram</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->code_number }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->name }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->quality }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->platinum_type }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->category->name }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->purchase_price }} ကျပ်</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->staff_id }}</h6>
-                                                    @if ($purchase->remark)
-                                                        <h6 class="text-color mt-4">{{ $purchase->remark }}</h6>
-                                                    @endif
-                                                    <h6 class="text-color mt-4">
-                                                        <?php $ischeck = $purchase->type; ?>
-                                                        @if ($ischeck == 'option1')
-                                                            <span class="badge badge-color ml-2">​​မိန်းမဝတ်</span>
-                                                        @endif
-                                                        @if ($ischeck == 'option2')
-                                                            <span class="badge badge-color ml-2">​ယောကျားဝတ်</span>
-                                                        @endif
-                                                        @if ($ischeck == 'option3')
-                                                            <span class="badge badge-color ml-2">unisex</span>
-                                                        @endif
-                                                        @if ($ischeck == 'option4')
-                                                            <span class="badge badge-color ml-2">​က​လေးဝတ်</span>
-                                                        @endif
-                                                    </h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->color }}</h6>
-                                                </div>
+                                                    <div class="col-12">
+                                                        <table cellspacing="0" cellpadding="0" style="border: none;">
+                                                            <tr>
+                                                                <td style="border: none;">ရောင်းဈေး</td>
+                                                                <td>-</td>
+                                                                <td><span class="text-color ">{{ $purchase->selling_price }}
+                                                                        ကျပ်</span>
+                                                                </td>
+
+
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="border: none;">အရင်း​</td>
+                                                                <td>-</td>
+                                                                <td><span class="text-color ">{{ $purchase->capital }}
+                                                                        ကျပ်</span>
+                                                                </td>
+
+
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="border: none;">အမြတ်</td>
+                                                                <td>-</td>
+                                                                <td><span class="text-color ">{{ $profit[0] }}
+                                                                        {{ $profit[1] }} ကျပ်</span>
+                                                                </td>
+
+
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td style="border: none;">Product အလေးချိန်</td>
+                                                                <td>-</td>
+                                                                <td><span class="text-color ">
+                                                                        {{ $purchase->product_weight }} gram
+                                                                    </span>
+                                                                </td>
+
+
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td style="border: none;">Code Number</td>
+                                                                <td>-</td>
+                                                                <td><span class="text-color ">
+                                                                        {{ $purchase->code_number }}
+                                                                    </span>
+                                                                </td>
+
+
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="border: none;">​ပလက်တီနမ်အမည်</td>
+                                                                <td>-</td>
+                                                                <td><span class="text-color ">
+                                                                        {{ $purchase->name }}</span>
+                                                                </td>
+
+
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td style="border: none;">​ပလက်တီနမ်အရည်အသွေး</td>
+                                                                <td>-</td>
+                                                                <td><span class="text-color ">
+                                                                        {{ $purchase->quality }}</span>
+                                                                </td>
+
+
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td style="border: none;">​ပလက်တီနမ်အမျိုးအစား</td>
+                                                                <td>-</td>
+                                                                <td><span class="text-color ">
+                                                                        {{ $purchase->platinum_type }}</span> </span>
+                                                                </td>
+
+
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="border: none;">Product အမျိုးအစား</td>
+                                                                <td>-</td>
+                                                                <td><span class="text-color ">
+                                                                        {{ $purchase->category->name }}</span> </span>
+                                                                </td>
+
+
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="border: none;">ဝယ်ယူသည့်​စျေးနှုန်း</td>
+                                                                <td>-</td>
+                                                                <td><span class="text-color ">
+                                                                        {{ $purchase->purchase_price }}</span> </span>
+                                                                </td>
+
+
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="border: none;">စစ်​ဆေးမည့် ဝန်ထမ်း</td>
+                                                                <td>-</td>
+                                                                <td><span class="text-color ">
+                                                                        {{ $purchase->staff_id }}</span> </span>
+                                                                </td>
+
+
+                                                            </tr>
+                                                            @if ($purchase->remark)
+                                                                <tr>
+                                                                    <td style="border: none;">မှတ်ချက်</td>
+                                                                    <td>-</td>
+                                                                    <td><span class="text-color ">
+                                                                            {{ $purchase->remark }}</span> </span>
+                                                                    </td>
+
+
+                                                                </tr>
+                                                            @endif
+                                                            <tr>
+                                                                <td style="border: none;">ပစ္စည်းအမျိုးအစား</td>
+                                                                <td>-</td>
+                                                                <td><?php $ischeck = $purchase->type; ?>
+                                                                    @if ($ischeck == 'option1')
+                                                                        <span class="badge badge-color">​​မိန်းမဝတ်</span>
+                                                                    @endif
+                                                                    @if ($ischeck == 'option2')
+                                                                        <span class="badge badge-color">​ယောကျားဝတ်</span>
+                                                                    @endif
+                                                                    @if ($ischeck == 'option3')
+                                                                        <span class="badge badge-color">unisex</span>
+                                                                    @endif
+                                                                    @if ($ischeck == 'option4')
+                                                                        <span class="badge badge-color">​က​လေးဝတ်</span>
+                                                                    @endif </span>
+                                                                </td>
+
+
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="border: none;">အ​ရောင်</td>
+
+                                                                <td>-</td>
+                                                                <td><span class="text-color ">
+                                                                        {{ $purchase->color }}</span> </span>
+                                                                </td>
+
+
+                                                            </tr>
+
+                                                        </table>
+
+                                                    </div>
+
+
+
+
                                             </div>
                                         </div>
                                         <div class="col-5">
@@ -182,13 +270,14 @@
                             <a href="{{ route('backside.shop_owner.pos.edit_ptm_purchase', $purchase->id) }}"
                                 class="ml-2 mt-4 btn btn-sm btn-warning text-white"><i class="fa fa-pencil"></i></a><br>
                             @if ($purchase->sell_flag == 0)
-                            <a class="btn btn-sm btn-danger text-white mt-3 ml-2" onclick="Delete('{{ route('backside.shop_owner.pos.delete_ptm_purchase', ['purchase' => $purchase]) }}')">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                            <form id="delete_form_{{ $purchase->id }}" method="POST" style="display: none;">
-                                @csrf
-                                <input type="hidden" name="_method" value="DELETE">
-                            </form>
+                                <a class="btn btn-sm btn-danger text-white mt-3 ml-2"
+                                    onclick="Delete('{{ route('backside.shop_owner.pos.delete_ptm_purchase', ['purchase' => $purchase]) }}')">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                                <form id="delete_form_{{ $purchase->id }}" method="POST" style="display: none;">
+                                    @csrf
+                                    <input type="hidden" name="_method" value="DELETE">
+                                </form>
                             @endif
                         </div>
                     </div>
@@ -263,6 +352,17 @@
 @endpush
 @push('css')
     <style>
+        table,
+        tr,
+        td {
+            border: none;
+
+        }
+
+        table {
+            width: 90% !important;
+        }
+
         body {
             background: #F0F7FA;
             font-family: 'Myanmar3', Sans-Serif !important;

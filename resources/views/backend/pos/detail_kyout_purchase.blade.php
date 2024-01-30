@@ -39,6 +39,13 @@
                                     aria-hidden="true"></i>{{ $purchase->date }}</h6>
                         </div>
                     </div>
+                    <?php
+                    $product = explode('/', $purchase->product_weight);
+                    $diamond = explode('/', $purchase->diamond_gram_kyat_pe_yway);
+                    $decrease = explode('/', $purchase->decrease_pe_yway);
+                    $profit = explode('/', $purchase->profit);
+                    $service = explode('/', $purchase->service_fee);
+                    ?>
                     <div class="row mt-3">
                         <div class="col-11">
                             <div class="card">
@@ -46,109 +53,229 @@
                                     <div class="row mt-3">
                                         <div class="col-7">
                                             <div class="row">
-                                                <div class="col-5">
-                                                    <h6 class="mt-4">ရွှေဘိုး</h6>
-                                                    <h6 class="mt-4">အရင်း​</h6>
-                                                    <h6 class="mt-4">ရောင်းဈေး</h6>
-                                                    <h6 class="mt-4">စိန်​ကျောက်ဖိုးအ​ရောင်း</h6>
-                                                    <h6 class="mt-4">အမြတ်</h6>
-                                                    <h6 class="mt-4">လက်ခ</h6>
-                                                    <h6 class="mt-4">အလျော့တွက်</h6>
-                                                    <h6 class="mt-4">ပစ္စည်းအလေးချိန်</h6>
-                                                    <h6 class="mt-4">စိန်​ကျောက်ချိန်</h6>
-                                                    <h6 class="mt-4">Code Number</h6>
-                                                    <h6 class="mt-4">ရွှေထည်အမည်</h6>
-                                                    <h6 class="mt-4">ပန်းထိမ်ဆိုင်</h6>
-                                                    <h6 class="mt-4">ရွှေအရည်အသွေး</h6>
-                                                    <h6 class="mt-4">ရွှေအမျိုးအစား</h6>
-                                                    <h6 class="mt-4">Product အမျိုးအစား</h6>
-                                                    <h6 class="mt-4">ဝယ်ယူသည့်​စျေးနှုန်း</h6>
-                                                    <h6 class="mt-4">စစ်​ဆေးမည့် ဝန်ထမ်း</h6>
-                                                    <h6 class="mt-4">စိန်​ကျောက်အမည်</h6>
-                                                    @if ($purchase->remark)
-                                                        <h6 class="mt-4">မှတ်ချက်</h6>
-                                                    @endif
-                                                    <h6 class="mt-4">ပစ္စည်းအမျိုးအစား</h6>
-                                                    <h6 class="mt-4">အ​ရောင်</h6>
+                                                <div class="col-12">
+                                                    <table cellspacing="0" cellpadding="0" style="border: none;">
+                                                        <tr>
+                                                            <td style="border: none;">ရွှေဘိုး</td>
+                                                            <td>-</td>
+                                                            <td><span class="text-color ">{{ $purchase->gold_fee }}
+                                                                    ကျပ်</span>
+                                                            </td>
+
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border: none;">အရင်း​</td>
+                                                            <td>-</td>
+                                                            <td><span class="text-color ">{{ $purchase->capital }}
+                                                                    ကျပ်</span>
+                                                            </td>
+
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border: none;">ရောင်းဈေး</td>
+                                                            <td>-</td>
+                                                            <td><span class="text-color ">{{ $purchase->selling_price }}
+                                                                    ကျပ်</span>
+                                                            </td>
+
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border: none;">စိန်​ကျောက်ဖိုးအ​ရောင်း</td>
+                                                            <td>-</td>
+                                                            <td><span
+                                                                    class="text-color ">{{ $purchase->diamond_selling_price }}
+                                                                    ကျပ်</span>
+                                                            </td>
+
+
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td style="border: none;">အမြတ်</td>
+                                                            <td>-</td>
+                                                            <td><span class="text-color ">{{ $profit[0] }}
+                                                                    {{ $profit[1] }} ကျပ်</span>
+                                                            </td>
+
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border: none;">လက်ခ</td>
+                                                            <td>-</td>
+                                                            <td><span class="text-color ">{{ $service[0] }} ကျပ်</span>
+                                                            </td>
+
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border: none;">အလျော့တွက်</td>
+                                                            <td>-</td>
+                                                            <td><span
+                                                                    class="text-color ">{{ $decrease[0] ? $decrease[0] . 'ပဲ' : '' }}
+                                                                    {{ $decrease[1] ? $decrease[1] . 'ရွေး' : '' }}</span>
+                                                            </td>
+
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border: none;">ပစ္စည်းအလေးချိန်</td>
+                                                            <td>-</td>
+                                                            <td><span class="text-color ">
+                                                                    {{ $product[1] ? $product[1] . 'ကျပ်' : '' }}
+                                                                    {{ $product[2] ? $product[2] . 'ပဲ' : '' }}
+                                                                    {{ $product[3] ? $product[3] . 'ရွေး' : '' }}
+                                                                </span>
+                                                            </td>
+
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border: none;">စိန်​ကျောက်ချိန်</td>
+                                                            <td>-</td>
+                                                            <td><span class="text-color ">
+                                                                    {{ $diamond[0] ? $diamond[0] . 'g' : '' }}
+                                                                    {{ $diamond[1] ? $diamond[1] . 'ကျပ်' : '' }}
+                                                                    {{ $diamond[2] ? $diamond[2] . 'ပဲ' : '' }}
+                                                                    {{ $diamond[3] ? $diamond[3] . 'ရွေး' : '' }}
+                                                                </span>
+                                                            </td>
+
+
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td style="border: none;">Code Number</td>
+                                                            <td>-</td>
+                                                            <td><span class="text-color ">
+                                                                    {{ $purchase->code_number }}</span> </span>
+                                                            </td>
+
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border: none;">ရွှေထည်အမည်</td>
+                                                            <td>-</td>
+                                                            <td><span class="text-color ">
+                                                                    {{ $purchase->name }}</span>
+                                                            </td>
+
+
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td style="border: none;">ပန်းထိမ်ဆိုင်</td>
+                                                            <td>-</td>
+                                                            <td><span class="text-color ">
+                                                                    {{ $purchase->supplier->name }}</span>
+                                                            </td>
+
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border: none;">ရွှေအရည်အသွေး</td>
+                                                            <td>-</td>
+                                                            <td><span class="text-color ">
+                                                                    {{ $purchase->quality->name }}</span>
+                                                            </td>
+
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border: none;">ရွှေအမျိုးအစား</td>
+                                                            <td>-</td>
+                                                            <td><span class="text-color ">
+                                                                    {{ $purchase->gold_type }}</span> </span>
+                                                            </td>
+
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border: none;">Product အမျိုးအစား</td>
+                                                            <td>-</td>
+                                                            <td><span class="text-color ">
+                                                                    {{ $purchase->category->name }}</span> </span>
+                                                            </td>
+
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border: none;">ဝယ်ယူသည့်​စျေးနှုန်း</td>
+                                                            <td>-</td>
+                                                            <td><span class="text-color ">
+                                                                    {{ $purchase->purchase_price }}</span> </span>
+                                                            </td>
+
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border: none;">စစ်​ဆေးမည့် ဝန်ထမ်း</td>
+                                                            <td>-</td>
+                                                            <td><span class="text-color ">
+                                                                    {{ $purchase->staff_id }}</span> </span>
+                                                            </td>
+
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border: none;">စိန်​ကျောက်အမည်</td>
+                                                            <td>-</td>
+                                                            <td><span class="text-color ">
+                                                                    {{ $purchase->diamonds }}</span> </span>
+                                                            </td>
+
+
+                                                        </tr>
+                                                        @if ($purchase->remark)
+                                                            <tr>
+                                                                <td style="border: none;">မှတ်ချက်</td>
+                                                                <td>-</td>
+                                                                <td><span class="text-color ">
+                                                                        {{ $purchase->remark }}</span> </span>
+                                                                </td>
+
+
+                                                            </tr>
+                                                        @endif
+                                                        <tr>
+                                                            <td style="border: none;">ပစ္စည်းအမျိုးအစား</td>
+                                                            <td>-</td>
+                                                            <td><?php $ischeck = $purchase->type; ?>
+                                                                @if ($ischeck == 'option1')
+                                                                    <span class="badge badge-color">​​မိန်းမဝတ်</span>
+                                                                @endif
+                                                                @if ($ischeck == 'option2')
+                                                                    <span class="badge badge-color">​ယောကျားဝတ်</span>
+                                                                @endif
+                                                                @if ($ischeck == 'option3')
+                                                                    <span class="badge badge-color">unisex</span>
+                                                                @endif
+                                                                @if ($ischeck == 'option4')
+                                                                    <span class="badge badge-color">​က​လေးဝတ်</span>
+                                                                @endif </span>
+                                                            </td>
+
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border: none;">အ​ရောင်</td>
+
+                                                            <td>-</td>
+                                                            <td><span class="text-color ">
+                                                                    {{ $purchase->color }}</span> </span>
+                                                            </td>
+
+
+                                                        </tr>
+
+                                                    </table>
+
                                                 </div>
-                                                <div class="col-1 mt-4">
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                    @if ($purchase->remark)
-                                                        <h6 class="mt-4">-</h6>
-                                                    @endif
-                                                    <h6 class="mt-4">-</h6>
-                                                    <h6 class="mt-4">-</h6>
-                                                </div>
-                                                <?php
-                                                $product = explode('/', $purchase->product_weight);
-                                                $diamond = explode('/', $purchase->diamond_gram_kyat_pe_yway);
-                                                $decrease = explode('/', $purchase->decrease_pe_yway);
-                                                $profit = explode('/', $purchase->profit);
-                                                $service = explode('/', $purchase->service_fee);
-                                                ?>
-                                                <div class="col-5 mt-4">
-                                                    <h6 class="text-color mt-4">{{ $purchase->gold_fee }} ကျပ်</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->capital }} ကျပ်</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->selling_price }} ကျပ်</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->diamond_selling_price }} ကျပ်
-                                                    </h6>
-                                                    <h6 class="text-color mt-4">{{ $profit[0] }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $service[0] }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $decrease[0] ? $decrease[0] . 'ပဲ' : '' }}
-                                                        {{ $decrease[1] ? $decrease[1] . 'ရွေး' : '' }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $product[1] ? $product[1] . 'ကျပ်' : '' }}
-                                                        {{ $product[2] ? $product[2] . 'ပဲ' : '' }}
-                                                        {{ $product[3] ? $product[3] . 'ရွေး' : '' }}</h6>
-                                                    <h6 class="text-color mt-4"> {{ $diamond[0] ? $diamond[0] . 'g' : '' }}
-                                                        {{ $diamond[1] ? $diamond[1] . 'ကျပ်' : '' }}
-                                                        {{ $diamond[2] ? $diamond[2] . 'ပဲ' : '' }}
-                                                        {{ $diamond[3] ? $diamond[3] . 'ရွေး' : '' }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->code_number }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->name }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->supplier->name }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->quality->name }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->gold_type }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->category->name }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->purchase_price }} ကျပ်</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->staff_id }}</h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->diamonds }}</h6>
-                                                    @if ($purchase->remark)
-                                                        <h6 class="text-color mt-4">{{ $purchase->remark }}</h6>
-                                                    @endif
-                                                    <h6 class="text-color mt-4">
-                                                        <?php $ischeck = $purchase->type; ?>
-                                                        @if ($ischeck == 'option1')
-                                                            <span class="badge badge-color ml-2">​​မိန်းမဝတ်</span>
-                                                        @endif
-                                                        @if ($ischeck == 'option2')
-                                                            <span class="badge badge-color ml-2">​ယောကျားဝတ်</span>
-                                                        @endif
-                                                        @if ($ischeck == 'option3')
-                                                            <span class="badge badge-color ml-2">unisex</span>
-                                                        @endif
-                                                        @if ($ischeck == 'option4')
-                                                            <span class="badge badge-color ml-2">​က​လေးဝတ်</span>
-                                                        @endif
-                                                    </h6>
-                                                    <h6 class="text-color mt-4">{{ $purchase->color }}</h6>
-                                                </div>
+
+
+
                                             </div>
                                         </div>
                                         <div class="col-5">
@@ -293,6 +420,17 @@
 @endpush
 @push('css')
     <style>
+        table,
+        tr,
+        td {
+            border: none;
+
+        }
+
+        table {
+            width: 90% !important;
+        }
+
         body {
             background: #F0F7FA;
             font-family: 'Myanmar3', Sans-Serif !important;

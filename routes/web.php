@@ -236,11 +236,11 @@ Route::group(
         // require "unittest.php";
     }
 );
+Route::post('webhook', [FacebookWebhookController::class, 'webhook_post']);
 
 Route::get('webhook', [FacebookWebhookController::class, 'webhook']);
 Route::get('checkwehavetoken', [FacebookController::class, 'checkwehavetoken']);
 Route::post('storetoken', [FacebookController::class, 'storetoken']);
-Route::post('webhook', [FacebookWebhookController::class, 'webhook_post']);
 Route::get('forgetstart/{id}', [FacebookWebhookController::class, 'forgetstart']);
 
 Route::get('testfbpost', function () {
