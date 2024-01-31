@@ -147,6 +147,7 @@
                                     <label for="exampleInputEmail1">ဆိုင် အမည် myanmar<span
                                             style="color: red;">*</span></label>
 
+
                                     <div class="input-group mb-3">
 
                                         <input id="shop_name_myan" type="text"
@@ -269,6 +270,8 @@
 
 
 
+
+
                             {{-- //page --}}
                             <div class="se form-group row">
                                 <div class="col-12 col-md-6">
@@ -356,7 +359,7 @@
                                             style="color: red;">*</span></label>
                                     <select id="premium_template_id" name="premium_template_id"
                                         class="form-control @error('premium_template_id') is-invalid @enderror">
-                                        <option selected disabled hidden>Select premium template</option>
+                                        <option selected disabled hidden value="1">Select premium template</option>
                                         @foreach ($premium_templates as $template)
                                             @if (old('premium_template_id') == $template->id)
                                                 <option value="{{ $template->id }}" selected>{{ $template->name }}

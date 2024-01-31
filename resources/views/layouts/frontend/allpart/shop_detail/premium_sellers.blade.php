@@ -74,7 +74,6 @@
 <script>
 $(document).ready(function () {
     $('#pshop_slide').owlCarousel({
-        loop: false,
         margin: 20,
         responsiveClass: true,
         autoplay: true,
@@ -85,22 +84,32 @@ $(document).ready(function () {
         responsive: {
             0: {
                 items: 1.5,
+                loop: true,
+
                 stagePadding: 20,
             },
             600: {
                 items: 2,
+                loop: true,
+
                 stagePadding: 0,
             },
             900: {
                 items: 3,
+                loop: false,
+
                 stagePadding: 0,
             },
             1200: {
                 items: 4,
+                loop: false,
+
                 stagePadding: 0,
             },
             1400: {
                 items: 5,
+                loop: false,
+
                 stagePadding: 0,
             }
         }
