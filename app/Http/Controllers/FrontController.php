@@ -248,7 +248,7 @@ class FrontController extends Controller
 
         $catlist = Cache::get('cat');
 
-        $premiumshops = Shops::orderBy('created_at', 'desc')->where('premium', 'yes')->where('pos_only', '!=', 'yes')
+        $premiumshops = Shops::inRandomOrder()->where('premium', 'yes')->where('pos_only', '!=', 'yes')
             ->limit(20)->get();
 
         $this->addlog(url()->current(), 'all', 'all', 'homepage', '0');
@@ -520,7 +520,7 @@ class FrontController extends Controller
         }
         //for log
 
-        $premiumshops = Shops::orderBy('created_at', 'desc')->where('premium', 'yes')->limit(20)->get();
+        $premiumshops = Shops::inRandomOrder()->where('premium', 'yes')->limit(20)->get();
 
         $othersellers = Shops::orderBy('created_at', 'desc')->where('premium', '!=', 'yes')->orWhereNull('premium')->limit(20)->get();
 
@@ -842,7 +842,7 @@ class FrontController extends Controller
 
     public function getPremiumShops()
     {
-        $shops = Shops::orderBy('created_at', 'desc')->where('premium', 'yes')->where('deleted_at',null)
+        $shops = Shops::inRandomOrder()->where('premium', 'yes')->where('deleted_at',null)
         ->where('pos_only','!=','yes')->limit(20)->get();
         return view('front.shops', ['shops' => $shops, 'active' => 'premium']);
     }

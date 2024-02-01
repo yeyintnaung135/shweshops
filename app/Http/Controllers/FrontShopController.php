@@ -79,7 +79,7 @@ class FrontShopController extends Controller
                 ->get();
 
         } else {
-            $shops = Shops::orderBy('created_at', 'desc')
+            $shops = Shops::inRandomOrder()
                 ->where('pos_only','!=','yes')->where('deleted_at',NULL)
                 ->where(function ($query) use ($shopname) {
                     $query->where('shop_name', 'like', $shopname)
